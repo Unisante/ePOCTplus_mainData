@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAlgorithmsTable extends Migration
+class CreateDiagnosticsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class CreateAlgorithmsTable extends Migration
      */
     public function up()
     {
-        Schema::create('algorithms', function (Blueprint $table) {
+        Schema::create('diagnostics', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('medal_c_id')->unsigned();
-            $table->string('name');
+            $table->string('reference');
+            $table->string('label');
+            $table->integer('version_id')->unsigned();
+            $table->foreign('version_id')->references('id')->on('versions');
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ class CreateAlgorithmsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('algorithms');
+        Schema::dropIfExists('diagnostics');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAlgorithmsTable extends Migration
+class CreateAnswerTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateAlgorithmsTable extends Migration
      */
     public function up()
     {
-        Schema::create('algorithms', function (Blueprint $table) {
+        Schema::create('answer_types', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('medal_c_id')->unsigned();
-            $table->string('name');
+            $table->string('value');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ class CreateAlgorithmsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('algorithms');
+        Schema::dropIfExists('answer_types');
     }
 }
