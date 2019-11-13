@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9521e597-b9bc-44fc-899f-2ec528c2a0d4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2019_11_08_074917_create_algorithms_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2019_11_08_074917_create_algorithms_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MedicalCaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/MedicalCaseController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2019_11_11_082420_create_patients_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2019_11_11_082420_create_patients_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2019_11_11_093948_create_medical_case_answers_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2019_11_11_093948_create_medical_case_answers_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -106,22 +108,21 @@
       <path value="$PROJECT_DIR$/vendor/doctrine/inflector" />
     </include_path>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1056" />
-  </component>
   <component name="ProjectId" id="1TKBXrnB55EaHQgHP2WHQ42rtaO" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="editor.config.ad.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/json" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\drokn\Documents\Dev\Projects\liwi-main-data\public\json" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -154,7 +155,7 @@
       <workItem from="1573139273625" duration="2577000" />
       <workItem from="1573198949658" duration="3695000" />
       <workItem from="1573219422794" duration="16000" />
-      <workItem from="1573455850041" duration="5690000" />
+      <workItem from="1573455850041" duration="41416000" />
     </task>
     <servers />
   </component>

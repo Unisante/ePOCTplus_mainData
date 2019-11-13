@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Patient;
+use App\MedicalCaseAnswer;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,21 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+
+Route::get('medical_cases', function(Request $request) {
+    return Patient::parse_json($request->all);
+});
+
+Route::get('medical_case_answers', function(Request $request) {
+    foreach (MedicalCaseAnswer::all() as &$medical_case_json){
+        echo $medical_case_json;
+        echo '<br />';
+    }
+});
+
+Route::post('sync_medical_cases', function(Request $request) {
+    return Patient::parse_json($request);
 });
