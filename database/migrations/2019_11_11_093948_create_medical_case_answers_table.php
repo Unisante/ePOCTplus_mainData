@@ -19,6 +19,8 @@ class CreateMedicalCaseAnswersTable extends Migration
 //            $table->foreign('medical_case_id')->references('id')->on('medical_cases');
             $table->integer('answer_id')->unsigned();
 //            $table->foreign('answer_id')->references('id')->on('answers');
+            $table->integer('node_id')->unsigned();
+//            $table->foreign('node_id')->references('id')->on('nodes');
             $table->string('value');
             $table->timestamps();
         });
