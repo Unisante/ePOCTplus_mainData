@@ -8,6 +8,17 @@ class Patient extends Model
 {
     protected $guarded = [];
 
+    /**
+
+    * recevieves a json file and makes a save to the database
+
+    *
+
+    * @param  mixed  json file of the patient
+
+    * @return json number of patient and medical cases for now
+
+    */
     public static function parse_json($request)
     {
         $patients = $request->input('patients');
@@ -24,11 +35,25 @@ class Patient extends Model
         }
         return $response;
     }
+    /**
+        * Dummy method to test if the route works
+        *
+        *This method will be removed later on
+        * 
+        * @return  json format of list of patients 
+    */
     public static function parse_json_get($request)
     {
         $patient=Patient::all();
         return response()->json(["patients"=>$patient]);
     }
+
+    /**
+        * saves the patient
+        *
+        * 
+        * @return  patient object 
+    */
 
     public static function get_or_create($local_id, $first_name, $last_name){
         $fields = ['first_name' => $first_name, 'last_name' => $last_name];
