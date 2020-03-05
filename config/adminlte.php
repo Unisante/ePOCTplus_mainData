@@ -14,8 +14,8 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
-    'title_prefix' => '',
+    'title' => '<b>ePOCT+</b>  Main data',
+    'title_prefix' => 'ePOCT+',
     'title_postfix' => '',
 
     /*
@@ -45,12 +45,12 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
+    'logo' => '<b>ePOCT+</b>Main data',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image-xl',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'AdminLTE',
+    'logo_img_alt' => 'ePOCT+ Main data',
 
     /*
     |--------------------------------------------------------------------------
@@ -193,19 +193,19 @@ return [
             'search' => true,
             'topnav' => true,
         ],
+
         [
-            'text' => 'blog',
-            'url'  => 'admin/blog',
-            'can'  => 'manage-blog',
+            'text' => 'Patient list',
+            'url'  => 'admin/settings',
+            'icon' => 'fas fa-fw fa-list',
         ],
+
         [
-            'text'        => 'pages',
-            'url'         => 'admin/pages',
-            'icon'        => 'far fa-fw fa-file',
-            'label'       => 4,
-            'label_color' => 'success',
+            'text' => 'Medical Cases',
+            'url'  => 'admin/settings',
+            'icon' => 'fas fa-fw fa-file',
         ],
-        ['header' => 'account_settings'],
+       
         [
             'text' => 'profile',
             'url'  => 'admin/settings',
@@ -217,57 +217,27 @@ return [
             'icon' => 'fas fa-fw fa-lock',
         ],
         [
-            'text'    => 'multilevel',
-            'icon'    => 'fas fa-fw fa-share',
+            'text' => 'Admin Corner',
+            'icon' => 'fas fa-fw fa-cog', 
+            //'can' => 'view users',
             'submenu' => [
                 [
-                    'text' => 'level_one',
-                    'url'  => '#',
+                    'text' => 'Users Management',
+                    'url'  => '/user',
+                    'icon' => 'fas fa-fw fa-users', 
+                   //'can' => 'view users',
                 ],
+    
+
                 [
-                    'text'    => 'level_one',
-                    'url'     => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url'  => '#',
-                        ],
-                        [
-                            'text'    => 'level_two',
-                            'url'     => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                            ],
-                        ],
-                    ],
+                    'text' => 'Manage Roles',
+                    'url'  => '/roles',
+                    'icon' => 'fas fa-fw fa-pencil-alt',
+                   // 'can' => 'view users',
                 ],
-                [
-                    'text' => 'level_one',
-                    'url'  => '#',
-                ],
-            ],
-        ],
-        ['header' => 'labels'],
-        [
-            'text'       => 'important',
-            'icon_color' => 'red',
-        ],
-        [
-            'text'       => 'warning',
-            'icon_color' => 'yellow',
-        ],
-        [
-            'text'       => 'information',
-            'icon_color' => 'aqua',
         ],
     ],
+],
 
     /*
     |--------------------------------------------------------------------------
