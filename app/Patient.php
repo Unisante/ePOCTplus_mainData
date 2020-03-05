@@ -24,7 +24,8 @@ class Patient extends Model
         }
         return $response;
     }
-    public static function parse_json_get($request)
+    
+    public static function parse_json_get()
     {
         $patient=Patient::all();
         return response()->json(["patients"=>$patient]);
