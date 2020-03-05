@@ -14,8 +14,8 @@ return [
     |
     */
 
-    'title' => '<b>ePOCT+</b>  Main data',
-    'title_prefix' => 'ePOCT+',
+    'title' => 'ePOCT+  Main data',
+    'title_prefix' => '',
     'title_postfix' => '',
 
     /*
@@ -196,24 +196,24 @@ return [
 
         [
             'text' => 'Patient list',
-            'url'  => 'admin/settings',
+            'url'  => '#',
             'icon' => 'fas fa-fw fa-list',
         ],
 
         [
             'text' => 'Medical Cases',
-            'url'  => 'admin/settings',
+            'url'  => '#',
             'icon' => 'fas fa-fw fa-file',
         ],
        
         [
             'text' => 'profile',
-            'url'  => 'admin/settings',
+            'url'  => '#',
             'icon' => 'fas fa-fw fa-user',
         ],
         [
             'text' => 'change_password',
-            'url'  => 'admin/settings',
+            'url'  => '#',
             'icon' => 'fas fa-fw fa-lock',
         ],
         [
@@ -231,7 +231,7 @@ return [
 
                 [
                     'text' => 'Manage Roles',
-                    'url'  => '/roles',
+                    'url'  => '#',
                     'icon' => 'fas fa-fw fa-pencil-alt',
                    // 'can' => 'view users',
                 ],

@@ -14,4 +14,6 @@ Auth::routes();
 Route::get('/', function () {
     return redirect(route('login'));
 });
+Route::resource('roles', 'RolesController');
+Route::resource('user','UsersController');
 Route::get('/home', 'HomeController@index')->name('home');
