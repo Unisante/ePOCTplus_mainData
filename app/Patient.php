@@ -10,23 +10,24 @@ class Patient extends Model
 
     public static function parse_json($request)
     {
-//        $json = json_decode(file_get_contents("../public/json/medical.json"));
-        $json = $request;
-        $patients = $json->patients;
-
+        $patients = $request->input('patients');
         $response = array();
         $response['patients'] = array();
         $response['medical_cases'] = array();
-        foreach ($patients as &$patient_json) {
-            $patient_id = $patient_json['id'];
-
-            $patient = self::get_or_create($patient_json['main_data_patient_id'], $patient_json['firstname'], $patient_json['lastname']);
-            $response['patients'][$patient_id] = $patient['id'];
+        foreach ($patients as $key=>&$patient_json) {
+            $main_data_patient_id=isset($patient_json->main_data_patient_id)? $patient_json->main_data_patient_id :null;
+            $patient = self::get_or_create($main_data_patient_id, $patient_json['firstname'], $patient_json['lastname']);
+            $response['patients'][$key] = $patient['id'];
             foreach ($patient_json['medicalCases'] as &$medical_case_json){
                 MedicalCase::parse_json($medical_case_json, $patient['id'], $response);
             }
         }
         return $response;
+    }
+    public static function parse_json_get($request)
+    {
+        $patient=Patient::all();
+        return response()->json(["patients"=>$patient]);
     }
 
     public static function get_or_create($local_id, $first_name, $last_name){

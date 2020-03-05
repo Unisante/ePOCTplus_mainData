@@ -11,11 +11,15 @@ class MedicalCase extends Model
 
     public static function parse_json($json, $patient_id, &$response)
     {
+         
+        
         $algorithm = Algorithm::get_or_create($json['algorithm_id'], $json['name']);
-        $version = Version::get_or_create($json['version'], $algorithm['id']);
-        $medical_case = self::get_or_create($json['main_data_medical_case_id'], $patient_id, $version['id']);
-
-        $response['medical_cases'][$json['id']] = $medical_case['id'];
+        
+        $version = Version::get_or_create($json['version'], $algorithm->id);
+        
+        $medical_case = self::get_or_create($json['main_data_medical_case_id'], $patient_id, $version->id);
+        // dd($medical_case->id);
+        $response['medical_cases'][$json['id']] = $medical_case->id;
         MedicalCaseAnswer::parse_answers($json, $medical_case);
     }
 
