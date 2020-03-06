@@ -18,5 +18,10 @@ class MedicalCaseAnswer extends Model
             }
             
         }
+        
     }
+    public function medical_case()
+        {
+            return $this->belongsTo('App\MedicalCase');
+        }
 }

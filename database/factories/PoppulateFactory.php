@@ -18,7 +18,7 @@ use Faker\Generator as Faker;
  
 $factory->define(Patient::class, function (Faker $faker) {
     return [
-        'first_name' => $faker->sentence($nbWords = 6, $variableNbWords = true),  // Random task title
-        'last_name' => $faker->text(), // Random task description
+        'first_name' => $faker->firstName,  // Random task title
+        'last_name' => $faker->lastName, // Random task description
     ];
 });

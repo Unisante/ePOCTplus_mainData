@@ -11,6 +11,9 @@ class poppulate_data extends Seeder
      */
     public function run()
     {
+        // loop
+        // p = patirnt create 
+        // p.medical cases 
         Patient::create([
             'first_name'=>'Ibu',
             'last_name'=>'black'

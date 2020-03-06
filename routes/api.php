@@ -31,3 +31,5 @@ Route::get('medical_case_answers', function(Request $request) {
 Route::post('sync_medical_cases', function(Request $request) {
     return Patient::parse_json($request);
 });
+
+

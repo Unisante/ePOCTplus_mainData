@@ -43,4 +43,15 @@ class Patient extends Model
 
         return $patient;
     }
+
+    /**
+
+    * making a relationship to medicalCase
+
+    */
+
+    public function medicalCases()
+    {
+        return $this->hasMany('App\medicalCase');
+    }
 }
