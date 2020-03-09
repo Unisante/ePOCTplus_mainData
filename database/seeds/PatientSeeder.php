@@ -20,27 +20,27 @@ class PatientSeeder extends Seeder
         for ($k = 0 ; $k < $patientCreator; $k++)
         {
             $data['patient']=[
-                'first_name'=>$faker->firstName, 
+                'first_name'=>$faker->firstName,
                 'last_name'=> $faker->lastName,
                 'created_at'=>$faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now', $timezone = null),
             ];
-            
+
             $patient=new Patient($data['patient']);
-            
+
             $patient->save();
-            
+
             $mc = $this->generate_medical_case($patient);
             $patient->medicalCases->add($mc);
         }
-        
-        
+
+
     }
     function generate_medical_case($patient){
         $medical_case = new MedicalCase;
         $medical_case->version_id=1;
         $medical_case->patient_id = $patient->id;
-        $medical_case->save(); 
-        
+        $medical_case->save();
+        $answers=10;
         foreach(Node::all() as $question)
         {
             $answers = $question->answers->toArray();

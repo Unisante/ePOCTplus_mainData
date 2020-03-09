@@ -13,6 +13,18 @@ class NodeSeeder extends Seeder
     {
         $nodes=[
             [   'type'=>'Question',
+                'reference'=>346,
+                'label'=>'Respiratory rate in percentile',
+                'category'=>'physical_exam',
+                'medal_c_id'=>346,
+                'priority'=>true,
+                'stage'=>'consultation',
+                'description'=>'from the seeder',
+                'formula'=>'formula seeder',
+                'answer_type_id'=>1,
+                'algorithm_id'=>1,
+            ],
+            [   'type'=>'Question',
                 'reference'=>47,
                 'label'=>'MMR: 2 doses completed',
                 'category'=>'vaccine',
