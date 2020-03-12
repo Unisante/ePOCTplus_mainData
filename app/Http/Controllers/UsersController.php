@@ -14,135 +14,129 @@ use DB;
 class UsersController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
     public function index(Request $request)
     {
         if (Auth::check()){
-
-            $Search = $request->input('Search');
-            if ($Search !=""){
-                $users = Approver::where('id','LIKE', '%' . $Search . '%')
-                ->orWhere('email','LIKE', '%' . $Search . '%')
-                ->orWhere('name','LIKE', '%' . $Search . '%')
+            
+            $search = $request->input('Search');
+            if ($search !=""){
+                $users = Approver::where('id','LIKE', '%' . $search . '%')
+                ->orWhere('email','LIKE', '%' . $search . '%')
+                ->orWhere('name','LIKE', '%' . $search . '%')
                 ->paginate(50);
-        return view('users.index',compact('users'));
+                return view('users.index',compact('users'));
             }else{
-                \Session::put('search1', '');
-            $users = User::where('id','!=', 0)->paginate(10);
-            return view('users.index',compact('users'));
+                $users = User::all()->paginate(10);
+                return view('users.index',compact('users'));
+            }
         }
     }
-    }
-
-
-   
+    
+    
+    
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    * Show the form for creating a new resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
     public function create()
     {
         return view('users.create');
     }
-
+    
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    * Store a newly created resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+    */
     public function store(Request $request)
     {
-
-         if (Auth::check()){
-//
+        
+        if (Auth::check()){
             $validatedData = $request->validate([
                 'name' => 'required|string',
                 'email' => 'required|string',
-                ]);
-           $addusers=User::create([
-                     'email'=>$request->input('email'),
-                     'name'=>$request->input('name'),
-                     ]);
+            ]);
 
-                     if($addusers){
+
+            $user=User::new([
+                'email'=>$request->input('email'),
+                'name'=>$request->input('name'),
+            ]);
+                    
+            if($user->save()){
                 return redirect()->route('user.index')->with('success','Information have been saved Successfully.');;
-
-        }else{
-            return back()->withinput()->with('errors','Error Occured, Probably this user exist');
+                
+            }else{
+                return back()->withinput()->with('errors','Error Occured, Probably this user exist');
+            }
         }
     }
-}
-
+    
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    * Display the specified resource.
+    *
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
     public function show(User $user)
     {
-        //
-        $users  = User::find($user->id);
-        return view('users.show',compact('users'));
-
+        return view('users.show',compact('user'));
     }
-
+    
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    * Show the form for editing the specified resource.
+    *
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
     public function edit(User $user)
     {
-        $users  = User::find($user->id);
-        return view('users.edit',compact('users'));
+        return view('users.edit',compact('user'));
     }
-
+    
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
     public function update(Request $request, User $user)
     {
-
+        
         $validatedData = $request->validate([
             'name' => 'required|string',
             'email' => 'required|string',
-            ]);
-        $users=User::where('id', $user->id)
-                ->update([
-                    'email'=>$request->input('email'),
-                    'name'=>$request->input('name'),
-                        ]);
+        ]);
 
-                    if ($users){
-                           return redirect()->route('user.index')->with('success','Information Updated Successfully');
-                     }
+        $user->email = $request->input('email');
+        $user->name = $request->input('name');
 
-                          return back()->withinput()->with('errors','Error Updating');
-                     }
-
-
-    
-   
-    
+            
+        if ($user->save()){
+            return redirect()->route('user.index')->with('success','Information Updated Successfully');
+        }
+        else{
+            return back()->withinput()->with('errors','Error Updating');
+        }
+    }
+            
+                   
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    * Remove the specified resource from storage.
+    *
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
     public function destroy($id)
     {
         //
     }
 }
+        
