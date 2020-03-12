@@ -25,11 +25,11 @@ class Patient extends Model
         $response = array();
         $response['patients'] = array();
         $response['medical_cases'] = array();
-        foreach ($patients as $key=>&$patient_json) {
-            $main_data_patient_id=isset($patient_json->main_data_patient_id)? $patient_json->main_data_patient_id :null;
-            $patient = self::get_or_create($main_data_patient_id, $patient_json['firstname'], $patient_json['lastname']);
+        foreach ($patients as $key=>&$patient) {
+            $main_data_patient_id=isset($patient->main_data_patient_id)? $patient->main_data_patient_id :null;
+            $patient = self::get_or_create($main_data_patient_id, $patient['firstname'], $patient['lastname']);
             $response['patients'][$key] = $patient['id'];
-            foreach ($patient_json['medicalCases'] as &$medical_case_json){
+            foreach ($patient['medicalCases'] as &$medical_case_json){
                 MedicalCase::parse_json($medical_case_json, $patient['id'], $response);
             }
         }
@@ -39,8 +39,8 @@ class Patient extends Model
         * Dummy method to test if the route works
         *
         *This method will be removed later on
-        * 
-        * @return  json format of list of patients 
+        *
+        * @return  json format of list of patients
     */
     public static function parse_json_get($request)
     {
@@ -51,8 +51,8 @@ class Patient extends Model
     /**
         * saves the patient
         *
-        * 
-        * @return  patient object 
+        *
+        * @return  patient object
     */
 
     public static function get_or_create($local_id, $first_name, $last_name){
