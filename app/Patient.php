@@ -21,26 +21,29 @@ class Patient extends Model
     */
     public static function parse_json($request)
     {
+        error_log("am on parse.json");
         $patients = $request->input('patients');
         $response = array();
         $response['patients'] = array();
         $response['medical_cases'] = array();
         foreach ($patients as $key=>&$patient) {
+            error_log("am on each person");
             $main_data_patient_id=isset($patient->main_data_patient_id)? $patient->main_data_patient_id :null;
-            $patient = self::get_or_create($main_data_patient_id, $patient['firstname'], $patient['lastname']);
+            $new_patient = self::get_or_create($main_data_patient_id, $patient['firstname'], $patient['lastname']);
             $response['patients'][$key] = $patient['id'];
-            foreach ($patient['medicalCases'] as &$medical_case_json){
-                MedicalCase::parse_json($medical_case_json, $patient['id'], $response);
+            foreach ($patient['medicalCases'] as $medical_case_json){
+                error_log("am on creating medical case");
+                MedicalCase::get_or_create_case($medical_case_json, $new_patient['id'], $response);
             }
         }
         return $response;
     }
-    /**
-        * Dummy method to test if the route works
-        *
-        *This method will be removed later on
-        *
-        * @return  json format of list of patients
+    /*
+    * Dummy method to test if the route works
+    *
+    *This method will be removed later on
+    *
+    * @return  json format of list of patients
     */
     public static function parse_json_get($request)
     {
@@ -48,16 +51,15 @@ class Patient extends Model
         return response()->json(["patients"=>$patient]);
     }
 
-    /**
-        * saves the patient
-        *
-        *
-        * @return  patient object
+    /*
+    * saves the patient
+    *
+    *
+    * @return  patient object
     */
 
     public static function get_or_create($local_id, $first_name, $last_name){
         $fields = ['first_name' => $first_name, 'last_name' => $last_name];
-
         if ($local_id == null) {
             $patient = Patient::create($fields);
         } else {

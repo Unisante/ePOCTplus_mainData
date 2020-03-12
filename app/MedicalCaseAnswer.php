@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class MedicalCaseAnswer extends Model
 {
     protected $guarded = [];
-
+    /*
+    *checks if it key exist
+    *creates medical case answers
+    *
+    */
     public static function parse_answers($json, $medical_case)
     {
         foreach ($json['nodes'] as &$node){
@@ -16,7 +20,6 @@ class MedicalCaseAnswer extends Model
                 $value = $node['value'] != null ? $node['value'] : '';
                 MedicalCaseAnswer::create(['medical_case_id' => $medical_case->id, 'answer_id' => $answer_id, 'value' => $value, 'node_id' => $node['id']]);
             }
-            
         }
     }
 }
