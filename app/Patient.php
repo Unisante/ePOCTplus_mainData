@@ -56,7 +56,6 @@ class Patient extends Model
       $patient = Patient::find($local_id);
       $patient->update($fields);
     }
-
     return $patient;
   }
 }
