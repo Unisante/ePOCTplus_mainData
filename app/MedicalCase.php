@@ -12,6 +12,7 @@ class MedicalCase extends Model
     *gets or creates medical case
     *no return here
     */
+
     public static function get_or_create_case($json, $patient_id, &$response)
     {
         $algorithm = Algorithm::get_or_create($json['algorithm_id'], $json['name']);
@@ -26,7 +27,7 @@ class MedicalCase extends Model
 
     /*
     *gets or creates an element
-    *no return here
+    *@return void
     */
     public static function get_or_create($local_id, $patient_id, $version_id)
     {
