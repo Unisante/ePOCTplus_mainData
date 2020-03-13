@@ -1,3 +1,23 @@
+@extends('adminlte::page')
+
+@section('css')
+    <style type="text/css">
+        .required::after {
+            content: "*";
+            color: red;
+        }
+
+        .small-text {
+            font-size: small;
+        }
+    </style>
+
+@stop
+
+@section('content')
+
+
+
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -97,3 +117,4 @@
         </div>
     </body>
 </html>
+@stop
