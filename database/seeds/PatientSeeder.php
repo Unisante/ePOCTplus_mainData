@@ -30,30 +30,39 @@ class PatientSeeder extends Seeder
             $patient->save();
 
             $mc = $this->generate_medical_case($patient);
+
             $patient->medicalCases->add($mc);
         }
 
     }
 
+    /**
+    * Generates medical case.
+    * @params $patient
+    * @return void
+    */
     function generate_medical_case($patient){
         $medical_case = new MedicalCase;
         $medical_case->version_id=1;
         $medical_case->patient_id = $patient->id;
         $medical_case->save();
-        
+
         foreach(Node::all() as $question)
         {
-            $answers = $question->answers->toArray();
-            $random_answer_id = array_rand($answers);
-            $answer= $answers[$random_answer_id];
-            $medical_case_answers = new MedicalCaseAnswer([
-                "answer_id"=> $answer['id'],
-                "medical_case_id"=> $medical_case->id,
-                "node_id" => $answer['node_id'],
-                "value" => ""
-            ]);
-            $medical_case->medical_case_answers->add($medical_case_answers);
-            $medical_case_answers->save();
+            // we only need 80 percent of the answers
+            if(rand(0,100) < 81){
+                $answers = $question->answers->toArray();
+                $random_answer_id = array_rand($answers);
+                $answer= $answers[$random_answer_id];
+                $medical_case_answers = new MedicalCaseAnswer([
+                    "answer_id"=> $answer['id'],
+                    "medical_case_id"=> $medical_case->id,
+                    "node_id" => $answer['node_id'],
+                    "value" => ""
+                ]);
+                $medical_case->medical_case_answers->add($medical_case_answers);
+                $medical_case_answers->save();
+            }
         }
         return $medical_case;
     }
