@@ -91,7 +91,7 @@ return [
     'classes_sidebar_nav' => '',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand-md',
-    'classes_topnav_container' => 'container',
+    'classes_topnav_container' => 'container-fluid',
 
     /*
     |--------------------------------------------------------------------------
@@ -114,6 +114,8 @@ return [
     'sidebar_scrollbar_auto_hide' => 'l',
     'sidebar_nav_accordion' => true,
     'sidebar_nav_animation_speed' => 300,
+
+    'layout_fixed_sidebar'=>true,
 
     /*
     |--------------------------------------------------------------------------
@@ -196,8 +198,9 @@ return [
 
         [
             'text' => 'Patient list',
-            'url'  => '#',
+            'url'  => '/patients',
             'icon' => 'fas fa-fw fa-list',
+            
         ],
 
         [
@@ -205,7 +208,7 @@ return [
             'url'  => '#',
             'icon' => 'fas fa-fw fa-file',
         ],
-       
+
         [
             'text' => 'profile',
             'url'  => '#',
@@ -218,16 +221,16 @@ return [
         ],
         [
             'text' => 'Admin Corner',
-            'icon' => 'fas fa-fw fa-cog', 
+            'icon' => 'fas fa-fw fa-cog',
             //'can' => 'view users',
             'submenu' => [
                 [
                     'text' => 'Users Management',
                     'url'  => '/user',
-                    'icon' => 'fas fa-fw fa-users', 
+                    'icon' => 'fas fa-fw fa-users',
                    //'can' => 'view users',
                 ],
-    
+
 
                 [
                     'text' => 'Manage Roles',

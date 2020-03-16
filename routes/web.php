@@ -17,3 +17,5 @@ Route::get('/', function () {
 Route::resource('roles', 'RolesController');
 Route::resource('user','UsersController');
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/patients','PatientsController@index');
+Route::get('/patient/{id}','PatientsController@show');
