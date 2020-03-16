@@ -16,6 +16,7 @@ class PatientSeeder extends Seeder
     public function run(Faker $faker)
     {
         $patientCreator=100;
+        
         for ($k = 0 ; $k < $patientCreator; $k++)
         {
             $data['patient']=[
@@ -24,16 +25,16 @@ class PatientSeeder extends Seeder
                 'created_at'=>$faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now', $timezone = null),
             ];
 
-
             $patient=new Patient($data['patient']);
 
             $patient->save();
 
-            $mc = $this->generate_medical_case($patient);
+            for($i=0 ; $i<rand(0,5);$i++){
+                $mc = $this->generate_medical_case($patient);
 
-            $patient->medicalCases->add($mc);
+                $patient->medicalCases->add($mc);
+            }
         }
-
     }
 
     /**
