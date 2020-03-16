@@ -16,7 +16,6 @@ class AnswerTypeSeeder extends Seeder
             ['value'=>'Array'],
             ['value'=>'Integer'],
             ['value'=>'Float'],
-            ['value'=>'Float'],
             ['value'=>'Date'],
             ['value'=>'String'],
         ];
