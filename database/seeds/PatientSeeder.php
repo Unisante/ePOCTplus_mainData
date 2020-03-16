@@ -16,7 +16,7 @@ class PatientSeeder extends Seeder
     public function run(Faker $faker)
     {
         $patientCreator=100;
-        
+
         for ($k = 0 ; $k < $patientCreator; $k++)
         {
             $data['patient']=[
@@ -51,7 +51,8 @@ class PatientSeeder extends Seeder
         foreach(Node::all() as $question)
         {
             // we only need 80 percent of the answers
-            if(rand(0,100) < 81){
+            if(rand(0,100) < 81 && $question->answers()->count()){
+
                 $answers = $question->answers->toArray();
                 $random_answer_id = array_rand($answers);
                 $answer= $answers[$random_answer_id];
