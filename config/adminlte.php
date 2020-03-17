@@ -190,17 +190,17 @@ return [
     */
 
     'menu' => [
-        [
-            'text' => 'search',
-            'search' => true,
-            'topnav' => true,
-        ],
+        // [
+        //     'text' => 'search',
+        //     'search' => true,
+        //     'topnav' => true,
+        // ],
 
         [
             'text' => 'Patient list',
             'url'  => '/patients',
             'icon' => 'fas fa-fw fa-list',
-            
+
         ],
 
         [
