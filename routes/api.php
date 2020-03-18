@@ -19,9 +19,9 @@ use App\MedicalCaseAnswer;
 //    return $request->user();
 //});
 
-Route::get('medical_cases', function(Request $request) {
-    return Patient::parse_json_get($request->all);
-});
+// Route::get('medical_cases', function(Request $request) {
+//     return Patient::parse_json_get($request->all);
+// });
 
 Route::get('medical_case_answers', function(Request $request) {
     return MedicalCaseAnswer::all();
