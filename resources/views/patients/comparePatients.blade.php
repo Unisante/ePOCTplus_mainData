@@ -33,19 +33,22 @@
               <div class="card">
                 <div class="card-header">{{$first_patient->first_name}}'s Details</div>
                 <div class="card-body">
-                  <div>First Name: <span class="border-bottom">{{$first_patient->first_name}}</span><br/></div>
-                  <div>lastNAme: <span class="border-bottom">{{$first_patient->last_name}}</span><br/></div>
+                  <div>First name: <span class="border-bottom">{{$first_patient->first_name}}</span><br/></div>
+                  <div>last name: <span class="border-bottom">{{$first_patient->last_name}}</span><br/></div>
                   <div>Number of medical cases: <span class="border-bottom">{{$first_patient->medicalCases()->count()}}</span><br/></div>
                 </div>
               </div>
               <div class="card">
-                <div class="card-header">{{$first_patient->first_name}}'s medical cases</div>
+                <div class="card-header">{{$first_patient->first_name}}'s Medical Cases</div>
+                @foreach($first_patient->medicalCases as $medicalCase)
                 <div class="card-body">
-                  Name;lastNAme;Number of medical cases
+                  <div>Medical Case: <span class="border-bottom">Diagnostic</span><br/></div>
+                  <div>Date: <span class="border-bottom">{{$medicalCase->created_at}}</span><br/></div>
                 </div>
+                @endforeach
               </div>
               @else
-              echo "he doesnt";
+              <div class="card-header">No first Patient</div>
               @endif
             </div>
             <div class="col-md-6">
@@ -53,19 +56,24 @@
               <div class="card">
                 <div class="card-header">{{$second_patient->first_name}}'s Details</div>
                 <div class="card-body">
-                  <div>First Name: <span class="border-bottom">{{$second_patient->first_name}}</span><br/></div>
-                  <div>lastNAme: <span class="border-bottom">{{$second_patient->last_name}}</span><br/></div>
+                  <div>First name: <span class="border-bottom">{{$second_patient->first_name}}</span><br/></div>
+                  <div>last name: <span class="border-bottom">{{$second_patient->last_name}}</span><br/></div>
                   <div>Number of medical cases: <span class="border-bottom">{{$second_patient->medicalCases()->count()}}</span><br/></div>
                 </div>
               </div>
               <div class="card">
-                <div class="card-header">{{$second_patient->first_name}}'s medical cases</div>
+                <div class="card-header">{{$second_patient->first_name}}'s Medical Cases</div>
+                @foreach($second_patient->medicalCases as $medicalCase)
                 <div class="card-body">
-                  Name;lastNAme;Number of medical cases
+                  <div>Medical Case: <span class="border-bottom">Diagnostic</span><br/></div>
+                  <div>Date: <span class="border-bottom">{{$medicalCase->created_at}}</span><br/></div>
                 </div>
+                @endforeach
               </div>
               @else
-              echo "he doesnt";
+              <div class="card">
+                <div class="card-header">No Second Patient</div>
+              </div>
               @endif
             </div>
           </div>
