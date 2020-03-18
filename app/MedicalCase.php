@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class MedicalCase extends Model
 {
   protected $guarded = [];
-
   /*
   * Gets or creates medical case
   * @params $json
@@ -22,7 +21,6 @@ class MedicalCase extends Model
     $response['medical_cases'][$json['id']] = $medical_case->id;
     MedicalCaseAnswer::parse_answers($json, $medical_case);
   }
-
   /*
   * gets or creates an element
   * @params $local_id

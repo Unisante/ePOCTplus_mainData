@@ -30,7 +30,7 @@ class Patient extends Model
   }
 
   /*
-  * Saves the patient
+  * Saves or updates the patient
   * @params $id
   * @params $first_name
   * @params $last_name
