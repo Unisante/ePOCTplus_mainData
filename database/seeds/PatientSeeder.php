@@ -13,8 +13,7 @@ class PatientSeeder extends Seeder
     *
     * @return void
     */
-    public function run(Faker $faker)
-    {
+    public function run(Faker $faker){
         $patientCreator=100;
 
         for ($k = 0 ; $k < $patientCreator; $k++)
@@ -40,7 +39,7 @@ class PatientSeeder extends Seeder
     /**
     * Generates medical case.
     * @params $patient
-    * @return void
+    * @return $medical_case
     */
     function generate_medical_case($patient){
         $medical_case = new MedicalCase;

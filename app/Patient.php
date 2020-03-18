@@ -8,6 +8,11 @@ class Patient extends Model
 {
     protected $guarded = [];
 
+    /**
+     * Parse the json received
+     * @params $request
+     * @return $response
+     */
     public static function parse_json($request)
     {
         $patients = $request->input('patients');
@@ -24,12 +29,6 @@ class Patient extends Model
         }
         return $response;
     }
-    
-    public static function parse_json_get()
-    {
-        $patient=Patient::all();
-        return response()->json(["patients"=>$patient]);
-    }
 
     public static function get_or_create($local_id, $first_name, $last_name){
         $fields = ['first_name' => $first_name, 'last_name' => $last_name];
@@ -45,11 +44,9 @@ class Patient extends Model
     }
 
     /**
-
     * making a relationship to medicalCase
-
+    * @return Many medical cases
     */
-
     public function medicalCases()
     {
         return $this->hasMany('App\medicalCase');
