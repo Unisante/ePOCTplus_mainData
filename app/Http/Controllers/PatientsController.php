@@ -8,6 +8,15 @@ use Datatables;
 class PatientsController extends Controller
 {
   /**
+   * To block any non-authorized user
+   *
+   * @return void
+   */
+  public function __construct()
+    {
+      $this->middleware('auth');
+    }
+  /**
   * View all patients
   *
   * @return $patients
@@ -35,7 +44,7 @@ class PatientsController extends Controller
   public function compare($checkedValues){
     $patients = explode(",", $checkedValues);
     $first_patient =  Patient::find((int)$patients[0]);
-    
+
     $second_patient = Patient::find((int)$patients[1]);
     $data=array(
       'first_patient'=>$first_patient,
