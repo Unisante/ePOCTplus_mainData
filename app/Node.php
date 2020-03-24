@@ -7,7 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 class Node extends Model
 {
     protected $guarded = [];
-
+    /**
+     * Get the Specific Question
+     * @params $question_id
+     * @return $question
+    */
+    public static function getQuestion($question_id){
+      $question=Node::find($question_id);
+      return $question;
+    }
+    /**
+     * Create a relation with answers
+     * @return relation
+     */
     public function answers()
     {
         return $this->hasMany('App\Answer');
