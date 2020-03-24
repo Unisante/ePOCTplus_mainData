@@ -19,17 +19,13 @@ use App\MedicalCaseAnswer;
 //    return $request->user();
 //});
 
-Route::get('medical_cases', function(Request $request) {
-    return Patient::parse_json($request->all);
-});
-
 Route::get('medical_case_answers', function(Request $request) {
-    foreach (MedicalCaseAnswer::all() as &$medical_case_json){
-        echo $medical_case_json;
-        echo '<br />';
-    }
+
+    return MedicalCaseAnswer::all();
 });
 
 Route::post('sync_medical_cases', function(Request $request) {
     return Patient::parse_json($request);
 });
+
+

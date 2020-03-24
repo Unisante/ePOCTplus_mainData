@@ -8,20 +8,21 @@ class Patient extends Model
 {
     protected $guarded = [];
 
+    /**
+     * Parse the json received
+     * @params $request
+     * @return $response
+     */
     public static function parse_json($request)
     {
-//        $json = json_decode(file_get_contents("../public/json/medical.json"));
-        $json = $request;
-        $patients = $json->patients;
-
+        $patients = $request->input('patients');
         $response = array();
         $response['patients'] = array();
         $response['medical_cases'] = array();
-        foreach ($patients as &$patient_json) {
-            $patient_id = $patient_json['id'];
-
-            $patient = self::get_or_create($patient_json['main_data_patient_id'], $patient_json['firstname'], $patient_json['lastname']);
-            $response['patients'][$patient_id] = $patient['id'];
+        foreach ($patients as $key=>&$patient_json) {
+            $main_data_patient_id=isset($patient_json->main_data_patient_id)? $patient_json->main_data_patient_id :null;
+            $patient = self::get_or_create($main_data_patient_id, $patient_json['firstname'], $patient_json['lastname']);
+            $response['patients'][$key] = $patient['id'];
             foreach ($patient_json['medicalCases'] as &$medical_case_json){
                 MedicalCase::parse_json($medical_case_json, $patient['id'], $response);
             }
@@ -40,5 +41,14 @@ class Patient extends Model
         }
 
         return $patient;
+    }
+
+    /**
+    * making a relationship to medicalCase
+    * @return Many medical cases
+    */
+    public function medicalCases()
+    {
+        return $this->hasMany('App\medicalCase');
     }
 }
