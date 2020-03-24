@@ -14,6 +14,6 @@ class Answer extends Model
      */
     public static function getAnswer($answer_id){
       $answer=Answer::find($answer_id);
-      return $answer->label;
+      return $answer;
     }
 }

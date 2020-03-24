@@ -8,16 +8,6 @@
         id="sp_cases_count">{{$second_patient->medicalCases()->count()}}</span><br /></div>
   </div>
 </div>
-<div class="card">
-  <div class="card-header">{{$second_patient->first_name}}'s Medical Cases</div>
-  @foreach($second_patient->medicalCases as $medicalCase)
-  <div class="card-body">
-    <div>Date: <span class="border-bottom">{{$medicalCase->created_at}}</span><br /></div>
-
-    <div>Question: <span class="border-bottom">Diagnostic</span><br /></div>
-  </div>
-  @endforeach
-</div>
 @else
 <div class="card">
   <div class="card-header">No Second Patient</div>

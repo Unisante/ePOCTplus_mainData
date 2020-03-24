@@ -17,6 +17,11 @@ Route::get('/', function () {
 Route::resource('roles', 'RolesController');
 Route::resource('user','UsersController');
 Route::get('/home', 'HomeController@index')->name('home');
+//for patient
 Route::get('/patients','PatientsController@index');
 Route::get('/patient/{id}','PatientsController@show');
 Route::get('/patients/compare/{checkedValues}','PatientsController@compare');
+//for medical case
+Route::get('/medicalCases','medicalCasesController@index');
+Route::get('/medicalCases/{id}','medicalCasesController@show');
+Route::get('/medicalCases/compare/{checkedValues}','medicalCasesController@compare');

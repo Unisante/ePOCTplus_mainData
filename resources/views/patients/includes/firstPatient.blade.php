@@ -8,27 +8,7 @@
         id="fp_cases_count">{{$first_patient->medicalCases()->count()}}</span><br /></div>
   </div>
 </div>
-<div class="card">
-  <div class="card-header">{{$first_patient->first_name}}'s Medical Cases</div>
-  @foreach($first_patient->medicalCases as $medicalCase)
-  <div>Date: <span class="border-bottom">{{$medicalCase->created_at}}</span><br /></div>
-  @foreach($first_patient_data as $medicalCase)
-  <div class="card-body">
-    <div>Date: <span class="border-bottom">{{$medicalCase['answer']}}</span><br /></div>
-    <div class="card">
-      <span>Question</span>: <span></span>
-      <div class="card-body">
-        label:{{$medicalCase['question']->label}}<br />
-        description:{{$medicalCase['question']->description}}
-      </div>
-      <div class="card-body">
-        Answer:{{$medicalCase['answer']}}
-      </div>
-    </div>
-  </div>
-  @endforeach
-  @endforeach
-</div>
+
 @else
 <div class="card-header">No first Patient</div>
 @endif

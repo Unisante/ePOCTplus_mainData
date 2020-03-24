@@ -205,7 +205,7 @@ return [
 
         [
             'text' => 'Medical Cases',
-            'url'  => '#',
+            'url'  => '/medicalCases',
             'icon' => 'fas fa-fw fa-file',
         ],
 
