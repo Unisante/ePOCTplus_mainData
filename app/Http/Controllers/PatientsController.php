@@ -51,16 +51,17 @@ class PatientsController extends Controller
     $first_patient_data=array();
     $second_patient_data=array();
     foreach($first_patient->medicalCases as $medicalCase){
-      $case=array("case_date"=>$medicalCase->created_at);
+      // $case=array();
       foreach($medicalCase->medical_case_answers as $case_answer){
         $question=Node::getQuestion($case_answer->node_id);
         $answer=Answer::getAnswer($case_answer->answer_id);
         $case_info=array("question"=>$question,
         "answer"=>$answer
         );
-        array_push($case,$case_info);
+        array_push($first_patient_data,$case_info);
+        // array_push($case,$case_info);
       }
-      array_push($first_patient_data,$case);
+      // array_push($first_patient_data,$case);
     }
     foreach($second_patient->medicalCases as $medicalCase){
       $case=array("case_date"=>$medicalCase->created_at);

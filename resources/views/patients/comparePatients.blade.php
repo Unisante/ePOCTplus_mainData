@@ -29,66 +29,10 @@
           @endif
           <div class="row">
             <div class="col-md-5">
-              @if($first_patient)
-              <div class="card">
-                <div class="card-header">{{$first_patient->first_name}}'s Details</div>
-                <div class="card-body">
-                  <div>First name: <span class="border-bottom"
-                      id="fp_first_name">{{$first_patient->first_name}}</span><br /></div>
-                  <div>last name: <span class="border-bottom"
-                      id="fp_second_name">{{$first_patient->last_name}}</span><br /></div>
-                  <div>Number of medical cases: <span class="border-bottom"
-                      id="fp_cases_count">{{$first_patient->medicalCases()->count()}}</span><br /></div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header">{{$first_patient->first_name}}'s Medical Cases</div>
-                @foreach($first_patient_data as $medicalCase)
-                <div class="card-body">
-                  <div>Date: <span class="border-bottom">{{$medicalCase['case_date']}}</span><br /></div>
-
-                  <div class="card">
-                    <span>Question</span>: <span></span>
-                    <div class="card-body">
-                      Questions Details and answers
-                    </div>
-                  </div>
-
-                </div>
-                @endforeach
-              </div>
-              @else
-              <div class="card-header">No first Patient</div>
-              @endif
+              @include('patients.includes.firstPatient')
             </div>
             <div class="col-md-6">
-              @if($second_patient)
-              <div class="card">
-                <div class="card-header">{{$second_patient->first_name}}'s Details</div>
-                <div class="card-body">
-                  <div>First name: <span class="border-bottom"
-                      id="sp_first_name">{{$second_patient->first_name}}</span><br /></div>
-                  <div>last name: <span class="border-bottom"
-                      id="sp_second_name">{{$second_patient->last_name}}</span><br /></div>
-                  <div>Number of medical cases: <span class="border-bottom"
-                      id="sp_cases_count">{{$second_patient->medicalCases()->count()}}</span><br /></div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header">{{$second_patient->first_name}}'s Medical Cases</div>
-                @foreach($second_patient->medicalCases as $medicalCase)
-                <div class="card-body">
-                  <div>Date: <span class="border-bottom">{{$medicalCase->created_at}}</span><br /></div>
-
-                  <div>Question: <span class="border-bottom">Diagnostic</span><br /></div>
-                </div>
-                @endforeach
-              </div>
-              @else
-              <div class="card">
-                <div class="card-header">No Second Patient</div>
-              </div>
-              @endif
+              @include('patients.includes.secondPatient')
             </div>
           </div>
         </div>
