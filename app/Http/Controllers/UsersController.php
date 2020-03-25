@@ -28,7 +28,7 @@ class UsersController extends Controller
         ->paginate(50);
         return view('users.index',compact('users'));
       } else {
-        $users = User::all()->paginate(10);
+        $users = User::all();
         return view('users.index',compact('users'));
       }
     }
