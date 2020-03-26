@@ -27,7 +27,7 @@
             {{ session('status') }}
           </div>
           @endif
-          <div class="row">
+          <div class="row sticky-top">
             <div class="col-md-6">
               @include('medicalCases.includes.firstMedicalCase')
             </div>
@@ -35,6 +35,38 @@
               @include('medicalCases.includes.secondMedicalCase')
             </div>
           </div>
+          @foreach($medical_case_info as $case)
+          <div class="card" style="background-color:#dadad7;">
+            <div class="row">
+              <div class="col-md-12">
+
+                <div class="card">
+                  <span class="font-weight-bold">Question: </span> <span>{{$case['question']->label}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card">
+                  @if(isset($case['first_case']))
+                  @foreach($case['first_case'] as $first_case)
+                  <span class="font-weight-bold">Answer:</span> {{$first_case->label}}
+                  @endforeach
+                  @endif
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card">
+                  @if(isset($case['second_case']))
+                  @foreach($case['second_case'] as $second_case)
+                  <span class="font-weight-bold"> Answer: </span> {{$second_case->label}}
+                  @endforeach
+                  @endif
+                </div>
+              </div>
+            </div>
+          </div>
+          @endforeach
         </div>
       </div>
     </div>

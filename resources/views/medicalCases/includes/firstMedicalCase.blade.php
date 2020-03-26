@@ -1,6 +1,6 @@
 @if($first_medical_case)
-<div class="card scrollThis">
-  <div class="sticky-top" style="background-color:grey;">
+<div class="card">
+  <div style="background-color:grey;">
     <div class="card-header">
       <span class="font-weight-bold">Created At: </span>
       <span class="border-bottom">{{$first_medical_case->created_at}}</span>
@@ -18,35 +18,7 @@
       </div>
     </div>
   </div>
-  <div class="card-body" style="height:450px;overflow:auto;">
-    @foreach($first_medical_case_info as $case)
-    <div class="card-md">
-      <div class="card-header">
-        <span class="font-weight-bold">Label: </span>
-        <span class="border-bottom">{{$case->question->label}}</span>
-      </div>
-      <div class="card-header">
-        <span class="font-weight-bold">Stage: </span>
-        <span class="border-bottom">{{$case->question->stage}}</span>
-      </div>
-      <div class="card-header">
-        <span class="font-weight-bold">Description: </span>
-        <span class="border-bottom">{{$case->question->description}}</span>
-      </div>
-      <div class="card-header">
-        <span class="font-weight-bold">Answer Type: </span>
-        <span class="border-bottom">{{$case->answerType}}</span>
-      </div>
-      <div class="card-header">
-        <span class="font-weight-bold">Answer: </span>
-        <span class="border-bottom">{{$case->answer->label}}</span>
-      </div>
-    </div>
-    <hr style="background-color:grey;border:7px solid grey;border-radius:3px;">
-    @endforeach
-  </div>
 </div>
-
 @else
-<div class="card-header">No first Patient</div>
+<div class="card-header">No first Medical Case</div>
 @endif
