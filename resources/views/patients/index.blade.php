@@ -11,7 +11,6 @@
     font-size: small;
   }
 </style>
-
 @stop
 
 @section('content')
@@ -56,7 +55,7 @@
                 </tbody>
               </table>
               @else
-              <p>No Posts Found</p>
+              <p>No Patients Found</p>
               @endif
             </div>
           </div>

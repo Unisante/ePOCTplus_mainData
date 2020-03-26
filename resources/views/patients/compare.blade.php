@@ -11,11 +11,9 @@
     font-size: small;
   }
 </style>
-
 @stop
 
 @section('content')
-
 <div class="container-fluid">
   <div class="row justify-content-center">
     <div class="col-md-12">

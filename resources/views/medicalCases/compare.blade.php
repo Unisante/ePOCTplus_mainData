@@ -11,11 +11,9 @@
     font-size: small;
   }
 </style>
-
 @stop
 
 @section('content')
-
 <div class="container-fluid">
   <div class="row justify-content-center">
     <div class="col-md-12">
@@ -39,7 +37,6 @@
           <div class="card" style="background-color:#dadad7;">
             <div class="row">
               <div class="col-md-12">
-
                 <div class="card">
                   <span class="font-weight-bold">Question: </span> <span>{{$case['question']->label}}</span>
                 </div>

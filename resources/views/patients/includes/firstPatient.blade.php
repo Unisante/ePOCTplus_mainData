@@ -8,7 +8,6 @@
         id="fp_cases_count">{{$first_patient->medicalCases()->count()}}</span><br /></div>
   </div>
 </div>
-
 @else
 <div class="card-header">No first Patient</div>
 @endif

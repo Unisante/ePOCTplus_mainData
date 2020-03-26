@@ -11,7 +11,6 @@
     font-size: small;
   }
 </style>
-
 @stop
 
 @section('content')

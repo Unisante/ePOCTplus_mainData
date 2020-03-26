@@ -10,6 +10,16 @@ use Illuminate\Http\Request;
 class MedicalCasesController extends Controller
 {
   /**
+  * To block any non-authorized user
+  *
+  * @return void
+  */
+  public function __construct()
+  {
+    $this->middleware('auth');
+  }
+
+  /**
   * Display all medical Cases
   * @return View,
   * @return $medicalCases
