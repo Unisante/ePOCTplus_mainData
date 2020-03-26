@@ -25,11 +25,11 @@
             {{ session('status') }}
           </div>
           @endif
-          <div class="row">
+          <div class="row justify-content-center">
             <div class="col-md-5">
               @include('patients.includes.firstPatient')
             </div>
-            <div class="col-md-6">
+            <div class="col-md-5">
               @include('patients.includes.secondPatient')
             </div>
           </div>

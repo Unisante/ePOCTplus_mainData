@@ -10,6 +10,9 @@
   .small-text {
     font-size: small;
   }
+  .dataTables_filter input{
+    border: 1px solid #ddd !important;
+  }
 </style>
 @stop
 

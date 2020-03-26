@@ -16,9 +16,9 @@ class MedicalCaseAnswer extends Model
                 $value = $node['value'] != null ? $node['value'] : '';
                 MedicalCaseAnswer::create(['medical_case_id' => $medical_case->id, 'answer_id' => $answer_id, 'value' => $value, 'node_id' => $node['id']]);
             }
-            
+
         }
-        
+
     }
     public function medical_case()
         {

@@ -27,9 +27,9 @@
           </div>
           @endif
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-8 offset-md-2">
               @if($patient)
-              <div class="card">
+              <div class="card" style="background-color:#ddd;">
                 <div class="card-header">{{$patient->first_name}}'s Details</div>
                 <div class="card-body">
                   <div>First Name: <span class="border-bottom">{{$patient->first_name}}</span><br/></div>

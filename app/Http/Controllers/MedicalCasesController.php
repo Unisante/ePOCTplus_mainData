@@ -41,14 +41,13 @@ class MedicalCasesController extends Controller
     foreach($medicalCase->medical_case_answers as $medicalCaseAnswer){
       $answer=Answer::getAnswer($medicalCaseAnswer->answer_id);
       $question=Node::getQuestion($medicalCaseAnswer->node_id);
-      $answerType=AnswerType::getAnswerType($question->answer_type_id);
       $data=array(
         "answer"=>$answer,
         "question"=>$question,
-        'answerType'=>$answerType
       );
       array_push($medicalCaseInfo,json_decode(json_encode($data)));
     }
+
     $data=array(
       'medicalCase'=>$medicalCase,
       'medicalCaseInfo'=>$medicalCaseInfo
@@ -72,7 +71,7 @@ class MedicalCasesController extends Controller
 
     //medicase details for second medical case
     $medical_case_info=self::detailFind($second_medical_case,"second_case",$medical_case_info);
-
+    // dd($medical_case_info);
     $data=array(
       'first_medical_case'=>$first_medical_case,
       'second_medical_case'=>$second_medical_case,
@@ -82,12 +81,21 @@ class MedicalCasesController extends Controller
   }
 
   public function detailFind($medicalCase, $label_info, $medical_case_info = array()){
+    $count=0;
     foreach($medicalCase->medical_case_answers as $medicalCaseAnswer){
+      $count=$count + 1;
+      $medicalCaseAnswer2=[];
+      if($count == 1){
+        $medicalCaseAnswer2=$medicalCaseAnswer;
+      }
       $answer=Answer::getAnswer($medicalCaseAnswer->answer_id);
       $question=Node::getQuestion($medicalCaseAnswer->node_id);
+      $medicalCaseAnswer=$medicalCaseAnswer;
       $medical_case_info[$question->id]["question"] = $question;
       $medical_case_info[$question->id][$label_info] =array(
           "answer"=>$answer,
+          "medicalCaseAnswer"=>$medicalCaseAnswer,
+          "medicalCaseAnswer2"=>$medicalCaseAnswer2
       );
     }
     return $medical_case_info;

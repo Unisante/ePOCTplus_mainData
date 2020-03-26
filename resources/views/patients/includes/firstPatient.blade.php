@@ -1,5 +1,5 @@
 @if($first_patient)
-<div class="card">
+<div class="card" style="background-color:#ddd;">
   <div class="card-header">{{$first_patient->first_name}}'s Details</div>
   <div class="card-body">
     <div>First name: <span class="border-bottom" id="fp_first_name">{{$first_patient->first_name}}</span><br /></div>
