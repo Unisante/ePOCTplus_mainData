@@ -71,7 +71,6 @@ class MedicalCasesController extends Controller
 
     //medicase details for second medical case
     $medical_case_info=self::detailFind($second_medical_case,"second_case",$medical_case_info);
-    // dd($medical_case_info);
     $data=array(
       'first_medical_case'=>$first_medical_case,
       'second_medical_case'=>$second_medical_case,
@@ -80,14 +79,53 @@ class MedicalCasesController extends Controller
     return view ('medicalCases.compare')->with($data);
   }
 
+  /**
+   * Display an answer of a specific medical case
+   * @params $medicalCaseId
+   * @params $questionId
+   * @return View
+   * @return $question
+   */
+  public function medicalCaseQuestion($medicalCaseId,$questionId,$answerId){
+    $medicalCase=MedicalCase::find($medicalCaseId);
+    $question=Node::getQuestion($questionId);
+    $answer=Answer::getAnswer($answerId);
+    $data=array(
+      "medicalCase"=>$medicalCase,
+      "question"=>$question,
+      "answer"=>$answer,
+    );
+    return view('medicalCases.question')->with($data);
+  }
+
+  /**
+   * Edit Question Answer on a Specific medical case
+   * @params $request
+   * @params $medicalCaseId
+   * @return View
+   */
+  public function medicalCaseAnswerEdit(Request $request,$medicalCaseId,$answerId){
+    $data=request()->validate(array('answer'=>'required',));
+    if($answer=Answer::getAnswer($answerId)) {
+      $answer->label = $request->input('answer');
+      $answer->save();
+    }else{
+      redirect()->back()->with('status', 'Something went wrong.');
+    }
+    return redirect()->action(
+      'medicalCasesController@show', ['id' => $medicalCaseId]
+    )->with('status','Question Answer Edited');
+  }
+
+  /**
+   * Find the details of the medical Case
+   * @params $medical Case
+   * @params $label_info
+   * @params $medical_case_info
+   * @return $medical_case_info
+   */
   public function detailFind($medicalCase, $label_info, $medical_case_info = array()){
-    $count=0;
     foreach($medicalCase->medical_case_answers as $medicalCaseAnswer){
-      $count=$count + 1;
-      $medicalCaseAnswer2=[];
-      if($count == 1){
-        $medicalCaseAnswer2=$medicalCaseAnswer;
-      }
       $answer=Answer::getAnswer($medicalCaseAnswer->answer_id);
       $question=Node::getQuestion($medicalCaseAnswer->node_id);
       $medicalCaseAnswer=$medicalCaseAnswer;
@@ -95,7 +133,6 @@ class MedicalCasesController extends Controller
       $medical_case_info[$question->id][$label_info] =array(
           "answer"=>$answer,
           "medicalCaseAnswer"=>$medicalCaseAnswer,
-          "medicalCaseAnswer2"=>$medicalCaseAnswer2
       );
     }
     return $medical_case_info;
