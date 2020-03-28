@@ -86,14 +86,14 @@ class MedicalCasesController extends Controller
    * @return View
    * @return $question
    */
-  public function medicalCaseQuestion($medicalCaseId,$questionId,$answerId){
+  public function medicalCaseQuestion($medicalCaseId,$questionId){
     $medicalCase=MedicalCase::find($medicalCaseId);
     $question=Node::getQuestion($questionId);
-    $answer=Answer::getAnswer($answerId);
+    $answers=$question->answers;
     $data=array(
       "medicalCase"=>$medicalCase,
       "question"=>$question,
-      "answer"=>$answer,
+      "answers"=>$answers,
     );
     return view('medicalCases.question')->with($data);
   }
@@ -102,13 +102,16 @@ class MedicalCasesController extends Controller
    * Edit Question Answer on a Specific medical case
    * @params $request
    * @params $medicalCaseId
+   * @params $questionId
    * @return View
    */
-  public function medicalCaseAnswerEdit(Request $request,$medicalCaseId,$answerId){
+  public function medicalCaseAnswerUpdate(Request $request,$medicalCaseId,$questionId){
     $data=request()->validate(array('answer'=>'required',));
-    if($answer=Answer::getAnswer($answerId)) {
-      $answer->label = $request->input('answer');
-      $answer->save();
+    $medicalCase=MedicalCase::find($medicalCaseId);
+    $medicalCaseAnswer=$medicalCase->medical_case_answers->where('node_id', $questionId)->first();
+    if($medicalCaseAnswer) {
+      $medicalCaseAnswer->answer_id = (int)$request->input('answer');
+      $medicalCaseAnswer->save();
     }else{
       redirect()->back()->with('status', 'Something went wrong.');
     }

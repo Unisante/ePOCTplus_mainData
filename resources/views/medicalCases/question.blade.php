@@ -61,11 +61,18 @@
                       <span class="font-weight-bold">Description: </span>
                       <span>{{$question->description}}</span>
                     </div>
-                  <form action="/medicalCases/{{$medicalCase->id}}/answer/{{$answer->id}}/edit" method="POST">
+                  <form action="/medicalCases/{{$medicalCase->id}}/question/{{$question->id}}/update" method="POST">
                       @csrf
-                    <div class="card-header">
-                      <span class="font-weight-bold">Answer: </span>
-                      <input type="title" class="form-control" name="answer" id="title"  placeholder="{{$answer->label}}">
+                    <div class="input-group pl-3">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect01">Answer</label>
+                      </div>
+                      <select class="custom-select" id="inputGroupSelect01" name="answer">
+                        <option selected></option>
+                        @foreach($answers as $answer)
+                      <option value="{{$answer->id}}">{{$answer->label}}</option>
+                        @endforeach
+                      </select>
                     </div>
                     <div class="card-header">
                       <button type="submit" class="btn btn-outline-secondary">Change Answer</button>

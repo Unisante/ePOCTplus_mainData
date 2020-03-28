@@ -25,5 +25,5 @@ Route::get('/patients/compare/{checkedValues}','PatientsController@compare');
 Route::get('/medicalCases','medicalCasesController@index');
 Route::get('/medicalCases/{id}','medicalCasesController@show');
 Route::get('/medicalCases/compare/{checkedValues}','medicalCasesController@compare');
-Route::get('/medicalCases/{medicalCaseId}/question/{questionId}/answer/{answerId}','medicalCasesController@medicalCaseQuestion');
-Route::post('/medicalCases/{medicalCaseId}/answer/{answerId}/edit','medicalCasesController@medicalCaseAnswerEdit');
+Route::get('/medicalCases/{medicalCaseId}/question/{questionId}','medicalCasesController@medicalCaseQuestion');
+Route::post('/medicalCases/{medicalCaseId}/question/{questionId}/update','medicalCasesController@medicalCaseAnswerUpdate');

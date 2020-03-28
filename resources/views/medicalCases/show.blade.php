@@ -65,7 +65,7 @@
                       <span class="font-weight-bold">Answer: </span>
                       <span>{{$case->answer->label}}</span>
                     </div>
-                    <a href="/medicalCases/{{$medicalCase->id}}/question/{{$case->question->id}}/answer/{{$case->answer->id}}" class="btn btn-outline-light">Change Answer</a>
+                    <a href="/medicalCases/{{$medicalCase->id}}/question/{{$case->question->id}}" class="btn btn-outline-light">Change Answer</a>
                   </div>
                   @endforeach
                 </div>
