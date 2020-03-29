@@ -13,6 +13,7 @@
         "jeroennoten/laravel-adminlte": "^3.0",
         "laravel/framework": "6.0.*",
         "laravel/tinker": "^1.0",
+        "owen-it/laravel-auditing": "^10.0",
         "yajra/laravel-datatables-oracle": "^9.9"
     },
     "require-dev": {
