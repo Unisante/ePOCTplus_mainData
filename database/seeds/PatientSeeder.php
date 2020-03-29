@@ -13,9 +13,9 @@ class PatientSeeder extends Seeder
     *
     * @return void
     */
-    public function run(Faker $faker)
-    {
+    public function run(Faker $faker){
         $patientCreator=100;
+
         for ($k = 0 ; $k < $patientCreator; $k++)
         {
             $data['patient']=[
@@ -24,22 +24,22 @@ class PatientSeeder extends Seeder
                 'created_at'=>$faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now', $timezone = null),
             ];
 
-
             $patient=new Patient($data['patient']);
 
             $patient->save();
 
-            $mc = $this->generate_medical_case($patient);
+            for($i=0 ; $i<rand(0,5);$i++){
+                $mc = $this->generate_medical_case($patient);
 
-            $patient->medicalCases->add($mc);
+                $patient->medicalCases->add($mc);
+            }
         }
-
     }
 
     /**
     * Generates medical case.
     * @params $patient
-    * @return void
+    * @return $medical_case
     */
     function generate_medical_case($patient){
         $medical_case = new MedicalCase;
@@ -50,7 +50,8 @@ class PatientSeeder extends Seeder
         foreach(Node::all() as $question)
         {
             // we only need 80 percent of the answers
-            if(rand(0,100) < 81){
+            if(rand(0,100) < 81 && $question->answers()->count()){
+
                 $answers = $question->answers->toArray();
                 $random_answer_id = array_rand($answers);
                 $answer= $answers[$random_answer_id];

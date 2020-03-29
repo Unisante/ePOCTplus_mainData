@@ -10,6 +10,12 @@ class MedicalCaseAnswer extends Model implements Auditable
   use \OwenIt\Auditing\Auditable;
   protected $guarded = [];
 
+  /*
+  * Checks if it key exist
+  * @params $json
+  * @params $medical_case
+  * @return void
+  */
   public static function parse_answers($json, $medical_case)
   {
     foreach ($json['nodes'] as &$node){
@@ -18,9 +24,7 @@ class MedicalCaseAnswer extends Model implements Auditable
         $value = $node['value'] != null ? $node['value'] : '';
         MedicalCaseAnswer::create(['medical_case_id' => $medical_case->id, 'answer_id' => $answer_id, 'value' => $value, 'node_id' => $node['id']]);
       }
-
     }
-
   }
   public function medical_case()
   {
