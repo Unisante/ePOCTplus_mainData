@@ -26,14 +26,18 @@ class MedicalCaseAnswer extends Model implements Auditable
       }
     }
   }
-
+  
+  /**
+   * Get all audits of one medical case
+   * @params $id
+   * @return $all
+   */
   public static function getAudit($id){
     $medicalCaseAnswer=MedicalCaseAnswer::find($id);
-    $all=$medicalCaseAnswer->audits;
-    return $all;
+    $allAudit=$medicalCaseAnswer->audits;
+    return $allAudit;
   }
-  public function medical_case()
-  {
+  public function medical_case(){
     return $this->belongsTo('App\MedicalCase');
   }
 }

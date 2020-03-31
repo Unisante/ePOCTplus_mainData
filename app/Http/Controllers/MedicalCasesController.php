@@ -82,12 +82,12 @@ class MedicalCasesController extends Controller
   }
 
   /**
-   * Display an answer of a specific medical case
-   * @params $medicalCaseId
-   * @params $questionId
-   * @return View
-   * @return $question
-   */
+  * Display an answer of a specific medical case
+  * @params $medicalCaseId
+  * @params $questionId
+  * @return View
+  * @return $question
+  */
   public function medicalCaseQuestion($medicalCaseId,$questionId){
     $medicalCase=MedicalCase::find($medicalCaseId);
     $question=Node::getQuestion($questionId);
@@ -101,12 +101,12 @@ class MedicalCasesController extends Controller
   }
 
   /**
-   * Edit Question Answer on a Specific medical case
-   * @params $request
-   * @params $medicalCaseId
-   * @params $questionId
-   * @return View
-   */
+  * Edit Question Answer on a Specific medical case
+  * @params $request
+  * @params $medicalCaseId
+  * @params $questionId
+  * @return View
+  */
   public function medicalCaseAnswerUpdate(Request $request,$medicalCaseId,$questionId){
     $data=request()->validate(array('answer'=>'required',));
     $medicalCase=MedicalCase::find($medicalCaseId);
@@ -119,16 +119,16 @@ class MedicalCasesController extends Controller
     }
     return redirect()->action(
       'medicalCasesController@show', ['id' => $medicalCaseId]
-    )->with('status','Question Answer Edited');
+      )->with('status','Question Answer Edited');
   }
 
   /**
-   * Find the details of the medical Case
-   * @params $medical Case
-   * @params $label_info
-   * @params $medical_case_info
-   * @return $medical_case_info
-   */
+  * Find the details of the medical Case
+  * @params $medical Case
+  * @params $label_info
+  * @params $medical_case_info
+  * @return $medical_case_info
+  */
   public function detailFind($medicalCase, $label_info, $medical_case_info = array()){
     foreach($medicalCase->medical_case_answers as $medicalCaseAnswer){
       $answer=Answer::getAnswer($medicalCaseAnswer->answer_id);
@@ -136,45 +136,42 @@ class MedicalCasesController extends Controller
       $medicalCaseAnswer=$medicalCaseAnswer;
       $medical_case_info[$question->id]["question"] = $question;
       $medical_case_info[$question->id][$label_info] =array(
-          "answer"=>$answer,
-          "medicalCaseAnswer"=>$medicalCaseAnswer,
+        "answer"=>$answer,
+        "medicalCaseAnswer"=>$medicalCaseAnswer,
       );
     }
     return $medical_case_info;
   }
 
   /**
-   * Show Audit Trail of a particular medical Case
-   * @params $medicalCaseId
-   * @return View
-   * @return $medicalCaseAudits
-   */
+  * Show Audit Trail of a particular medical Case
+  * @params $medicalCaseId
+  * @return View
+  * @return $medicalCaseAudits
+  */
   public function showCaseChanges($medicalCaseId){
     $medicalCase=MedicalCase::find($medicalCaseId);
     $medicalCase->medical_case_answers;
     $allAudits=array();
     foreach($medicalCase->medical_case_answers as $medicalCaseAnswer){
-        $medicalCaseAudit=MedicalCaseAnswer::getAudit($medicalCaseAnswer->id);
-        // dd(Node::find($medicalCaseAnswer->node_id)->label);
-        $medicalCaseAuditSize=sizeof(MedicalCaseAnswer::getAudit($medicalCaseAnswer->id));
+      $medicalCaseAudit=MedicalCaseAnswer::getAudit($medicalCaseAnswer->id);
+      $medicalCaseAuditSize=sizeof(MedicalCaseAnswer::getAudit($medicalCaseAnswer->id));
       if($medicalCaseAuditSize > 0 ){
-        foreach($medicalCaseAudit as $audit){
-          $auditArray=array(
-            "user"=>User::find($audit->user_id)->name,
-            "question"=>Node::find($medicalCaseAnswer->node_id)->label,
-            "old_value"=>Answer::find($audit->old_values["answer_id"])->label,
-            "new_value"=>Answer::find($audit->new_values["answer_id"])->label,
-            "url"=>$audit->url,
-            "event"=>$audit->event,
-            "ip_address"=>$audit->ip_address,
-            "created_at"=>$audit->created_at,
-          );
-          // dd($auditArray);
-          array_push($allAudits,$auditArray);
+      foreach($medicalCaseAudit as $audit){
+        $auditArray=array(
+          "user"=>User::find($audit->user_id)->name,
+          "question"=>Node::find($medicalCaseAnswer->node_id)->label,
+          "old_value"=>Answer::find($audit->old_values["answer_id"])->label,
+          "new_value"=>Answer::find($audit->new_values["answer_id"])->label,
+          "url"=>$audit->url,
+          "event"=>$audit->event,
+          "ip_address"=>$audit->ip_address,
+          "created_at"=>$audit->created_at,
+        );
+        array_push($allAudits,$auditArray);
         }
       }
     }
-    // dd($allAudits);
     return view ('medicalCases.showCaseChanges')->with("allAudits",$allAudits);
   }
 }
