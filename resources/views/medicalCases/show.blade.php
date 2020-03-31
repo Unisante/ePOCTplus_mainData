@@ -18,7 +18,10 @@
   <div class="row justify-content-center">
     <div class="col-md-12">
       <div class="card">
-        <div class="card-header"><a href="/medicalCases" class="btn btn-outline-dark"> Back</a></div>
+        <div class="card-header">
+            <a href="/medicalCases" class="btn btn-outline-dark"> Back</a>
+        <a href="/medicalCase/changes/{{$medicalCase->id}}" class="btn btn-outline-dark float-right">View This Medical Case Changes</a>
+        </div>
         <div class="card-body">
           @if (session('status'))
           <div class="alert alert-success" role="alert">

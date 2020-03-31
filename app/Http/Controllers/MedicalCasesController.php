@@ -5,6 +5,8 @@ use App\MedicalCase;
 use App\Answer;
 use App\Node;
 use App\AnswerType;
+use App\MedicalCaseAnswer;
+use App\User;
 use Illuminate\Http\Request;
 
 class MedicalCasesController extends Controller
@@ -139,5 +141,40 @@ class MedicalCasesController extends Controller
       );
     }
     return $medical_case_info;
+  }
+
+  /**
+   * Show Audit Trail of a particular medical Case
+   * @params $medicalCaseId
+   * @return View
+   * @return $medicalCaseAudits
+   */
+  public function showCaseChanges($medicalCaseId){
+    $medicalCase=MedicalCase::find($medicalCaseId);
+    $medicalCase->medical_case_answers;
+    $allAudits=array();
+    foreach($medicalCase->medical_case_answers as $medicalCaseAnswer){
+        $medicalCaseAudit=MedicalCaseAnswer::getAudit($medicalCaseAnswer->id);
+        // dd(Node::find($medicalCaseAnswer->node_id)->label);
+        $medicalCaseAuditSize=sizeof(MedicalCaseAnswer::getAudit($medicalCaseAnswer->id));
+      if($medicalCaseAuditSize > 0 ){
+        foreach($medicalCaseAudit as $audit){
+          $auditArray=array(
+            "user"=>User::find($audit->user_id)->name,
+            "question"=>Node::find($medicalCaseAnswer->node_id)->label,
+            "old_value"=>Answer::find($audit->old_values["answer_id"])->label,
+            "new_value"=>Answer::find($audit->new_values["answer_id"])->label,
+            "url"=>$audit->url,
+            "event"=>$audit->event,
+            "ip_address"=>$audit->ip_address,
+            "created_at"=>$audit->created_at,
+          );
+          // dd($auditArray);
+          array_push($allAudits,$auditArray);
+        }
+      }
+    }
+    // dd($allAudits);
+    return view ('medicalCases.showCaseChanges')->with("allAudits",$allAudits);
   }
 }
