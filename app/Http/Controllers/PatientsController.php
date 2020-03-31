@@ -11,7 +11,6 @@ class PatientsController extends Controller
 {
   /**
   * To block any non-authorized user
-  *
   * @return void
   */
   public function __construct()

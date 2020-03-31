@@ -28,7 +28,6 @@ Route::get('/medicalCases/compare/{id1}/{id2}','medicalCasesController@compare')
 Route::get('/medicalCases/{medicalCaseId}/question/{questionId}','medicalCasesController@medicalCaseQuestion');
 Route::post('/medicalCases/{medicalCaseId}/question/{questionId}/update','medicalCaseAnswersController@medicalCaseAnswerUpdate');
 Route::get('/medicalCase/changes/{id}','medicalCasesController@showCaseChanges');
-
 //for questions
 Route::get('/questions','QuestionsController@index');
 Route::get('/question/{id}','QuestionsController@show');

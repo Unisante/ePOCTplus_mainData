@@ -13,7 +13,6 @@ class MedicalCasesController extends Controller
 {
   /**
   * To block any non-authorized user
-  *
   * @return void
   */
   public function __construct()
@@ -132,18 +131,18 @@ class MedicalCasesController extends Controller
       $medicalCaseAudit=MedicalCaseAnswer::getAudit($medicalCaseAnswer->id);
       $medicalCaseAuditSize=sizeof(MedicalCaseAnswer::getAudit($medicalCaseAnswer->id));
       if($medicalCaseAuditSize > 0 ){
-      foreach($medicalCaseAudit as $audit){
-        $auditArray=array(
-          "user"=>User::find($audit->user_id)->name,
-          "question"=>Node::find($medicalCaseAnswer->node_id)->label,
-          "old_value"=>Answer::find($audit->old_values["answer_id"])->label,
-          "new_value"=>Answer::find($audit->new_values["answer_id"])->label,
-          "url"=>$audit->url,
-          "event"=>$audit->event,
-          "ip_address"=>$audit->ip_address,
-          "created_at"=>$audit->created_at,
-        );
-        array_push($allAudits,$auditArray);
+        foreach($medicalCaseAudit as $audit){
+          $auditArray=array(
+            "user"=>User::find($audit->user_id)->name,
+            "question"=>Node::find($medicalCaseAnswer->node_id)->label,
+            "old_value"=>Answer::find($audit->old_values["answer_id"])->label,
+            "new_value"=>Answer::find($audit->new_values["answer_id"])->label,
+            "url"=>$audit->url,
+            "event"=>$audit->event,
+            "ip_address"=>$audit->ip_address,
+            "created_at"=>$audit->created_at,
+          );
+          array_push($allAudits,$auditArray);
         }
       }
     }
