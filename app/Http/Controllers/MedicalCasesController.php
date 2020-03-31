@@ -41,11 +41,9 @@ class MedicalCasesController extends Controller
     $medicalCase=MedicalCase::find($id);
     $medicalCaseInfo=array();
     foreach($medicalCase->medical_case_answers as $medicalCaseAnswer){
-      $answer=Answer::getAnswer($medicalCaseAnswer->answer_id);
-      $question=Node::getQuestion($medicalCaseAnswer->node_id);
       $data=array(
-        "answer"=>$answer,
-        "question"=>$question,
+        "answer"=>Answer::find($medicalCaseAnswer->answer_id),
+        "question"=>Node::find($medicalCaseAnswer->node_id),
       );
       array_push($medicalCaseInfo,json_decode(json_encode($data)));
     }
@@ -58,15 +56,15 @@ class MedicalCasesController extends Controller
   }
 
   /**
-  * Compare between two Medical Cases
-  * @ids
+  * Compare between two Medical cases
+  * @params firstId
+  * @params secondId
   * @return view
   * @return $data
   */
-  public function compare($ids){
-    $medicalCases = explode(",", $ids);
-    $first_medical_case =  MedicalCase::find((int)$medicalCases[0]);
-    $second_medical_case = MedicalCase::find((int)$medicalCases[1]);
+  public function compare($firstId,$secondId){
+    $first_medical_case =  MedicalCase::find($firstId);
+    $second_medical_case = MedicalCase::find($secondId);
 
     //medicase details for first medical case
     $medical_case_info=self::detailFind($first_medical_case,"first_case");
@@ -89,51 +87,29 @@ class MedicalCasesController extends Controller
   * @return $question
   */
   public function medicalCaseQuestion($medicalCaseId,$questionId){
-    $medicalCase=MedicalCase::find($medicalCaseId);
     $question=Node::getQuestion($questionId);
-    $answers=$question->answers;
     $data=array(
-      "medicalCase"=>$medicalCase,
+      "medicalCase"=>MedicalCase::find($medicalCaseId),
       "question"=>$question,
-      "answers"=>$answers,
+      "answers"=>$question->answers,
     );
     return view('medicalCases.question')->with($data);
   }
 
-  /**
-  * Edit Question Answer on a Specific medical case
-  * @params $request
-  * @params $medicalCaseId
-  * @params $questionId
-  * @return View
-  */
-  public function medicalCaseAnswerUpdate(Request $request,$medicalCaseId,$questionId){
-    $data=request()->validate(array('answer'=>'required',));
-    $medicalCase=MedicalCase::find($medicalCaseId);
-    $medicalCaseAnswer=$medicalCase->medical_case_answers->where('node_id', $questionId)->first();
-    if($medicalCaseAnswer) {
-      $medicalCaseAnswer->answer_id = (int)$request->input('answer');
-      $medicalCaseAnswer->save();
-    }else{
-      redirect()->back()->with('status', 'Something went wrong.');
-    }
-    return redirect()->action(
-      'medicalCasesController@show', ['id' => $medicalCaseId]
-      )->with('status','Question Answer Edited');
-  }
+
 
   /**
-  * Find the details of the medical Case
+  * Find the details of the medical case
   * @params $medical Case
   * @params $label_info
   * @params $medical_case_info
   * @return $medical_case_info
   */
-  public function detailFind($medicalCase, $label_info, $medical_case_info = array()){
-    foreach($medicalCase->medical_case_answers as $medicalCaseAnswer){
-      $answer=Answer::getAnswer($medicalCaseAnswer->answer_id);
-      $question=Node::getQuestion($medicalCaseAnswer->node_id);
-      $medicalCaseAnswer=$medicalCaseAnswer;
+  public function detailFind($medical_case, $label_info, $medical_case_info = array()){
+    foreach($medical_case->medical_case_answers as $medicalCaseAnswer){
+      $answer=Answer::find($medicalCaseAnswer->answer_id);
+      $question=Node::find($medicalCaseAnswer->node_id);
+      // $medicalCaseAnswer=$medicalCaseAnswer;
       $medical_case_info[$question->id]["question"] = $question;
       $medical_case_info[$question->id][$label_info] =array(
         "answer"=>$answer,
@@ -145,12 +121,12 @@ class MedicalCasesController extends Controller
 
   /**
   * Show Audit Trail of a particular medical Case
-  * @params $medicalCaseId
+  * @params $medical_case_id
   * @return View
   * @return $medicalCaseAudits
   */
-  public function showCaseChanges($medicalCaseId){
-    $medicalCase=MedicalCase::find($medicalCaseId);
+  public function showCaseChanges($medical_case_id){
+    $medicalCase=MedicalCase::find($medical_case_id);
     $medicalCase->medical_case_answers;
     $allAudits=array();
     foreach($medicalCase->medical_case_answers as $medicalCaseAnswer){
@@ -172,6 +148,10 @@ class MedicalCasesController extends Controller
         }
       }
     }
-    return view ('medicalCases.showCaseChanges')->with("allAudits",$allAudits);
+    $data=array(
+      "allAudits"=>$allAudits,
+      "medicalCaseId"=>$medical_case_id
+    );
+    return view ('medicalCases.showCaseChanges')->with($data);
   }
 }

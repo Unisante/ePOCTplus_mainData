@@ -33,7 +33,7 @@
                 <div class="card-header">{{$patient->first_name}}'s Details</div>
                 <div class="card-body">
                   <div>First Name: <span class="border-bottom">{{$patient->first_name}}</span><br/></div>
-                  <div>Last NAme: <span class="border-bottom">{{$patient->last_name}}</span><br/></div>
+                  <div>Last Name: <span class="border-bottom">{{$patient->last_name}}</span><br/></div>
                   <div>Number of medical cases: <span class="border-bottom">{{$patient->medicalCases()->count()}}</span><br/></div>
                 </div>
               </div>

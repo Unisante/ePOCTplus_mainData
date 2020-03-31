@@ -40,13 +40,13 @@ class PatientsController extends Controller
 
   /**
   * Shows comparison between patients
-  * @params $checkedValues
+  * @params $firstId
+  * @params $secondId
   * @return $patients
   */
-  public function compare($checkedValues){
-    $patients = explode(",", $checkedValues);
-    $first_patient =  Patient::find((int)$patients[0]);
-    $second_patient = Patient::find((int)$patients[1]);
+  public function compare($firstId,$secondId){
+    $first_patient =  Patient::find($firstId);
+    $second_patient = Patient::find($secondId);
     $data=array(
       'first_patient'=>$first_patient,
       'second_patient'=>$second_patient,

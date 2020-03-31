@@ -10,7 +10,7 @@ class Algorithm extends Model implements Auditable
   use \OwenIt\Auditing\Auditable;
   protected $guarded = [];
 
-  public static function get_or_create($algorithm_id, $name) {
+  public static function getOrCreate($algorithm_id, $name) {
     $algorithms = Algorithm::where('medal_c_id', $algorithm_id)->get();
     if ($algorithms->isEmpty()) {
       $algorithm = Algorithm::create(['name' => $name, 'medal_c_id' => $algorithm_id]);

@@ -20,11 +20,15 @@ Route::get('/home', 'HomeController@index')->name('home');
 //for patient
 Route::get('/patients','PatientsController@index');
 Route::get('/patient/{id}','PatientsController@show');
-Route::get('/patients/compare/{checkedValues}','PatientsController@compare');
+Route::get('/patients/compare/{id1}/{id2}','PatientsController@compare');
 //for medical case
 Route::get('/medicalCases','medicalCasesController@index');
 Route::get('/medicalCases/{id}','medicalCasesController@show');
-Route::get('/medicalCases/compare/{checkedValues}','medicalCasesController@compare');
+Route::get('/medicalCases/compare/{id1}/{id2}','medicalCasesController@compare');
 Route::get('/medicalCases/{medicalCaseId}/question/{questionId}','medicalCasesController@medicalCaseQuestion');
-Route::post('/medicalCases/{medicalCaseId}/question/{questionId}/update','medicalCasesController@medicalCaseAnswerUpdate');
+Route::post('/medicalCases/{medicalCaseId}/question/{questionId}/update','medicalCaseAnswersController@medicalCaseAnswerUpdate');
 Route::get('/medicalCase/changes/{id}','medicalCasesController@showCaseChanges');
+
+//for questions
+Route::get('/questions','QuestionsController@index');
+Route::get('/question/{id}','QuestionsController@show');

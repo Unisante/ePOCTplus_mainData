@@ -22,7 +22,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-header d-flex">
-          <span>Patients</span>
+          <span><h3>Patients</h3></span>
           <button class="btn btn-outline-dark ml-auto p-2" onclick="comparePatients()"> Compare</button>
         </div>
         <div class="card-body">

@@ -10,6 +10,14 @@
   .small-text {
     font-size: small;
   }
+  .dataTables_filter input{
+    border: 1px solid #ddd !important;
+  }
+  #the_card{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 </style>
 @stop
 
@@ -19,8 +27,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-            <a href="/medicalCases" class="btn btn-outline-dark"> Back</a>
-        <a href="/medicalCase/changes/" class="btn btn-outline-dark float-right">View This Medical Case Changes</a>
+        <a href="/medicalCases/{{$medicalCaseId}}" class="btn btn-outline-dark"> Back</a>
         </div>
         <div class="card-body">
           @if (session('status'))
@@ -60,6 +67,10 @@
                   @endforeach
                 </tbody>
               </table>
+              @else
+                <div id="the_card">
+                  <h2>There are no changes to this medical Case</h2>
+                </div>
               @endif
             </div>
           </div>

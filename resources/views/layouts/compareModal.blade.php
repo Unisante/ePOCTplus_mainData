@@ -49,7 +49,7 @@
   }
   console.log(checkedValue.length)
   if(checkedValue.length == 2){
-    location.href = `/patients/compare/${checkedValue}`;
+    location.href = `/patients/compare/${checkedValue[0]}/${checkedValue[1]}`;
   }else{
     $("#modalCheckBox").modal('show');
   }
@@ -64,7 +64,7 @@ function compareMedicalCases() {
   }
   console.log(checkedValue.length)
   if(checkedValue.length == 2){
-    location.href = `/medicalCases/compare/${checkedValue}`;
+    location.href = `/medicalCases/compare/${checkedValue[0]}/${checkedValue[1]}`;
   }else{
     $("#modalCheckBoxMedical").modal('show');
   }

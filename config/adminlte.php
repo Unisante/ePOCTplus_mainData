@@ -190,11 +190,6 @@ return [
     */
 
     'menu' => [
-        // [
-        //     'text' => 'search',
-        //     'search' => true,
-        //     'topnav' => true,
-        // ],
 
         [
             'text' => 'Patient list',
@@ -207,6 +202,12 @@ return [
             'text' => 'Medical Cases',
             'url'  => '/medicalCases',
             'icon' => 'fas fa-fw fa-file',
+        ],
+
+        [
+          'text' => 'Questuons',
+          'url'  => '/questions',
+          'icon' => 'fas fa-fw fa-question-circle',
         ],
 
         [
