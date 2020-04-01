@@ -65,10 +65,6 @@ class UsersController extends Controller
         'name' => 'required|string',
         'email' => 'required|string',
       ));
-      // $user=User::new(array(
-      //   'email'=>$request->input('email'),
-      //   'name'=>$request->input('name'),
-      // ));
         $user=new User;
         $user->name=$request->input('name');
         $user->email=$request->input('email');
