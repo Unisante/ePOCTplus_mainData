@@ -65,12 +65,14 @@ class UsersController extends Controller
         'name' => 'required|string',
         'email' => 'required|string',
       ));
-
-      $user=User::new(array(
-        'email'=>$request->input('email'),
-        'name'=>$request->input('name'),
-      ));
-
+      // $user=User::new(array(
+      //   'email'=>$request->input('email'),
+      //   'name'=>$request->input('name'),
+      // ));
+        $user=new User;
+        $user->name=$request->input('name');
+        $user->email=$request->input('email');
+        $user->password=Hash::make($request->input('password'));
       if($user->save()){
         return redirect()->route('user.index')->with('success','Information have been saved Successfully.');;
 

@@ -15,20 +15,20 @@
 <!-- Example row of columns -->
 <h3 align="center">Edit User </h3>
       <div class="row col-sm-12 col-md-12 col-lg-12" pull-center style="background:white; margin: 10px">
-      <form method="post" action="{{route('user.update',[$users->id])}}">
-     
+      <form method="post" action="{{route('user.update',[$user->id])}}">
+
                            {{csrf_field()}}
                            <input type="hidden" name="_method" value="put">
 
                            <div class="form-group row">
                             <label for="name" class="col-md-3 col-form-label text-md-right">Full Name<span class="required">*</span></label>
                             <div class="col-md-9">
-                                <input id="name" 
-                                       type="text" 
-                                       class="form-control @error('name') is-invalid @enderror" 
-                                       name="name" 
-                                       value="{{$users->name}}" 
-                                       required autocomplete="name" 
+                                <input id="name"
+                                       type="text"
+                                       class="form-control @error('name') is-invalid @enderror"
+                                       name="name"
+                                       value="{{$user->name}}"
+                                       required autocomplete="name"
                                        autofocus >
                                 @error('name')
                                     <span class="invalid-feedback" role="alert">
@@ -43,7 +43,7 @@
                             <label for="email" class="col-md-3 col-form-label text-md-right">{{ __('E-Mail Address') }}<span class="required">*</span></label>
 
                             <div class="col-md-9">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{$users->email}}" required autocomplete="email">
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{$user->email}}" required autocomplete="email">
 
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
@@ -57,11 +57,11 @@
                                 <button type="submit" class="btn btn-primary">
                                     Save
                                 </button>
-</form>  
-      </div> 
+</form>
+      </div>
 
-     </div> 
-    
+     </div>
+
 
 
         @stop
