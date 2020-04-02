@@ -192,6 +192,23 @@ return [
     'menu' => [
 
         [
+          'text' => 'Duplicates',
+          'icon' => 'fas fa-fw fa-clone',
+          'submenu' => [
+            [
+                'text' => 'Patients',
+                'url'  => '/patients/duplicates',
+                'icon' => 'fas fa-fw fa-users',
+            ],
+            [
+                'text' => 'Medical Cases',
+                'url'  => '/medicalCase/duplicates',
+                'icon' => 'fas fa-fw fa-pencil-alt',
+            ],
+          ],
+        ],
+
+        [
             'text' => 'Patient list',
             'url'  => '/patients',
             'icon' => 'fas fa-fw fa-list',
@@ -205,7 +222,7 @@ return [
         ],
 
         [
-          'text' => 'Questuons',
+          'text' => 'Questions',
           'url'  => '/questions',
           'icon' => 'fas fa-fw fa-question-circle',
         ],

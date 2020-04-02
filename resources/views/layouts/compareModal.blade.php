@@ -62,7 +62,6 @@ function compareMedicalCases() {
             checkedValue.push(inputElements[i].value)
         }
   }
-  console.log(checkedValue.length)
   if(checkedValue.length == 2){
     location.href = `/medicalCases/compare/${checkedValue[0]}/${checkedValue[1]}`;
   }else{
@@ -70,10 +69,16 @@ function compareMedicalCases() {
   }
 }
 
+function search(){
+    var sel = document.getElementById('search');
+    if(sel.value){
+      location.href=`/patients/duplicates/${sel.value}`
+    }
+   }
 </script>
 
-<script>
+{{-- <script>
   $(document).ready( function () {
     $('.table').DataTable();
   } )
-</script>
+</script> --}}

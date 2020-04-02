@@ -28,6 +28,7 @@
     <table class="table table-bordered table-striped">
       <thead>
         <tr>
+          <td>SN</td>
           <th>ID</th>
           <th>Full Name</th>
           <th>Email</th>
@@ -38,6 +39,7 @@
       <tbody>
         @foreach($users as $user)
         <tr>
+          <td>{{ $loop->index }}</td>
           <td>{{$user->id}}</td>
           <td>{{$user->name}}</td>
           <td>{{$user->email}}</td>

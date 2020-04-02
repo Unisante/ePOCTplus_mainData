@@ -32,6 +32,7 @@
           </div>
           @endif
           @include('layouts.compareModal')
+          @include('layouts.datatable')
           <div class="row">
             <div class="col-md-8 offset-md-2">
               @if(count($patients)>0)
@@ -48,8 +49,8 @@
                 <tbody>
                   @foreach($patients as $patient)
                   <tr>
-                    <th scope="row">{{ $loop->index }}</th>
-                    <th><input type="checkbox" class="messageCheckbox" value="{{$patient->id}}"></th>
+                    <td scope="row">{{ $loop->index }}</td>
+                    <td><input type="checkbox" class="messageCheckbox" value="{{$patient->id}}"></td>
                     <td>{{$patient->first_name}}</td>
                     <td>{{$patient->last_name}}</td>
                     <td><a href="/patient/{{$patient->id}}" class="btn btn-outline-dark"> Show Patient</a></td>
@@ -68,3 +69,5 @@
   </div>
 </div>
 @stop
+
+

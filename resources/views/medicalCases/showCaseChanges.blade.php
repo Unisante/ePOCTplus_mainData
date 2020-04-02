@@ -37,6 +37,7 @@
           @endif
           <div class="row">
             @include('layouts.compareModal')
+            @include('layouts.datatable')
             <div class="col-md-10 offset-md-1">
 
               @if($allAudits)
@@ -44,13 +45,13 @@
               <table class="table">
                 <thead>
                   <th scope="col">SN</th>
-                  <th scope="col">user</th>
-                  <th scope="col">question</th>
-                  <th scope="col">old value</th>
-                  <th scope="col">new value</th>
-                  <th scope="col">event</th>
-                  <th scope="col">ip address</th>
-                  <th scope="col">created_at</th>
+                  <th scope="col">User</th>
+                  <th scope="col">Question</th>
+                  <th scope="col">Old value</th>
+                  <th scope="col">New value</th>
+                  <th scope="col">Event</th>
+                  <th scope="col">Ip address</th>
+                  <th scope="col">Created_at</th>
                 </thead>
                 <tbody>
                   @foreach($allAudits as $audit)

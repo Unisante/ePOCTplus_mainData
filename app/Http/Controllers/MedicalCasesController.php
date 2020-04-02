@@ -8,7 +8,7 @@ use App\AnswerType;
 use App\MedicalCaseAnswer;
 use App\User;
 use Illuminate\Http\Request;
-
+use DB;
 class MedicalCasesController extends Controller
 {
   /**
@@ -151,5 +151,23 @@ class MedicalCasesController extends Controller
       "medicalCaseId"=>$medical_case_id
     );
     return view ('medicalCases.showCaseChanges')->with($data);
+  }
+
+  /**
+   * Find duplicates by a certain value
+   * @param $findingFIeld
+   * @return View
+   * @return $catchEachDuplicate
+   */
+  public function findDuplicates($findingFIeld='patient_id'){
+    $duplicateMedicalCase=MedicalCase::all();
+    $collection = collect($duplicateMedicalCase);
+    $totalDuplicates=$collection->duplicates($findingFIeld);
+    $catchEachDuplicate=array();
+    foreach($totalDuplicates as $duplicate){
+      $commonRows = MedicalCase::where($findingFIeld, $duplicate)->get();
+      array_push($catchEachDuplicate,$commonRows);
+    }
+    return view('medicalCases.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
   }
 }

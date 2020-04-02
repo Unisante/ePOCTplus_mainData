@@ -33,17 +33,24 @@
                 <div class="mb-2"  style="background-color:#ddd;">
                   <div class="card-header">
                     <span class="font-weight-bold">Created At: </span>
-                    <span>{{$question->created_at}}</span>
+                    <span class="ml-2">{{$question->created_at}}</span>
                   </div>
                   <div class="card-header">
                     <span class="font-weight-bold">Question Id: </span>
-                    <span>{{$question->id}}</span> </div>
+                    <span class="ml-2">{{$question->id}}</span> </div>
                   <div class="card-header">
                     <div>
                       <span class="font-weight-bold">Label:</span>
-                      <span class="border-bottom">
+                      <span class="border-bottom ml-2">
                         {{$question->label}}
-
+                      </span>
+                    </div>
+                  </div>
+                  <div class="card-header">
+                    <div>
+                      <span class="font-weight-bold">Number of answers: </span>
+                      <span class="border-bottom ml-2">
+                        {{$question->answers->count()}}
                       </span>
                     </div>
                   </div>
