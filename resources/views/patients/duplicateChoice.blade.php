@@ -42,7 +42,7 @@
                     </button>
                   </div>
                   <div class="modal-body">
-                  <p id="display">You want to delete patient id <span id="setId1"></span> ?</p>
+                    <p id="display">You want to delete patient id <span id="setId1"></span> ?</p>
                   </div>
                   <div class="modal-footer">
                     <form action="/patients/duplicates/delete" method="POST">
@@ -56,18 +56,6 @@
                 </div>
               </div>
             </div>
-            {{-- <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <button class="btn btn-outline-secondary" type="button" onclick="search()" >Search</button>
-              </div>
-              <select class="custom-select" id="search" onchange="search()" >
-                <option selected>...</option>
-                <option value="first_name">By First Name</option>
-                <option value="last_name">By Last Name</option>
-                <option value="date_of_birth">By Date Of Birth </option>
-                <option value="natioal_id">By National Id</option>
-              </select>
-             </div> --}}
           </div>
           <div class="row justify-content-center">
             <div class="col-md-10">
@@ -83,36 +71,36 @@
                 </thead>
                 <tbody>
                   @foreach($catchEachDuplicate as $relativeDuplicates)
-                    <tr class="table-secondary"><td>For The {{ $loop->index + 1 }}'s Duplicate<td></tr>
+                  <tr class="table-secondary"><td>For The {{ $loop->index + 1 }}'s Duplicate<td></tr>
                     @foreach($relativeDuplicates as $duplicate)
-                      <tr>
-                        <th scope="row">{{ $loop->index + 1 }}</th>
+                    <tr>
+                      <th scope="row">{{ $loop->index + 1 }}</th>
                       <td>{{$duplicate->id}}</td>
-                        <td>{{$duplicate->first_name}}</td>
-                        <td>{{$duplicate->last_name}}</td>
-                        <td>{{$duplicate->created_at}}</td>
-                        <td>
-                          <div id="action">
-                            <input type="checkbox" class="messageCheckbox" value="{{$duplicate->id}}">
+                      <td>{{$duplicate->first_name}}</td>
+                      <td>{{$duplicate->last_name}}</td>
+                      <td>{{$duplicate->created_at}}</td>
+                      <td>
+                        <div id="action">
+                          <input type="checkbox" class="messageCheckbox" value="{{$duplicate->id}}">
 
-                            <a  class="btn btn-outline-dark" data-toggle="modal" data-target="#deleteRow" onclick="takeId({{$duplicate->id}})">Drop This Row</a>
-                          </div>
-                        </td>
-                      </tr>
+                          <a  class="btn btn-outline-dark" data-toggle="modal" data-target="#deleteRow" onclick="takeId({{$duplicate->id}})">Drop This Row</a>
+                        </div>
+                      </td>
+                    </tr>
                     @endforeach
-                  @endforeach
-                </tbody>
-              </table>
-              @else
-              <h2>There are no Duplicates</h2>
-              @endif
+                    @endforeach
+                  </tbody>
+                </table>
+                @else
+                <h2>There are no Duplicates</h2>
+                @endif
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-@stop
+  @stop
 
 

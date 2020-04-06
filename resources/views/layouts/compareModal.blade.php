@@ -66,7 +66,6 @@
         checkedValue.push(inputElements[i].value)
       }
     }
-    console.log(checkedValue.length)
     if(checkedValue.length == 2){
       location.href = `/patients/compare/${checkedValue[0]}/${checkedValue[1]}`;
     }else{
@@ -95,17 +94,10 @@
         checkedValue.push(inputElements[i].value)
       }
     }
-    console.log(checkedValue.length)
     if(checkedValue.length == 2){
       location.href = `/patients/merge/${checkedValue[0]}/${checkedValue[1]}`;
     }else{
       $("#modalCheckBoxMerge").modal('show');
-    }
-  }
-  function search(){
-    var sel = document.getElementById('search');
-    if(sel.value){
-      location.href=`/patients/duplicates/${sel.value}`
     }
   }
 

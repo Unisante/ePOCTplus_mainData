@@ -10,8 +10,7 @@ class MedicalCaseAnswersController extends Controller
   * To block any non-authorized user
   * @return void
   */
-  public function __construct()
-  {
+  public function __construct(){
     $this->middleware('auth');
   }
 
@@ -34,6 +33,6 @@ class MedicalCaseAnswersController extends Controller
     }
     return redirect()->action(
       'medicalCasesController@show', ['id' => $medicalCaseId]
-      )->with('status','Answer is updated!');
-    }
+    )->with('status','Answer is updated!');
   }
+}

@@ -27,7 +27,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-        <a href="/medicalCases/{{$medicalCaseId}}" class="btn btn-outline-dark"> Back</a>
+          <a href="/medicalCases/{{$medicalCaseId}}" class="btn btn-outline-dark"> Back</a>
         </div>
         <div class="card-body">
           @if (session('status'))
@@ -39,9 +39,7 @@
             @include('layouts.compareModal')
             @include('layouts.datatable')
             <div class="col-md-10 offset-md-1">
-
               @if($allAudits)
-
               <table class="table">
                 <thead>
                   <th scope="col">SN</th>
@@ -69,9 +67,9 @@
                 </tbody>
               </table>
               @else
-                <div id="the_card">
-                  <h2>There are no changes to this medical Case</h2>
-                </div>
+              <div id="the_card">
+                <h2>There are no changes to this medical Case</h2>
+              </div>
               @endif
             </div>
           </div>
