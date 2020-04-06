@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Schema;
 use App\Patient;
 use App\Answer;
+use App\MedicalCase;
 use App\User;
 use App\Node;
 use Illuminate\Http\Request;
@@ -108,27 +109,24 @@ class PatientsController extends Controller
     $first_patient=Patient::find($request->input('firstp_id'));
     $second_patient=Patient::find($request->input('secondp_id'));
     if($first_patient->medicalCases->count()==$request->input('medical_cases')){
-      foreach($first_patient->medicalCases as $medical_case){
-        $medical_case->patient_id=$hybrid_patient->id;
-        $medical_case->save();
-    }
-    }else{
-      foreach($second_patient->medicalCases as $medical_case){
-        $medical_case->patient_id=$hybrid_patient->id;
-        $medical_case->save();
-      }
-    }
-
-    //deleting the pre existing patients
-    if($first_patient->medicalCases){
-      $first_patient->medicalCases->each->delete();
-    }
-    $first_patient->delete();
-    if($second_patient->medicalCases){
+      $first_patient->medicalCases->each->update(
+        [
+          "patient_id"=>$hybrid_patient->id
+        ]
+      );
+      $first_patient->delete();
       $second_patient->medicalCases->each->delete();
+      $second_patient->delete();
+    }else{
+      $second_patient->medicalCases->each->update(
+        [
+          "patient_id"=>$hybrid_patient->id
+        ]
+      );
+      $second_patient->delete();
+      $first_patient->medicalCases->each->delete();
+      $first_patient->delete();
     }
-    $second_patient->delete();
-
     return redirect()->action(
       'PatientsController@findDuplicates'
       )->with('status',' New Row Formed!');
