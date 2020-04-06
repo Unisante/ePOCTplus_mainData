@@ -104,7 +104,6 @@ class PatientsController extends Controller
     $hybrid_patient->first_name=$request->input('first_name');
     $hybrid_patient->last_name=$request->input('last_name');
     $hybrid_patient->save();
-
     //finding the right medical cases to update
     $first_patient=Patient::find($request->input('firstp_id'));
     $second_patient=Patient::find($request->input('secondp_id'));
@@ -114,17 +113,24 @@ class PatientsController extends Controller
           "patient_id"=>$hybrid_patient->id
         ]
       );
+
       $first_patient->delete();
-      $second_patient->medicalCases->each->delete();
+      if($second_patient->medicalCases){
+        $second_patient->medicalCases->each->delete();
+      }
       $second_patient->delete();
-    }else{
+    }
+    if($second_patient->medicalCases->count()==$request->input('medical_cases')){
+
       $second_patient->medicalCases->each->update(
         [
           "patient_id"=>$hybrid_patient->id
         ]
       );
       $second_patient->delete();
-      $first_patient->medicalCases->each->delete();
+      if($first_patient->medicalCases){
+        $first_patient->medicalCases->each->delete();
+      }
       $first_patient->delete();
     }
     return redirect()->action(
