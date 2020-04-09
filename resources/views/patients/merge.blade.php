@@ -66,14 +66,10 @@
                   <tr>
                     <td>Number of medical Cases:</td>
                     <td>
-                      <input type="radio" name="medical_cases" value="{{$first_patient->medicalCases()->count()}}" checked>
                       <label>{{$first_patient->medicalCases()->count()}}</label>
-                      <div class="check"></div>
                     </td>
                     <td>
-                      <input type="radio" name="medical_cases" value="{{$second_patient->medicalCases()->count()}}">
                       <label>{{$second_patient->medicalCases()->count()}}</label>
-                      <div class="check"></div>
                     </td>
                   </tr>
                 </tbody>

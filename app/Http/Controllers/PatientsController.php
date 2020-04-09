@@ -59,7 +59,6 @@ class PatientsController extends Controller
 
   /**
   * Find duplicates by a certain value
-  * @param $value
   * @return View
   * @return $catchEachDuplicate
   */
@@ -74,7 +73,7 @@ class PatientsController extends Controller
       $users = DB::table('patients')->where('first_name', $duplicate->first_name)->get();
       array_push($catchEachDuplicate,$users);
     }
-    return view('patients.duplicateChoice')->with("catchEachDuplicate",$catchEachDuplicate);
+    return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
   }
 
   /**
@@ -94,6 +93,32 @@ class PatientsController extends Controller
   }
 
   /**
+   * Search duplicates
+   * @params $request
+   * @return view
+   */
+  public function searchDuplicates(Request $request){
+    $columns = Schema::getColumnListing('patients');
+    $search_value=$request->input('search');
+    if(in_array($search_value, $columns)){
+      $duplicates = DB::table('patients')
+      ->select($search_value)
+      ->groupBy($search_value)
+      ->havingRaw('COUNT(*) > 1')
+      ->get();
+      $catchEachDuplicate=array();
+      foreach($duplicates as $duplicate){
+        $users = DB::table('patients')->where($search_value, $duplicate->$search_value)->get();
+        array_push($catchEachDuplicate,$users);
+      }
+      return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
+    }
+    return redirect()->action(
+      'PatientsController@findDuplicates'
+      );
+  }
+
+  /**
   * Mrege between two records
   * @params $request
   * @return PatientsController@findDuplicates
@@ -104,35 +129,34 @@ class PatientsController extends Controller
     $hybrid_patient->first_name=$request->input('first_name');
     $hybrid_patient->last_name=$request->input('last_name');
     $hybrid_patient->save();
-    //finding the right medical cases to update
+
+    //finding the medical cases to update
     $first_patient=Patient::find($request->input('firstp_id'));
     $second_patient=Patient::find($request->input('secondp_id'));
-    if($first_patient->medicalCases->count()==$request->input('medical_cases')){
-      $first_patient->medicalCases->each->update(
-        [
-          "patient_id"=>$hybrid_patient->id
-        ]
-      );
 
-      $first_patient->delete();
-      if($second_patient->medicalCases){
-        $second_patient->medicalCases->each->delete();
-      }
-      $second_patient->delete();
-    }
-    if($second_patient->medicalCases->count()==$request->input('medical_cases')){
-
-      $second_patient->medicalCases->each->update(
-        [
+    $first_person_array=array();
+    if($first_patient->medicalCases){
+      foreach($first_patient->medicalCases as $first_medical_case){
+        $first_medical_case->update([
           "patient_id"=>$hybrid_patient->id
-        ]
-      );
-      $second_patient->delete();
-      if($first_patient->medicalCases){
-        $first_patient->medicalCases->each->delete();
+        ]);
+        array_push($first_person_array,$first_medical_case->medical_case_answers->count());
       }
-      $first_patient->delete();
     }
+    if($second_patient->medicalCases){
+      foreach($second_patient->medicalCases as $second_medical_case){
+        if(!(in_array($second_medical_case->medical_case_answers->count(),$first_person_array))){
+          $second_medical_case->update([
+            "patient_id"=>$hybrid_patient->id
+          ]);
+        }
+      }
+    }
+
+    //deleting first person and second person
+    $first_patient->delete();
+    $second_patient->delete();
+
     return redirect()->action(
       'PatientsController@findDuplicates'
       )->with('status',' New Row Formed!');
@@ -140,13 +164,12 @@ class PatientsController extends Controller
   }
 
   /**
-  * Delete a particular Patient Record
+  * Delete a particular patient record
   * @params $request
   * @return View
   */
   public function destroy(Request $request){
-    $patient_id=$request->input('patient_id');
-    $patient=Patient::find($patient_id);
+    $patient=Patient::find($request->input('patient_id'));
     if($patient->medicalCases){
       $patient->medicalCases->each->delete();
     }

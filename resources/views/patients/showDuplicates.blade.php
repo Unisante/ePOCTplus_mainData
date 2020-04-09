@@ -59,6 +59,17 @@
           </div>
           <div class="row justify-content-center">
             <div class="col-md-10">
+              <form action="/patients/duplicates/search" method="POST" id="searchform" class="input-group mb-3">
+                @csrf
+                <div class="input-group-prepend">
+                  <button class="btn btn-outline-secondary" type="Submit">Search</button>
+                </div>
+                <select class="custom-select" name="search" form="searchform">
+                  <option selected>Choose...</option>
+                  <option value="first_name">First Name</option>
+                  <option value="last_name">Last Name</option>
+                </select>
+              </form>
               @if($catchEachDuplicate)
               <table class="table table-hover table-bordered">
                 <thead class="thead-light">
@@ -82,7 +93,6 @@
                       <td>
                         <div id="action">
                           <input type="checkbox" class="messageCheckbox" value="{{$duplicate->id}}">
-
                           <a  class="btn btn-outline-dark" data-toggle="modal" data-target="#deleteRow" onclick="takeId({{$duplicate->id}})">Drop This Row</a>
                         </div>
                       </td>
