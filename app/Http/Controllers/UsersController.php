@@ -13,14 +13,19 @@ use DB;
 
 class UsersController extends Controller
 {
+  public function __construct()
+  {
+    $this->middleware('auth');
+    $this->middleware('permission:View Admin Panel');
+  }
   /**
   * Display a listing of the resource.
   *
   * @return \Illuminate\Http\Response
   */
   public function index(Request $request){
-    if (Auth::check()){
 
+    if (Auth::check()){
       $search = $request->input('Search');
       if ($search !=""){
         $users = Approver::where('email','LIKE', '%' . $search . '%')
@@ -28,7 +33,7 @@ class UsersController extends Controller
         ->paginate(50);
         return view('users.index',compact('users'));
       } else {
-        $users = User::all()->paginate(10);
+        $users = User::all();
         return view('users.index',compact('users'));
       }
     }
@@ -50,7 +55,6 @@ class UsersController extends Controller
   * @return \Illuminate\Http\Response
   */
   public function store(Request $request) {
-
     if (Auth::check()){
       $validatedData = $request->validate(array(
         'name' => 'required|string',
@@ -103,13 +107,15 @@ class UsersController extends Controller
     $validatedData = $request->validate(array(
       'name' => 'required|string',
       'email' => 'required|string',
+      'role'=>'required',
     ));
 
+    $user->syncRoles($request->input('role'));
     $user->email = $request->input('email');
     $user->name = $request->input('name');
 
     if ($user->save()){
-      return redirect()->route('user.index')->with('success','Information Updated Successfully');
+      return redirect()->route('users.index')->with('success','Information Updated Successfully');
     }
     else{
       return back()->withinput()->with('errors','Error Updating');

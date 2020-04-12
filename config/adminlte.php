@@ -205,7 +205,7 @@ return [
             'url'  => '#',
             'icon' => 'fas fa-fw fa-file',
         ],
-       
+
         [
             'text' => 'profile',
             'url'  => '#',
@@ -218,20 +218,20 @@ return [
         ],
         [
             'text' => 'Admin Corner',
-            'icon' => 'fas fa-fw fa-cog', 
+            'icon' => 'fas fa-fw fa-cog',
             //'can' => 'view users',
             'submenu' => [
                 [
                     'text' => 'Users Management',
-                    'url'  => '/user',
-                    'icon' => 'fas fa-fw fa-users', 
+                    'url'  => '/users',
+                    'icon' => 'fas fa-fw fa-users',
                    //'can' => 'view users',
                 ],
-    
+
 
                 [
                     'text' => 'Manage Roles',
-                    'url'  => '#',
+                    'url'  => '/roles',
                     'icon' => 'fas fa-fw fa-pencil-alt',
                    // 'can' => 'view users',
                 ],

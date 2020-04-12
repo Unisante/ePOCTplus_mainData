@@ -11,8 +11,8 @@
 
 <div class="col-md-9 col-lg-12 col-sm-12 pull-left" style="background: white;">
   <div class="panel-body">
-  <form action="/user" method="get">
-  <a class="pull-left btn btn-success" href="user/create">Register New User</a>
+  <form action="/users" method="get">
+  <a class="pull-left btn btn-success" href="users/create">Register New User</a>
   <H3 align="center">
   <b>Users Information</b></H3>
     {{ csrf_field() }}
@@ -32,8 +32,9 @@
     <th>ID</th>
     <th>Full Name</th>
     <th>Email</th>
+    <th>Roles</th>
     <th>Action</th>
-    
+
   </tr>
   </thead>
   <tbody>
@@ -42,10 +43,19 @@
         <td>{{$user->id}}</td>
         <td>{{$user->name}}</td>
         <td>{{$user->email}}</td>
-        <td><a class="pull-center btn btn-primary btn-sm" href="/user/{{$user->id}}/edit" role="button">Edit</a>
-        <a class="pull-center btn btn-primary btn-sm" href="#" role="button">View</a>
+        <td>
+          @if(!empty($user->getRoleNames()))
+          @foreach($user->getRoleNames() as $v)
+             <label class="badge badge-success">{{ $v }}</label>
+          @endforeach
+          @else
+          <label class="badge badge-success">Not Assigned</label>
+          @endif
         </td>
-        
+        <td><a class="pull-center btn btn-primary btn-sm" href="/users/{{$user->id}}/edit" role="button">Edit</a>
+        <a class="pull-center btn btn-primary btn-sm" href="/users/{{$user->id}}" role="button">View</a>
+        </td>
+
       </tr>
       @endforeach
   </tbody>

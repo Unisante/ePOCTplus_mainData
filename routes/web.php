@@ -14,6 +14,8 @@ Auth::routes();
 Route::get('/', function () {
     return redirect(route('login'));
 });
+Route::group(['middleware' => ['auth']], function() {
 Route::resource('roles', 'RolesController');
-Route::resource('user','UsersController');
+Route::resource('users','UsersController');
 Route::get('/home', 'HomeController@index')->name('home');
+});
