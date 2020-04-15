@@ -188,11 +188,6 @@ return [
     */
 
     'menu' => [
-        [
-            'text' => 'search',
-            'search' => true,
-            'topnav' => true,
-        ],
 
         [
             'text' => 'Patient list',
@@ -211,15 +206,18 @@ return [
             'url'  => '#',
             'icon' => 'fas fa-fw fa-user',
         ],
+
         [
             'text' => 'change_password',
             'url'  => '#',
             'icon' => 'fas fa-fw fa-lock',
         ],
+
         [
             'text' => 'Admin Corner',
             'icon' => 'fas fa-fw fa-cog',
-            //'can' => 'view users',
+            'can' => 'View Admin Panel',
+
             'submenu' => [
                 [
                     'text' => 'Users Management',

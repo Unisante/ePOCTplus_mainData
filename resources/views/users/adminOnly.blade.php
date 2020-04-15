@@ -12,7 +12,7 @@
 <div class="col-md-9 col-lg-12 col-sm-12 pull-left" style="background: white;">
   <div class="panel-body">
     <div class="row justify-content-center">
-      <h1>This Part is for Admin Only</h1>
+      <h1>You Are Not Authorised for this section</h1>
     </div>
 </div>
 </div>

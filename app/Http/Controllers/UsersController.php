@@ -121,4 +121,15 @@ class UsersController extends Controller
       return back()->withinput()->with('errors','Error Updating');
     }
   }
+  public function destroy($id){
+    $user=User::find($id);
+    if(DB::table("users")->where('id',$id)->delete()){
+      return redirect()->route('users.index')
+    ->with('success','User deleted successfully');
+    }else{
+      return redirect()->route('users.index')
+    ->with('error','Something Wrong happened!');
+    }
+
+  }
 }

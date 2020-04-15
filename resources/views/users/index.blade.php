@@ -12,7 +12,17 @@
 <div class="col-md-9 col-lg-12 col-sm-12 pull-left" style="background: white;">
   <div class="panel-body">
   <form action="/users" method="get">
-  <a class="pull-left btn btn-success" href="users/create">Register New User</a>
+  <a class="pull-left btn btn-outline-success" href="users/create">Register New User</a>
+@if ($message = Session::get('success'))
+<div class="alert alert-success">
+  <p>{{ $message }}</p>
+</div>
+@endif
+@if ($message = Session::get('error'))
+<div class="alert alert-danger">
+  <p>{{ $message }}</p>
+</div>
+@endif
   <H3 align="center">
   <b>Users Information</b></H3>
     {{ csrf_field() }}
@@ -46,16 +56,46 @@
         <td>
           @if(!empty($user->getRoleNames()))
           @foreach($user->getRoleNames() as $v)
-             <label class="badge badge-success">{{ $v }}</label>
+             <label class="badge badge-info">{{ $v }}</label>
           @endforeach
           @else
-          <label class="badge badge-success">Not Assigned</label>
+          <label class="badge badge-warning">Not Assigned</label>
           @endif
         </td>
-        <td><a class="pull-center btn btn-primary btn-sm" href="/users/{{$user->id}}/edit" role="button">Edit</a>
-        <a class="pull-center btn btn-primary btn-sm" href="/users/{{$user->id}}" role="button">View</a>
-        </td>
+        <td><a class="pull-center btn btn-outline-info btn-sm" href="/users/{{$user->id}}/edit" role="button">Edit</a>
+        <a class="pull-center btn btn-outline-info btn-sm" href="/users/{{$user->id}}" role="button">View</a>
 
+        <!-- Button trigger modal -->
+      <button type="button" class="btn btn-outline-danger" onclick="callModalWithId({{$user->id}})"
+        >
+        Delete User
+      </button>
+
+      <!-- Modal -->
+      <div class="modal fade" id="deleteRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Are You sure ?
+            </div>
+            <form id="deleteForm" action="/users" method="POST">
+              <input name="_method" type="hidden" value="DELETE">
+              {{ csrf_field() }}
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+        </td>
       </tr>
       @endforeach
   </tbody>
@@ -65,4 +105,10 @@
 </div>
 </div>
 
+<script>
+  function callModalWithId(id){
+    $("#deleteRole").modal()
+    $('#deleteForm').attr('action', `users/${id}`);
+  }
+  </script>
 @stop

@@ -18,4 +18,6 @@ Route::group(['middleware' => ['auth']], function() {
 Route::resource('roles', 'RolesController');
 Route::resource('users','UsersController');
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('roles/removeRole/{id}','RolesController@removeRolePermissionShow');
+Route::post('role/removePerm/{id}','RolesController@removeRolePermission');
 });
