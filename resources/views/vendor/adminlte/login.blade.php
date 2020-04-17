@@ -83,13 +83,21 @@
                         {{ __('adminlte::adminlte.i_forgot_my_password') }}
                     </a>
                 </p>
+<<<<<<< HEAD
                 @if ($register_url)
+=======
+                {{-- @if ($register_url)
+>>>>>>> list-medical-cases
                     <p class="mb-0">
                         <a href="{{ $register_url }}">
                             {{ __('adminlte::adminlte.register_a_new_membership') }}
                         </a>
                     </p>
+<<<<<<< HEAD
                 @endif
+=======
+                @endif --}}
+>>>>>>> list-medical-cases
             </div>
         </div>
     </div>

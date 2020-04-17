@@ -20,4 +20,29 @@ Route::resource('users','UsersController');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('roles/removeRole/{id}','RolesController@removeRolePermissionShow');
 Route::post('role/removePerm/{id}','RolesController@removeRolePermission');
+
+//for patient
+Route::get('/patients','PatientsController@index');
+Route::get('/patient/{id}','PatientsController@show');
+Route::get('/patients/compare/{id1}/{id2}','PatientsController@compare');
+Route::get('/patients/merge/{id1}/{id2}','PatientsController@mergeShow');
+Route::get('/patients/duplicates','PatientsController@findDuplicates');
+Route::post('/patients/duplicates/search','PatientsController@searchDuplicates');
+Route::post('/patients/merge','PatientsController@merge');
+Route::post('/patients/duplicates/delete','PatientsController@destroy');
+//for medical case
+Route::get('/medicalCases','medicalCasesController@index');
+Route::get('/medicalCases/{id}','medicalCasesController@show');
+Route::get('/medicalCases/compare/{id1}/{id2}','medicalCasesController@compare');
+Route::get('/medicalCases/{medicalCaseId}/question/{questionId}','medicalCasesController@medicalCaseQuestion');
+Route::post('/medicalCases/{medicalCaseId}/question/{questionId}/update','medicalCaseAnswersController@medicalCaseAnswerUpdate');
+Route::get('/medicalCase/changes/{id}','medicalCasesController@showCaseChanges');
+Route::get('/medicalcases/duplicates','MedicalCasesController@findDuplicates');
+Route::post('/medicalCases/duplicates/search','MedicalCasesController@searchDuplicates');
+Route::post('/medicalCases/duplicates/delete','MedicalCasesController@destroy');
+//for questions
+Route::get('/questions','QuestionsController@index');
+Route::get('/question/{id}','QuestionsController@show');
+
 });
+
