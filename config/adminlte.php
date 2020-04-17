@@ -194,6 +194,7 @@ return [
         [
           'text' => 'Duplicates',
           'icon' => 'fas fa-fw fa-clone',
+          'can'=>'View Duplicates',
           'submenu' => [
             [
                 'text' => 'Patients',
@@ -227,7 +228,7 @@ return [
         ],
         [
             'text' => 'profile',
-            'url'  => '#',
+            'url'  => '/user/profile',
             'icon' => 'fas fa-fw fa-user',
         ],
 

@@ -13,11 +13,6 @@ use DB;
 
 class UsersController extends Controller
 {
-  public function __construct()
-  {
-    $this->middleware('auth');
-    $this->middleware('permission:View Admin Panel');
-  }
   /**
   * To block any non-authorized user
   *
@@ -26,7 +21,12 @@ class UsersController extends Controller
   public function __construct()
   {
     $this->middleware('auth');
+    $this->middleware('permission:View Admin Panel', ['only' => ['index','create','show','edit']]);
+    $this->middleware('permission:Create Users', ['only' => ['store','edit','destroy']]);
+    $this->middleware('permission:Delete Users', ['only' => ['destroy']]);
+    $this->middleware('permission:Edit Users', ['only' => ['update']]);
   }
+
   /**
   * Display a listing of the resource.
   *
@@ -54,7 +54,8 @@ class UsersController extends Controller
   * @return \Illuminate\Http\Response
   */
   public function create() {
-    return view('users.create');
+    $roles=Role::all();
+    return view('users.create')->with('roles',$roles);
   }
 
   /**
@@ -68,14 +69,18 @@ class UsersController extends Controller
       $validatedData = $request->validate(array(
         'name' => 'required|string',
         'email' => 'required|string',
+        'role'=>'required',
       ));
-        $user=new User;
-        $user->name=$request->input('name');
-        $user->email=$request->input('email');
-        $user->password=Hash::make($request->input('password'));
+      if(User::where('name',$request->input('name')) || User::where('email',$request->input('name'))){
+        return back()->withinput()->with('errors','Name or Email Already exist');
+      }
+      $user=new User;
+      $user->name=$request->input('name');
+      $user->email=$request->input('email');
+      $user->password=Hash::make($request->input('password'));
+      $user->syncRoles($request->input('role'));
       if($user->save()){
-        return redirect()->route('user.index')->with('success','Information have been saved Successfully.');;
-
+        return redirect()->route('users.index')->with('success','Information have been saved Successfully.');;
       }
       else{
         return back()->withinput()->with('errors','Error Occured, Probably this user exist');
@@ -100,7 +105,11 @@ class UsersController extends Controller
   * @return \Illuminate\Http\Response
   */
   public function edit(User $user) {
-    return view('users.edit',compact('user'));
+    $data=array(
+      'user'=>$user,
+      'roles'=>Role::all(),
+    );
+    return view('users.edit')->with($data);
   }
 
   /**
@@ -132,11 +141,15 @@ class UsersController extends Controller
     $user=User::find($id);
     if(DB::table("users")->where('id',$id)->delete()){
       return redirect()->route('users.index')
-    ->with('success','User deleted successfully');
+      ->with('success','User deleted successfully');
     }else{
       return redirect()->route('users.index')
-    ->with('error','Something Wrong happened!');
+      ->with('error','Something Wrong happened!');
     }
+  }
 
+  public function profile(){
+    $currentUser=Auth::user();
+    return view('users.profile')->with('user',$currentUser);
   }
 }

@@ -19,6 +19,9 @@ class PatientsController extends Controller
   */
   public function __construct(){
     $this->middleware('auth');
+    $this->middleware('permission:View Duplicates', ['only' => ['findDuplicates','mergeShow','searchDuplicates']]);
+    $this->middleware('permission:Merge Duplicates',['only'=>['merge']]);
+    $this->middleware('permission:Delete Records',['only'=>['destroy']]);
   }
 
   /**
