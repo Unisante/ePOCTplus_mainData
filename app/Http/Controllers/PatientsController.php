@@ -63,14 +63,13 @@ class PatientsController extends Controller
   * @return $catchEachDuplicate
   */
   public function findDuplicates(){
-    $duplicates = DB::table('patients')
-    ->select('first_name','last_name')
+    $duplicates = Patient::select('first_name','last_name')
     ->groupBy('first_name','last_name')
     ->havingRaw('COUNT(*) > 1')
     ->get();
     $catchEachDuplicate=array();
     foreach($duplicates as $duplicate){
-      $users = DB::table('patients')->where('first_name', $duplicate->first_name)->get();
+      $users = Patient::where('first_name', $duplicate->first_name)->get();
       array_push($catchEachDuplicate,$users);
     }
     return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
@@ -99,16 +98,15 @@ class PatientsController extends Controller
    */
   public function searchDuplicates(Request $request){
     $columns = Schema::getColumnListing('patients');
-    $search_value=$request->input('search');
+    $search_value=$request->search;
     if(in_array($search_value, $columns)){
-      $duplicates = DB::table('patients')
-      ->select($search_value)
+      $duplicates = Patient::select($search_value)
       ->groupBy($search_value)
       ->havingRaw('COUNT(*) > 1')
       ->get();
       $catchEachDuplicate=array();
       foreach($duplicates as $duplicate){
-        $users = DB::table('patients')->where($search_value, $duplicate->$search_value)->get();
+        $users = Patient::where($search_value, $duplicate->$search_value)->get();
         array_push($catchEachDuplicate,$users);
       }
       return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
@@ -119,20 +117,19 @@ class PatientsController extends Controller
   }
 
   /**
-  * Mrege between two records
+  * Merge between two records
   * @params $request
   * @return PatientsController@findDuplicates
   */
   public function merge(Request $request){
     //creating a new patient
-    $hybrid_patient=new Patient;
-    $hybrid_patient->first_name=$request->input('first_name');
-    $hybrid_patient->last_name=$request->input('last_name');
-    $hybrid_patient->save();
-
+    $hybrid_patient=Patient::create([
+      'first_name'=>$request->first_name,
+      'last_name'=>$request->last_name
+    ]);
     //finding the medical cases to update
-    $first_patient=Patient::find($request->input('firstp_id'));
-    $second_patient=Patient::find($request->input('secondp_id'));
+    $first_patient=Patient::find($request->firstp_id);
+    $second_patient=Patient::find($request->secondp_id);
 
     $first_person_array=array();
     if($first_patient->medicalCases){
@@ -169,7 +166,7 @@ class PatientsController extends Controller
   * @return View
   */
   public function destroy(Request $request){
-    $patient=Patient::find($request->input('patient_id'));
+    $patient=Patient::find($request->patient_id);
     if($patient->medicalCases){
       $patient->medicalCases->each->delete();
     }

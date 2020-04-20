@@ -18,8 +18,7 @@ class UsersController extends Controller
   *
   * @return void
   */
-  public function __construct()
-  {
+  public function __construct(){
     $this->middleware('auth');
   }
   /**
@@ -65,11 +64,12 @@ class UsersController extends Controller
         'name' => 'required|string',
         'email' => 'required|string',
       ));
-        $user=new User;
-        $user->name=$request->input('name');
-        $user->email=$request->input('email');
-        $user->password=Hash::make($request->input('password'));
-      if($user->save()){
+        $user=User::create([
+          'name'=>$request->name,
+          'email'=>$request->email,
+          'password'=>Hash::make($request->password)
+        ]);
+      if($user){
         return redirect()->route('user.index')->with('success','Information have been saved Successfully.');;
 
       }

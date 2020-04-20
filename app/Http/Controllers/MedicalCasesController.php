@@ -162,15 +162,14 @@ class MedicalCasesController extends Controller
    * @return $catchEachDuplicate
    */
   public function findDuplicates(){
-    $duplicates = DB::table('medical_cases')
-    ->select('patient_id','version_id')
+    $duplicates = MedicalCase::select('patient_id','version_id')
     ->groupBy('patient_id','version_id')
     ->havingRaw('COUNT(*) > 1')
     ->get();
     $catchEachDuplicate=array();
     foreach($duplicates as $duplicate){
-      $users = DB::table('medical_cases')->where('patient_id', $duplicate->patient_id)->get();
-      array_push($catchEachDuplicate,$users);
+      $medical_case = MedicalCase::where('patient_id', $duplicate->patient_id)->get();
+      array_push($catchEachDuplicate,$medical_case);
     }
     return view('medicalCases.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
   }
@@ -182,16 +181,15 @@ class MedicalCasesController extends Controller
    */
   public function searchDuplicates(Request $request){
     $columns = Schema::getColumnListing('medical_cases');
-    $search_value=$request->input('search');
+    $search_value=$request->search;
     if(in_array($search_value, $columns)){
-      $duplicates = DB::table('medical_cases')
-      ->select($search_value)
+      $duplicates = MedicalCase::select($search_value)
       ->groupBy($search_value)
       ->havingRaw('COUNT(*) > 1')
       ->get();
       $catchEachDuplicate=array();
       foreach($duplicates as $duplicate){
-        $case_duplicates = DB::table('medical_cases')->where($search_value, $duplicate->$search_value)->get();
+        $case_duplicates = MedicalCase::where($search_value, $duplicate->$search_value)->get();
         array_push($catchEachDuplicate,$case_duplicates);
       }
       return view('medicalCases.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
@@ -207,7 +205,7 @@ class MedicalCasesController extends Controller
   * @return View
   */
   public function destroy(Request $request){
-    $medical_case=Patient::find($request->input('medicalc_id'));
+    $medical_case=Patient::find($request->medicalc_id);
     if($medical_case->medical_case_answers){
       $medical_case->medical_case_answers->each->delete();
     }

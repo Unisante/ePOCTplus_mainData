@@ -24,9 +24,9 @@ class MedicalCaseAnswersController extends Controller
   public function medicalCaseAnswerUpdate(Request $request,$medicalCaseId,$questionId){
     $data=request()->validate(array('answer'=>'required',));
     $medicalCase=MedicalCase::find($medicalCaseId);
-    $medicalCaseAnswer=$medicalCase->medical_case_answers->where('node_id', $questionId)->first();
+    $medicalCaseAnswer=$medicalCase->medical_case_answers->firstWhere('node_id', $questionId);
     if($medicalCaseAnswer) {
-      $medicalCaseAnswer->answer_id = (int)$request->input('answer');
+      $medicalCaseAnswer->answer_id = (int)$request->answer;
       $medicalCaseAnswer->save();
     }else{
       redirect()->back()->with('status', 'Something went wrong.');
