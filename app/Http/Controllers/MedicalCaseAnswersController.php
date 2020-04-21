@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\MedicalCase;
 class MedicalCaseAnswersController extends Controller
 {
+
   /**
   * To block any non-authorized user
   * @return void
@@ -26,13 +27,13 @@ class MedicalCaseAnswersController extends Controller
     $medicalCase=MedicalCase::find($medicalCaseId);
     $medicalCaseAnswer=$medicalCase->medical_case_answers->firstWhere('node_id', $questionId);
     if($medicalCaseAnswer) {
-      $medicalCaseAnswer->answer_id = (int)$request->answer;
-      $medicalCaseAnswer->save();
+      $medicalCaseAnswer->update(["answer_id"=>(int)$request->answer]);
     }else{
       redirect()->back()->with('status', 'Something went wrong.');
     }
     return redirect()->action(
-      'medicalCasesController@show', ['id' => $medicalCaseId]
+      'medicalCasesController@show',
+      ['id' => $medicalCaseId]
     )->with('status','Answer is updated!');
   }
 }

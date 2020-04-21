@@ -113,7 +113,7 @@ class PatientsController extends Controller
     }
     return redirect()->action(
       'PatientsController@findDuplicates'
-      );
+    );
   }
 
   /**
@@ -156,8 +156,7 @@ class PatientsController extends Controller
 
     return redirect()->action(
       'PatientsController@findDuplicates'
-      )->with('status',' New Row Formed!');
-
+    )->with('status',' New Row Formed!');
   }
 
   /**

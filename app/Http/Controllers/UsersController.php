@@ -47,7 +47,7 @@ class UsersController extends Controller
   *
   * @return \Illuminate\Http\Response
   */
-  public function create() {
+  public function create(){
     return view('users.create');
   }
 
@@ -58,7 +58,6 @@ class UsersController extends Controller
   * @return \Illuminate\Http\Response
   */
   public function store(Request $request) {
-
     if (Auth::check()){
       $validatedData = $request->validate(array(
         'name' => 'required|string',
@@ -85,7 +84,7 @@ class UsersController extends Controller
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
-  public function show(User $user) {
+  public function show(User $user){
     return view('users.show',compact('user'));
   }
 
@@ -95,7 +94,7 @@ class UsersController extends Controller
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
-  public function edit(User $user) {
+  public function edit(User $user){
     return view('users.edit',compact('user'));
   }
 
@@ -106,20 +105,21 @@ class UsersController extends Controller
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
-  public function update(Request $request, User $user) {
+  public function update(Request $request, User $user){
     $validatedData = $request->validate(array(
       'name' => 'required|string',
       'email' => 'required|string',
     ));
-
-    $user->email = $request->input('email');
-    $user->name = $request->input('name');
-
-    if ($user->save()){
+    $user->update([
+      "email"=>$request->email,
+      "name"=>$request->name
+    ]);
+    if ($user){
       return redirect()->route('user.index')->with('success','Information Updated Successfully');
     }
     else{
       return back()->withinput()->with('errors','Error Updating');
     }
   }
+  
 }
