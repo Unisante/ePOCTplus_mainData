@@ -22,7 +22,7 @@ class MedicalCaseAnswersController extends Controller
   * @params $questionId
   * @return View
   */
-  public function medicalCaseAnswerUpdate(Request $request,$medicalCaseId,$questionId){
+  public function update(Request $request,$medicalCaseId,$questionId){
     $data=request()->validate(array('answer'=>'required',));
     $medicalCase=MedicalCase::find($medicalCaseId);
     $medicalCaseAnswer=$medicalCase->medical_case_answers->firstWhere('node_id', $questionId);

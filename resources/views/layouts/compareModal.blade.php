@@ -1,7 +1,7 @@
 <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js" defer></script>
-
+<script src="{{ asset('js/custom.js') }}" defer></script>
 <div class="modal" tabindex="-1" id="modalCheckBox" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -57,54 +57,4 @@
   </div>
 </div>
 
-<script>
-  function comparePatients() {
-    let checkedValue = [];
-    let inputElements = document.getElementsByClassName('messageCheckbox');
-    for(let i=0; inputElements[i]; ++i){
-      if(inputElements[i].checked){
-        checkedValue.push(inputElements[i].value)
-      }
-    }
-    if(checkedValue.length == 2){
-      location.href = `/patients/compare/${checkedValue[0]}/${checkedValue[1]}`;
-    }else{
-      $("#modalCheckBox").modal('show');
-    }
-  }
-  function compareMedicalCases() {
-    let checkedValue = [];
-    let inputElements = document.getElementsByClassName('messageCheckbox');
-    for(let i=0; inputElements[i]; ++i){
-      if(inputElements[i].checked){
-        checkedValue.push(inputElements[i].value)
-      }
-    }
-    if(checkedValue.length == 2){
-      location.href = `/medicalCases/compare/${checkedValue[0]}/${checkedValue[1]}`;
-    }else{
-      $("#modalCheckBoxMedical").modal('show');
-    }
-  }
-  function mergePatients(){
-    let checkedValue = [];
-    let inputElements = document.getElementsByClassName('messageCheckbox');
-    for(let i=0; inputElements[i]; ++i){
-      if(inputElements[i].checked){
-        checkedValue.push(inputElements[i].value)
-      }
-    }
-    if(checkedValue.length == 2){
-      location.href = `/patients/merge/${checkedValue[0]}/${checkedValue[1]}`;
-    }else{
-      $("#modalCheckBoxMerge").modal('show');
-    }
-  }
-
-  function takeId(id){
-    $("#setId1").html(id);
-    $("#patient_id:text").val(id);
-  }
-
-</script>
 

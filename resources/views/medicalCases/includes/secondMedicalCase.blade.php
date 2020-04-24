@@ -1,6 +1,6 @@
 @if($second_medical_case)
 <div class="card">
-  <div style="background-color:grey;">
+  <div class="card-color">
     <div class="card-header">
       <span class="font-weight-bold">Created At: </span>
       <span class="border-bottom">{{$second_medical_case->created_at}}</span>
@@ -22,3 +22,4 @@
 @else
 <div class="card-header">No first Medical Case</div>
 @endif
+

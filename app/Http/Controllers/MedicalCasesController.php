@@ -88,10 +88,14 @@ class MedicalCasesController extends Controller
   * @return $question
   */
   public function medicalCaseQuestion($medicalCaseId,$questionId){
+    $answers=[];
+    foreach(Node::find($questionId)->answers as $answer){
+      $answers[$answer->id] = $answer->label;
+    }
     $data=array(
       "medicalCase"=>MedicalCase::find($medicalCaseId),
       "question"=>Node::find($questionId),
-      "answers"=>Node::find($questionId)->answers,
+      "answers"=>$answers,
     );
     return view('medicalCases.question')->with($data);
   }

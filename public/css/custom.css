@@ -58,6 +58,10 @@
   font-size: small;
 }
 
+.compare{
+  background-color:#dadad7;
+}
+
 .compare_container .compare {
   /* background-color:#dadad7; */
   background-color: #ddd;
@@ -71,4 +75,10 @@
 .compare_container .compare .answer {
   padding: 10px 20px;
 }
+.card-color{
+  background-color:grey;
+}
 
+.dataTables_filter input{
+  border: 1px solid #ddd !important;
+}

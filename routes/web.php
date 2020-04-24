@@ -14,7 +14,7 @@ Auth::routes();
 Route::get('/', function () {
     return redirect(route('login'));
 });
-Route::resource('roles', 'RolesController');
+// Route::resource('roles', 'RolesController');
 Route::resource('user','UsersController');
 Route::get('/home', 'HomeController@index')->name('home');
 //for patient
@@ -31,11 +31,12 @@ Route::get('/medicalCases','medicalCasesController@index');
 Route::get('/medicalCases/{id}','medicalCasesController@show');
 Route::get('/medicalCases/compare/{id1}/{id2}','medicalCasesController@compare');
 Route::get('/medicalCases/{medicalCaseId}/question/{questionId}','medicalCasesController@medicalCaseQuestion');
-Route::post('/medicalCases/{medicalCaseId}/question/{questionId}/update','medicalCaseAnswersController@medicalCaseAnswerUpdate');
+Route::post('/medicalCases/{medicalCaseId}/question/{questionId}/update','medicalCaseAnswersController@update')->name('medicalCaseAnswersController.update');
 Route::get('/medicalCase/changes/{id}','medicalCasesController@showCaseChanges');
 Route::get('/medicalcases/duplicates','MedicalCasesController@findDuplicates');
 Route::post('/medicalCases/duplicates/search','MedicalCasesController@searchDuplicates');
 Route::post('/medicalCases/duplicates/delete','MedicalCasesController@destroy');
+Route::post('foo/bar','medicalCaseAnswersController@update');
 //for questions
 Route::get('/questions','QuestionsController@index');
 Route::get('/question/{id}','QuestionsController@show');

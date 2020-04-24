@@ -1,5 +1,3 @@
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-<script>
   if($('#fp_first_name').text()==$('#sp_first_name').text()){
     $('#fp_first_name').css('color', 'red');
     $('#sp_first_name').css('color', 'red');
@@ -12,4 +10,3 @@
     $('#fp_cases_count').css('color', 'red');
     $('#sp_cases_count').css('color', 'red');
   }
-</script>

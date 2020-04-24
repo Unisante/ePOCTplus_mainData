@@ -1,20 +1,6 @@
 @extends('adminlte::page')
 
-@section('css')
-<style type="text/css">
-  .required::after {
-    content: "*";
-    color: red;
-  }
-
-  .small-text {
-    font-size: small;
-  }
-  .dataTables_filter input{
-    border: 1px solid #ddd !important;
-  }
-</style>
-@stop
+<link href="{{ asset('css/datatable.css') }}" rel="stylesheet">
 
 @section('content')
 <div class="container-fluid">
