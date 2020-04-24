@@ -1,26 +1,5 @@
 @extends('adminlte::page')
 
-@section('css')
-<style type="text/css">
-  .required::after {
-    content: "*";
-    color: red;
-  }
-
-  .small-text {
-    font-size: small;
-  }
-  .dataTables_filter input{
-    border: 1px solid #ddd !important;
-  }
-  #the_card{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-</style>
-@stop
-
 @section('content')
 <div class="container-fluid">
   <div class="row justify-content-center">

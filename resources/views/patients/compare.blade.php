@@ -1,5 +1,6 @@
 @extends('adminlte::page')
 <script src="{{ asset('js/highlight.js') }}" defer></script>
+
 @section('content')
 <div class="container-fluid">
   <div class="row justify-content-center">
