@@ -9,7 +9,7 @@
       <div class="card">
         <div class="card-header">
             <a href="/medicalCases" class="btn btn-outline-dark"> Back</a>
-        <a href="/medicalCase/changes/{{$medicalCase->id}}" class="btn btn-outline-dark float-right">View This Medical Case Changes</a>
+        <a href="{{route('medicalCasesController.showCaseChanges',[$medicalCase->id])}}" class="btn btn-outline-dark float-right">View This Medical Case Changes</a>
         </div>
         <div class="card-body">
           @if (session('status'))

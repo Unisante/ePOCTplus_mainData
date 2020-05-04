@@ -1,21 +1,4 @@
 @extends('adminlte::page')
-
-@section('css')
-<style type="text/css">
-  .required::after {
-    content: "*";
-    color: red;
-  }
-
-  .small-text {
-    font-size: small;
-  }
-  .dataTables_filter input{
-    border: 1px solid #ddd !important;
-  }
-</style>
-@stop
-
 @section('content')
 <div class="container-fluid">
   <div class="row justify-content-center">
@@ -47,7 +30,7 @@
                   <tr>
                     <td>{{$question->id}}</td>
                     <td>{{$question->label}}</td>
-                    <td><a href="/question/{{$question->id}}" class="btn btn-outline-dark"> Show question</a></td>
+                    <td><a href="{{route('QuestionsController@show',[$question->id])}}" class="btn btn-outline-dark"> Show question</a></td>
                   </tr>
                   @endforeach
                 </tbody>

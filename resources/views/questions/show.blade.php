@@ -1,17 +1,6 @@
 @extends('adminlte::page')
 
-@section('css')
-<style type="text/css">
-  .required::after {
-    content: "*";
-    color: red;
-  }
-
-  .small-text {
-    font-size: small;
-  }
-</style>
-@stop
+<link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 
 @section('content')
 <div class="container-fluid">
@@ -19,7 +8,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-            <a href="/questions" class="btn btn-outline-dark"> Back</a>
+            <a href="{{route('QuestionsController.index')}}" class="btn btn-outline-dark"> Back</a>
         </div>
         <div class="card-body">
           @if (session('status'))
@@ -30,7 +19,7 @@
           <div class="row">
             <div class="col-md-8 offset-md-2">
               @if($question)
-                <div class="mb-2"  style="background-color:#ddd;">
+                <div class="mb-2 card-color2"  >
                   <div class="card-header">
                     <span class="font-weight-bold">Created At: </span>
                     <span class="ml-2">{{$question->created_at}}</span>

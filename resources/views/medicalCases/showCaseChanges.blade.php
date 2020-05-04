@@ -6,7 +6,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-          <a href="/medicalCases/{{$medicalCaseId}}" class="btn btn-outline-dark"> Back</a>
+        <a href="{{route('medicalCasesController.show',[$medicalCaseId])}}" class="btn btn-outline-dark"> Back</a>
         </div>
         <div class="card-body">
           @if (session('status'))

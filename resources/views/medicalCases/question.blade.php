@@ -1,11 +1,13 @@
 @extends('adminlte::page')
 
+<link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+
 @section('content')
 <div class="container-fluid">
   <div class="row justify-content-center">
     <div class="col-md-12">
       <div class="card">
-        <div class="card-header"><a href="/medicalCases/{{$medicalCase->id}}" class="btn btn-outline-dark"> Back</a></div>
+      <div class="card-header"><a href="{{route('medicalCasesController.show',[$medicalCase->id])}}" class="btn btn-outline-dark"> Back</a></div>
         <div class="card-body">
           @if (session('status'))
           <div class="alert alert-success" role="alert">
@@ -15,7 +17,7 @@
           <div class="row">
             <div class="col-md-8 offset-md-2">
               @if($medicalCase)
-              <div class="mb-2"  style="background-color:#ddd;">
+              <div class="mb-2 card-color2" >
                 <div class="card-header">
                   <span class="font-weight-bold">Created At: </span>
                   <span>{{$medicalCase->created_at}}</span>
