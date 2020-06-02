@@ -1,0 +1,42 @@
+
+
+.required::after {
+  content: "*";
+  color: red;
+}
+
+.small-text {
+  font-size: small;
+}
+
+.compare{
+  background-color:#dadad7;
+}
+
+.compare_container .compare {
+  /* background-color:#dadad7; */
+  background-color: #ddd;
+  padding: 10px;
+}
+
+.compare_container .compare .question {
+  padding: 10px 20px;
+}
+
+.compare_container .compare .answer {
+  padding: 10px 20px;
+}
+.card-color{
+  background-color:grey;
+}
+.card-color2{
+  background-color:#ddd;
+}
+
+.dataTables_filter input{
+  border: 1px solid #ddd !important;
+}
+.showmdCard{
+  background-color: #ddd;
+}
+

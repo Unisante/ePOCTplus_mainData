@@ -1,22 +1,5 @@
 @extends('adminlte::page')
 
-@section('css')
-<style type="text/css">
-  .required::after {
-    content: "*";
-    color: red;
-  }
-
-  .small-text {
-    font-size: small;
-  }
-  #action{
-    display: flex;
-    justify-content:space-evenly;
-  }
-</style>
-@stop
-
 @section('content')
 
 <div class="container-fluid">
@@ -45,21 +28,20 @@
                     <p id="display">You want to delete patient id <span id="setId1"></span> ?</p>
                   </div>
                   <div class="modal-footer">
-                    <form action="/patients/duplicates/delete" method="POST">
+                  <form action="{{route('PatientsController@destroy')}}" method="POST">
                       @csrf
                       <input id="patient_id" type="text" name="patient_id"  hidden>
                       <button type="submit" class="btn btn-primary" >Save changes</button>
                     </form>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                   </div>
-
                 </div>
               </div>
             </div>
           </div>
           <div class="row justify-content-center">
             <div class="col-md-10">
-              <form action="/patients/duplicates/search" method="POST" id="searchform" class="input-group mb-3">
+              <form action="{{route('PatientsController@searchDuplicates')}}" method="POST" id="searchform" class="input-group mb-3">
                 @csrf
                 <div class="input-group-prepend">
                   <button class="btn btn-outline-secondary" type="Submit">Search</button>

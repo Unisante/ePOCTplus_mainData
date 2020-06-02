@@ -1,17 +1,5 @@
 @extends('adminlte::page')
-
-@section('css')
-<style type="text/css">
-  .required::after {
-    content: "*";
-    color: red;
-  }
-
-  .small-text {
-    font-size: small;
-  }
-</style>
-@stop
+<script src="{{ asset('js/highlight.js') }}" defer></script>
 
 @section('content')
 <div class="container-fluid">
@@ -37,5 +25,4 @@
     </div>
   </div>
 </div>
-@include('layouts.highlightComparison')
 @stop

@@ -1,24 +1,12 @@
 @extends('adminlte::page')
 
-@section('css')
-<style type="text/css">
-  .required::after {
-    content: "*";
-    color: red;
-  }
-
-  .small-text {
-    font-size: small;
-  }
-</style>
-@stop
-
 @section('content')
 
 <div class="container-fluid">
   <div class="row justify-content-center">
     <div class="col-md-12">
       <div class="card">
+        <div class="card-header"><button class="btn btn-outline-dark float-right" onclick="compareMedicalCases()">Merge Duplicates</button></div>
         <div class="card-body">
           @if (session('status'))
           <div class="alert alert-success" role="alert">
@@ -40,7 +28,7 @@
                     <p id="display">You want to delete MedicalCase id <span id="setId1"></span> ?</p>
                   </div>
                   <div class="modal-footer">
-                    <form action="/medicalCases/duplicates/delete" method="POST">
+                    <form action="{{route('MedicalCasesController@destroy')}}" method="POST">
                       @csrf
                       <input id="medicalc_id" type="text" name="medicalc_id"  hidden>
                       <button type="submit" class="btn btn-primary" >Save changes</button>
@@ -54,7 +42,7 @@
           </div>
           <div class="row justify-content-center mt-3">
             <div class="col-md-10">
-              <form action="/medicalCases/duplicates/search" method="POST" id="searchform" class="input-group mb-3">
+              <form action="{{route('MedicalCasesController@searchDuplicates')}}" method="POST" id="searchform" class="input-group mb-3">
                 @csrf
                 <div class="input-group-prepend">
                   <button class="btn btn-outline-secondary" type="Submit">Search</button>

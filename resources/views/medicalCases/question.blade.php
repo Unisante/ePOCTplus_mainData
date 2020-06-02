@@ -1,24 +1,13 @@
 @extends('adminlte::page')
 
-@section('css')
-<style type="text/css">
-  .required::after {
-    content: "*";
-    color: red;
-  }
-
-  .small-text {
-    font-size: small;
-  }
-</style>
-@stop
+<link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 
 @section('content')
 <div class="container-fluid">
   <div class="row justify-content-center">
     <div class="col-md-12">
       <div class="card">
-        <div class="card-header"><a href="/medicalCases/{{$medicalCase->id}}" class="btn btn-outline-dark"> Back</a></div>
+      <div class="card-header"><a href="{{route('medicalCasesController.show',[$medicalCase->id])}}" class="btn btn-outline-dark"> Back</a></div>
         <div class="card-body">
           @if (session('status'))
           <div class="alert alert-success" role="alert">
@@ -28,14 +17,14 @@
           <div class="row">
             <div class="col-md-8 offset-md-2">
               @if($medicalCase)
-                <div class="mb-2"  style="background-color:#ddd;">
-                  <div class="card-header">
-                    <span class="font-weight-bold">Created At: </span>
-                    <span>{{$medicalCase->created_at}}</span>
-                  </div>
-                  <div class="card-header">
-                    <span class="font-weight-bold">Updated At: </span>
-                    <span>{{$medicalCase->created_at}}</span> </div>
+              <div class="mb-2 card-color2" >
+                <div class="card-header">
+                  <span class="font-weight-bold">Created At: </span>
+                  <span>{{$medicalCase->created_at}}</span>
+                </div>
+                <div class="card-header">
+                  <span class="font-weight-bold">Updated At: </span>
+                  <span>{{$medicalCase->created_at}}</span> </div>
                   <div class="card-header">
                     <div>
                       <span class="font-weight-bold">Patient Name:</span>
@@ -61,32 +50,26 @@
                       <span class="font-weight-bold">Description: </span>
                       <span>{{$question->description}}</span>
                     </div>
-                  <form action="/medicalCases/{{$medicalCase->id}}/question/{{$question->id}}/update" method="POST">
-                      @csrf
+                    {{ Form::open(['route' => ['medicalCaseAnswersController.update',$medicalCase,$question->id]]) }}
                     <div class="input-group pl-3">
                       <div class="input-group-prepend">
-                        <label class="input-group-text" for="inputGroupSelect01">Answer</label>
+                        {{Form::label('answer', 'Answer', array('class' => 'input-group-text'))}}
                       </div>
-                      <select class="custom-select" id="inputGroupSelect01" name="answer">
-                        <option selected></option>
-                        @foreach($answers as $answer)
-                      <option value="{{$answer->id}}">{{$answer->label}}</option>
-                        @endforeach
-                      </select>
+                      {{Form::select('answer', $answers, 'S', array('class' => 'custom-select'))}}
                     </div>
                     <div class="card-header">
-                      <button type="submit" class="btn btn-outline-secondary">Change Answer</button>
+                      {{Form::submit('Change Answer', array('class' => 'btn btn-outline-secondary'))}}
                     </div>
-                  </form>
+                    {{ Form::close() }}
                   </div>
                   @endif
                 </div>
-              @endif
+                @endif
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-@stop
+  @stop

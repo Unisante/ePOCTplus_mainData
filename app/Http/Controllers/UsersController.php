@@ -87,7 +87,7 @@ class UsersController extends Controller
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
-  public function show(User $user) {
+  public function show(User $user){
     return view('users.show',compact('user'));
   }
 
@@ -110,7 +110,7 @@ class UsersController extends Controller
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
-  public function update(Request $request, User $user) {
+  public function update(Request $request, User $user){
     $validatedData = $request->validate(array(
       'name' => 'required|string',
       'email' => 'required|string',

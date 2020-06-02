@@ -1,17 +1,6 @@
 @extends('adminlte::page')
 
-@section('css')
-<style type="text/css">
-  .required::after {
-    content: "*";
-    color: red;
-  }
-
-  .small-text {
-    font-size: small;
-  }
-</style>
-@stop
+<link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 
 @section('content')
 <div class="container-fluid">
@@ -20,7 +9,7 @@
       <div class="card">
         <div class="card-header">
             <a href="/medicalCases" class="btn btn-outline-dark"> Back</a>
-        <a href="/medicalCase/changes/{{$medicalCase->id}}" class="btn btn-outline-dark float-right">View This Medical Case Changes</a>
+        <a href="{{route('medicalCasesController.showCaseChanges',[$medicalCase->id])}}" class="btn btn-outline-dark float-right">View This Medical Case Changes</a>
         </div>
         <div class="card-body">
           @if (session('status'))
@@ -31,7 +20,7 @@
           <div class="row">
             <div class="col-md-8 offset-md-2">
               @if($medicalCase)
-                <div class="mb-2"  style="background-color:#ddd;">
+                <div class="showmdCard mb-2">
                   <div class="card-header">
                     <span class="font-weight-bold">Created At: </span>
                     <span>{{$medicalCase->created_at}}</span>
@@ -68,7 +57,7 @@
                       <span class="font-weight-bold">Answer: </span>
                       <span>{{$case->answer->label}}</span>
                     </div>
-                    <a href="/medicalCases/{{$medicalCase->id}}/question/{{$case->question->id}}" class="btn btn-outline-light">Change Answer</a>
+                    <a href="{{route('medicalCasesController.medicalCaseQuestion', [$medicalCase->id,$case->question->id])}}" class="btn btn-outline-light">Change Answer</a>
                   </div>
                   @endforeach
                 </div>

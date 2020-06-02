@@ -1,5 +1,6 @@
+<link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 @if($second_patient)
-<div class="card" style="background-color:#ddd;">
+<div class="card card-color2">
   <div class="card-header">{{$second_patient->first_name}}'s Details</div>
   <div class="card-body">
     <div>First name: <span class="border-bottom" id="sp_first_name">{{$second_patient->first_name}}</span><br /></div>

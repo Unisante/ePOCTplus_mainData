@@ -1,20 +1,6 @@
 @extends('adminlte::page')
 
-@section('css')
-<style type="text/css">
-  .required::after {
-    content: "*";
-    color: red;
-  }
-
-  .small-text {
-    font-size: small;
-  }
-  .dataTables_filter input{
-    border: 1px solid #ddd !important;
-  }
-</style>
-@stop
+<link href="{{ asset('css/datatable.css') }}" rel="stylesheet">
 
 @section('content')
 <div class="container-fluid">
@@ -53,7 +39,7 @@
                     <th><input type="checkbox" class="messageCheckbox" value="{{$medicalCase->id}}"></th>
                     <td>{{$medicalCase->created_at}}</td>
                     <td>{{$medicalCase->patient->first_name}} {{$medicalCase->patient->last_name}}</td>
-                    <td><a href="/medicalCases/{{$medicalCase->id}}" class="btn btn-outline-dark"> Show Medical Case</a>
+                    <td><a href="{{route('medicalCasesController.show',[$medicalCase->id])}}" class="btn btn-outline-dark"> Show Medical Case</a>
                     </td>
                   </tr>
                   @endforeach

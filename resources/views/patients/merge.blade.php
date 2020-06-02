@@ -1,21 +1,5 @@
 @extends('adminlte::page')
 
-@section('css')
-<style type="text/css">
-  .required::after {
-    content: "*";
-    color: red;
-  }
-
-  .small-text {
-    font-size: small;
-  }
-  #label_id{
-    margin-left: 5px;
-  }
-</style>
-@stop
-
 @section('content')
 <div class="container-fluid">
   <div class="row justify-content-center">

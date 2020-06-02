@@ -1,17 +1,6 @@
 @extends('adminlte::page')
 
-@section('css')
-<style type="text/css">
-  .required::after {
-    content: "*";
-    color: red;
-  }
-
-  .small-text {
-    font-size: small;
-  }
-</style>
-@stop
+<link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 
 @section('content')
 
@@ -19,7 +8,7 @@
   <div class="row justify-content-center">
     <div class="col-md-12">
       <div class="card">
-        <div class="card-header"><a href="/patients" class="btn btn-outline-dark"> Back</a></div>
+        <div class="card-header"><a href="{{route('patients.index')}}" class="btn btn-outline-dark"> Back</a></div>
         <div class="card-body">
           @if (session('status'))
           <div class="alert alert-success" role="alert">
@@ -29,7 +18,7 @@
           <div class="row">
             <div class="col-md-8 offset-md-2">
               @if($patient)
-              <div class="card" style="background-color:#ddd;">
+              <div class="card card-color2">
                 <div class="card-header">{{$patient->first_name}}'s Details</div>
                 <div class="card-body">
                   <div>First Name: <span class="border-bottom">{{$patient->first_name}}</span><br/></div>

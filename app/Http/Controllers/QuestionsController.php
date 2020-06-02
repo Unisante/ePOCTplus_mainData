@@ -11,8 +11,7 @@ class QuestionsController extends Controller
   * To block any non-authorized user
   * @return void
   */
-  public function __construct()
-  {
+  public function __construct(){
     $this->middleware('auth');
   }
   public function index(){

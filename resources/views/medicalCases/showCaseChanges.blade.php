@@ -1,33 +1,12 @@
 @extends('adminlte::page')
 
-@section('css')
-<style type="text/css">
-  .required::after {
-    content: "*";
-    color: red;
-  }
-
-  .small-text {
-    font-size: small;
-  }
-  .dataTables_filter input{
-    border: 1px solid #ddd !important;
-  }
-  #the_card{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-</style>
-@stop
-
 @section('content')
 <div class="container-fluid">
   <div class="row justify-content-center">
     <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-          <a href="/medicalCases/{{$medicalCaseId}}" class="btn btn-outline-dark"> Back</a>
+        <a href="{{route('medicalCasesController.show',[$medicalCaseId])}}" class="btn btn-outline-dark"> Back</a>
         </div>
         <div class="card-body">
           @if (session('status'))
