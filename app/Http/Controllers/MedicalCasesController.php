@@ -131,7 +131,6 @@ class MedicalCasesController extends Controller
   */
   public function showCaseChanges($medical_case_id){
     $medicalCase=MedicalCase::find($medical_case_id);
-    $medicalCase->medical_case_answers;
     $allAudits=array();
     foreach($medicalCase->medical_case_answers as $medicalCaseAnswer){
       $medicalCaseAudit=MedicalCaseAnswer::getAudit($medicalCaseAnswer->id);
