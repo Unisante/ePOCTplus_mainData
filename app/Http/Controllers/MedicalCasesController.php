@@ -20,6 +20,8 @@ class MedicalCasesController extends Controller
   */
   public function __construct(){
     $this->middleware('auth');
+    $this->middleware('permission:Merge_Duplicates', ['only' => ['findDuplicates','mergeShow','searchDuplicates','merge']]);
+    $this->middleware('permission:Delete_Case',['only'=>['destroy']]);
   }
 
   /**

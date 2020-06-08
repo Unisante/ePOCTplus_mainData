@@ -50,12 +50,12 @@
           @enderror
         </div>
       </div>
-      
+
       <div class="form-group row">
         <label for="name" class="col-md-3 col-form-label text-md-right">Roles<span class="required"></span></label>
         <div class="col-md-9">
           <div class="input-group mb-3">
-            <select class="custom-select" name="role" form="userCreate">
+            <select class="custom-select" name="role" form="userEdit">
               @foreach($roles as $role)
               <option value="{{ $role->name }}"  {{ $user->roles->contains($role->id) ? 'selected' : '' }}>{{ $role->name }}</option>
               @endforeach

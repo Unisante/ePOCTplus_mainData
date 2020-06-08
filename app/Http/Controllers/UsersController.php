@@ -19,10 +19,10 @@ class UsersController extends Controller
   */
   public function __construct(){
     $this->middleware('auth');
-    $this->middleware('permission:View Admin Panel', ['only' => ['index','create','show','edit']]);
-    $this->middleware('permission:Create Users', ['only' => ['store','edit','destroy']]);
-    $this->middleware('permission:Delete Users', ['only' => ['destroy']]);
-    $this->middleware('permission:Edit Users', ['only' => ['update']]);
+    $this->middleware('role:ADMIN');
+    $this->middleware('permission:Access_ADMIN_PANEL', ['only' => ['index','create','show','edit']]);
+    $this->middleware('permission:Create_User', ['only' => ['store','edit','update','destroy']]);
+    $this->middleware('permission:Delete_User', ['only' => ['destroy']]);
   }
 
   /**
@@ -65,20 +65,17 @@ class UsersController extends Controller
         'email' => 'required|string',
         'role'=>'required',
       ));
-      if(User::where('name',$request->input('name')) || User::where('email',$request->input('name'))){
-        return back()->withinput()->with('errors','Name or Email Already exist');
+      if(! $user=User::where('email',$request->input('email'))){
+        $user=new User;
+        $user->name=$request->input('name');
+        $user->email=$request->input('email');
+        $user->password=Hash::make($request->input('password'));
+        $user->syncRoles($request->input('role'));
+        if($user->save()){
+          return redirect()->route('users.index')->with('success','Information have been saved Successfully.');;
+        }
       }
-      $user=new User;
-      $user->name=$request->input('name');
-      $user->email=$request->input('email');
-      $user->password=Hash::make($request->input('password'));
-      $user->syncRoles($request->input('role'));
-      if($user->save()){
-        return redirect()->route('users.index')->with('success','Information have been saved Successfully.');;
-      }
-      else{
-        return back()->withinput()->with('errors','Error Occured, Probably this user exist');
-      }
+      return back()->withinput()->with('errors','Email Already exist');
     }
   }
 
@@ -130,10 +127,10 @@ class UsersController extends Controller
   }
 
   /**
-   * Delete a particular user
-   * @param int $id
-   * @return \Illuminate\Http\Response
-   */
+  * Delete a particular user
+  * @param int $id
+  * @return \Illuminate\Http\Response
+  */
   public function destroy($id){
     $user=User::find($id);
     if(DB::table("users")->where('id',$id)->delete()){
@@ -146,9 +143,9 @@ class UsersController extends Controller
   }
 
   /**
-   * Show current user profile
-   * @return \Illuminate\Http\Response
-   */
+  * Show current user profile
+  * @return \Illuminate\Http\Response
+  */
   public function profile(){
     $currentUser=Auth::user();
     return view('users.profile')->with('user',$currentUser);

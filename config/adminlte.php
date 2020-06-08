@@ -194,7 +194,7 @@ return [
         [
           'text' => 'Duplicates',
           'icon' => 'fas fa-fw fa-clone',
-          'can'=>'View Duplicates',
+          'can'=>'Merge_Duplicates',
           'submenu' => [
             [
                 'text' => 'Patients',
@@ -213,6 +213,7 @@ return [
             'text' => 'Patient list',
             'url'  => '/patients',
             'icon' => 'fas fa-fw fa-list',
+            'can'=>'View_Patient'
 
         ],
 
@@ -220,36 +221,38 @@ return [
             'text' => 'Medical Cases',
             'url'  => '/medicalCases',
             'icon' => 'fas fa-fw fa-file',
+            'can'=>'View_Case'
         ],
         [
           'text' => 'Questions',
           'url'  => '/questions',
           'icon' => 'fas fa-fw fa-question-circle',
+          'can'=>'View_Case'
         ],
         [
             'text' => 'profile',
             'url'  => '/user/profile',
             'icon' => 'fas fa-fw fa-user',
+            'can'=>'Reset_Own_Password'
         ],
 
         [
             'text' => 'change_password',
             'url'  => '#',
             'icon' => 'fas fa-fw fa-lock',
+            'can'=>'Reset_Own_Password'
         ],
 
         [
             'text' => 'Admin Corner',
             'icon' => 'fas fa-fw fa-cog',
-            'can' => 'View Admin Panel',
+            'can' => 'Access_ADMIN_PANEL',
 
             'submenu' => [
                 [
                     'text' => 'Users Management',
                     'url'  => '/users',
-            //'can' => 'view users',
                     'icon' => 'fas fa-fw fa-users',
-                   //'can' => 'view users',
                 ],
 
 
@@ -257,7 +260,6 @@ return [
                     'text' => 'Manage Roles',
                     'url'  => '/roles',
                     'icon' => 'fas fa-fw fa-pencil-alt',
-                   // 'can' => 'view users',
                 ],
         ],
     ],

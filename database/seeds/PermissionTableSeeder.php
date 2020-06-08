@@ -13,19 +13,19 @@ class PermissionTableSeeder extends Seeder
     public function run()
     {
       $permissions = [
-        'View Admin Panel',
-        'Change Password',
-        'View Patients',
-        'View Medicals',
-        'View Duplicates',
-        'Merge Duplicates',
-        'Delete Records',
-        'Delete Users',
-        'Edit Users',
-        'Create Users',
-        'Assign Roles',
-        'Access Grafana(c)',
-        'Access Grafana(e)'
+        'Access_ADMIN_PANEL',
+        'Create_User',
+        'Delete_User',
+        'Reset_User_Password',
+        'Reset_Own_Password',
+        'View_Patient',
+        'View_Case',
+        'Edit_Patient',
+        'Edit_Case',
+        'Merge_Duplicates',
+        'Delete_Pateint',
+        'Delete_Case',
+        'View_Audit_Trail'
      ];
 
      foreach($permissions as $permission){
