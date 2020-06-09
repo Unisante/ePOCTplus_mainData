@@ -97,6 +97,7 @@
                     @yield('content_top_nav_right')
                     @if(Auth::user())
                         <li class="nav-item">
+
                             <a class="nav-link" href="#"
                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                             >

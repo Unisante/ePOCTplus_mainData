@@ -19,7 +19,6 @@ class UsersController extends Controller
   */
   public function __construct(){
     $this->middleware('auth');
-    $this->middleware('role:ADMIN');
     $this->middleware('permission:Access_ADMIN_PANEL', ['only' => ['index','create','show','edit']]);
     $this->middleware('permission:Create_User', ['only' => ['store','edit','update','destroy']]);
     $this->middleware('permission:Delete_User', ['only' => ['destroy']]);
