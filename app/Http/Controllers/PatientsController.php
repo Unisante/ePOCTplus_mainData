@@ -149,6 +149,8 @@ class PatientsController extends Controller
           $second_medical_case->update([
             "patient_id"=>$hybrid_patient->id
           ]);
+        }else{
+          $second_medical_case->delete();
         }
       }
     }

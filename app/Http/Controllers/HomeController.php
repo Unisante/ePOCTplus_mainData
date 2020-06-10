@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 use Auth;
 use Illuminate\Http\Request;
+use App\User;
+use App\MedicalCase;
+use App\Patient;
+use DB;
 
 class HomeController extends Controller
 {
@@ -23,12 +27,19 @@ class HomeController extends Controller
   */
   public function index()
   {
-    $user = Auth::user();
-    view()->composer('adminlte::page', function($view)
-    {
-        $user = Auth::user();
-        $view->with("user", $user);
-    });
-    return view("home", $user);
+    $case_info = MedicalCase::groupBy('patient_id')->select('patient_id', DB::raw('count(*) as total'))->get();
+    $dataPoints=array();
+    foreach($case_info as $case){
+      $single_data=array("y" => $case->total, "label" => $case->patient_id);
+      array_push($dataPoints,$single_data);
+    }
+    $data=array(
+      "currentUser"=>Auth::user(),
+      "userCount"=>User::all()->count(),
+      "patientCount"=>Patient::all()->count(),
+      "mdCases"=>MedicalCase::all()->count(),
+      "dataPoints"=>$dataPoints,
+    );
+    return view("home")->with($data);
   }
 }
