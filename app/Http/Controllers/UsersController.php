@@ -71,7 +71,7 @@ class UsersController extends Controller
         $user->password=Hash::make($request->input('password'));
         $user->syncRoles($request->input('role'));
         if($user->save()){
-          return redirect()->route('users.index')->with('success','Information have been saved Successfully.');;
+          return redirect()->route('users.index')->with('success','Information have been saved Successfully.');
         }
       }
       return back()->withinput()->with('errors','Email Already exist');
@@ -149,4 +149,29 @@ class UsersController extends Controller
     $currentUser=Auth::user();
     return view('users.profile')->with('user',$currentUser);
   }
+
+  /**
+   * Change user password
+   * @return \Illuminate\Http\Response
+   */
+  public function showChangePassword(){
+    $currentUser=Auth::user();
+    return view('users.showPassword')->with('user',$currentUser);
+  }
+  public function changePassword(Request $request){
+    $request->validate(array(
+      'current_password' => 'required|string',
+      'new_password' => 'required|string',
+    ));
+    if (!(Hash::check($request->input('current_password'), Auth::user()->password))) {
+      return back()->with('error', 'Wrong current Password!');
+    }
+     Auth::user()->password = Hash::make($request->input('new_password'));
+    if(Auth::user()->save()){
+      return redirect()->route('users.profile')->with('success','password has been saved Changed.');
+    }else{
+      return back()->with('error', 'Something Went wrong');
+    }
+  }
+
 }

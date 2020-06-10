@@ -57,10 +57,6 @@ class RolesController extends Controller
   * @return \Illuminate\Http\Response
   */
   public function show($id){
-    $user=auth()->user();
-    if(!($user->hasRole('admin'))){
-      return view('users.adminOnly');
-    }
     $role = Role::find($id);
     $rolePermissions = Permission::join("role_has_permissions","role_has_permissions.permission_id","=","permissions.id")
     ->where("role_has_permissions.role_id",$id)

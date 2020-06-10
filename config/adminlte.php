@@ -238,7 +238,7 @@ return [
 
         [
             'text' => 'change_password',
-            'url'  => '#',
+            'url'  => '/user/password',
             'icon' => 'fas fa-fw fa-lock',
             'can'=>'Reset_Own_Password'
         ],
