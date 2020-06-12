@@ -21,6 +21,7 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('/user/profile',['as'=>'users.profile','uses'=>'UsersController@profile']);
   Route::get('/user/password','UsersController@showChangePassword');
   Route::post('/user/password','UsersController@changePassword')->name('UsersController@changePassword');
+  Route::post('/user/reset/{id}','UsersController@resetPassword')->name('UsersController@resetPassword');
   Route::get('/home', 'HomeController@index')->name('home');
   Route::get('roles/removeRole/{id}','RolesController@removeRolePermissionShow');
   Route::post('role/removePerm/{id}','RolesController@removeRolePermission');
@@ -52,3 +53,7 @@ Route::group(['middleware' => ['auth']], function() {
 
 });
 
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

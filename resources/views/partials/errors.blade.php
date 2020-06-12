@@ -3,7 +3,7 @@
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                  <span aria-hidden="true"> &times; </span>
           </button>
-    <li><strong>{!! session()->get('error') !!} </strong></li>
+    <li><strong>{!! session()->get('errors') !!} </strong></li>
      </div>
 @endif
 @if(session()->get('error'))

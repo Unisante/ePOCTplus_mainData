@@ -65,6 +65,7 @@
         <td><a class="pull-center btn btn-outline-info btn-sm" href="/users/{{$user->id}}/edit" role="button">Edit</a>
         <a class="pull-center btn btn-outline-info btn-sm" href="/users/{{$user->id}}" role="button">View</a>
 
+        {{-- delete functionality starts --}}
         <!-- Button trigger modal -->
       <button type="button" class="btn btn-outline-danger" onclick="callModalWithId({{$user->id}})"
         >
@@ -95,6 +96,34 @@
           </div>
         </div>
       </div>
+      {{-- delete ends and reset begins --}}
+      <button type="button" class="btn btn-outline-danger" onclick="callModalWithResetId({{$user->id}})"
+        >
+        Reset Password
+      </button>
+      <!-- Modal -->
+      <div class="modal fade" id="resetRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Are You sure ?
+            </div>
+            <form id="resetForm" action="/users" method="POST">
+              {{ csrf_field() }}
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Reset</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
         </td>
       </tr>
       @endforeach
@@ -109,6 +138,10 @@
   function callModalWithId(id){
     $("#deleteRole").modal()
     $('#deleteForm').attr('action', `users/${id}`);
+  }
+  function callModalWithResetId(id){
+    $("#resetRole").modal()
+    $('#resetForm').attr('action', `user/reset/${id}`);
   }
   </script>
 @stop

@@ -61,20 +61,17 @@ class UsersController extends Controller
     if (Auth::check()){
       $validatedData = $request->validate(array(
         'name' => 'required|string',
-        'email' => 'required|string',
+        'email' => 'required|string|unique:users',
         'role'=>'required',
       ));
-      if(! $user=User::where('email',$request->input('email'))){
-        $user=new User;
-        $user->name=$request->input('name');
-        $user->email=$request->input('email');
-        $user->password=Hash::make($request->input('password'));
-        $user->syncRoles($request->input('role'));
-        if($user->save()){
-          return redirect()->route('users.index')->with('success','Information have been saved Successfully.');
-        }
+      $user=new User;
+      $user->name=$request->input('name');
+      $user->email=$request->input('email');
+      $user->password=Hash::make($request->input('password'));
+      $user->syncRoles($request->input('role'));
+      if($user->save()){
+        return redirect()->route('users.index')->with('success','Information have been saved Successfully.');
       }
-      return back()->withinput()->with('errors','Email Already exist');
     }
   }
 
@@ -169,6 +166,16 @@ class UsersController extends Controller
      Auth::user()->password = Hash::make($request->input('new_password'));
     if(Auth::user()->save()){
       return redirect()->route('users.profile')->with('success','password has been saved Changed.');
+    }else{
+      return back()->with('error', 'Something Went wrong');
+    }
+  }
+
+  public function resetPassword($id){
+    $user=User::find($id);
+    $user->password=Hash::make('0000');
+    if($user->save()){
+      return back()->with('success', 'User passwod Successfully reset');
     }else{
       return back()->with('error', 'Something Went wrong');
     }

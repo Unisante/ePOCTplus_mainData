@@ -13,7 +13,7 @@
                         </div>
                     @endif
                     <div class="row">
-                      <div class="col-md-4">
+                      <div class="col border-right">
                         <div>
                           <span>User: </span>
                           <span>{{$currentUser->name}}</span>
@@ -25,13 +25,17 @@
                           @endforeach
                         </div>
                       </div>
-                      <div class="col-md-4">
+                      @Foreach($currentUser->roles as $role)
+                      @if($role->name=='ADMIN')
+                      <div class="col border-right">
                         <div>
                           <span>Main Data Users: </span>
                           <span>{{$userCount}}</span>
                         </div>
                       </div>
-                      <div class="col-md-4">
+                      @endif
+                      @endforeach
+                      <div class="col ">
                         <div>
                          <span>Medical Cases: </span>
                          <span>{{$mdCases}}</span>
@@ -40,11 +44,6 @@
                           <span>Patients: </span>
                           <span>{{$patientCount}}</span>
                         </div>
-                      </div>
-                    </div>
-                    <div class="row" style="margin-top:50px">
-                      <div class="col" >
-                        @include('layouts.chart')
                       </div>
                     </div>
                 </div>
