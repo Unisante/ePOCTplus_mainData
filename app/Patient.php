@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Response;
 
 class Patient extends Model
 {
@@ -13,7 +14,7 @@ class Patient extends Model
   * @param  mixed  json file of the patient
   * @return json number of patient and medical cases for now
   */
-  public static function parse_json($request) {
+  public static function old_parse_json($request) {
     $patients = $request->input('patients');
     $response = array();
     $response['patients'] = array();
@@ -27,6 +28,36 @@ class Patient extends Model
       }
     }
     return $response;
+  }
+
+  public static function parse_json($requests) {
+    
+    $patient=new Patient;
+    $response=array();
+    //gain the id to search in the nodes
+    $config=$requests->input('config');
+    $birth_date_question_id=$config['basic_questions']['birth_date_question_id'];
+    $first_name_question_id=$config['basic_questions']['first_name_question_id'];
+    $last_name_question_id=$config['basic_questions']['last_name_question_id'];
+    $weight_question_id=$config['basic_questions']['weight_question_id'];
+    $gender_question_id=$config['basic_questions']['gender_question_id'];
+
+    //find the values in the node
+    $nodes=$requests->input('nodes');
+    foreach ($nodes as $node){
+      if($node['id']==$birth_date_question_id){$patient->birthdate=$node['value'];}
+      if($node['id']==$first_name_question_id){$patient->first_name=$node['value'];}
+      if($node['id']==$last_name_question_id){$patient->last_name=$node['value'];}
+      if($node['id']==$weight_question_id){$patient->weight=$node['value'];}
+      if($node['id']==$gender_question_id){
+        foreach($node['answers'] as $answer){
+          if ($answer['id']==$node['answer']){$patient->gender=$answer['label'];}
+        }
+      }
+    }
+    // saving the patient
+    $patient->save();
+    return $patient;
   }
 
   /*
