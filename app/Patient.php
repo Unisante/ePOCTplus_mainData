@@ -31,33 +31,42 @@ class Patient extends Model
   }
 
   public static function parse_json($requests) {
-    
-    $patient=new Patient;
-    $response=array();
-    //gain the id to search in the nodes
-    $config=$requests->input('config');
-    $birth_date_question_id=$config['basic_questions']['birth_date_question_id'];
-    $first_name_question_id=$config['basic_questions']['first_name_question_id'];
-    $last_name_question_id=$config['basic_questions']['last_name_question_id'];
-    $weight_question_id=$config['basic_questions']['weight_question_id'];
-    $gender_question_id=$config['basic_questions']['gender_question_id'];
 
-    //find the values in the node
-    $nodes=$requests->input('nodes');
-    foreach ($nodes as $node){
-      if($node['id']==$birth_date_question_id){$patient->birthdate=$node['value'];}
-      if($node['id']==$first_name_question_id){$patient->first_name=$node['value'];}
-      if($node['id']==$last_name_question_id){$patient->last_name=$node['value'];}
-      if($node['id']==$weight_question_id){$patient->weight=$node['value'];}
-      if($node['id']==$gender_question_id){
-        foreach($node['answers'] as $answer){
-          if ($answer['id']==$node['answer']){$patient->gender=$answer['label'];}
+    foreach($requests as $request){
+      $data = json_decode(file_get_contents("php://input"), true);
+      foreach($data as $individualData){
+        $patient=new Patient;
+        //gain the id to search in the nodes
+        $config=$individualData['config'];
+        $birth_date_question_id=$config['basic_questions']['birth_date_question_id'];
+        $first_name_question_id=$config['basic_questions']['first_name_question_id'];
+        $last_name_question_id=$config['basic_questions']['last_name_question_id'];
+        $weight_question_id=$config['basic_questions']['weight_question_id'];
+        $gender_question_id=$config['basic_questions']['gender_question_id'];
+
+        //find the values in the node
+        $nodes=$individualData['nodes'];
+        foreach ($nodes as $node){
+          if($node['id']==$birth_date_question_id){$patient->birthdate=$node['value'];}
+          if($node['id']==$first_name_question_id){$patient->first_name=$node['value'];}
+          if($node['id']==$last_name_question_id){$patient->last_name=$node['value'];}
+          // if($node['id']==$weight_question_id){$patient->weight=$node['value'];}
+          if($node['id']==$gender_question_id){
+            foreach($node['answers'] as $answer){
+              if ($answer['id']==$node['answer']){$patient->gender=$answer['label'];}
+            }
+          }
         }
+        // saving the patient
+        $patient->save();
+        //can one person have more than one medical case?
       }
     }
-    // saving the patient
-    $patient->save();
-    return $patient;
+
+
+
+
+ 
   }
 
   /*
