@@ -31,14 +31,13 @@ class Patient extends Model
   }
 
   public static function parse_json($requests) {
-      $data = json_decode(file_get_contents("php://input"), true);
-      foreach($data as $individualData){
-
-        //create a new patient object
-        $patient=new Patient;
-
-        //finding the patient key
-        $patient_key=$individualData['patient'];
+    $study_id='Test';
+    $data = json_decode(file_get_contents("php://input"), true);
+    foreach($data as $individualData){
+      $patient=new Patient;
+      //finding the patient key
+      $patient_key=$individualData['patient'];
+      if($patient_key['study_id']== $study_id){
         $patient->local_patient_id=$patient_key['uid'];
         //gain the id to search in the nodes
         $config=$individualData['config'];
@@ -54,7 +53,7 @@ class Patient extends Model
           if($node['id']==$birth_date_question_id){$patient->birthdate=$node['value'];}
           if($node['id']==$first_name_question_id){$patient->first_name=$node['value'];}
           if($node['id']==$last_name_question_id){$patient->last_name=$node['value'];}
-          // if($node['id']==$weight_question_id){$patient->weight=$node['value'];}
+          if($node['id']==$weight_question_id){$patient->weight=$node['value'];}
           if($node['id']==$gender_question_id){
             foreach($node['answers'] as $answer){
               if ($answer['id']==$node['answer']){$patient->gender=$answer['label'];}
@@ -63,7 +62,7 @@ class Patient extends Model
         }
         $patient->save();
       }
-
+    }
   }
 
   /*
