@@ -31,11 +31,15 @@ class Patient extends Model
   }
 
   public static function parse_json($requests) {
-
-    foreach($requests as $request){
       $data = json_decode(file_get_contents("php://input"), true);
       foreach($data as $individualData){
+
+        //create a new patient object
         $patient=new Patient;
+
+        //finding the patient key
+        $patient_key=$individualData['patient'];
+        $patient->local_patient_id=$patient_key['uid'];
         //gain the id to search in the nodes
         $config=$individualData['config'];
         $birth_date_question_id=$config['basic_questions']['birth_date_question_id'];
@@ -57,16 +61,9 @@ class Patient extends Model
             }
           }
         }
-        // saving the patient
         $patient->save();
-        //can one person have more than one medical case?
       }
-    }
 
-
-
-
- 
   }
 
   /*
