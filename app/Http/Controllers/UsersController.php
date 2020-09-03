@@ -181,4 +181,7 @@ class UsersController extends Controller
     }
   }
 
+  public function resetOwnUserPassword(){
+    return 'ture';
+  }
 }

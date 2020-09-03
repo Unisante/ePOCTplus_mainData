@@ -10,11 +10,12 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Auth::routes();
+// Auth::routes();
 Route::get('/', function () {
   return redirect(route('login'));
 });
-
+// Route::get('/user/reset',['as'=>'users.resetOwnUserPassword','uses'=>'UsersController@resetOwnUserPassword'])->name('reset');
+// Route::get('/user/reset','UsersController@resetOwnUserPassword');
 Route::group(['middleware' => ['auth']], function() {
   Route::resource('roles', 'RolesController');
   Route::resource('users','UsersController');
