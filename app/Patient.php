@@ -2,12 +2,13 @@
 
 namespace App;
 use Illuminate\Database\Eloquent\Model;
-use Response;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Patient extends Model
+class Patient extends Model implements Auditable
 {
-  protected $guarded = [];
+  use \OwenIt\Auditing\Auditable;
 
+  protected $guarded = [];
   /*
   * recevieves a json file and makes a save to the database
   * @param  mixed  json file of the patient
@@ -18,12 +19,13 @@ class Patient extends Model
     $response = array();
     $response['patients'] = array();
     $response['medical_cases'] = array();
+
     foreach ($patients as $key=>&$patient) {
       $main_data_patient_id=isset($patient->main_data_patient_id)? $patient->main_data_patient_id :null;
-      $new_patient = self::update_or_create($main_data_patient_id, $patient['firstname'], $patient['lastname']);
+      $new_patient = self::get_or_create($main_data_patient_id, $patient['firstname'], $patient['lastname']);
       $response['patients'][$key] = $patient['id'];
       foreach ($patient['medicalCases'] as $medical_case_json){
-        MedicalCase::get_or_create_case($medical_case_json, $new_patient['id'], $response);
+        MedicalCase::get_or_create($medical_case_json, $new_patient['id'], $response);
       }
     }
     return $response;
@@ -73,7 +75,7 @@ class Patient extends Model
   * @params $last_name
   * @return  patient object
   */
-  public static function update_or_create($local_id, $first_name, $last_name){
+  public static function get_or_create($local_id, $first_name, $last_name){
     $fields = ['first_name' => $first_name, 'last_name' => $last_name];
     if ($local_id == null) {
       $patient = Patient::create($fields);
@@ -82,5 +84,14 @@ class Patient extends Model
       $patient->update($fields);
     }
     return $patient;
+  }
+
+  /**
+  * making a relationship to medicalCase
+  * @return Many medical cases
+  */
+  public function medicalCases()
+  {
+    return $this->hasMany('App\medicalCase');
   }
 }

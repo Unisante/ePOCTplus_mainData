@@ -3,29 +3,34 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class MedicalCase extends Model
+class MedicalCase extends Model implements Auditable
 {
+  use \OwenIt\Auditing\Auditable;
   protected $guarded = [];
-  /*
-  * Gets or creates medical case
+
+  /**
+  * Checks the json for medical case creation
   * @params $json
   * @params $patient_id
   * @params &$response
-  * @return  void
+  * @return void
   */
-  public static function get_or_create_case($json, $patient_id, &$response){
-    $algorithm = Algorithm::get_or_create($json['algorithm_id'], $json['name']);
-    $version = Version::get_or_create($json['version'], $algorithm->id);
+  public static function parse_json($json, $patient_id, &$response){
+    $algorithm = Algorithm::getOrCreate($json['algorithm_id'], $json['name']);
+    $version = Version::getOrCreate($json['version'], $algorithm->id);
     $medical_case = self::get_or_create($json['main_data_medical_case_id'], $patient_id, $version->id);
     $response['medical_cases'][$json['id']] = $medical_case->id;
     MedicalCaseAnswer::parse_answers($json, $medical_case);
   }
-  /*
-  * gets or creates an element
+
+  /**
+  * Create or get medical case
   * @params $local_id
   * @params $patient_id
   * @params $version_id
+  *
   * @return $medical_case
   */
   public static function get_or_create($local_id, $patient_id, $version_id){
@@ -34,6 +39,23 @@ class MedicalCase extends Model
     } else {
       $medical_case = MedicalCase::find($local_id);
     }
+
     return $medical_case;
+  }
+
+  /**
+  * making a relationship to patient
+  * @return one to one patient relationship
+  */
+  public function patient(){
+    return $this->belongsTo('App\Patient');
+  }
+
+  /**
+  * Make medical case relation
+  * @return one to many medical cases retionship
+  */
+  public function medical_case_answers(){
+    return $this->hasMany('App\MedicalCaseAnswer');
   }
 }

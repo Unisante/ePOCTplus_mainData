@@ -15,7 +15,12 @@ use App\MedicalCaseAnswer;
 |
 */
 
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+
 Route::get('medical_case_answers', function(Request $request) {
+
     return MedicalCaseAnswer::all();
 });
 
@@ -23,14 +28,3 @@ Route::post('sync_medical_cases', function(Request $request) {
     return Patient::parse_json($request);
 });
 
-// Route::post('/sync_multi_medical_cases',function(Request $requests){
-//   foreach($requests as $request){
-//     $data = json_decode(file_get_contents("php://input"), true);
-//     foreach($data as $dt){
-//       return $dt;
-//     }
-//     return $data;
-//     return response()->json($request['name']);
-//   }
-
-// });
