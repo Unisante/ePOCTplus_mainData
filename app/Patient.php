@@ -1,7 +1,6 @@
 <?php
 
 namespace App;
-
 use Illuminate\Database\Eloquent\Model;
 use Response;
 
@@ -30,7 +29,7 @@ class Patient extends Model
     return $response;
   }
 
-  public static function parse_json($requests) {
+  public static function parse_json($request) {
     $study_id='Test';
     $data = json_decode(file_get_contents("php://input"), true);
     foreach($data as $individualData){
@@ -61,8 +60,10 @@ class Patient extends Model
           }
         }
         $patient->save();
+
       }
     }
+    return 'all gud';
   }
 
   /*
