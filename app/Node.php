@@ -14,7 +14,23 @@ class Node extends Model implements Auditable
   * @return relation
   */
   public function getOrCreate($node_to_check){
-
+    $node = Node::firstOrCreate(
+      [
+        'medal_c_id' => $node_to_check['id']
+      ],
+      [
+        'reference' => $version_id,
+        'label' => $version_id,
+        'type' => $version_id,
+        'category' => $version_id,
+        'priority' => $version_id,
+        'stage' => $version_id,
+        'description' => $version_id,
+        'formula' => $version_id,
+        'answer_type_id'=>$id,
+        'algorithm_id'=>$id,
+      ]
+    );
     return $node;
   }
   public function answers()
