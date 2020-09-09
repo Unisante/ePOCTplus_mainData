@@ -39,7 +39,7 @@ class syncMedicalsController extends Controller
             }
           }
           $patient->save();
-          $data_to_save=array(
+          $data_to_parse=array(
             'local_medical_case_id'=>$individualData['id'],
             'version_id'=>$individualData['version_id'],
             'created_at'=>$individualData['created_at'],
@@ -47,9 +47,10 @@ class syncMedicalsController extends Controller
             'patient_id'=>$patient->id,
             'algorithm_id'=>$individualData['algorithm_id'],
             'algorithm_name'=>$individualData['algorithm_name'],
-            'version_name'=>$individualData['version_name']
+            'version_name'=>$individualData['version_name'],
+            'nodes'=>$individualData['nodes']
           );
-          MedicalCase::parse_data($data_to_save);
+          MedicalCase::parse_data($data_to_parse);
         }
       }
       return response()->json(["data"=>'all cool']);

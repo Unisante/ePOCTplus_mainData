@@ -17,11 +17,11 @@ class MedicalCase extends Model implements Auditable
   * @params &$response
   * @return void
   */
-  public static function parse_data($data_to_save){
-    $algorithm = Algorithm::getOrCreate($data_to_save['algorithm_id'], $data_to_save['algorithm_name']);
-    $version = Version::getOrCreate($data_to_save['version_name'], $algorithm->id,$data_to_save['version_id']);
-    $medical_case = self::get_or_create($data_to_save);
-    // MedicalCaseAnswer::parse_answers($json, $medical_case);
+  public static function parse_data($data_to_parse){
+    $algorithm = Algorithm::getOrCreate($data_to_parse['algorithm_id'], $data_to_parse['algorithm_name']);
+    $version = Version::getOrCreate($data_to_parse['version_name'], $algorithm->id,$data_to_parse['version_id']);
+    $medical_case = self::get_or_create($data_to_parse);
+    MedicalCaseAnswer::parse_answers($data_to_parse['nodes'], $medical_case);
   }
 
   /**
