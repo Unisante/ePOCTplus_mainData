@@ -13,6 +13,10 @@ class Node extends Model implements Auditable
   * Create a relation with answers
   * @return relation
   */
+  public function getOrCreate($node_to_check){
+
+    return $node;
+  }
   public function answers()
   {
     return $this->hasMany('App\Answer');

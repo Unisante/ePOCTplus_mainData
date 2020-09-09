@@ -18,14 +18,17 @@ class MedicalCaseAnswer extends Model implements Auditable
   */
   public static function parse_answers($nodes, $medical_case)
   {
-    dd($nodes);
-    // foreach ($json['nodes'] as &$node){
-    //   if (array_key_exists('answer', $node) && array_key_exists('value', $node) && ($node['answer'] != null || $node['value'] != null)){
-    //     $answer_id = $node['answer'] != null ? $node['answer'] : 0;
-    //     $value = $node['value'] != null ? $node['value'] : '';
-    //     MedicalCaseAnswer::create(['medical_case_id' => $medical_case->id, 'answer_id' => $answer_id, 'value' => $value, 'node_id' => $node['id']]);
-    //   }
-    // }
+    $group_one=["Boolean","Array","Present","Positive"];
+    $group_two=["Integer","Float","Date","String"];
+    foreach($nodes as $node){
+      if(array_key_exists('value_format',$node) && in_array($node['value_format'], $group_one) && array_key_exists($node['answer'],$node['answers'])){
+        dd($node['answers'][$node['answer']]);
+        //check if the node exists in the database and if it doesnt,create it
+        
+      }elseif(array_key_exists('value_format',$node) && in_array($node['value_format'], $group_two)){
+        dd($node['value']);
+      }
+    }
   }
 
   /**
