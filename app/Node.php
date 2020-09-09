@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+use App\AnswerType;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 class Node extends Model implements Auditable
@@ -13,7 +13,8 @@ class Node extends Model implements Auditable
   * Create a relation with answers
   * @return relation
   */
-  public function getOrCreate($node_to_check,$algorithm){
+  public static function getOrCreate($node_to_check,$algorithm){
+    $answerType = AnswerType::getOrCreate($node_to_check['value_format']);
     $node = Node::firstOrCreate(
       [
         'medal_c_id' => $node_to_check['id']
@@ -27,7 +28,7 @@ class Node extends Model implements Auditable
         'stage' => $node_to_check['stage'],
         'description' => $node_to_check['description'],
         'formula' => $node_to_check['formula'],
-        'answer_type_id'=>$id,
+        'answer_type_id'=>$answerType->id,
         'algorithm_id'=>$algorithm->id,
       ]
     );
