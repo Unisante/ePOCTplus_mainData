@@ -22,23 +22,21 @@ class MedicalCaseAnswer extends Model implements Auditable
     $group_two=["Integer","Float","Date","String"];
     foreach($nodes as $node){
       if(array_key_exists('value_format',$node) && in_array($node['value_format'], $group_one) && array_key_exists($node['answer'],$node['answers'])){
-        // dd($node['answers'][$node['answer']]);
-        //check if the node exists in the database and if it doesnt,create it
-        $issued_node=Node::getOrCreate($node,$algorithm);
-        //save the answers
-        foreach($node['answers'] as $answer){
-         Answer::getOrCreate($issued_node,$answer);
-        }
-        $issued_value=isset($node['value'])?$node['value']:null;
-        $medical_case_answer=Self::getOrCreate($medical_case,$node['answer'],$issue_node,$issued_value);
+        $issued_node=self::generalGetOrCreate($node,$algorithm,$medical_case);
+        foreach($node['answers'] as $answer){Answer::getOrCreate($issued_node,$answer);}
       }elseif(array_key_exists('value_format',$node) && in_array($node['value_format'], $group_two)){
-        $issue_node=Node::getOrCreate($node,$algorithm);
-        $issued_value=isset($node['value'])?$node['value']:null;
-        $medical_case_answer=Self::getOrCreate($medical_case,$node['answer'],$issue_node,$issued_value);
+        self::generalGetOrCreate($node,$algorithm,$medical_case);
       }
     }
   }
-
+  public static function generalGetOrCreate($node,$algorithm,$medical_case){
+    //check if the node exists in the database and if it doesnt,create it
+    $issued_node=Node::getOrCreate($node,$algorithm);
+    //check for medical case answer or create
+    $issued_value=isset($node['value'])?$node['value']:null;
+    $medical_case_answer=Self::getOrCreate($medical_case,$node['answer'],$issued_node,$issued_value);
+    return $issued_node;
+  }
   public static function getOrCreate($medical_case,$answer,$node,$issued_value){
       $medica_case_answer = MedicalCaseAnswer::firstOrCreate(
         [
@@ -53,6 +51,7 @@ class MedicalCaseAnswer extends Model implements Auditable
 
     return $medica_case_answer;
   }
+
   /**
    * Get all audits of one medical case
    * @params $id
