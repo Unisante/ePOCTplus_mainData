@@ -11,12 +11,12 @@ class Algorithm extends Model implements Auditable
   protected $guarded = [];
 
   public static function getOrCreate($algorithm_id, $name) {
-    $algorithm = Algorithm::firstWhere('medal_c_id', $algorithm_id);
-    if ($algorithm->isEmpty()) {
-      $algorithm = Algorithm::create(['name' => $name, 'medal_c_id' => $algorithm_id]);
-    } else {
-      $algorithm->update(['name' => $name]);
-    }
+    $algorithm = Algorithm::where('medal_c_id', $algorithm_id)
+    ->updateOrCreate(
+      [
+        'name' => $name
+      ]
+    );
     return $algorithm;
   }
 }

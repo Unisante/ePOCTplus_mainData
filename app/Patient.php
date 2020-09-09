@@ -3,6 +3,7 @@
 namespace App;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
+use App\medicalCase;
 
 class Patient extends Model implements Auditable
 {
@@ -61,10 +62,12 @@ class Patient extends Model implements Auditable
             }
           }
         }
-        $patient->save();
-
+        // $patient->save();
+        // $mc=MedicalCase::get_or_create($individualData['id'],$patient->id,$individualData['version_id']);
+        // $patient->medicalCases->add($mc);
       }
     }
+    // // MedicalCase::parse_json();
     return 'all gud';
   }
 
