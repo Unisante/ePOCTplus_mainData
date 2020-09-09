@@ -24,32 +24,33 @@ class MedicalCaseAnswer extends Model implements Auditable
       if(array_key_exists('value_format',$node) && in_array($node['value_format'], $group_one) && array_key_exists($node['answer'],$node['answers'])){
         // dd($node['answers'][$node['answer']]);
         //check if the node exists in the database and if it doesnt,create it
-        $issue_node=Node::getOrCreate($node,$algorithm);
+        $issued_node=Node::getOrCreate($node,$algorithm);
         //save the answers
-        $answer = Answer::getOrCreate();
-        //We parse answers
-        // $medical_case_answer=Self::getOrCreate();
+        foreach($node['answers'] as $answer){
+         Answer::getOrCreate($issued_node,$answer);
+        }
+        $issued_value=isset($node['value'])?$node['value']:null;
+        $medical_case_answer=Self::getOrCreate($medical_case,$node['answer'],$issue_node,$issued_value);
       }elseif(array_key_exists('value_format',$node) && in_array($node['value_format'], $group_two)){
         $issue_node=Node::getOrCreate($node,$algorithm);
-        // $medical_case_answer=Self::getOrCreate();
+        $issued_value=isset($node['value'])?$node['value']:null;
+        $medical_case_answer=Self::getOrCreate($medical_case,$node['answer'],$issue_node,$issued_value);
       }
     }
   }
 
-  public static function getOrCreate($medical_case,$answer,$value,$node){
-    if($value==null){
+  public static function getOrCreate($medical_case,$answer,$node,$issued_value){
       $medica_case_answer = MedicalCaseAnswer::firstOrCreate(
         [
           'medical_case_id'=>$medical_case->id,
-          'answer_id'=>$answer_id
+          'answer_id'=>(int)$answer,
+          'node_id'=>$node->id
         ],
         [
-          'node_id'=>$node
+          'node_id'=>$issued_value
         ]
       );
-    }else{
 
-    }
     return $medica_case_answer;
   }
   /**

@@ -14,6 +14,10 @@ class Node extends Model implements Auditable
   * @return relation
   */
   public static function getOrCreate($node_to_check,$algorithm){
+
+    $priority=isset($node_to_check['is_mandatory'])?$node_to_check['is_mandatory']:0;
+    $stage=isset($node_to_check['stage'])?$node_to_check['stage']:'';
+    $formula=isset($node_to_check['formula'])?$node_to_check['formula']:'';
     $answerType = AnswerType::getOrCreate($node_to_check['value_format']);
     $node = Node::firstOrCreate(
       [
@@ -24,14 +28,15 @@ class Node extends Model implements Auditable
         'label' => $node_to_check['label'],
         'type' => $node_to_check['type'],
         'category' => $node_to_check['category'],
-        'priority' => $node_to_check['is_mandatory'],
-        'stage' => $node_to_check['stage'],
+        'priority' => $priority,
+        'stage' => $stage,
         'description' => $node_to_check['description'],
-        'formula' => $node_to_check['formula'],
+        'formula' => $formula,
         'answer_type_id'=>$answerType->id,
         'algorithm_id'=>$algorithm->id,
       ]
     );
+
     return $node;
   }
   public function answers()
