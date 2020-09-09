@@ -16,7 +16,7 @@ class MedicalCaseAnswer extends Model implements Auditable
   * @params $medical_case
   * @return void
   */
-  public static function parse_answers($nodes, $medical_case)
+  public static function parse_answers($nodes, $medical_case,$algorithm)
   {
     $group_one=["Boolean","Array","Present","Positive"];
     $group_two=["Integer","Float","Date","String"];
@@ -24,7 +24,7 @@ class MedicalCaseAnswer extends Model implements Auditable
       if(array_key_exists('value_format',$node) && in_array($node['value_format'], $group_one) && array_key_exists($node['answer'],$node['answers'])){
         dd($node['answers'][$node['answer']]);
         //check if the node exists in the database and if it doesnt,create it
-        
+
       }elseif(array_key_exists('value_format',$node) && in_array($node['value_format'], $group_two)){
         dd($node['value']);
       }

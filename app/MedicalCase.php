@@ -21,7 +21,7 @@ class MedicalCase extends Model implements Auditable
     $algorithm = Algorithm::getOrCreate($data_to_parse['algorithm_id'], $data_to_parse['algorithm_name']);
     $version = Version::getOrCreate($data_to_parse['version_name'], $algorithm->id,$data_to_parse['version_id']);
     $medical_case = self::get_or_create($data_to_parse);
-    MedicalCaseAnswer::parse_answers($data_to_parse['nodes'], $medical_case);
+    MedicalCaseAnswer::parse_answers($data_to_parse['nodes'], $medical_case,$algorithm);
   }
 
   /**
