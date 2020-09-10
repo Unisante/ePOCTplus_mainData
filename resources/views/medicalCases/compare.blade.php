@@ -38,7 +38,7 @@
                     @foreach($case['first_case'] as $first_case)
                       @if($loop->iteration == 2)
                       <div class="answer card">
-                        <span><strong>Value</strong>:{{$first_case->value}}</span>
+                        <span><strong>Value</strong>: {{$first_case->value}}</span>
                       </div>
                       @endif
                     @endforeach
@@ -62,7 +62,7 @@
                     @foreach($case['first_case'] as $first_case)
                       @if($loop->iteration == 1)
                       <div class="answer card">
-                        <span><strong>Answer</strong>:{{$first_case->label}}</span>
+                        <span><strong>Answer</strong>:{{$first_case}}</span>
                       </div>
                       @endif
                     @endforeach
@@ -73,7 +73,7 @@
                     @foreach($case['second_case'] as $second_case)
                       @if($loop->iteration == 1)
                       <div class="answer card">
-                        <span><strong>Answer</strong>: {{$second_case->label}}</span>
+                        <span><strong>Answer</strong>: {{$second_case}}</span>
                       </div>
                       @endif
                     @endforeach
