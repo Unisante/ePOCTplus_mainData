@@ -43,18 +43,22 @@ class MedicalCaseAnswer extends Model implements Auditable
     return $issued_node;
   }
   public static function getOrCreate($medical_case,$answer,$node,$issued_value){
-    $issued_answer=isset($answer)?$answer:null;
-    $medica_case_answer = MedicalCaseAnswer::firstOrCreate(
+    $issued_answer=isset($answer)?$answer:0;
+    $main_d_answer_id=0;
+    if(Answer::where('medal_c_id',$issued_answer)->exists()){
+      $main_d_answer_id=Answer::where('medal_c_id',$issued_answer)->first()->id;
+    }
+    $medical_case_answer = MedicalCaseAnswer::firstOrCreate(
       [
         'medical_case_id'=>$medical_case->id,
-        'answer_id'=>(int)$issued_answer,
+        'answer_id'=>$main_d_answer_id,
         'node_id'=>$node->id
       ],
       [
         'value'=>$issued_value
       ]
     );
-    return $medica_case_answer;
+    return $medical_case_answer;
   }
 
   /**
