@@ -20,7 +20,7 @@ class MedicalCase extends Model implements Auditable
   public static function parse_data($data_to_parse){
     $algorithm = Algorithm::getOrCreate($data_to_parse['algorithm_id'], $data_to_parse['algorithm_name']);
     $version = Version::getOrCreate($data_to_parse['version_name'], $algorithm->id,$data_to_parse['version_id']);
-    $medical_case = self::get_or_create($data_to_parse);
+    $medical_case = self::get_or_create($data_to_parse,$version->id);
     MedicalCaseAnswer::parse_answers($data_to_parse['nodes'], $medical_case,$algorithm);
   }
 
@@ -32,14 +32,14 @@ class MedicalCase extends Model implements Auditable
   *
   * @return $medical_case
   */
-  public static function get_or_create($data_to_save){
+  public static function get_or_create($data_to_save,$version_id){
     $medical_case = MedicalCase::firstOrCreate(
       [
         'local_medical_case_id'=>$data_to_save['local_medical_case_id']
       ],
       [
         'patient_id'=>$data_to_save['patient_id'],
-        'version_id'=>$data_to_save['version_id'],
+        'version_id'=>$version_id,
         'created_at'=>new DateTime($data_to_save['created_at']),
         'updated_at'=>new DateTime($data_to_save['updated_at'])
       ]

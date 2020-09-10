@@ -21,6 +21,11 @@ class MedicalCaseAnswer extends Model implements Auditable
     $group_one=["Boolean","Array","Present","Positive"];
     $group_two=["Integer","Float","Date","String"];
     foreach($nodes as $node){
+      $check_value=isset($node['value'])?$node['value']:null;
+      $check_answer=isset($node['answer'])?$node['answer']:null;
+      if($check_value==null && $check_answer==null){
+        continue;
+      }
       if(array_key_exists('value_format',$node) && in_array($node['value_format'], $group_one) && array_key_exists($node['answer'],$node['answers'])){
         $issued_node=self::generalGetOrCreate($node,$algorithm,$medical_case);
         foreach($node['answers'] as $answer){Answer::getOrCreate($issued_node,$answer);}
@@ -38,17 +43,17 @@ class MedicalCaseAnswer extends Model implements Auditable
     return $issued_node;
   }
   public static function getOrCreate($medical_case,$answer,$node,$issued_value){
-      $medica_case_answer = MedicalCaseAnswer::firstOrCreate(
-        [
-          'medical_case_id'=>$medical_case->id,
-          'answer_id'=>(int)$answer,
-          'node_id'=>$node->id
-        ],
-        [
-          'node_id'=>$issued_value
-        ]
-      );
-
+    $issued_answer=isset($answer)?$answer:null;
+    $medica_case_answer = MedicalCaseAnswer::firstOrCreate(
+      [
+        'medical_case_id'=>$medical_case->id,
+        'answer_id'=>(int)$issued_answer,
+        'node_id'=>$node->id
+      ],
+      [
+        'value'=>$issued_value
+      ]
+    );
     return $medica_case_answer;
   }
 
