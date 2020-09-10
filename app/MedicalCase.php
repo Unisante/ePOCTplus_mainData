@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
+use App\Diagnosis;
 class MedicalCase extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable;
@@ -22,7 +23,7 @@ class MedicalCase extends Model implements Auditable
     $version = Version::getOrCreate($data_to_parse['version_name'], $algorithm->id,$data_to_parse['version_id']);
     $medical_case = self::get_or_create($data_to_parse,$version->id);
     MedicalCaseAnswer::parse_answers($data_to_parse['nodes'], $medical_case,$algorithm);
-    
+    Diagnosis::parse_data($medical_case,$data_to_parse['nodes'],$data_to_parse['diagnoses']);
   }
 
   /**

@@ -60,7 +60,8 @@ class syncMedicalsController extends Controller
             'algorithm_id'=>$individualData['algorithm_id'],
             'algorithm_name'=>$individualData['algorithm_name'],
             'version_name'=>$individualData['version_name'],
-            'nodes'=>$individualData['nodes']
+            'nodes'=>$individualData['nodes'],
+            'diagnoses'=>$individualData['diagnoses']
           );
           MedicalCase::parse_data($data_to_parse);
         }
