@@ -42,24 +42,10 @@ class MedicalCasesController extends Controller
     $medicalCase=MedicalCase::find($id);
     $medicalCaseInfo=array();
     foreach($medicalCase->medical_case_answers as $medicalCaseAnswer){
-      if($medicalCaseAnswer->answer_id == 0 || $medicalCaseAnswer->answer_id == null ){
-        $data=array(
-          "answer"=>$medicalCaseAnswer->value,
-          "question"=>Node::find($medicalCaseAnswer->node_id),
-        );
-      }
-      // elseif(Answer::find($medicalCaseAnswer->answer_id)==null){
-      //   $data=array(
-      //     "answer"=>$medicalCaseAnswer->value,
-      //     "question"=>Node::find($medicalCaseAnswer->node_id),
-      //   );
-      // }
-      else{
-        $data=array(
-          "answer"=>Answer::find($medicalCaseAnswer->answer_id)->label,
-          "question"=>Node::find($medicalCaseAnswer->node_id),
-        );
-      }
+      $data=array(
+        "answer"=>Answer::find($medicalCaseAnswer->answer_id),
+        "question"=>Node::find($medicalCaseAnswer->node_id),
+      );
       array_push($medicalCaseInfo,json_decode(json_encode($data)));
     }
     dd($medicalCaseInfo);
