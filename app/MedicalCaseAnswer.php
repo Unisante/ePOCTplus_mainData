@@ -33,7 +33,7 @@ class MedicalCaseAnswer extends Model implements Auditable
         $medical_case_answer=Self::getOrCreate($medical_case,$node['answer'],$issued_node,$issued_value);
       }elseif(array_key_exists('value_format',$node) && in_array($node['value_format'], $group_two)&& array_key_exists('value',$node)){
         $issued_node=Node::getOrCreate($node,$algorithm);
-        $issued_value=isset($node['value'])?$node['value']:null;
+        $issued_value=$node['value'];
         $medical_case_answer=Self::getOrCreateValue($medical_case,$issued_node,$issued_value);
       }
     }
@@ -52,7 +52,7 @@ class MedicalCaseAnswer extends Model implements Auditable
     );
   }
   public static function getOrCreate($medical_case,$answer,$node,$issued_value){
-    $issued_answer=isset($answer)?$answer:0;
+    $issued_answer=$answer;
     $main_d_answer_id=0;
     if(Answer::where('medal_c_id',$issued_answer)->exists()){
       $main_d_answer_id=Answer::where('medal_c_id',$issued_answer)->first()->id;
