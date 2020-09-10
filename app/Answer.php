@@ -14,7 +14,7 @@ class Answer extends Model implements Auditable
     $answer_issued = Answer::firstOrCreate(
       [
         'medal_c_id' => $answer['id'],
-        'node_id'=>$node['id']
+        'node_id'=>$node->id
       ],
       [
         'label' => $answer['label']

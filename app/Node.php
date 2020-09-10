@@ -36,7 +36,6 @@ class Node extends Model implements Auditable
         'algorithm_id'=>$algorithm->id,
       ]
     );
-
     return $node;
   }
   public function answers()
