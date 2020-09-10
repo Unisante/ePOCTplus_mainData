@@ -51,11 +51,15 @@
                     </div>
                     <div class="card-header">
                       <span class="font-weight-bold">Description: </span>
-                      <span>{{$case->question->description}}</span>
+                      @if($case->question->description)
+                       <span>{{$case->question->description}}</span>
+                      @else
+                      <span>No Description</span>
+                      @endif
                     </div>
                     <div class="card-header">
                       <span class="font-weight-bold">Answer: </span>
-                      <span>{{$case->answer->label}}</span>
+                      <span>{{$case->answer}}</span>
                     </div>
                     <a href="{{route('medicalCasesController.medicalCaseQuestion', [$medicalCase->id,$case->question->id])}}" class="btn btn-outline-light">Change Answer</a>
                   </div>
