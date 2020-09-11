@@ -49,31 +49,35 @@
                 <div class="card" style="padding:10px">
                 <div class="tab-content" id="myTabContent">
                   <div class="tab-pane fade show active" id="medicalCase" role="tabpanel" aria-labelledby="medicalCase-tab">
-                    @foreach($medicalCaseInfo as $case)
-                    <div class="card">
-                      <div class="card-header">
-                        <span class="font-weight-bold">Label: </span>
-                        <span>{{$case->question->label}}</span>
+                    @if($medicalCaseInfo)
+                      @foreach($medicalCaseInfo as $case)
+                      <div class="card">
+                        <div class="card-header">
+                          <span class="font-weight-bold">Label: </span>
+                          <span>{{$case->question->label}}</span>
+                        </div>
+                        <div class="card-header">
+                          <span class="font-weight-bold">Stage: </span>
+                          <span>{{$case->question->stage}}</span>
+                        </div>
+                        <div class="card-header">
+                          <span class="font-weight-bold">Description: </span>
+                          @if($case->question->description)
+                          <span>{{$case->question->description}}</span>
+                          @else
+                          <span>No Description</span>
+                          @endif
+                        </div>
+                        <div class="card-header">
+                          <span class="font-weight-bold">Answer: </span>
+                          <span>{{$case->answer}}</span>
+                        </div>
+                        <a href="{{route('medicalCasesController.medicalCaseQuestion', [$medicalCase->id,$case->question->id])}}" class="btn btn-outline-light">Change Answer</a>
                       </div>
-                      <div class="card-header">
-                        <span class="font-weight-bold">Stage: </span>
-                        <span>{{$case->question->stage}}</span>
-                      </div>
-                      <div class="card-header">
-                        <span class="font-weight-bold">Description: </span>
-                        @if($case->question->description)
-                        <span>{{$case->question->description}}</span>
-                        @else
-                        <span>No Description</span>
-                        @endif
-                      </div>
-                      <div class="card-header">
-                        <span class="font-weight-bold">Answer: </span>
-                        <span>{{$case->answer}}</span>
-                      </div>
-                      <a href="{{route('medicalCasesController.medicalCaseQuestion', [$medicalCase->id,$case->question->id])}}" class="btn btn-outline-light">Change Answer</a>
-                    </div>
-                    @endforeach
+                      @endforeach
+                    @else
+                      <span>There is no information on this medical case</span>
+                    @endif
                   </div>
                   <div class="tab-pane fade" id="diagnoses" role="tabpanel" aria-labelledby="diagnoses-tab">
                     @if($diagnoses)
@@ -105,11 +109,15 @@
                         </div>
                       </div>
                       @endforeach
+                  @else
+                      <span>There is no Diagnostic information on this medical case</span>
                   @endif
                   </div>
                 </div>
                 </div>
               </div>
+              @else
+                <span>The Medical Case does not exist</span>
               @endif
             </div>
           </div>
