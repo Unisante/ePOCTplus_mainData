@@ -56,7 +56,7 @@ class Diagnosis extends Model
             'reference' => $diagnosis_node['reference'],
             'label' => $diagnosis_node['label'],
             'diagnostic_id' => $diagnosis_node['diagnostic_id'],
-            'agreed' => $agreed,'proposed/additional' => true,
+            'agreed' => $agreed,'proposed_additional' => true,
           ]
         );
       }else{
@@ -69,11 +69,15 @@ class Diagnosis extends Model
             'reference' => $diagnosis_node['reference'],
             'label' => $diagnosis_node['label'],
             'diagnostic_id' => $diagnosis_node['diagnostic_id'],
-            'agreed' => $agreed,'proposed/additional' => false,
+            'agreed' => $agreed,'proposed_additional' => false,
           ]
         );
       }
 
       return $diagnosis;
     }
+
+  public function medical_case(){
+    return $this->belongsTo('App\MedicalCase');
+  }
 }

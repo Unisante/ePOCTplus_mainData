@@ -56,13 +56,12 @@ class MedicalCasesController extends Controller
         array_push($medicalCaseInfo,json_decode(json_encode($data)));
       }
     }
-    $diagnoses=$medicalCase->diagnoses();
+    $diagnoses=$medicalCase->diagnoses()->get();
     $data=array(
       'medicalCase'=>$medicalCase,
       'medicalCaseInfo'=>$medicalCaseInfo,
       'diagnoses'=>$diagnoses
     );
-    // dd('ibu');
     return view('medicalCases.show')->with($data);
   }
 

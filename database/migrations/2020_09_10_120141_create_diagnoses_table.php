@@ -20,7 +20,7 @@ class CreateDiagnosesTable extends Migration
             $table->integer('diagnostic_id');
             $table->integer('reference')->nullable();
             $table->boolean('agreed');
-            $table->boolean('proposed/additional');
+            $table->boolean('proposed_additional');
             $table->timestamps();
         });
     }
