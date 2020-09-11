@@ -56,10 +56,13 @@ class MedicalCasesController extends Controller
         array_push($medicalCaseInfo,json_decode(json_encode($data)));
       }
     }
+    $diagnoses=$medicalCase->diagnoses();
     $data=array(
       'medicalCase'=>$medicalCase,
-      'medicalCaseInfo'=>$medicalCaseInfo
+      'medicalCaseInfo'=>$medicalCaseInfo,
+      'diagnoses'=>$diagnoses
     );
+    // dd('ibu');
     return view('medicalCases.show')->with($data);
   }
 
@@ -84,7 +87,6 @@ class MedicalCasesController extends Controller
       'second_medical_case'=>$second_medical_case,
       'medical_case_info'=>$medical_case_info,
     );
-    // dd($data);
     return view ('medicalCases.compare')->with($data);
   }
 
