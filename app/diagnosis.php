@@ -10,13 +10,21 @@ class Diagnosis extends Model
 
     public static function parse_data($medical_case,$node,$diagnoses){
       $proposed_diagnosis='proposed';
-        if(array_key_exists($proposed_diagnosis,$diagnoses)){
-          // print_r(sizeof($diagnoses[$proposed_diagnosis]));
+      $additional_diagnosis='';
+        if(array_key_exists($proposed_diagnosis,$diagnoses) || array_key_exists($additional_diagnosis,$diagnoses)){
+
           foreach($diagnoses[$proposed_diagnosis] as $diagnosis){
             $agreed=$diagnosis['agreed'];
             $diagnosis_node=$node[$diagnosis['id']];
             $issued_diagnosis=Self::getOrCreate($medical_case,$diagnosis_node,$agreed);
-            // $management
+            foreach($diagnosis_node['managements'] as $management_to_issue){
+              $management_node=$node[$management_to_issue['id']];
+              $management=Management::getOrCreateDiagnosis($issued_diagnosis,$management_node);
+            }
+            foreach($diagnosis_node['drugs'] as $drugs_to_issue){
+              $drug_node=$node[$drugs_to_issue['id']];
+              $drug=Drug::getOrCreateDiagnosis($issued_diagnosis,$drug_node);
+            }
           }
         }
     }
