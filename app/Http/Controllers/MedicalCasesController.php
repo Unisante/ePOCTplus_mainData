@@ -42,17 +42,27 @@ class MedicalCasesController extends Controller
     $medicalCase=MedicalCase::find($id);
     $medicalCaseInfo=array();
     foreach($medicalCase->medical_case_answers as $medicalCaseAnswer){
-      $data=array(
-        "answer"=>Answer::find($medicalCaseAnswer->answer_id),
-        "question"=>Node::find($medicalCaseAnswer->node_id),
-      );
-      array_push($medicalCaseInfo,json_decode(json_encode($data)));
+      if($medicalCaseAnswer->answer_id == 0){
+        $data=array(
+          "answer"=>$medicalCaseAnswer->value,
+          "question"=>Node::find($medicalCaseAnswer->node_id),
+        );
+        array_push($medicalCaseInfo,json_decode(json_encode($data)));
+      }else{
+        $data=array(
+          "answer"=>Answer::find($medicalCaseAnswer->answer_id)->label,
+          "question"=>Node::find($medicalCaseAnswer->node_id),
+        );
+        array_push($medicalCaseInfo,json_decode(json_encode($data)));
+      }
     }
-
+    $diagnoses=$medicalCase->diagnoses();
     $data=array(
       'medicalCase'=>$medicalCase,
-      'medicalCaseInfo'=>$medicalCaseInfo
+      'medicalCaseInfo'=>$medicalCaseInfo,
+      'diagnoses'=>$diagnoses
     );
+    // dd('ibu');
     return view('medicalCases.show')->with($data);
   }
 
@@ -89,13 +99,16 @@ class MedicalCasesController extends Controller
   */
   public function medicalCaseQuestion($medicalCaseId,$questionId){
     $answers=[];
-    foreach(Node::find($questionId)->answers as $answer){
+    $question=Node::find($questionId);
+    $answer_type=AnswerType::find($question->answer_type_id);
+    foreach($question->answers as $answer){
       $answers[$answer->id] = $answer->label;
     }
     $data=array(
       "medicalCase"=>MedicalCase::find($medicalCaseId),
-      "question"=>Node::find($questionId),
+      "question"=>$question,
       "answers"=>$answers,
+      "answer_type"=>$answer_type
     );
     return view('medicalCases.question')->with($data);
   }
@@ -111,14 +124,25 @@ class MedicalCasesController extends Controller
   */
   public function detailFind($medical_case, $label_info, $medical_case_info = array()){
     foreach($medical_case->medical_case_answers as $medicalCaseAnswer){
-      $answer=Answer::find($medicalCaseAnswer->answer_id);
-      $question=Node::find($medicalCaseAnswer->node_id);
-      // $medicalCaseAnswer=$medicalCaseAnswer;
-      $medical_case_info[$question->id]["question"] = $question;
-      $medical_case_info[$question->id][$label_info] =array(
-        "answer"=>$answer,
-        "medicalCaseAnswer"=>$medicalCaseAnswer,
-      );
+      if($medicalCaseAnswer->answer_id == 0){
+        $answer=$medicalCaseAnswer->value;
+        $question=Node::find($medicalCaseAnswer->node_id);
+        // $medicalCaseAnswer=$medicalCaseAnswer;
+        $medical_case_info[$question->id]["question"] = $question;
+        $medical_case_info[$question->id][$label_info] =array(
+          "answer"=>$answer,
+          "medicalCaseAnswer"=>$medicalCaseAnswer,
+        );
+      }else{
+        $answer=Answer::find($medicalCaseAnswer->answer_id);
+        $question=Node::find($medicalCaseAnswer->node_id);
+        // $medicalCaseAnswer=$medicalCaseAnswer;
+        $medical_case_info[$question->id]["question"] = $question;
+        $medical_case_info[$question->id][$label_info] =array(
+          "answer"=>$answer,
+          "medicalCaseAnswer"=>$medicalCaseAnswer,
+        );
+      }
     }
     return $medical_case_info;
   }

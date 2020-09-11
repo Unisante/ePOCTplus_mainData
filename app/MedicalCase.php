@@ -64,4 +64,7 @@ class MedicalCase extends Model implements Auditable
   public function medical_case_answers(){
     return $this->hasMany('App\MedicalCaseAnswer');
   }
+  public function diagnoses(){
+    return $this->hasMany('App\Diagnosis');
+  }
 }

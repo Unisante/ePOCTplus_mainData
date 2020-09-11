@@ -48,14 +48,24 @@
                     </div>
                     <div class="card-header">
                       <span class="font-weight-bold">Description: </span>
-                      <span>{{$question->description}}</span>
+                      @if($question->description)
+                        <span>{{$question->description}}</span>
+                      @else
+                      <span>No Description was given</span>
+                      @endif
                     </div>
                     {{ Form::open(['route' => ['medicalCaseAnswersController.update',$medicalCase,$question->id]]) }}
                     <div class="input-group pl-3">
                       <div class="input-group-prepend">
                         {{Form::label('answer', 'Answer', array('class' => 'input-group-text'))}}
                       </div>
-                      {{Form::select('answer', $answers, 'S', array('class' => 'custom-select'))}}
+                      @if($answer_type->value =='Date')
+                        {{Form::date('answer', \Carbon\Carbon::now(), array('class' => 'form-control'))}}
+                      @elseif($answer_type->value =='Float')
+                        {{Form::text('answer', '',array('class' => 'form-control'))}}
+                      @else
+                        {{Form::select('answer', $answers, 'S', array('class' => 'custom-select'))}}
+                      @endif
                     </div>
                     <div class="card-header">
                       {{Form::submit('Change Answer', array('class' => 'btn btn-outline-secondary'))}}
