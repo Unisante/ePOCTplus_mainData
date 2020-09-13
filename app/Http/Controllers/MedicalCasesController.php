@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use DB;
 
-
 class MedicalCasesController extends Controller
 {
   /**

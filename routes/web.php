@@ -48,4 +48,5 @@ Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoEx
 Route::get('/export-medicalCase-csv','MedicalCasesController@medicalCaseIntoCsv')->name('medicalCasesController.medicalCaseIntoCsv');
 Route::get('/export-patient-excel','PatientsController@patientIntoExcel')->name('PatientsController.patientIntoExcel');
 Route::get('/export-patient-csv','PatientsController@patientIntoCsv')->name('PatientsController.patientIntoCsv');
+Route::get('/export-mainData-csv','PatientsController@allDataIntoExcel')->name('PatientsController.allDataIntoExcel');
 

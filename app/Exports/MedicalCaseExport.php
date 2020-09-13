@@ -7,8 +7,10 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class MedicalCaseExport implements FromCollection,WithHeadings
+class MedicalCaseExport implements FromCollection,WithHeadings,ShouldAutoSize,WithTitle
 {
     public function headings():array
     {
@@ -42,5 +44,8 @@ class MedicalCaseExport implements FromCollection,WithHeadings
   //         Carbon::parse($medicalCase->updated_at)->toFormattedDateString(),
   //     ] ;
   // }
-
+  public function title():string
+  {
+    return 'Medical Cases';
+  }
 }

@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Datatables;
 use DB;
 use App\Exports\PatientExport;
+use App\Exports\MedicalCaseExport;
+use App\Exports\DataSheet;
 use Excel;
 
 class PatientsController extends Controller
@@ -183,5 +185,8 @@ class PatientsController extends Controller
   }
   public function patientIntoCsv(){
     return Excel::download(new PatientExport,'patients.csv');
+  }
+  public function allDataIntoExcel(){
+    return Excel::download(new DataSheet,'MainData.xlsx');
   }
 }

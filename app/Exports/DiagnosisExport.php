@@ -2,25 +2,27 @@
 
 namespace App\Exports;
 
-use App\Patient;
+use App\Diagnosis;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithTitle;
-
-class PatientExport implements FromCollection,WithHeadings,ShouldAutoSize,WithTitle
+class DiagnosisExport implements FromCollection,WithHeadings,ShouldAutoSize,WithTitle
 {
-
   public function headings():array
     {
       return [
         'Id',
-        'local_patient_id',
-        'birthdate',
-        'weight',
-        'gender',
+        'medal_c_id',
+        'label',
+        'diagnostic_id',
+        'reference',
+        'agreed',
+        'proposed_additional',
         'created_at',
         'updated_at',
+        'medical_case_id',
+        'type',
       ];
     }
     /**
@@ -28,10 +30,10 @@ class PatientExport implements FromCollection,WithHeadings,ShouldAutoSize,WithTi
     */
     public function collection()
     {
-        return Patient::select('id','local_patient_id','birthdate','weight','gender','created_at','updated_at')->get();
+        return Diagnosis::all();
     }
     public function title():string
     {
-      return 'Patients';
+      return 'Diagnosis';
     }
 }
