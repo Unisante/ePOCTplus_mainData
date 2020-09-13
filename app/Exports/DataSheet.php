@@ -11,14 +11,14 @@ class DataSheet implements WithMultipleSheets
     public function sheets():array
     {
       $sheets = [];
-        $sheets['Patients']= new PatientExport;
-        $sheets['Medical Cases']= new MedicalCaseExport;
-        $sheets['Medical Case Answers']=new MedicalCaseAnswerExport;
-        $sheets['Diagnoses']= new DiagnosisExport;
-        $sheets['Drugs']= new DrugExport;
-        $sheets['Managements']=new ManagementExport;
-        $sheets['Nodes']= new NodeExport;
-        $sheets['Versions']=new VersionExport;
+        $sheets[]= new PatientExport;
+        $sheets[]= new MedicalCaseExport;
+        $sheets[]=new MedicalCaseAnswerExport;
+        $sheets[]= new DiagnosisExport;
+        $sheets[]= new DrugExport;
+        $sheets[]=new ManagementExport;
+        $sheets[]= new NodeExport;
+        $sheets[]=new VersionExport;
       return $sheets;
     }
 }
