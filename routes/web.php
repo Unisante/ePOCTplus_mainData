@@ -42,3 +42,10 @@ Route::post('/medicalCases/duplicates/delete','MedicalCasesController@destroy')-
 //for questions
 Route::get('/questions','QuestionsController@index')->name('QuestionsController.index');
 Route::get('/question/{id}','QuestionsController@show')->name('QuestionsController@show');
+
+//for downloading exports
+Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('medicalCasesController.medicalCaseIntoExcel');
+Route::get('/export-medicalCase-csv','MedicalCasesController@medicalCaseIntoCsv')->name('medicalCasesController.medicalCaseIntoCsv');
+Route::get('/export-patient-excel','PatientsController@patientIntoExcel')->name('PatientsController.patientIntoExcel');
+Route::get('/export-patient-csv','PatientsController@patientIntoCsv')->name('PatientsController.patientIntoCsv');
+

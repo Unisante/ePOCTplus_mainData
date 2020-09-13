@@ -10,6 +10,8 @@ use App\Node;
 use Illuminate\Http\Request;
 use Datatables;
 use DB;
+use App\Exports\PatientExport;
+use Excel;
 
 class PatientsController extends Controller
 {
@@ -176,4 +178,10 @@ class PatientsController extends Controller
     }
   }
 
+  public function patientIntoExcel(){
+    return Excel::download(new PatientExport,'patients.xlsx');
+  }
+  public function patientIntoCsv(){
+    return Excel::download(new PatientExport,'patients.csv');
+  }
 }

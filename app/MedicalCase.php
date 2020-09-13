@@ -4,8 +4,12 @@ namespace App;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use OwenIt\Auditing\Contracts\Auditable;
 use App\Diagnosis;
+use App\Patient;
+use App\MedicalCaseAnswer;
+use App\Node;
 class MedicalCase extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable;
@@ -66,5 +70,10 @@ class MedicalCase extends Model implements Auditable
   }
   public function diagnoses(){
     return $this->hasMany('App\Diagnosis');
+  }
+
+  public static function getMedicalCase(){
+    $medicalCases=MedicalCase::select('id','local_medical_case_id','patient_id','version_id','created_at','updated_at')->get()->toArray();
+    return $medicalCases;
   }
 }
