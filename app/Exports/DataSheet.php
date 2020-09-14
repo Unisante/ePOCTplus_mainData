@@ -14,6 +14,7 @@ class DataSheet implements WithMultipleSheets
         $sheets[]= new PatientExport;
         $sheets[]= new MedicalCaseExport;
         $sheets[]=new MedicalCaseAnswerExport;
+        $sheets[]=new AnswerExport;
         $sheets[]= new DiagnosisExport;
         $sheets[]= new DrugExport;
         $sheets[]=new ManagementExport;
