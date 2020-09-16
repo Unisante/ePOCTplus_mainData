@@ -27,7 +27,7 @@
           @include('layouts.datatable')
           <div class="row">
             <div class="col-md-8 offset-md-2">
-              @if(count($medicalCases)>0)
+              @if($medicalCases))
               <table class="table">
                 <thead>
                   <tr>
