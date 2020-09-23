@@ -11,11 +11,12 @@ class syncMedicalsController extends Controller
       $data1=$request->getContent();
       $data=$request->json()->all();
       $study_id='Test';
+      $isEligible=true;
       foreach($data as $individualData){
         $patient=new Patient;
 
         $patient_key=$individualData['patient'];
-        if($patient_key['study_id']== $study_id){
+        if($patient_key['study_id']== $study_id && $individualData['isEligible']==$isEligible){
           $patient->local_patient_id=$patient_key['uid'];
           //gain the id to search in the nodes
           $config=$individualData['config'];
@@ -61,7 +62,9 @@ class syncMedicalsController extends Controller
             'algorithm_name'=>$individualData['algorithm_name'],
             'version_name'=>$individualData['version_name'],
             'nodes'=>$individualData['nodes'],
-            'diagnoses'=>$individualData['diagnoses']
+            'diagnoses'=>$individualData['diagnoses'],
+            'consent'=>$individualData['consent'],
+            'isEligible'=>$individualData['isEligible']
           );
           MedicalCase::parse_data($data_to_parse);
         }

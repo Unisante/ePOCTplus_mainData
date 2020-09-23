@@ -34,6 +34,7 @@ class Node extends Model implements Auditable
         'formula' => $formula,
         'answer_type_id'=>$answerType->id,
         'algorithm_id'=>$algorithm->id,
+        'is_identifiable'=>$node_to_check['is_identifiable']
       ]
     );
     return $node;

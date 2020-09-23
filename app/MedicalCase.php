@@ -47,7 +47,9 @@ class MedicalCase extends Model implements Auditable
         'patient_id'=>$data_to_save['patient_id'],
         'version_id'=>$version_id,
         'created_at'=>new DateTime($data_to_save['created_at']),
-        'updated_at'=>new DateTime($data_to_save['updated_at'])
+        'updated_at'=>new DateTime($data_to_save['updated_at']),
+        'isEligible'=>$data_to_save['isEligible'],
+        'consent'=>$data_to_save['consent']
       ]
     );
     return $medical_case;
