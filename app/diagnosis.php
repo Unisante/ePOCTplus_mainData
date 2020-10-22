@@ -77,6 +77,12 @@ class Diagnosis extends Model
       return $diagnosis;
     }
 
+  public function drugs(){
+    return $this->hasMany('App\Drug');
+  }
+  public function managements(){
+    return $this->hasMany('App\Management');
+  }
   public function medical_case(){
     return $this->belongsTo('App\MedicalCase');
   }
