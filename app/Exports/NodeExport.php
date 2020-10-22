@@ -19,7 +19,7 @@ WithEvents
   public function headings():array
     {
       return [
-        'Id',
+        'Node_Id',
         'medal_c_id',
         'reference',
         'label',

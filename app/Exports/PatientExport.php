@@ -20,7 +20,7 @@ class PatientExport implements
   public function headings():array
   {
     return [
-      'Id',
+      'Patient_Id',
       'local_patient_id',
       'birthdate',
       'weight',

@@ -27,7 +27,7 @@ WithTitle
   public function headings():array
   {
     return [
-      'Id',
+      'Medical_case_Id',
       'version_id',
       'patient_id',
       'created_at',
