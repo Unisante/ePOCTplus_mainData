@@ -18,7 +18,7 @@ WithEvents
   public function headings():array
     {
       return [
-        'Management_Id',
+        'management_id',
         'medal_c_id',
         'type',
         'reference',
@@ -53,6 +53,6 @@ WithEvents
     }
     public function title():string
     {
-      return 'Managements';
+      return 'managements';
     }
 }

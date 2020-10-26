@@ -19,7 +19,8 @@ use Maatwebsite\Excel\Events\AfterSheet;
 class Medical_CaseExport implements FromCollection,
 WithHeadings,
 ShouldAutoSize,
-WithTitle
+WithTitle,
+WithEvents
 // WithEvents,
 // WithMapping
 {
@@ -27,7 +28,7 @@ WithTitle
   public function headings():array
   {
     return [
-      'Medical_case_Id',
+      'medical_case_id',
       'version_id',
       'patient_id',
       'created_at',
@@ -254,8 +255,9 @@ WithTitle
     //     // dd($data_array);
     //     return $data_array;
     // }
+
         public function title():string
         {
-          return 'Medical Cases';
+          return 'medical_cases';
         }
       }

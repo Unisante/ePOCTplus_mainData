@@ -49,6 +49,6 @@ WithEvents
     }
     public function title():string
     {
-      return 'Algorithms';
+      return 'algorithms';
     }
 }

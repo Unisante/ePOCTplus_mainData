@@ -19,7 +19,7 @@ WithEvents
   public function headings():array
     {
       return [
-        'Node_Id',
+        'node_id',
         'medal_c_id',
         'reference',
         'label',
@@ -58,6 +58,6 @@ WithEvents
     }
     public function title():string
     {
-      return 'Nodes';
+      return 'nodes';
     }
 }

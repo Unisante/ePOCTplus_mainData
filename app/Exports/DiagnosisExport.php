@@ -18,7 +18,7 @@ WithEvents
   public function headings():array
     {
       return [
-        'Diagnosis_Id',
+        'diagnosis_id',
         'medal_c_id',
         'label',
         'diagnostic_id',
@@ -54,6 +54,6 @@ WithEvents
     }
     public function title():string
     {
-      return 'Diagnosis';
+      return 'diagnosis';
     }
 }

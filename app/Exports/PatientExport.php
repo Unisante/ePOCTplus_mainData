@@ -20,7 +20,7 @@ class PatientExport implements
   public function headings():array
   {
     return [
-      'Patient_Id',
+      'patient_id',
       'local_patient_id',
       'birthdate',
       'weight',
@@ -52,6 +52,6 @@ class PatientExport implements
   }
   public function title():string
   {
-    return 'Patients';
+    return 'patients';
   }
 }

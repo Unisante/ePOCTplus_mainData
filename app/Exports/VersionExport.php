@@ -19,7 +19,7 @@ WithEvents
   public function headings():array
   {
     return [
-      'Version_Id',
+      'version_id',
       'medal_c_id',
       'name',
       'algorithm_id',
@@ -50,6 +50,6 @@ WithEvents
     }
     public function title():string
     {
-      return 'Versions';
+      return 'versions';
     }
 }
