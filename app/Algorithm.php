@@ -5,6 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use App\Version;
+use App\Node;
+use App\Config;
+
 class Algorithm extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable;
@@ -37,9 +40,10 @@ class Algorithm extends Model implements Auditable
       $algorithm = self::store($medal_C_algorithm['algorithm_name'],$medal_C_algorithm['algorithm_id']);
       // checking to see if there is a version of the algorithm
       $version = Version::store($medal_C_algorithm['version_name'],$medal_C_algorithm['version_id'],$algorithm->id);
+      $config_questions = $medal_C_algorithm['config']['basic_questions'];
+      Config::getOrCreate($config_questions,$version);
       // have to store the nodes for the algorithm
       $nodes = Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
-      dd($nodes);
       // saving the return array
       $data_to_return['inBeforeA']=False;
       $data_to_return['inBeforeV']=False;
@@ -55,9 +59,10 @@ class Algorithm extends Model implements Auditable
       // find the algorithm
       $algorithm=Algorithm::where('medal_c_id',$data['algorithm_id'])->first();
       // create a version
-      // $version = Version::store($medal_C_algorithm['version_name'],$medal_C_algorithm['version_id'],$algorithm->id);
+      $version = Version::store($medal_C_algorithm['version_name'],$medal_C_algorithm['version_id'],$algorithm->id);
+      $config_questions = $medal_C_algorithm['config']['basic_questions'];
+      Config::getOrCreate($config_questions,$version);
       $nodes = Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
-      dd($nodes);
       // saving the return array
       $data_to_return['inBeforeA']=True;
       $data_to_return['inBeforeV']=False;

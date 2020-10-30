@@ -45,42 +45,34 @@ class Node extends Model implements Auditable
   }
 
   public static function getOrStore($nodes,$algorithm){
-    // dd($nodes);
+    $typeToAccept='Question';
     foreach($nodes as $node){
-      if(array_key_exists('value_format', $node)){
-        // dd($node['id']);
-      $priority=isset($node['is_mandatory'])?$node['is_mandatory']:0;
-      // dd($priority);
-      $stage=isset($node['stage'])?$node['stage']:'';
-      // dd($stage);
-      $formula=isset($node['formula'])?$node['formula']:'';
-      // dd($formula);
-      $answerType = AnswerType::getOrCreate($node['value_format']);
-      // dd($answerType);
-      dd(array(
-        $node['id'],
-        $node['value_format']
-      ));
-      Node::firstOrCreate(
-        [
-          'medal_c_id' => $node['id']
-        ],
-        [
-          'reference' => $node['reference'],
-          'label' => $node['label'],
-          'type' => $node['type'],
-          'category' => $node['category'],
-          'priority' => $priority,
-          'stage' => $stage,
-          'description' => $node['description'],
-          'formula' => $formula,
-          'answer_type_id'=>$answerType->id,
-          'algorithm_id'=>$algorithm->id,
-          'is_identifiable'=>$node['is_identifiable']
-        ]
-      );
+      if(array_key_exists('type', $node) && $node['type']==$typeToAccept){
+        $priority=isset($node['is_mandatory'])?$node['is_mandatory']:0;
+        $reference=isset($node['reference'])?$node['reference']:0;
+        $stage=isset($node['stage'])?$node['stage']:'';
+        $formula=isset($node['formula'])?$node['formula']:'';
+        $answerType = AnswerType::getOrCreate($node['value_format']);
+        $nodeSaved=Node::firstOrCreate(
+          [
+            'medal_c_id' => $node['id']
+          ],
+          [
+            'reference' => $reference,
+            'label' => $node['label'],
+            'type' => $node['type'],
+            'category' => $node['category'],
+            'priority' => $priority,
+            'stage' => $stage,
+            'description' => $node['description'],
+            'formula' => $formula,
+            'answer_type_id'=>$answerType->id,
+            'algorithm_id'=>$algorithm->id,
+            'is_identifiable'=>$node['is_identifiable']
+          ]
+        );
       }
     }
-    return "Tru1232e";
+    return True;
   }
 }
