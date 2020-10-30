@@ -12,6 +12,10 @@ class syncMedicalsController extends Controller
       $data=$request->json()->all();
       $study_id='Test';
       $isEligible=true;
+      // check if the algorithm exist
+      // locate the functions from the fix-data-collector
+      // fetch the algorithm and its nodes if it doeasnt exist
+
       foreach($data as $individualData){
         $patient=new Patient;
 
