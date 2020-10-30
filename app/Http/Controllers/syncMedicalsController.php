@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Algorithm;
 use App\Patient;
 use App\MedicalCase;
 class syncMedicalsController extends Controller
@@ -12,13 +13,20 @@ class syncMedicalsController extends Controller
       $data=$request->json()->all();
       $study_id='Test';
       $isEligible=true;
-      // check if the algorithm exist
+      // makes sure the algorithm and version exist
+      // return $data;
       // locate the functions from the fix-data-collector
       // fetch the algorithm and its nodes if it doeasnt exist
 
       foreach($data as $individualData){
+        $dataForAlgorithm=array(
+          "algorithm_name"=> $individualData['algorithm_name'],
+          "algorithm_id"=> $individualData['algorithm_id'],
+          "version_id"=> $individualData['version_id'],
+        );
+        return Algorithm::ifOrExists($dataForAlgorithm);
+        return "alooo";
         $patient=new Patient;
-
         $patient_key=$individualData['patient'];
         if($patient_key['study_id']== $study_id && $individualData['isEligible']==$isEligible){
           $patient->local_patient_id=$patient_key['uid'];
