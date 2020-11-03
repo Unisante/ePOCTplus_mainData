@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Algorithm;
 use App\Patient;
+use App\Config;
 use App\MedicalCase;
 class syncMedicalsController extends Controller
 {
@@ -13,10 +14,6 @@ class syncMedicalsController extends Controller
       $data=$request->json()->all();
       $study_id='Test';
       $isEligible=true;
-      // makes sure the algorithm and version exist
-      // return $data;
-      // locate the functions from the fix-data-collector
-      // fetch the algorithm and its nodes if it doeasnt exist
 
       foreach($data as $individualData){
         $dataForAlgorithm=array(
@@ -24,20 +21,22 @@ class syncMedicalsController extends Controller
           "algorithm_id"=> $individualData['algorithm_id'],
           "version_id"=> $individualData['version_id'],
         );
-        return Algorithm::ifOrExists($dataForAlgorithm);
-        return "alooo";
-        $patient=new Patient;
+        Algorithm::ifOrExists($dataForAlgorithm);
+        // from here on out,evrything you need is either in the database or in the medicalcase json
+
         $patient_key=$individualData['patient'];
         if($patient_key['study_id']== $study_id && $individualData['isEligible']==$isEligible){
+          $patient=new Patient;
           $patient->local_patient_id=$patient_key['uid'];
-          //gain the id to search in the nodes
-          $config=$individualData['config'];
-          $birth_date_question_id=$config['basic_questions']['birth_date_question_id'];
-          $first_name_question_id=$config['basic_questions']['first_name_question_id'];
-          $last_name_question_id=$config['basic_questions']['last_name_question_id'];
-          $weight_question_id=$config['basic_questions']['weight_question_id'];
-          $gender_question_id=$config['basic_questions']['gender_question_id'];
 
+          //gain the id to search in the nodes
+          $config= Config::getConfig($individualData['version_id']);
+          $birth_date_question_id=$config->birth_date_question_id;
+          $first_name_question_id=$config->first_name_question_id;
+          return $first_name_question_id;
+          $last_name_question_id=$config->last_name_question_id;
+          $weight_question_id=$config->weight_question_id;
+          $gender_question_id=$config->gender_question_id;
           //find the values in the node
           $nodes=$individualData['nodes'];
           foreach ($nodes as $node){
@@ -50,6 +49,8 @@ class syncMedicalsController extends Controller
                 if ($answer['id']==$node['answer']){$patient->gender=$answer['label'];}
               }
             }
+            return $patient;
+            return "alooo";
           }
           //find if the patient already exist of create
           $issued_patient = Patient::firstOrCreate(

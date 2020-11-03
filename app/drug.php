@@ -36,4 +36,25 @@ class Drug extends Model
     }
   return $drug;
   }
+
+  public static function store($drugs,$nodes,$diagnosis_id){
+    foreach($nodes as $node){
+        foreach($drugs as $drug){
+          if($node['id']==$drug['id']){
+            $drug=Drug::firstOrCreate(
+              [
+                'diagnosis_id'=>$diagnosis_id,
+                'medal_c_id'=>$node['id']
+              ],
+              [
+                'type'=>$node['type'],
+                'label'=>$node['label'],
+                'description'=>$node['description']
+              ]
+            );
+            Formulation::store($drug->id,$node['formulations']);
+          }
+        }
+    }
+  }
 }
