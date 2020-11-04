@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8018a8c05619d33b7b1c2b2baa32124d",
+    "content-hash": "f20ceff66fc14a3e415cae481fb6f81f",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -1239,6 +1239,62 @@
                 "phpspreadsheet"
             ],
             "time": "2020-09-08T15:29:50+00:00"
+        },
+        {
+            "name": "madnest/madzipper",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/madnest/madzipper.git",
+                "reference": "caf4f64c45903e16c47e81f100d81df191acb0d2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/madnest/madzipper/zipball/caf4f64c45903e16c47e81f100d81df191acb0d2",
+                "reference": "caf4f64c45903e16c47e81f100d81df191acb0d2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-zip": "*",
+                "illuminate/filesystem": "^6.0",
+                "illuminate/support": "6.*",
+                "laravel/framework": "^6.0",
+                "php": ">=7.2.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.0.0",
+                "phpunit/phpunit": "^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Madnest\\Madzipper\\MadzipperServiceProvider"
+                    ],
+                    "aliases": {
+                        "Madzipper": "Madnest\\Madzipper\\Madzipper"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Madnest\\Madzipper\\": "src/Madnest/Madzipper"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jakub Theimer",
+                    "email": "theimer@madne.st",
+                    "homepage": "https://madne.st",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Wannabe successor of Chumper/Zipper package for Laravel",
+            "time": "2020-02-24T12:54:57+00:00"
         },
         {
             "name": "maennchen/zipstream-php",

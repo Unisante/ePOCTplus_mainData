@@ -7,9 +7,43 @@ use App\Algorithm;
 use App\Patient;
 use App\Config;
 use App\MedicalCase;
+use Madzipper;
+use File;
+use Illuminate\Support\Facades\Storage;
+
 class syncMedicalsController extends Controller
 {
     public function syncMedicalCases(Request $request){
+      if($request->file('file')){
+        $unparsed_path = base_path().'\app\medicalCases\unparsed_medical_cases';
+        $parsed_path = base_path().'\app\medicalCases\parsed_medical_cases';
+        Madzipper::make($request->file('file'))->extractTo($unparsed_path);
+        $files = File::allFiles($unparsed_path);
+        foreach($files as $path){
+          $jsonString = file_get_contents($path);
+          $data = json_decode($jsonString, true);
+          // right here is where we start to have fun with the data from each json
+          
+          if(!File::exists($parsed_path)) {
+            mkdir($parsed_path);
+          }
+          $new_path=$parsed_path.'\\'.pathinfo($path)['filename'].'.'.pathinfo($path)['extension'];
+          $move = File::move($path, $new_path);
+
+          return 'done';
+        }
+        return $files;
+
+        return response()->json($files);
+        //read a json file
+
+        return 'it exists';
+      }
+      return "True";
+
+      // find a way to accept a zipped folder
+      //the find a way to extract it
+
       $data1=$request->getContent();
       $data=$request->json()->all();
       $study_id='Test';
