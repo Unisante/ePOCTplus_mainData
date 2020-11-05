@@ -23,11 +23,13 @@ class MedicalCase extends Model implements Auditable
   * @return void
   */
   public static function parse_data($data_to_parse){
-    $algorithm = Algorithm::getOrCreate($data_to_parse['algorithm_id'], $data_to_parse['algorithm_name']);
-    $version = Version::getOrCreate($data_to_parse['version_name'], $algorithm->id,$data_to_parse['version_id']);
+    $algorithm = Algorithm::where([['medal_c_id', $data_to_parse['algorithm_id']],['name',$data_to_parse['algorithm_name']],])->first();
+    $version = Version::where([['medal_c_id', $data_to_parse['version_id']],['algorithm_id',$algorithm->id],])->first();
     $medical_case = self::get_or_create($data_to_parse,$version->id);
-    MedicalCaseAnswer::parse_answers($data_to_parse['nodes'], $medical_case,$algorithm);
-    Diagnosis::parse_data($medical_case,$data_to_parse['nodes'],$data_to_parse['diagnoses']);
+    MedicalCaseAnswer::getOrCreate($data_to_parse['nodes'], $medical_case);
+    error_log('naingia diagnosis');
+    dd('not going anywhere from here yet');
+    $diagnoses=Diagnosis::parse_data($medical_case,$data_to_parse['nodes'],$data_to_parse['diagnoses']);
   }
 
   /**
