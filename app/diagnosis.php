@@ -81,7 +81,7 @@ class Diagnosis extends Model
   //   return $diagnosis;
   // }
 
-
+  
   public static function getOrStore($nodes,$version_id){
     foreach($nodes as $node){
       if(array_key_exists('diagnostic_id',$node) && $node['type']=='FinalDiagnostic'){

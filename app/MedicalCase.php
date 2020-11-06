@@ -6,7 +6,7 @@ use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use OwenIt\Auditing\Contracts\Auditable;
-use App\Diagnosis;
+use App\DiagnosisReference;
 use App\Patient;
 use App\MedicalCaseAnswer;
 use App\Node;
@@ -28,8 +28,8 @@ class MedicalCase extends Model implements Auditable
     $medical_case = self::get_or_create($data_to_parse,$version->id);
     MedicalCaseAnswer::getOrCreate($data_to_parse['nodes'], $medical_case);
     error_log('naingia diagnosis');
-    dd('not going anywhere from here yet');
-    $diagnoses=Diagnosis::parse_data($medical_case,$data_to_parse['nodes'],$data_to_parse['diagnoses']);
+    // dd('not going anywhere from here yet');
+    $diagnoses=DiagnosisReference::parse_data($medical_case->id,$data_to_parse['diagnoses']);
   }
 
   /**
