@@ -165,6 +165,7 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Madnest\Madzipper\MadzipperServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -229,7 +230,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Datatables' => yajra\Datatables\Datatables::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-        'Madzipper' => Madnest\Madzipper\Madzipper::class
+        'Madzipper' => Madnest\Madzipper\Madzipper::class,
+        'Image' => Intervention\Image\Facades\Image::class
 
     ],
 

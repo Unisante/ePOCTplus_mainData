@@ -10,6 +10,7 @@ use App\Answer;
 use App\MedicalCase;
 use Madzipper;
 use File;
+use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Arr;
 class syncMedicalsController extends Controller
@@ -20,6 +21,7 @@ class syncMedicalsController extends Controller
       if($request->file('file')){
         $unparsed_path = base_path().'\app\medicalCases\unparsed_medical_cases';
         $parsed_path = base_path().'\app\medicalCases\parsed_medical_cases';
+        $consent_path = base_path().'\app\consentFiles';
         Madzipper::make($request->file('file'))->extractTo($unparsed_path);
         $files = File::allFiles($unparsed_path);
         foreach($files as $path){
@@ -29,7 +31,6 @@ class syncMedicalsController extends Controller
           // right here is where we start to have fun with the data from each json
           // return $individualData;
           $dataForAlgorithm=array(
-            "algorithm_name"=> $individualData['algorithm_name'],
             "algorithm_id"=> $individualData['algorithm_id'],
             "version_id"=> $individualData['version_id'],
           );
@@ -54,9 +55,23 @@ class syncMedicalsController extends Controller
               $patient->weight=$nodes[$weight_question_id]['value'];
               $gender_answer= Answer::where('medal_c_id',$nodes[$gender_question_id]['value'])->first();
               $patient->gender=$gender_answer->label;
+              $patient->study_id=$patient_key['group_id'];
               $patient->save();
             }
             $issued_patient=Patient::where('local_patient_id',$patient_key['uid'])->first();
+            $consent_exist=$issued_patient->consent;
+            if(!$consent_exist){
+              $consent_file_name=$issued_patient->local_patient_id .'_image.jpg';
+              $issued_patient->consent=$consent_file_name;
+              // decode a base 64 and show it
+              $consent_file_64 = $patient_key['consent_file'];
+              $img = Image::make($consent_file_64);
+              if(!File::exists($consent_path)) {
+                mkdir($consent_path);
+              }
+              $img->save($consent_path.'\\'.$consent_file_name);
+              $issued_patient->save();
+            }
             $data_to_parse=array(
               'local_medical_case_id'=>$individualData['id'],
               'version_id'=>$individualData['version_id'],
