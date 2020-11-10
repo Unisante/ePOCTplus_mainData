@@ -24,6 +24,7 @@ class DataSheet implements WithMultipleSheets
         $sheets[]= new DrugExport;
         $sheets[]=new ManagementExport;
         $sheets[]= new NodeExport;
+        $sheets[]= new AnswerTypeExport;
         $sheets[]=new VersionExport;
       return $sheets;
     }

@@ -2,14 +2,15 @@
 
 namespace App\Exports;
 
-use App\Management;
+use App\AnswerType;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
-class ManagementExport implements FromCollection,
+
+class AnswerTypeExport implements FromCollection,
 WithHeadings,
 ShouldAutoSize,
 WithTitle,
@@ -18,12 +19,8 @@ WithEvents
   public function headings():array
     {
       return [
-        'management_id',
-        'medal_c_id',
-        'type',
-        'label',
-        'description',
-        'diagnostic_id',
+        'answer_type_id',
+        'value',
         'created_at',
         'updated_at',
       ];
@@ -32,7 +29,7 @@ WithEvents
     {
       return[
         AfterSheet::class => function(AfterSheet $event){
-          $event->sheet->getStyle('A1:H1')->applyFromArray([
+          $event->sheet->getStyle('A1:D1')->applyFromArray([
             'font'=>[
               'bold'=>true,
             ],
@@ -47,10 +44,10 @@ WithEvents
     */
     public function collection()
     {
-        return Management::all();
+        return AnswerType::all();
     }
     public function title():string
     {
-      return 'managements';
+      return 'answer_type';
     }
 }

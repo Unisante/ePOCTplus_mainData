@@ -22,20 +22,17 @@ WithEvents
         'medal_c_id',
         'label',
         'diagnostic_id',
-        'reference',
-        'agreed',
-        'proposed_additional',
         'created_at',
         'updated_at',
-        'medical_case_id',
         'type',
+        'version_id',
       ];
     }
     public function registerEvents():array
     {
       return[
         AfterSheet::class => function(AfterSheet $event){
-          $event->sheet->getStyle('A1:K1')->applyFromArray([
+          $event->sheet->getStyle('A1:H1')->applyFromArray([
             'font'=>[
               'bold'=>true,
             ],
