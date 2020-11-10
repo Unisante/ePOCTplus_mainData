@@ -19,7 +19,7 @@ class RoleSeeder extends Seeder
           "e_mergence_User"
         ];
         foreach($roles as $role){
-          Role::create([
+          Role::firstOrCreate([
             'name'=>$role,
           ]);
         }
