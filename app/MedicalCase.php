@@ -27,8 +27,6 @@ class MedicalCase extends Model implements Auditable
     $version = Version::where([['medal_c_id', $data_to_parse['version_id']],['algorithm_id',$algorithm->id],])->first();
     $medical_case = self::get_or_create($data_to_parse,$version->id);
     MedicalCaseAnswer::getOrCreate($data_to_parse['nodes'], $medical_case);
-    error_log('naingia diagnosis');
-    // dd('not going anywhere from here yet');
     $diagnoses=DiagnosisReference::parse_data($medical_case->id,$data_to_parse['diagnoses']);
   }
 

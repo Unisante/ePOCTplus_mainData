@@ -10,10 +10,8 @@ class ManagementReference extends Model
   protected $guarded = [];
     public static function store($diagnosis_id,$managements){
       foreach($managements as $management){
-        // error_log($diagnosis_id);
-        // $issued_management=Management::where('medal_c_id',$management['id'])->first();
+        $agreed= isset($management['agreed'])?$management['agreed']:false;
         $issued_management=Management::where('medal_c_id',$management['id'])->first();
-        // error_log($issued_management->id);
         if($issued_management){
           ManagementReference::firstOrCreate(
             [
@@ -21,7 +19,7 @@ class ManagementReference extends Model
               'management_id'=>$issued_management->id
             ],
             [
-              'agreed'=>$management['agreed']
+              'agreed'=>$agreed
             ]
           );
         }

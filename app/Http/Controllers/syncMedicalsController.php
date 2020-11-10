@@ -27,16 +27,12 @@ class syncMedicalsController extends Controller
         foreach($files as $path){
           $jsonString = file_get_contents($path);
           $individualData = json_decode($jsonString, true);
-          // return $individualData;
-          // right here is where we start to have fun with the data from each json
-          // return $individualData;
           $dataForAlgorithm=array(
             "algorithm_id"=> $individualData['algorithm_id'],
             "version_id"=> $individualData['version_id'],
           );
           Algorithm::ifOrExists($dataForAlgorithm);
           $patient_key=$individualData['patient'];
-          // return $patient_key;
           if($patient_key['study_id']== $study_id && $individualData['isEligible']==$isEligible){
             $patient=new Patient;
             $patient->local_patient_id=$patient_key['uid'];
@@ -55,7 +51,7 @@ class syncMedicalsController extends Controller
               $patient->weight=$nodes[$weight_question_id]['value'];
               $gender_answer= Answer::where('medal_c_id',$nodes[$gender_question_id]['value'])->first();
               $patient->gender=$gender_answer->label;
-              $patient->study_id=$patient_key['group_id'];
+              $patient->group_id=$patient_key['group_id'];
               $patient->save();
             }
             $issued_patient=Patient::where('local_patient_id',$patient_key['uid'])->first();
@@ -63,7 +59,6 @@ class syncMedicalsController extends Controller
             if(!$consent_exist){
               $consent_file_name=$issued_patient->local_patient_id .'_image.jpg';
               $issued_patient->consent=$consent_file_name;
-              // decode a base 64 and show it
               $consent_file_64 = $patient_key['consent_file'];
               $img = Image::make($consent_file_64);
               if(!File::exists($consent_path)) {
@@ -92,13 +87,18 @@ class syncMedicalsController extends Controller
           }
           $new_path=$parsed_path.'\\'.pathinfo($path)['filename'].'.'.pathinfo($path)['extension'];
           $move = File::move($path, $new_path);
-          return 'done';
         }
+        return response()->json(
+          [
+            "data_received"=>True,
+          ]
+        );
+      }else{
+        return response()->json(
+          [
+            "data_received"=>False,
+          ]
+        );
       }
-      return response()->json(
-        [
-          "data_received"=>False,
-        ]
-      );
-    }
+  }
 }

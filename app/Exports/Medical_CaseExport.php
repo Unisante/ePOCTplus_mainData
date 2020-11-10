@@ -33,7 +33,9 @@ WithEvents
       'patient_id',
       'created_at',
       'updated_at',
-      'local_medical_case_id'
+      'local_medical_case_id',
+      'consent',
+      'isEligible'
     ];
   }
   private $heads;
@@ -78,7 +80,7 @@ WithEvents
   {
     return[
       AfterSheet::class => function(AfterSheet $event){
-        $event->sheet->getStyle('A1:F1')->applyFromArray([
+        $event->sheet->getStyle('A1:H1')->applyFromArray([
           'font'=>[
             'bold'=>true,
           ],
