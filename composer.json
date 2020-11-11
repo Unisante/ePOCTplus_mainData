@@ -70,8 +70,7 @@
         ],
         "post-install-cmd": [
             "php artisan clear-compiled",
-            "chmod -R 777 public/",
-            "sudo chmod -R  755 . && sudo chmod -R o+w storage"
+            "chmod -R 777 public/"
         ]
     }
 }
