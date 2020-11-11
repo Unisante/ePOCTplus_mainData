@@ -22,9 +22,9 @@ class syncMedicalsController extends Controller
         // $unparsed_path = base_path().'\app\medicalCases\unparsed_medical_cases';
         // $parsed_path = base_path().'\app\medicalCases\parsed_medical_cases';
         // $consent_path = base_path().'\app\consentFiles';
-        $unparsed_path = base_path().'\storage\medicalCases\unparsed_medical_cases';
-        $parsed_path = base_path().'\storage\medicalCases\parsed_medical_cases';
-        $consent_path = base_path().'\storage\consentFiles';
+        $unparsed_path = base_path().'/storage/medicalCases/unparsed_medical_cases';
+        $parsed_path = base_path().'/storage/medicalCases/parsed_medical_cases';
+        $consent_path = base_path().'/storage/consentFiles';
         Madzipper::make($request->file('file'))->extractTo($unparsed_path);
         $files = File::allFiles($unparsed_path);
         foreach($files as $path){
@@ -67,7 +67,7 @@ class syncMedicalsController extends Controller
               if(!File::exists($consent_path)) {
                 mkdir($consent_path);
               }
-              $img->save($consent_path.'\\'.$consent_file_name);
+              $img->save($consent_path.'/'.$consent_file_name);
               $issued_patient->save();
             }
             $data_to_parse=array(
@@ -88,7 +88,7 @@ class syncMedicalsController extends Controller
           if(!File::exists($parsed_path)) {
             mkdir($parsed_path);
           }
-          $new_path=$parsed_path.'\\'.pathinfo($path)['filename'].'.'.pathinfo($path)['extension'];
+          $new_path=$parsed_path.'/'.pathinfo($path)['filename'].'.'.pathinfo($path)['extension'];
           $move = File::move($path, $new_path);
         }
         return response()->json(
