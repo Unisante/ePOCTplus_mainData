@@ -7,7 +7,7 @@ use App\Diagnosis;
 use App\ManagementReference;
 use App\DrugReference;
 use App\Custom_diagnosis;
-
+use App\Version;
 class DiagnosisReference extends Model
 {
   protected $guarded = [];
@@ -62,5 +62,23 @@ class DiagnosisReference extends Model
         // if its not proposed,how do you link it with its drugs
       }
     }
+  }
+
+  public static function getDiagnoses($id){
+    $references=DiagnosisReference::where('medical_case_id',$id)->get();
+    $diagnoses=array();
+    foreach($references as $reference){
+
+      $diagnosis=Diagnosis::find($reference->diagnosis_id);
+      $med_diag=(object)array(
+        "agreed"=>$reference->agreed,
+        "proposed"=>$reference->proposed_additional,
+        "diagnosis_medal_c_id"=>$diagnosis->medal_c_id,
+        "label"=>$diagnosis->label,
+        "version"=>Version::find($diagnosis->versiod_id)
+      );
+      array_push($diagnoses,$med_diag);
+    }
+    return $diagnoses;
   }
 }

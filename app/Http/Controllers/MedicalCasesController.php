@@ -7,6 +7,7 @@ use App\Node;
 use App\AnswerType;
 use App\MedicalCaseAnswer;
 use App\User;
+use App\DiagnosisReference;
 use App\Exports\MedicalCaseExport;
 use Excel;
 use Illuminate\Http\Request;
@@ -57,7 +58,7 @@ class MedicalCasesController extends Controller
         array_push($medicalCaseInfo,json_decode(json_encode($data)));
       }
     }
-    $diagnoses=$medicalCase->diagnoses()->get();
+    $diagnoses=DiagnosisReference::getDiagnoses($medicalCase->id);
     $data=array(
       'medicalCase'=>$medicalCase,
       'medicalCaseInfo'=>$medicalCaseInfo,

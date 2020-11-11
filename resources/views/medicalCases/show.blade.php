@@ -89,7 +89,7 @@
                         </div>
                         <div class="card-header">
                           <span class="font-weight-bold">diagnostic ID: </span>
-                          <span>{{$diagnosis->diagnostic_id}}</span>
+                          <span>{{$diagnosis->diagnosis_medal_c_id}}</span>
                         </div>
                         <div class="card-header">
                           <span class="font-weight-bold">Agreed: </span>
@@ -101,7 +101,7 @@
                         </div>
                         <div class="card-header">
                           <span class="font-weight-bold">Diagnosis type: </span>
-                          @if($diagnosis->proposed_additional)
+                          @if($diagnosis->proposed)
                           <span>Proposed</span>
                           @else
                           <span>Additioanl</span>

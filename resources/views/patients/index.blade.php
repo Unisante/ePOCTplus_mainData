@@ -33,6 +33,7 @@
                     <th>checkbox</th>
                     <th scope="col">First Name</th>
                     <th scope="col">Last Name</th>
+                    <th scope="col">Birthdate</th>
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
@@ -43,6 +44,7 @@
                     <td><input type="checkbox" class="messageCheckbox" value="{{$patient->id}}"></td>
                     <td>{{$patient->first_name}}</td>
                     <td>{{$patient->last_name}}</td>
+                    <td>{{$patient->birthdate}}</td>
                     <td><a href="{{route('PatientsController.show',[$patient->id])}}" class="btn btn-outline-dark"> Show Patient</a></td>
                   </tr>
                   @endforeach
