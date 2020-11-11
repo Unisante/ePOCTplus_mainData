@@ -95,7 +95,7 @@ class Patient extends Model implements Auditable
   */
   public function medicalCases()
   {
-    return $this->hasMany('App\medicalCase');
+    return $this->hasMany('App\MedicalCase');
   }
 
 }
