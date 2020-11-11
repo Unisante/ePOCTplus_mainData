@@ -29,7 +29,7 @@ Route::post('/patients/merge','PatientsController@merge');
 Route::post('/patients/duplicates/delete','PatientsController@destroy')->name('PatientsController@destroy');
 
 //for medical case
-Route::get('/medicalCases','medicalCasesController@index');
+Route::get('/medicalcases','medicalCasesController@index');
 Route::get('/medicalCases/{id}','medicalCasesController@show')->name('medicalCasesController.show');
 Route::get('/medicalCases/compare/{id1}/{id2}','medicalCasesController@compare');
 Route::get('/medicalCases/{medicalCaseId}/question/{questionId}','medicalCasesController@medicalCaseQuestion')->name('medicalCasesController.medicalCaseQuestion');

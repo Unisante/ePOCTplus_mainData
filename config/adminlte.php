@@ -217,7 +217,7 @@ return [
 
         [
             'text' => 'Medical Cases',
-            'url'  => '/medicalCases',
+            'url'  => '/medicalcases',
             'icon' => 'fas fa-fw fa-file',
         ],
 
