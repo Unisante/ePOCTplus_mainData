@@ -45,7 +45,7 @@
                     <th><input type="checkbox" class="messageCheckbox" value="{{$medicalCase->id}}"></th>
                     <td>{{$medicalCase->created_at}}</td>
                     <td>{{$medicalCase->patient->first_name}} {{$medicalCase->patient->last_name}}</td>
-                    <td><a href="{{route('medicalCasesController.show',[$medicalCase->id])}}" class="btn btn-outline-dark"> Show Medical Case</a>
+                    <td><a href="{{route('MedicalCasesController.show',[$medicalCase->id])}}" class="btn btn-outline-dark"> Show Medical Case</a>
                     </td>
                   </tr>
                   @endforeach

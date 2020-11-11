@@ -3,7 +3,7 @@
 namespace App;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
-use App\medicalCase;
+use App\MedicalCase;
 
 class Patient extends Model implements Auditable
 {
