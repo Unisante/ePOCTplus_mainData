@@ -1,7 +1,0 @@
-{
-  "scripts": {
-    "dokku": {
-      "postdeploy": "sudo chmod -R  755 . && sudo chmod -R o+w storage"
-    }
-  }
-}
