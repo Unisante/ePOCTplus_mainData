@@ -29,12 +29,12 @@ Route::post('/patients/merge','PatientsController@merge');
 Route::post('/patients/duplicates/delete','PatientsController@destroy')->name('PatientsController@destroy');
 
 //for medical case
-Route::get('/medicalcases','medicalCasesController@index');
-Route::get('/medicalCases/{id}','medicalCasesController@show')->name('medicalCasesController.show');
-Route::get('/medicalCases/compare/{id1}/{id2}','medicalCasesController@compare');
-Route::get('/medicalCases/{medicalCaseId}/question/{questionId}','medicalCasesController@medicalCaseQuestion')->name('medicalCasesController.medicalCaseQuestion');
+Route::get('/medicalcases','MedicalCasesController@index');
+Route::get('/medicalCases/{id}','MedicalCasesController@show')->name('MedicalCasesController.show');
+Route::get('/medicalCases/compare/{id1}/{id2}','MedicalCasesController@compare');
+Route::get('/medicalCases/{medicalCaseId}/question/{questionId}','MedicalCasesController@medicalCaseQuestion')->name('MedicalCasesController.medicalCaseQuestion');
 Route::post('/medicalCases/{medicalCaseId}/question/{questionId}/update','medicalCaseAnswersController@update')->name('medicalCaseAnswersController.update');
-Route::get('/medicalCase/changes/{id}','medicalCasesController@showCaseChanges')->name('medicalCasesController.showCaseChanges');
+Route::get('/medicalCase/changes/{id}','MedicalCasesController@showCaseChanges')->name('MedicalCasesController.showCaseChanges');
 Route::get('/medicalcases/duplicates','MedicalCasesController@findDuplicates');
 Route::post('/medicalCases/duplicates/search','MedicalCasesController@searchDuplicates')->name('MedicalCasesController@searchDuplicates');
 Route::post('/medicalCases/duplicates/delete','MedicalCasesController@destroy')->name('MedicalCasesController@destroy');
@@ -44,8 +44,8 @@ Route::get('/questions','QuestionsController@index')->name('QuestionsController.
 Route::get('/question/{id}','QuestionsController@show')->name('QuestionsController@show');
 
 //for downloading exports
-Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('medicalCasesController.medicalCaseIntoExcel');
-Route::get('/export-medicalCase-csv','MedicalCasesController@medicalCaseIntoCsv')->name('medicalCasesController.medicalCaseIntoCsv');
+Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('MedicalCasesController.medicalCaseIntoExcel');
+Route::get('/export-medicalCase-csv','MedicalCasesController@medicalCaseIntoCsv')->name('MedicalCasesController.medicalCaseIntoCsv');
 Route::get('/export-patient-excel','PatientsController@patientIntoExcel')->name('PatientsController.patientIntoExcel');
 Route::get('/export-patient-csv','PatientsController@patientIntoCsv')->name('PatientsController.patientIntoCsv');
 Route::get('/export-mainData-csv','PatientsController@allDataIntoExcel')->name('PatientsController.allDataIntoExcel');
