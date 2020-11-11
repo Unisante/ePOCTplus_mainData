@@ -27,7 +27,7 @@ class AddingForreignKeyDiagnosesTable extends Migration
     public function down()
     {
         Schema::table('diagnoses', function (Blueprint $table) {
-          $table->dropColumn('medical_case_id');
+          // $table->dropColumn('medical_case_id');
         });
     }
 }

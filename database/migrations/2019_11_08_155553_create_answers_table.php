@@ -15,6 +15,7 @@ class CreateAnswersTable extends Migration
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('label')->nullable();
             $table->integer('medal_c_id')->unsigned();
             $table->integer('node_id')->unsigned();
             $table->foreign('node_id')->references('id')->on('nodes');

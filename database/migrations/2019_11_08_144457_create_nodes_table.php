@@ -22,7 +22,7 @@ class CreateNodesTable extends Migration
             $table->string('category');
             $table->string('priority');
             $table->string('stage');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->string('formula');
             $table->integer('answer_type_id')->unsigned();
             $table->foreign('answer_type_id')->references('id')->on('answer_types');

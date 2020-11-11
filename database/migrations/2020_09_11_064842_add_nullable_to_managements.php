@@ -28,9 +28,9 @@ class AddNullableToManagements extends Migration
     public function down()
     {
         Schema::table('managements', function (Blueprint $table) {
-          $table->dropColumn('description');
-          $table->dropColumn('diagnosis_id');
-          $table->dropColumn('custom_diagnosis_id');
+          // $table->dropColumn('description');
+          // $table->dropColumn('diagnosis_id');
+          // $table->dropColumn('custom_diagnosis_id');
         });
     }
 }
