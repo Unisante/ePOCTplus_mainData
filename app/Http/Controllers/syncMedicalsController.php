@@ -19,9 +19,12 @@ class syncMedicalsController extends Controller
       $study_id='Test';
       $isEligible=true;
       if($request->file('file')){
-        $unparsed_path = base_path().'\app\medicalCases\unparsed_medical_cases';
-        $parsed_path = base_path().'\app\medicalCases\parsed_medical_cases';
-        $consent_path = base_path().'\app\consentFiles';
+        // $unparsed_path = base_path().'\app\medicalCases\unparsed_medical_cases';
+        // $parsed_path = base_path().'\app\medicalCases\parsed_medical_cases';
+        // $consent_path = base_path().'\app\consentFiles';
+        $unparsed_path = base_path().'\storage\medicalCases\unparsed_medical_cases';
+        $parsed_path = base_path().'\storage\medicalCases\parsed_medical_cases';
+        $consent_path = base_path().'\storage\consentFiles';
         Madzipper::make($request->file('file'))->extractTo($unparsed_path);
         $files = File::allFiles($unparsed_path);
         foreach($files as $path){
