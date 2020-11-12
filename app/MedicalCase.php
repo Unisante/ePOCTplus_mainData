@@ -29,12 +29,7 @@ class MedicalCase extends Model implements Auditable
     $version = Version::where([['medal_c_id', $data_to_parse['version_id']],['algorithm_id',$algorithm->id],])->first();
     $medical_case = self::get_or_create($data_to_parse,$version->id);
     MedicalCaseAnswer::getOrCreate($data_to_parse['nodes'], $medical_case);
-    // make sure you are fetching all diagnoses
-    error_log("naanza");
-    $medal_C_algorithm=Algorithm::fetchAlgorithm($version->id);
-    error_log("nimemaliza");
-    $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
-    DiagnosisReference::parse_data($medical_case->id,$data_to_parse['diagnoses']);
+    DiagnosisReference::parse_data($medical_case->id,$data_to_parse['diagnoses'],$version->id);
   }
 
   /**

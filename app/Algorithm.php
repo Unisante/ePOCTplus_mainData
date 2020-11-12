@@ -85,6 +85,7 @@ class Algorithm extends Model implements Auditable
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_URL,$url);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 400);
     $result=curl_exec($ch);
     curl_close($ch);
     $medal_C_algorithm = json_decode($result, true);

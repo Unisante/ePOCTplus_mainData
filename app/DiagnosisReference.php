@@ -7,11 +7,12 @@ use App\Diagnosis;
 use App\ManagementReference;
 use App\DrugReference;
 use App\Custom_diagnosis;
+use App\Algorithm;
 use App\Version;
 class DiagnosisReference extends Model
 {
   protected $guarded = [];
-  public static function parse_data($medical_case_id,$diagnoses){
+  public static function parse_data($medical_case_id,$diagnoses,$version_id){
     $proposed_diagnoses=$diagnoses['proposed'];
     $additional_diagnoses=$diagnoses['additional'];
     $custom_diagnoses=$diagnoses['custom'];
@@ -19,9 +20,9 @@ class DiagnosisReference extends Model
     // check if the function is from what type of diagnosis
     if($proposed_diagnoses){
       $is_proposed=True;
-      self::store($medical_case_id,$proposed_diagnoses,$is_proposed);
+      self::store($medical_case_id,$proposed_diagnoses,$is_proposed,$version_id);
     }else if($additional_diagnoses){
-      self::store($medical_case_id,$additional_diagnoses,$is_proposed);
+      self::store($medical_case_id,$additional_diagnoses,$is_proposed,$version_id);
     }else if($custom_diagnoses){
       // Custom_diagnosis::store($custom_diagnoses,$medical_case_id);
     }
@@ -32,10 +33,15 @@ class DiagnosisReference extends Model
     // dd('done with proposed');
   }
 
-  public static function store($medical_case_id,$diagnoses,$is_proposed){
+  public static function store($medical_case_id,$diagnoses,$is_proposed,$version_id){
     foreach($diagnoses as $diagnosis){
       $managements=$diagnosis['managements'];
       $drugs = $diagnosis['drugs'];
+      if(Diagnosis::where('medal_c_id',$diagnosis['id'])->doesntExist()){
+        // make sure you are fetching all diagnoses
+        $medal_C_algorithm=Algorithm::fetchAlgorithm($version_id);
+        Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version_id);
+      }
       if($local_diagnosis=Diagnosis::where('medal_c_id',$diagnosis['id'])->first()){
         $diagnosis=DiagnosisReference::firstOrCreate(
           [
@@ -61,6 +67,7 @@ class DiagnosisReference extends Model
 
         // if its not proposed,how do you link it with its drugs
       }
+
     }
   }
 
