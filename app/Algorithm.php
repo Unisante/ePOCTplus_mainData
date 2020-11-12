@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use App\Version;
 use App\Node;
-use App\Config;
+use App\PatientConfig;
 
 class Algorithm extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable;
   protected $guarded = [];
-  
+
   // checks if it exists and if not,it creates the existance,if it does.It returns true
   public static function ifOrExists($data){
     $data_to_return=array();
@@ -27,9 +27,10 @@ class Algorithm extends Model implements Auditable
       // checking to see if there is a version of the algorithm
       $version = Version::store($medal_C_algorithm['version_name'],$medal_C_algorithm['version_id'],$algorithm->id);
       $config_questions = $medal_C_algorithm['config']['basic_questions'];
-      Config::getOrCreate($config_questions,$version);
+      PatientConfig::getOrCreate($config_questions,$version);
       // have to store the nodes for the algorithm
       $nodes = Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
+
       $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
       // saving the return array
       $data_to_return['inBeforeA']=False;
@@ -47,7 +48,7 @@ class Algorithm extends Model implements Auditable
       // create a version
       $version = Version::store($medal_C_algorithm['version_name'],$medal_C_algorithm['version_id'],$algorithm->id);
       $config_questions = $medal_C_algorithm['config']['basic_questions'];
-      Config::getOrCreate($config_questions,$version);
+      PatientConfig::getOrCreate($config_questions,$version);
       $nodes = Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
       $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
       // remind the old man about diagnoses

@@ -13,7 +13,7 @@ class CreateConfigsTable extends Migration
      */
     public function up()
     {
-        Schema::create('configs', function (Blueprint $table) {
+        Schema::create('patient_configs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('config')->nullable();
             $table->integer('version_id')->unsigned();
@@ -29,6 +29,6 @@ class CreateConfigsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('configs');
+        Schema::dropIfExists('patient_configs');
     }
 }

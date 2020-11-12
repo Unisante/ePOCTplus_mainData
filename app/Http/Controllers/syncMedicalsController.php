@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Algorithm;
 use App\Patient;
-use App\Config;
+use App\PatientConfig;
 use App\Answer;
 use App\MedicalCase;
 use Madzipper;
@@ -39,7 +39,7 @@ class syncMedicalsController extends Controller
           if($patient_key['study_id']== $study_id && $individualData['isEligible']==$isEligible){
             $patient=new Patient;
             $patient->local_patient_id=$patient_key['uid'];
-            $config= Config::getConfig($individualData['version_id']);
+            $config= PatientConfig::getConfig($individualData['version_id']);
             $birth_date_question_id=$config->birth_date_question_id;
             $first_name_question_id=$config->first_name_question_id;
             $last_name_question_id=$config->last_name_question_id;

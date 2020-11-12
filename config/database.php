@@ -69,7 +69,7 @@ return [
         //     'schema' => 'public',
         //     'sslmode' => 'prefer',
         // ],
-        
+
         'postgres' => [
           'driver' => 'pgsql',
           'host' => parse_url(getenv("DATABASE_URL"))["host"],
