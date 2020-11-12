@@ -8,7 +8,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-          <a href="/medicalCases" class="btn btn-outline-dark"> Back</a>
+          <a href="/medicalcases" class="btn btn-outline-dark"> Back</a>
           <a href="{{route('MedicalCasesController.showCaseChanges',[$medicalCase->id])}}" class="btn btn-outline-dark float-right">View This Medical Case Changes</a>
         </div>
         <div class="card-body">
