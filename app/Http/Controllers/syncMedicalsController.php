@@ -77,7 +77,6 @@ class syncMedicalsController extends Controller
               'updated_at'=>$individualData['updated_at'],
               'patient_id'=>$issued_patient->id,
               'algorithm_id'=>$individualData['algorithm_id'],
-              // 'algorithm_name'=>$individualData['algorithm_name'],
               'nodes'=>$individualData['nodes'],
               'diagnoses'=>$individualData['diagnoses'],
               'consent'=>$individualData['consent'],
