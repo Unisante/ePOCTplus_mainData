@@ -18,7 +18,7 @@ class syncMedicalsController extends Controller
     public function syncMedicalCases(Request $request){
       $study_id='Test';
       $isEligible=true;
-      try{
+      set_time_limit(300);
         if($request->file('file')){
           // $unparsed_path = base_path().'\app\medicalCases\unparsed_medical_cases';
           // $parsed_path = base_path().'\app\medicalCases\parsed_medical_cases';
@@ -103,12 +103,6 @@ class syncMedicalsController extends Controller
             ]
           );
         }
-      }catch(\Exception $e){
-        return response()->json([
-          "data_received"=>false,
-          "response"=>$e
-        ]
-        );
-    }
+
   }
 }
