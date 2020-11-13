@@ -15,7 +15,6 @@ class Algorithm extends Model implements Auditable
 
   // checks if it exists and if not,it creates the existance,if it does.It returns true
   public static function ifOrExists($data){
-    $data_to_return=array();
     // check if the algorithm exist in the database
     $algorithm_doesnt_exist=Algorithm::where('medal_c_id',$data['algorithm_id'])->doesntExist();
     $version_doesnt_exist=Version::where('medal_c_id',$data['version_id'])->doesntExist();
@@ -30,15 +29,7 @@ class Algorithm extends Model implements Auditable
       PatientConfig::getOrCreate($config_questions,$version);
       // have to store the nodes for the algorithm
       $nodes = Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
-
       $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
-      // saving the return array
-      $data_to_return['inBeforeA']=False;
-      $data_to_return['inBeforeV']=False;
-      $data_to_return['algorithm_name']=$algorithm->name;
-      $data_to_return['algorithm_id']=$algorithm->medal_c_id;
-      $data_to_return['version_name']=$version->name;
-      $data_to_return['version_id']=$version->medal_c_id;
     }
     else if ($version_doesnt_exist){
       $version_id=$data['version_id'];
@@ -51,27 +42,11 @@ class Algorithm extends Model implements Auditable
       PatientConfig::getOrCreate($config_questions,$version);
       $nodes = Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
       $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
-      // remind the old man about diagnoses
-      // saving the return array
-      $data_to_return['inBeforeA']=True;
-      $data_to_return['inBeforeV']=False;
-      $data_to_return['algorithm_name']=$algorithm->name;
-      $data_to_return['algorithm_id']=$algorithm->medal_c_id;
-      $data_to_return['version_name']=$version->name;
-      $data_to_return['version_id']=$version->medal_c_id;
     }else{
       $algorithm=Algorithm::where('medal_c_id',$data['algorithm_id'])->first();
       $version=Version::where('medal_c_id',$data['algorithm_id'])->first();
-
-      // saving the return array
-      $data_to_return['inBeforeA']=True;
-      $data_to_return['inBeforeV']=True;
-      $data_to_return['algorithm_name']=$algorithm->name;
-      $data_to_return['algorithm_id']=$algorithm->medal_c_id;
-      $data_to_return['version_name']=$version->name;
-      $data_to_return['version_id']=$version->medal_c_id;
     }
-    return $data_to_return;
+    return true;
   }
   public static function fetchAlgorithm($version_id){
     // setting headers for when we secure this part of quering from medal c

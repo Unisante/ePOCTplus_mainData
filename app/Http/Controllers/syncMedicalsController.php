@@ -13,16 +13,14 @@ use File;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Arr;
+use App\Jobs\fetchAlgorithm;
 class syncMedicalsController extends Controller
 {
     public function syncMedicalCases(Request $request){
       $study_id='Test';
       $isEligible=true;
-      set_time_limit(300);
+      try{
         if($request->file('file')){
-          // $unparsed_path = base_path().'\app\medicalCases\unparsed_medical_cases';
-          // $parsed_path = base_path().'\app\medicalCases\parsed_medical_cases';
-          // $consent_path = base_path().'\app\consentFiles';
           $unparsed_path = base_path().'/storage/medicalCases/unparsed_medical_cases';
           $parsed_path = base_path().'/storage/medicalCases/parsed_medical_cases';
           $consent_path = base_path().'/storage/consentFiles';
@@ -103,6 +101,9 @@ class syncMedicalsController extends Controller
             ]
           );
         }
+      }catch(\Exception $e){
+        return response()->json($e);
+      }
 
   }
 }
