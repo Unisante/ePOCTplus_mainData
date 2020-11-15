@@ -70,11 +70,11 @@ class Algorithm extends Model implements Auditable
     $err = curl_error($curl);
     curl_close($curl);
     if ($err) {
-      echo "cURL Error #:" . $err;
+      return response()->json([
+        "error"=>json_decode($err, true)
+      ]);
     } else {
-      echo $response;
       $medal_C_algorithm = json_decode($response, true);
-      dd($medal_C_algorithm);
       return $medal_C_algorithm;
     }
   }
