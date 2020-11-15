@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Management extends Model
 {
+  protected $table='managements';
   protected $guarded = [];
   public static function store($managements,$nodes,$diagnosis_id){
     foreach($nodes as $node){
