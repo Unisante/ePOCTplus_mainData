@@ -9,19 +9,6 @@ class Version extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable;
   protected $guarded = [];
-
-  // public static function getOrCreate($name, $algorithm_id,$version_id) {
-  //   $version = Version::firstOrCreate(
-  //     [
-  //       'name' => $name, 'algorithm_id' => $algorithm_id
-  //     ],
-  //     [
-  //       'medal_c_id' => $version_id
-  //     ]
-  //   );
-  //   return $version;
-  // }
-
   public static function store($name,$medal_c_id,$algorithm_id){
       $version = new Version;
       $version->name = $name;

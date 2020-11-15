@@ -42,11 +42,7 @@ class Algorithm extends Model implements Auditable
       PatientConfig::getOrCreate($config_questions,$version);
       $nodes = Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
       $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
-    }else{
-      $algorithm=Algorithm::where('medal_c_id',$data['algorithm_id'])->first();
-      $version=Version::where('medal_c_id',$data['algorithm_id'])->first();
     }
-    return true;
   }
   public static function fetchAlgorithm($version_id){
     // setting headers for when we secure this part of quering from medal c
