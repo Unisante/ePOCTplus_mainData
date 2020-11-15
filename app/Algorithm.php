@@ -53,17 +53,30 @@ class Algorithm extends Model implements Auditable
     //   'Header-Key: Header-Value',
     //   'Header-Key-2: Header-Value-2'
     // ));
-    // $version_id=$data['version_id'];
-    // dd($version_id);
-    $url='https://liwi-test.wavelab.top/api/v1/versions/'.$version_id;
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_URL,$url);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 400);
-    $result=curl_exec($ch);
-    curl_close($ch);
-    $medal_C_algorithm = json_decode($result, true);
-    return $medal_C_algorithm;
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => 'https://liwi-test.wavelab.top/api/v1/versions/'.$version_id,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_ENCODING => "",
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+      CURLOPT_CUSTOMREQUEST => "GET",
+      CURLOPT_HTTPHEADER => array(
+        "Cache-Control: no-cache",
+      ),
+    ));
+    $response = curl_exec($curl);
+    $err = curl_error($curl);
+    curl_close($curl);
+    if ($err) {
+      echo "cURL Error #:" . $err;
+    } else {
+      echo $response;
+      $medal_C_algorithm = json_decode($response, true);
+      dd($medal_C_algorithm);
+      return $medal_C_algorithm;
+    }
   }
   public static function store($name,$medal_c_id){
     $algorithm = new Algorithm;
