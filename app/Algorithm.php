@@ -22,7 +22,10 @@ class Algorithm extends Model implements Auditable
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // saving a new algorithm
-      $algorithm = self::store($medal_C_algorithm['algorithm_name'],$medal_C_algorithm['algorithm_id']);
+      $algorithm= Algorithm::firstOrCreate([
+        "name"=>$medal_C_algorithm['algorithm_name'],
+        "medal_c_id"=>$medal_C_algorithm['algorithm_id']
+      ]);
       // checking to see if there is a version of the algorithm
       $version = Version::store($medal_C_algorithm['version_name'],$medal_C_algorithm['version_id'],$algorithm->id);
       $config_questions = $medal_C_algorithm['config']['basic_questions'];
