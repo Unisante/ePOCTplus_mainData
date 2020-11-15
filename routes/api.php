@@ -24,10 +24,8 @@ Route::get('medical_case_answers', function(Request $request) {
     return MedicalCaseAnswer::all();
 });
 
-// Route::post('sync_medical_cases', function(Request $request) {
-//     return Patient::parse_json($request);
-// });
 // Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
 Route::post('sync_medical_cases',function(Request $request){
-  return MedicalCase::syncMedicalCases($request);
+  $saveCases=new MedicalCase;
+  return $saveCases->syncMedicalCases($request);
 });

@@ -39,7 +39,7 @@ class MedicalCase extends Model implements Auditable
     DiagnosisReference::parse_data($medical_case->id,$data_to_parse['diagnoses'],$version->id);
   }
 
-  public static function syncMedicalCases(Request $request){
+  public function syncMedicalCases(Request $request){
     $study_id='Test';
     $isEligible=true;
     if($request->file('file')){
