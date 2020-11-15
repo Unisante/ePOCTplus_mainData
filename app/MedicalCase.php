@@ -48,6 +48,7 @@ class MedicalCase extends Model implements Auditable
       $consent_path = base_path().'/storage/consentFiles';
       Madzipper::make($request->file('file'))->extractTo($unparsed_path);
       $files = File::allFiles($unparsed_path);
+      ini_set('max_execution_time', 300);
       foreach($files as $path){
         $individualData = json_decode(file_get_contents($path), true);
         $dataForAlgorithm=array("algorithm_id"=> $individualData['algorithm_id'],"version_id"=> $individualData['version_id'],);
