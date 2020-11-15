@@ -37,10 +37,12 @@
         "sort-packages": true
     },
     "extra": {
-        "laravel": {
-            "dont-discover": []
-        }
-    },
+      "heroku": {
+      "framework": "silex",
+      "document-root": "public",
+      "index-document": "index.php"
+      }
+      },
     "autoload": {
         "psr-4": {
             "App\\": "app/"
