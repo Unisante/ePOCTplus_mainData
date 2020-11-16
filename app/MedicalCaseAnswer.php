@@ -18,7 +18,7 @@ class MedicalCaseAnswer extends Model implements Auditable
   * @params $medical_case
   * @return void
   */
- 
+
   public static function getOrCreate($nodes,$medical_case){
     // loop in the nodes
     foreach($nodes as $node){
