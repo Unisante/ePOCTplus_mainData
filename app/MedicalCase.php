@@ -19,6 +19,8 @@ use App\Node;
 use App\Algorithm;
 use App\PatientConfig;
 use App\Answer;
+use Illuminate\Support\Facades\Storage;
+
 class MedicalCase extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable;
@@ -39,15 +41,18 @@ class MedicalCase extends Model implements Auditable
     DiagnosisReference::parse_data($medical_case->id,$data_to_parse['diagnoses'],$version->id);
   }
 
-  public function syncMedicalCases(Request $request){
+  public static function syncMedicalCases($file_to_sync){
     $study_id='Test';
     $isEligible=true;
-    if($request->file('file')){
+      // $file=Storage::get($file_to_sync);
+      // dd($file);
+    // if($request->file('file')){
       $unparsed_path = base_path().'/storage/medicalCases/unparsed_medical_cases';
       $parsed_path = base_path().'/storage/medicalCases/parsed_medical_cases';
       $consent_path = base_path().'/storage/consentFiles';
-      Madzipper::make($request->file('file'))->extractTo($unparsed_path);
+      Madzipper::make($file_to_sync)->extractTo($unparsed_path);
       $files = File::allFiles($unparsed_path);
+
       foreach($files as $path){
         $individualData = json_decode(file_get_contents($path), true);
         $dataForAlgorithm=array("algorithm_id"=> $individualData['algorithm_id'],"version_id"=> $individualData['version_id'],);
@@ -57,7 +62,6 @@ class MedicalCase extends Model implements Auditable
           $config= PatientConfig::getConfig($individualData['version_id']);
           $nodes=$individualData['nodes'];
           $gender_answer= Answer::where('medal_c_id',$nodes[$config->gender_question_id]['value'])->first();
-          // kuna swala la kusave consent file
           $consent_file_name=$patient_key['uid'] .'_image.jpg';
           if($consent_file_64 = $patient_key['consent_file']){
             $img = Image::make($consent_file_64);
@@ -100,17 +104,18 @@ class MedicalCase extends Model implements Auditable
         $new_path=$parsed_path.'/'.pathinfo($path)['filename'].'.'.pathinfo($path)['extension'];
         $move = File::move($path, $new_path);
       }
+
       return response()->json(
         [
           "data_received"=>True,
         ]
       );
-    }
-    return response()->json(
-      [
-        "data_received"=>False,
-      ]
-    );
+    // }
+    // return response()->json(
+    //   [
+    //     "data_received"=>False,
+    //   ]
+    // );
   }
   /**
   * Create or get medical case
