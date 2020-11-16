@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-use App\MedicalCase;
 use App\MedicalCaseAnswer;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
@@ -27,12 +26,13 @@ Route::get('medical_case_answers', function(Request $request) {
 });
 
 Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
-Route::post('sync_medical_cases1',function(Request $request){
-  // dd($request->file->originalName);
+Route::post('queue_sync_medical_cases',function(Request $request){
    $file=Storage::putFile('medical_cases_zip', $request->file);
-   saveCases::dispatch($file)->delay(now()->addSeconds(10));
-    // dispatch(new saveCases($file));
-  //  return response()->json(['response'=>'job received','status'=>200]);
-
-  return MedicalCase::syncMedicalCases($file);
+   $filename=basename($file);
+   saveCases::dispatch($filename)->delay(now()->addSeconds(10));
+    // dispatch(new saveCases($filename));
+   return response()->json(['response'=>'job received','status'=>200]);
+  // return response()->json([
+  //   "request"=>"received"
+  // ]);
 });
