@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use App\MedicalCaseAnswer;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
-use App\Jobs\saveCases;
+use App\Jobs\SaveCases;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -29,8 +29,8 @@ Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
 Route::post('queue_sync_medical_cases',function(Request $request){
    $file=Storage::putFile('medical_cases_zip', $request->file);
    $filename=basename($file);
-   saveCases::dispatch($filename)->delay(now()->addSeconds(10));
-    // dispatch(new saveCases($filename));
+  //  saveCases::dispatch($filename)->delay(now()->addSeconds(15));
+    dispatch(new SaveCases($filename));
    return response()->json(['response'=>'job received','status'=>200]);
   // return response()->json([
   //   "request"=>"received"

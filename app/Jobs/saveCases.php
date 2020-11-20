@@ -16,7 +16,7 @@ use App\PatientConfig;
 use App\Answer;
 use App\Patient;
 use Intervention\Image\ImageManagerStatic as Image;
-class saveCases implements ShouldQueue
+class SaveCases implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $filename;
@@ -38,6 +38,7 @@ class saveCases implements ShouldQueue
      */
     public function handle()
     {
+
       $study_id='Test';
       $isEligible=true;
       // $zip_path = base_path().'\storage\app\medical_cases_zip';
