@@ -20,7 +20,7 @@ class SaveCases implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $filename;
-    public $timeout = 300;
+    public $tries = 10;
     /**
      * Create a new job instance.
      *
