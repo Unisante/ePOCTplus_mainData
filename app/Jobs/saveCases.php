@@ -20,16 +20,16 @@ use Illuminate\Support\Facades\Log;
 class SaveCases implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    protected $filename;
-    public $tries = 10;
+    protected $filezip;
+    // public $tries = 10;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($filename)
+    public function __construct($filezip)
     {
-        $this->filename=$filename;
+        $this->filezip=$filezip;
     }
 
     /**
@@ -42,21 +42,18 @@ class SaveCases implements ShouldQueue
       error_log("in the handle");
       $study_id='Test';
       $isEligible=true;
-      // $zip_path = base_path().'\storage\app\medical_cases_zip';
-      // $unparsed_path = base_path().'\storage\app\medical_cases\unparsed_medical_cases';
-      // $parsed_path = base_path().'\storage\app\medical_cases\parsed_medical_cases';
-      // $consent_path = base_path().'\storage\app\consentFiles';
       $zip_path = base_path().'/storage/app/medical_cases_zip';
-      $unparsed_path = base_path().'/storage/app/medical_cases/unparsed_medical_cases';
-      $parsed_path = base_path().'/storage/app/medical_cases/parsed_medical_cases';
+      $unparsed_path = base_path().'/storage/app/unparsed_medical_cases';
+      $parsed_path = base_path().'/storage/app/parsed_medical_cases';
       $consent_path = base_path().'/storage/app/consentFiles';
+
       // Madzipper::make($zip_path.'\\'.$this->filename)->extractTo($unparsed_path);
       error_log("before zipper");
-      Madzipper::make($zip_path.'/'.$this->filename)->extractTo($unparsed_path);
+      Madzipper::make($zip_path.'/'.$this->filezip)->extractTo($unparsed_path);
       error_log("after zipper");
-      $parsed_folder='medical_cases/parsed_medical_cases';
+      $parsed_folder='parsed_medical_cases';
       Storage::makeDirectory($parsed_folder);
-      foreach (Storage::allFiles('medical_cases/unparsed_medical_cases') as $filename) {
+      foreach (Storage::allFiles('unparsed_medical_cases') as $filename) {
         error_log($filename);
         error_log("in the loop");
         $file =Storage::get($filename);
@@ -67,7 +64,6 @@ class SaveCases implements ShouldQueue
         error_log("after algorithm");
         $patient_key=$individualData['patient'];
         if($patient_key['study_id']== $study_id && $individualData['isEligible']==$isEligible){
-          // $config= PatientConfig::getConfig($individualData['version_id']);
           $nodes=$individualData['nodes'];
           $gender_answer= Answer::where('medal_c_id',$nodes[$algorithm_n_version["config_data"]->gender_question_id]['value'])->first();
           $consent_file_name=$patient_key['uid'] .'_image.jpg';
@@ -76,7 +72,6 @@ class SaveCases implements ShouldQueue
             if(!File::exists($consent_path)) {
               mkdir($consent_path);
             }
-            // $img->save($consent_path.'\\'.$consent_file_name);
             $img->save($consent_path.'/'.$consent_file_name);
           }
           $issued_patient=Patient::firstOrCreate(
@@ -110,10 +105,19 @@ class SaveCases implements ShouldQueue
           MedicalCase::parse_data($data_to_parse);
           error_log("after medical case");
         }
-        Storage::move($filename, $parsed_folder.'/'.basename($filename));
+        error_log($filename);
+        error_log(Storage::Exists($filename));
+        error_log($parsed_folder.'/'.basename($filename));
+        error_log(!(Storage::Exists($parsed_folder.'/'.basename($filename))));
+        if(Storage::Exists($filename) && !(Storage::Exists($parsed_folder.'/'.basename($filename)))){
+          Storage::move($filename, $parsed_folder.'/'.basename($filename));
+        }
+        Storage::Delete($filename);
+        error_log("after moving");
       }
+      error_log($this->filezip);
       error_log("deleting the zip file");
-      Storage::delete('medical_cases_zip/'.$this->filename);
+      Storage::Delete('medical_cases_zip/'.$this->filezip);
       error_log("deleted the zip file");
     }
 }
