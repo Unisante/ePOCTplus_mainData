@@ -21,15 +21,17 @@ class SaveCases implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $filezip;
+    protected $zippath;
     // public $tries = 10;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($filezip)
+    public function __construct($filezip,$zippath)
     {
         $this->filezip=$filezip;
+        $this->zippath=$zippath;
     }
 
     /**
@@ -46,13 +48,14 @@ class SaveCases implements ShouldQueue
       $unparsed_path = base_path().'/storage/app/unparsed_medical_cases';
       $parsed_path = base_path().'/storage/app/parsed_medical_cases';
       $consent_path = base_path().'/storage/app/consentFiles';
-
-      // Madzipper::make($zip_path.'\\'.$this->filename)->extractTo($unparsed_path);
       error_log("before zipper");
-      Madzipper::make($zip_path.'/'.$this->filezip)->extractTo($unparsed_path);
+      // $zip_file = Storage::disk('medical_cases_zip')->get($this->filezip);
+      $zip_file= File::get($zip_path.'/'.$this->filezip);
+      Madzipper::make($this->zippath)->extractTo($unparsed_path);
       error_log("after zipper");
       $parsed_folder='parsed_medical_cases';
       Storage::makeDirectory($parsed_folder);
+      error_log(Storage::allFiles('unparsed_medical_cases')[0]);
       foreach (Storage::allFiles('unparsed_medical_cases') as $filename) {
         error_log($filename);
         error_log("in the loop");
