@@ -38,7 +38,6 @@ class SaveCases implements ShouldQueue
      */
     public function handle()
     {
-
       $study_id='Test';
       $isEligible=true;
       // $zip_path = base_path().'\storage\app\medical_cases_zip';

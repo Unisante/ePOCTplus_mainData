@@ -29,8 +29,8 @@ Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
 Route::post('queue_sync_medical_cases',function(Request $request){
    $file=Storage::putFile('medical_cases_zip', $request->file);
    $filename=basename($file);
-   saveCases::dispatch($filename)->delay(now()->addSeconds(15));
-    // dispatch(new SaveCases($filename));
+  //  saveCases::dispatch($filename)->delay(now()->addSeconds(15));
+    dispatch(new SaveCases($filename));
    return response()->json(['response'=>'job received','status'=>200]);
   // return response()->json([
   //   "request"=>"received"
