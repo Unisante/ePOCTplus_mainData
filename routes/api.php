@@ -5,6 +5,7 @@ use App\MedicalCaseAnswer;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use App\Jobs\SaveCases;
+use Madnest\Madzipper\Madzipper;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,6 +29,9 @@ Route::get('medical_case_answers', function(Request $request) {
 Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
 Route::post('queue_sync_medical_cases',function(Request $request){
    $file=Storage::putFile('medical_cases_zip', $request->file);
+   $unparsed_path = base_path().'/storage/app/unparsed_medical_cases';
+   $zipper=new Madzipper();
+   $zipper->make($request->file('file'))->extractTo($unparsed_path);
    $filename=basename($file);
    $zipPath = Storage::path($file);
   //  saveCases::dispatch($filename)->delay(now()->addSeconds(15));
