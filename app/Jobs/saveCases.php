@@ -21,7 +21,7 @@ class SaveCases implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $filename;
-    public $tries = 10;
+    // public $tries = 10;
     /**
      * Create a new job instance.
      *
@@ -54,10 +54,13 @@ class SaveCases implements ShouldQueue
       error_log("before zipper");
       Madzipper::make($zip_path.'/'.$this->filename)->extractTo($unparsed_path);
       error_log("after zipper");
-      $files = File::allFiles($unparsed_path);
-      foreach($files as $path){
+      $parsed_folder='medical_cases/parsed_medical_cases';
+      Storage::makeDirectory($parsed_folder);
+      foreach (Storage::allFiles('medical_cases/unparsed_medical_cases') as $filename) {
+        error_log($filename);
         error_log("in the loop");
-        $individualData = json_decode(file_get_contents($path), true);
+        $file =Storage::get($filename);
+        $individualData = json_decode($file, true);
         $dataForAlgorithm=array("algorithm_id"=> $individualData['algorithm_id'],"version_id"=> $individualData['version_id'],);
         error_log("before algorithm");
         $algorithm_n_version=Algorithm::ifOrExists($dataForAlgorithm);
@@ -107,12 +110,7 @@ class SaveCases implements ShouldQueue
           MedicalCase::parse_data($data_to_parse);
           error_log("after medical case");
         }
-        if(!File::exists($parsed_path)) {
-          mkdir($parsed_path);
-        }
-        // $new_path=$parsed_path.'\\'.pathinfo($path)['filename'].'.'.pathinfo($path)['extension'];
-        $new_path=$parsed_path.'/'.pathinfo($path)['filename'].'.'.pathinfo($path)['extension'];
-        $move = File::move($path, $new_path);
+        Storage::move($filename, $parsed_folder.'/'.basename($filename));
       }
       error_log("deleting the zip file");
       Storage::delete('medical_cases_zip/'.$this->filename);
