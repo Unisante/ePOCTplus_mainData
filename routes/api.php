@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use App\MedicalCaseAnswer;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
-use App\Jobs\SaveCases;
+use App\Jobs\SaveCase;
 use Madnest\Madzipper\Madzipper;
 /*
 |--------------------------------------------------------------------------
@@ -30,14 +30,15 @@ Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
 Route::post('queue_sync_medical_cases',function(Request $request){
    $file=Storage::putFile('medical_cases_zip', $request->file);
    $unparsed_path = base_path().'/storage/app/unparsed_medical_cases';
+   $parsed_folder='parsed_medical_cases';
    $zipper=new Madzipper();
    $zipper->make($request->file('file'))->extractTo($unparsed_path);
    $filename=basename($file);
-   $zipPath = Storage::path($file);
-  //  saveCases::dispatch($filename)->delay(now()->addSeconds(15));
-    dispatch(new SaveCases($filename,$zipPath));
+   Storage::makeDirectory($parsed_folder);
+   foreach(Storage::allFiles('unparsed_medical_cases') as $filename){
+    $individualData = json_decode(Storage::get($filename), true);
+    dispatch(new SaveCase($individualData,$filename));
+   }
+  //  Storage::delete($file);
    return response()->json(['response'=>'job received','status'=>200]);
-  // return response()->json([
-  //   "request"=>"received"
-  // ]);
 });
