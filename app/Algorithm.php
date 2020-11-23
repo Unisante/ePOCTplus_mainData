@@ -14,10 +14,12 @@ class Algorithm extends Model implements Auditable
 
   // checks if it exists and if not,it creates the existance,if it does.It returns true
   public static function ifOrExists($data){
+    $data_to_return=array();
     // check if the algorithm exist in the database
     $algorithm_doesnt_exist=Algorithm::where('medal_c_id',$data['algorithm_id'])->doesntExist();
     $version_doesnt_exist=Version::where('medal_c_id',$data['version_id'])->doesntExist();
     if($algorithm_doesnt_exist){
+      error_log("inside for algorithm");
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // saving a new algorithm
@@ -28,12 +30,17 @@ class Algorithm extends Model implements Auditable
       // checking to see if there is a version of the algorithm
       $version = Version::store($medal_C_algorithm['version_name'],$medal_C_algorithm['version_id'],$algorithm->id);
       $config_questions = $medal_C_algorithm['config']['basic_questions'];
-      PatientConfig::getOrCreate($config_questions,$version);
+      $config_data=PatientConfig::getOrCreate($config_questions,$version->id);
       // have to store the nodes for the algorithm
-      $nodes = Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
+      Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
       $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
+      return $data_to_return=[
+        "version_id"=>$version->id,
+        "config_data"=>$config_data,
+      ];
     }
     else if ($version_doesnt_exist){
+      error_log("inside for algorithm version");
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // find the algorithm
@@ -41,9 +48,22 @@ class Algorithm extends Model implements Auditable
       // create a version
       $version = Version::store($medal_C_algorithm['version_name'],$medal_C_algorithm['version_id'],$algorithm->id);
       $config_questions = $medal_C_algorithm['config']['basic_questions'];
-      PatientConfig::getOrCreate($config_questions,$version);
-      $nodes = Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
+      $config_data=PatientConfig::getOrCreate($config_questions,$version->id);
+      Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
       $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
+      return $data_to_return=[
+        "version_id"=>$version->id,
+        "config_data"=>$config_data,
+      ];
+    }else{
+      error_log("inside return algorithm");
+      $version =Version::where('medal_c_id',$data['version_id'])->first();
+      $config_data=PatientConfig::getConfig($version->id);
+      return $data_to_return=[
+        "version_id"=>$version->id,
+        "config_data"=>$config_data
+      ];
+
     }
   }
   public static function fetchAlgorithm($version_id){

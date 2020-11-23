@@ -12,10 +12,11 @@ use Illuminate\Support\Facades\Storage;
 use Madzipper;
 use File;
 use App\Algorithm;
-use App\PatientConfig;
 use App\Answer;
 use App\Patient;
 use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\Log;
+
 class SaveCases implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -54,12 +55,12 @@ class SaveCases implements ShouldQueue
       foreach($files as $path){
         $individualData = json_decode(file_get_contents($path), true);
         $dataForAlgorithm=array("algorithm_id"=> $individualData['algorithm_id'],"version_id"=> $individualData['version_id'],);
-        Algorithm::ifOrExists($dataForAlgorithm);
+        $algorithm_n_version=Algorithm::ifOrExists($dataForAlgorithm);
         $patient_key=$individualData['patient'];
         if($patient_key['study_id']== $study_id && $individualData['isEligible']==$isEligible){
-          $config= PatientConfig::getConfig($individualData['version_id']);
+          // $config= PatientConfig::getConfig($individualData['version_id']);
           $nodes=$individualData['nodes'];
-          $gender_answer= Answer::where('medal_c_id',$nodes[$config->gender_question_id]['value'])->first();
+          $gender_answer= Answer::where('medal_c_id',$nodes[$algorithm_n_version["config_data"]->gender_question_id]['value'])->first();
           $consent_file_name=$patient_key['uid'] .'_image.jpg';
           if($consent_file_64 = $patient_key['consent_file']){
             $img = Image::make($consent_file_64);
@@ -74,10 +75,10 @@ class SaveCases implements ShouldQueue
               "local_patient_id"=>$patient_key['uid']
             ],
             [
-            "first_name"=>$nodes[$config->first_name_question_id]['value'],
-            "last_name"=>$nodes[$config->last_name_question_id]['value'],
-            "birthdate"=>$nodes[$config->birth_date_question_id]['value'],
-            "weight"=>$nodes[$config->weight_question_id]['value'],
+            "first_name"=>$nodes[$algorithm_n_version["config_data"]->first_name_question_id]['value'],
+            "last_name"=>$nodes[$algorithm_n_version["config_data"]->last_name_question_id]['value'],
+            "birthdate"=>$nodes[$algorithm_n_version["config_data"]->birth_date_question_id]['value'],
+            "weight"=>$nodes[$algorithm_n_version["config_data"]->weight_question_id]['value'],
             "gender"=>$gender_answer->label,
             "group_id"=>$patient_key['group_id'],
             "consent"=>$consent_file_name,
@@ -89,11 +90,11 @@ class SaveCases implements ShouldQueue
             'created_at'=>$individualData['created_at'],
             'updated_at'=>$individualData['updated_at'],
             'patient_id'=>$issued_patient->id,
-            'algorithm_id'=>$individualData['algorithm_id'],
             'nodes'=>$individualData['nodes'],
             'diagnoses'=>$individualData['diagnoses'],
             'consent'=>$individualData['consent'],
-            'isEligible'=>$individualData['isEligible']
+            'isEligible'=>$individualData['isEligible'],
+            'version_id'=>$algorithm_n_version['version_id'],
           );
           MedicalCase::parse_data($data_to_parse);
         }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Algorithm;
 use App\Patient;
-use App\PatientConfig;
 use App\Answer;
 use App\MedicalCase;
 use Madzipper;
@@ -36,17 +35,16 @@ class syncMedicalsController extends Controller
             "algorithm_id"=> $algorithm_id,
             "version_id"=> $version_id,
           );
-          Algorithm::ifOrExists($dataForAlgorithm);
+          $algorithm_n_version=Algorithm::ifOrExists($dataForAlgorithm);
           $patient_key=$individualData['patient'];
           if($patient_key['study_id']== $study_id && $individualData['isEligible']==$isEligible){
             $patient=new Patient;
             $patient->local_patient_id=$patient_key['uid'];
-            $config= PatientConfig::getConfig($individualData['version_id']);
-            $birth_date_question_id=$config->birth_date_question_id;
-            $first_name_question_id=$config->first_name_question_id;
-            $last_name_question_id=$config->last_name_question_id;
-            $weight_question_id=$config->weight_question_id;
-            $gender_question_id=$config->gender_question_id;
+            $birth_date_question_id=$algorithm_n_version["config_data"]->birth_date_question_id;
+            $first_name_question_id=$algorithm_n_version["config_data"]->first_name_question_id;
+            $last_name_question_id=$algorithm_n_version["config_data"]->last_name_question_id;
+            $weight_question_id=$algorithm_n_version["config_data"]->weight_question_id;
+            $gender_question_id=$algorithm_n_version["config_data"]->gender_question_id;
 
             if($patient_not_exist=Patient::where('local_patient_id',$patient_key['uid'])->doesntExist()){
               $nodes=$individualData['nodes'];
@@ -78,11 +76,11 @@ class syncMedicalsController extends Controller
               'created_at'=>$individualData['created_at'],
               'updated_at'=>$individualData['updated_at'],
               'patient_id'=>$issued_patient->id,
-              'algorithm_id'=>$individualData['algorithm_id'],
               'nodes'=>$individualData['nodes'],
               'diagnoses'=>$individualData['diagnoses'],
               'consent'=>$individualData['consent'],
-              'isEligible'=>$individualData['isEligible']
+              'isEligible'=>$individualData['isEligible'],
+              'version_id'=>$algorithm_n_version['version_id'],
             );
             MedicalCase::parse_data($data_to_parse);
           }

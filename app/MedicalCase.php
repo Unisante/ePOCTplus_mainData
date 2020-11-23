@@ -34,11 +34,9 @@ class MedicalCase extends Model implements Auditable
   * @return void
   */
   public static function parse_data($data_to_parse){
-    $algorithm = Algorithm::where('medal_c_id', $data_to_parse['algorithm_id'])->first();
-    $version = Version::where([['medal_c_id', $data_to_parse['version_id']],['algorithm_id',$algorithm->id],])->first();
-    $medical_case = self::get_or_create($data_to_parse,$version->id);
+    $medical_case = self::get_or_create($data_to_parse,$data_to_parse['version_id']);
     MedicalCaseAnswer::getOrCreate($data_to_parse['nodes'], $medical_case);
-    DiagnosisReference::parse_data($medical_case->id,$data_to_parse['diagnoses'],$version->id);
+    DiagnosisReference::parse_data($medical_case->id,$data_to_parse['diagnoses'],$data_to_parse['version_id']);
   }
 
   public static function syncMedicalCases($file_to_sync){

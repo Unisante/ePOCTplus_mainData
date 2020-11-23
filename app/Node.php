@@ -75,6 +75,5 @@ class Node extends Model implements Auditable
         Answer::getOrCreate($nodeSaved,$node);
       }
     }
-    return True;
   }
 }
