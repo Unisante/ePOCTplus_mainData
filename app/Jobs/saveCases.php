@@ -39,6 +39,7 @@ class SaveCases implements ShouldQueue
      */
     public function handle()
     {
+      error_log("in the handle");
       $study_id='Test';
       $isEligible=true;
       // $zip_path = base_path().'\storage\app\medical_cases_zip';
@@ -50,12 +51,17 @@ class SaveCases implements ShouldQueue
       $parsed_path = base_path().'/storage/app/medical_cases/parsed_medical_cases';
       $consent_path = base_path().'/storage/app/consentFiles';
       // Madzipper::make($zip_path.'\\'.$this->filename)->extractTo($unparsed_path);
+      error_log("before zipper");
       Madzipper::make($zip_path.'/'.$this->filename)->extractTo($unparsed_path);
+      error_log("after zipper");
       $files = File::allFiles($unparsed_path);
       foreach($files as $path){
+        error_log("in the loop");
         $individualData = json_decode(file_get_contents($path), true);
         $dataForAlgorithm=array("algorithm_id"=> $individualData['algorithm_id'],"version_id"=> $individualData['version_id'],);
+        error_log("before algorithm");
         $algorithm_n_version=Algorithm::ifOrExists($dataForAlgorithm);
+        error_log("after algorithm");
         $patient_key=$individualData['patient'];
         if($patient_key['study_id']== $study_id && $individualData['isEligible']==$isEligible){
           // $config= PatientConfig::getConfig($individualData['version_id']);
@@ -84,6 +90,7 @@ class SaveCases implements ShouldQueue
             "consent"=>$consent_file_name,
             ]
           );
+          error_log("saved a patient");
           $data_to_parse=array(
             'local_medical_case_id'=>$individualData['id'],
             'version_id'=>$individualData['version_id'],
@@ -96,7 +103,9 @@ class SaveCases implements ShouldQueue
             'isEligible'=>$individualData['isEligible'],
             'version_id'=>$algorithm_n_version['version_id'],
           );
+          error_log("before medical case");
           MedicalCase::parse_data($data_to_parse);
+          error_log("after medical case");
         }
         if(!File::exists($parsed_path)) {
           mkdir($parsed_path);
@@ -105,5 +114,8 @@ class SaveCases implements ShouldQueue
         $new_path=$parsed_path.'/'.pathinfo($path)['filename'].'.'.pathinfo($path)['extension'];
         $move = File::move($path, $new_path);
       }
+      error_log("deleting the zip file");
+      Storage::delete('medical_cases_zip/'.$this->filename);
+      error_log("deleted the zip file");
     }
 }

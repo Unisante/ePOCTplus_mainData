@@ -28,7 +28,6 @@ class Diagnosis extends Model
         Management::store($node['managements'],$nodes,$diagnosis->id);
       }
     }
-    return true;
   }
 
   public function drugs(){

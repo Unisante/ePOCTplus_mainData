@@ -14,7 +14,6 @@ class Algorithm extends Model implements Auditable
 
   // checks if it exists and if not,it creates the existance,if it does.It returns true
   public static function ifOrExists($data){
-    $data_to_return=array();
     // check if the algorithm exist in the database
     $algorithm_doesnt_exist=Algorithm::where('medal_c_id',$data['algorithm_id'])->doesntExist();
     $version_doesnt_exist=Version::where('medal_c_id',$data['version_id'])->doesntExist();
@@ -34,7 +33,7 @@ class Algorithm extends Model implements Auditable
       // have to store the nodes for the algorithm
       Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
       $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
-      return $data_to_return=[
+      return [
         "version_id"=>$version->id,
         "config_data"=>$config_data,
       ];
@@ -51,7 +50,7 @@ class Algorithm extends Model implements Auditable
       $config_data=PatientConfig::getOrCreate($config_questions,$version->id);
       Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
       $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
-      return $data_to_return=[
+      return [
         "version_id"=>$version->id,
         "config_data"=>$config_data,
       ];
@@ -59,7 +58,7 @@ class Algorithm extends Model implements Auditable
       error_log("inside return algorithm");
       $version =Version::where('medal_c_id',$data['version_id'])->first();
       $config_data=PatientConfig::getConfig($version->id);
-      return $data_to_return=[
+      return [
         "version_id"=>$version->id,
         "config_data"=>$config_data
       ];
