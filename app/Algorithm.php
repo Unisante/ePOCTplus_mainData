@@ -18,7 +18,6 @@ class Algorithm extends Model implements Auditable
     $algorithm_doesnt_exist=Algorithm::where('medal_c_id',$data['algorithm_id'])->doesntExist();
     $version_doesnt_exist=Version::where('medal_c_id',$data['version_id'])->doesntExist();
     if($algorithm_doesnt_exist){
-      error_log("inside for algorithm");
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // saving a new algorithm
@@ -39,7 +38,6 @@ class Algorithm extends Model implements Auditable
       ];
     }
     else if ($version_doesnt_exist){
-      error_log("inside for algorithm version");
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // find the algorithm
@@ -55,7 +53,6 @@ class Algorithm extends Model implements Auditable
         "config_data"=>$config_data,
       ];
     }else{
-      error_log("inside return algorithm");
       $version =Version::where('medal_c_id',$data['version_id'])->first();
       $config_data=PatientConfig::getConfig($version->id);
       return [
