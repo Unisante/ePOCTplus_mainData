@@ -10,6 +10,7 @@ class Patient extends Model implements Auditable
   use \OwenIt\Auditing\Auditable;
 
   protected $guarded = [];
+  
   /*
   * recevieves a json file and makes a save to the database
   * @param  mixed  json file of the patient
@@ -20,7 +21,6 @@ class Patient extends Model implements Auditable
     $response = array();
     $response['patients'] = array();
     $response['medical_cases'] = array();
-
     foreach ($patients as $key=>&$patient) {
       $main_data_patient_id=isset($patient->main_data_patient_id)? $patient->main_data_patient_id :null;
       $new_patient = self::get_or_create($main_data_patient_id, $patient['firstname'], $patient['lastname']);

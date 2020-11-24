@@ -10,6 +10,12 @@ class Diagnosis extends Model
 {
   protected $guarded = [];
 
+  /**
+  * get or store diagnosis
+  * @params $nodes
+  * @params $version_id
+  * @return void
+  */
   public static function getOrStore($nodes,$version_id){
     foreach($nodes as $node){
       if(array_key_exists('diagnostic_id',$node) && $node['type']=='FinalDiagnostic'){
@@ -30,12 +36,26 @@ class Diagnosis extends Model
     }
   }
 
+  /**
+  * Make drugs relation
+  * @return one to many medical cases retionship
+  */
   public function drugs(){
     return $this->hasMany('App\Drug');
   }
+
+  /**
+  * Make managements relation
+  * @return one to many medical cases retionship
+  */
   public function managements(){
     return $this->hasMany('App\Management');
   }
+
+  /**
+  * Make medical case relation
+  * @return one to many medical cases retionship
+  */
   public function medical_case(){
     return $this->belongsTo('App\MedicalCase');
   }

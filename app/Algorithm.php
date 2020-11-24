@@ -12,7 +12,12 @@ class Algorithm extends Model implements Auditable
   use \OwenIt\Auditing\Auditable;
   protected $guarded = [];
 
-  // checks if it exists and if not,it creates the existance,if it does.It returns true
+  /**
+  * Checks the the algorithm version
+  * @params $algorithm_id
+  * @params $version_id
+  * @return array
+  */
   public static function ifOrExists($data){
     // check if the algorithm exist in the database
     $algorithm_doesnt_exist=Algorithm::where('medal_c_id',$data['algorithm_id'])->doesntExist();
@@ -62,6 +67,12 @@ class Algorithm extends Model implements Auditable
 
     }
   }
+
+  /**
+  * fetch algorithm version from medal c
+  * @params $version_id
+  * @return array
+  */
   public static function fetchAlgorithm($version_id){
     // setting headers for when we secure this part of quering from medal c
     // curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -93,6 +104,13 @@ class Algorithm extends Model implements Auditable
       return $medal_C_algorithm;
     }
   }
+
+  /**
+  * store algorithm
+  * @params $name
+  * @params $medal_c_id
+  * @return algorithm
+  */
   public static function store($name,$medal_c_id){
     $algorithm = new Algorithm;
     $algorithm->name = $name;

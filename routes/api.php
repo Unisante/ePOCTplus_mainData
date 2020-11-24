@@ -22,14 +22,13 @@ use Madnest\Madzipper\Madzipper;
 //    return $request->user();
 //});
 
-Route::get('medical_case_answers', function(Request $request) {
-
+Route::get('medical_case_answers', function(Request $request){
     return MedicalCaseAnswer::all();
 });
 
-Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
+// Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
 
-Route::post('queue_sync_medical_cases',function(Request $request){
+Route::post('sync_medical_cases',function(Request $request){
     // code to check if the test user is available
     $userdoesntExist = User::where('name','test')->doesntExist();
     if($userdoesntExist){

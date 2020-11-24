@@ -13,14 +13,12 @@ class MedicalCaseAnswer extends Model implements Auditable
   protected $guarded = [];
 
   /*
-  * Checks if it key exist
-  * @params $json
+  * get or create medical case answers
+  * @params $nodes
   * @params $medical_case
   * @return void
   */
-
   public static function getOrCreate($nodes,$medical_case){
-    // loop in the nodes
     foreach($nodes as $node){
       $node_issued= Node::where('medal_c_id',$node['id'])->first();
       $answer=isset($node['answer'])?$node['answer']:null;
@@ -37,8 +35,15 @@ class MedicalCaseAnswer extends Model implements Auditable
     }
   }
 
+  /*
+  * store medical case answer
+  * @params $medical_case_id
+  * @params $answer_id
+  * @params $node_id
+  * @params $value
+  * @return void
+  */
   public static function store($medical_case_id,$answer_id,$node_id,$value){
-
     MedicalCaseAnswer::firstOrCreate(
       [
         'medical_case_id'=>$medical_case_id,
@@ -50,6 +55,7 @@ class MedicalCaseAnswer extends Model implements Auditable
       ]
     );
   }
+  
   /**
    * Get all audits of one medical case
    * @params $id

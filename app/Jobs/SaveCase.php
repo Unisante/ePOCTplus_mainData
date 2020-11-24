@@ -23,9 +23,11 @@ class SaveCase implements ShouldQueue
     protected $individualData;
     protected $filename;
     public $tries = 10;
+
     /**
      * Create a new job instance.
-     *
+     * @params $individualData
+     * @params $filename
      * @return void
      */
     public function __construct($individualData,$filename)
@@ -35,7 +37,7 @@ class SaveCase implements ShouldQueue
     }
 
     /**
-     * Execute the job.
+     * save a medical case.
      *
      * @return void
      */
