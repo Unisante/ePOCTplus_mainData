@@ -35,7 +35,7 @@ WithEvents
       'updated_at',
       'local_medical_case_id',
       'consent',
-      'isEligible'
+      'is_eligible'
     ];
   }
   private $heads;

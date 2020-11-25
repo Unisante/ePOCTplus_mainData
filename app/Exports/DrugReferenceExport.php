@@ -18,13 +18,13 @@ WithEvents
 {
   public function headings():array{
     return [
-      'drugReference_id',
+      'drug_reference_id',
       'drug_id',
       'diagnosis_id',
       'agreed',
       'created_at',
       'updated_at',
-      'formulationSelected',
+      'formulation_selected',
     ];
   }
   public function registerEvents():array
