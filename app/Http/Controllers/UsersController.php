@@ -181,7 +181,9 @@ class UsersController extends Controller
     }
   }
 
-  public function resetOwnUserPassword(){
+  public function defaultPasswordReset(Request $request){
+    
+    dd("asdf megdr");
     return 'ture';
   }
 }
