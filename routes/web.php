@@ -16,6 +16,7 @@ Route::get('/', function () {
 });
 // Route::get('/user/reset',['as'=>'users.resetOwnUserPassword','uses'=>'UsersController@resetOwnUserPassword'])->name('reset');
 // Route::get('/user/reset','UsersController@resetOwnUserPassword');
+Route::post('/user/password/reset','HomeController@forgotPassword')->name('HomeController@forgotPassword');
 Route::group(['middleware' => ['auth']], function() {
   Route::resource('roles', 'RolesController');
   Route::resource('users','UsersController');
@@ -23,7 +24,6 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('/user/password','UsersController@showChangePassword');
   Route::post('/user/password','UsersController@changePassword')->name('UsersController@changePassword');
   Route::post('/user/reset/{id}','UsersController@resetPassword')->name('UsersController@resetPassword');
-  Route::post('/user/password/reset','UsersController@defaultPasswordReset')->name('UsersController@defaultPasswordReset');
   Route::get('/home', 'HomeController@index')->name('home');
   Route::get('roles/removeRole/{id}','RolesController@removeRolePermissionShow');
   Route::post('role/removePerm/{id}','RolesController@removeRolePermission');

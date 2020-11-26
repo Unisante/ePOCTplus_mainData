@@ -4,38 +4,29 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card card-body">
-                {{-- <div class="card-header">{{ __('Reset Password') }}</div> --}}
-
+                <div class="card-header">
+                  <span>Please set the email you use in Main Data</span>
+                </div>
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
+                    {{ Form::open(['route' => ['HomeController@forgotPassword']]) }}
+                      <div class="form-group row">
+                        {{Form::label('email', 'Email', array('class' => 'col-md-4 col-form-label text-md-right'))}}
+                        <div class="col-md-6">
+                          {{Form::email('email', null, array('autofocus'=>'autofocus','class'=>'form-control','required'=>'required'))}}
+                          @if (count($errors) > 0)
+                              <div class="alert alert-danger">
+                                  <strong>Whoops!</strong>
+                                  <span>There were some problems with the email,please contact the administrator</span>
+                              </div>
+                          @endif
                         </div>
-                    @endif
-
-                    {{-- <form method="POST" action="{{ route('UsersController@defaultPasswordReset') }}">
-                        @csrf
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                      </div>
+                      <div class="form-group row mb-0">
+                        <div class="col-md-6 offset-md-4">
+                          {{Form::submit('Password Reset', array('class' => 'btn btn-outline-primary'))}}
                         </div>
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{-- {{ __('Send Password Reset Link') }} --}}
-                                    Send Password Reset Link
-                                </button>
-                            </div>
-                        </div>
-                    </form> --}}
+                      </div>
+                    {{ Form::close()}}
                 </div>
             </div>
         </div>

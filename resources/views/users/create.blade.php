@@ -34,7 +34,7 @@
         </div>
       </div>
 
-      <div class="form-group row">
+      {{-- <div class="form-group row">
         <label for="name" class="col-md-3 col-form-label text-md-right">Password<span class="required"><font color="red">*</font></span></label>
         <div class="col-md-9">
           <input id="name"
@@ -44,7 +44,7 @@
           required autocomplete="name"
           autofocus >
         </div>
-      </div>
+      </div> --}}
 
       <div class="form-group row">
         <label for="name" class="col-md-3 col-form-label text-md-right">Roles<span class="required"></span></label>

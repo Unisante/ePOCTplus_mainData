@@ -6,6 +6,9 @@ use App\User;
 use App\MedicalCase;
 use App\Patient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
+use App\Jobs\ResetAccountPasswordJob;
 
 class HomeController extends Controller
 {
@@ -16,7 +19,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['forgotPassword']]);
     }
 
     /**
@@ -33,5 +36,18 @@ class HomeController extends Controller
         'patientCount'=> Patient::all()->count(),
       );
         return view('home')->with($data);
+    }
+
+    public function forgotPassword(Request $request){
+      $userNotIn=User::where('email',$request->email)->doesntExist();
+      if($userNotIn){
+        $message="Email doesn't exist in main data, please contact the admin";
+        return Redirect::back()->withErrors($message);
+      }
+      $random_password=Str::random(10);
+        $body = 'Your password has been reset to '. $random_password;
+
+      dispatch(new ResetAccountPasswordJob($body,$request->email));
+      return redirect('/');
     }
 }

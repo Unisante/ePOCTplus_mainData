@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use DB;
+use Illuminate\Support\Str;
+use App\Jobs\RegisterUserJob;
 
 
 class UsersController extends Controller
@@ -64,12 +66,16 @@ class UsersController extends Controller
         'email' => 'required|string|unique:users',
         'role'=>'required',
       ));
+      $random_password=Str::random(10);
+
       $user=new User;
       $user->name=$request->input('name');
       $user->email=$request->input('email');
-      $user->password=Hash::make($request->input('password'));
+      $user->password=Hash::make($random_password);
       $user->syncRoles($request->input('role'));
       if($user->save()){
+        $body = 'Your account has been set in Main Data with the default password as '.$random_password;
+        dispatch(new RegisterUserJob($body,$request->input('email')));
         return redirect()->route('users.index')->with('success','Information have been saved Successfully.');
       }
     }
@@ -181,9 +187,4 @@ class UsersController extends Controller
     }
   }
 
-  public function defaultPasswordReset(Request $request){
-    
-    dd("asdf megdr");
-    return 'ture';
-  }
 }
