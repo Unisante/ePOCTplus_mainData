@@ -211,49 +211,54 @@ return [
           'text' => 'Duplicates',
           'url'  => '/patients/duplicates',
           'icon' => 'fas fa-fw fa-users',
-
+          'can' =>  'Merge_Duplicates'
         ],
         [
             'text' => 'Patient list',
             'url'  => '/patients',
             'icon' => 'fas fa-fw fa-list',
-
+            'can' =>  'View_Patient'
         ],
 
         [
             'text' => 'Medical Cases',
             'url'  => '/medicalcases',
             'icon' => 'fas fa-fw fa-file',
+            'can' =>  'View_Case'
         ],
 
         [
           'text' => 'Questions',
           'url'  => '/questions',
           'icon' => 'fas fa-fw fa-question-circle',
+          'can' =>  'View_Case'
         ],
         [
           'text' => 'Export',
           'url'  => '/export-mainData-csv',
           'icon' => 'fas fa-fw fa-file',
+          'can' =>  'Merge_Duplicates'
         ],
         [
             'text' => 'profile',
-            'url'  => '#',
+            'url'  => '/user/profile',
             'icon' => 'fas fa-fw fa-user',
+            'can' =>  'Reset_Own_Password'
         ],
         [
             'text' => 'change_password',
-            'url'  => '#',
+            'url'  => '/user/profile',
             'icon' => 'fas fa-fw fa-lock',
+            'can' =>  'Reset_Own_Password'
         ],
         [
             'text' => 'Admin Corner',
             'icon' => 'fas fa-fw fa-cog',
-            //'can' => 'view users',
+            'can' => 'Access_ADMIN_PANEL',
             'submenu' => [
                 [
                     'text' => 'Users Management',
-                    'url'  => '/user',
+                    'url'  => '/users',
                     'icon' => 'fas fa-fw fa-users',
                    //'can' => 'view users',
                 ],
@@ -261,7 +266,7 @@ return [
 
                 [
                     'text' => 'Manage Roles',
-                    'url'  => '#',
+                    'url'  => '/roles',
                     'icon' => 'fas fa-fw fa-pencil-alt',
                    // 'can' => 'view users',
                 ],
