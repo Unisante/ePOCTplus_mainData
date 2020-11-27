@@ -28,7 +28,7 @@ Route::group(['middleware' => ['auth']], function() {
   Route::post('role/removePerm/{id}','RolesController@removeRolePermission');
 
   //for patient
-  Route::get('/patients','PatientsController@index')->name('patients.index');;
+  Route::get('/patients','PatientsController@index')->name('Patients.index');;
   Route::get('/patient/{id}','PatientsController@show')->name('PatientsController.show');
   Route::get('/patients/compare/{id1}/{id2}','PatientsController@compare');
   Route::get('/patients/merge/{id1}/{id2}','PatientsController@mergeShow');
@@ -38,7 +38,7 @@ Route::group(['middleware' => ['auth']], function() {
   Route::post('/patients/duplicates/delete','PatientsController@destroy')->name('PatientsController@destroy');
 
   //for medical case
-  Route::get('/medicalcases','MedicalCasesController@index');
+  Route::get('/medicalcases','MedicalCasesController@index')->name('MedicalCasesController.index');
   Route::get('/medicalCases/{id}','MedicalCasesController@show')->name('MedicalCasesController.show');
   Route::get('/medicalCases/compare/{id1}/{id2}','MedicalCasesController@compare');
   Route::get('/medicalCases/{medicalCaseId}/question/{questionId}','MedicalCasesController@medicalCaseQuestion')->name('MedicalCasesController.medicalCaseQuestion');

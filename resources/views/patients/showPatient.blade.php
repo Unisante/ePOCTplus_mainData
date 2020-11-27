@@ -8,7 +8,7 @@
   <div class="row justify-content-center">
     <div class="col-md-12">
       <div class="card">
-        <div class="card-header"><a href="{{route('patients.index')}}" class="btn btn-outline-dark"> Back</a></div>
+        <div class="card-header"><a href="{{route('Patients.index')}}" class="btn btn-outline-dark"> Back</a></div>
         <div class="card-body">
           @if (session('status'))
           <div class="alert alert-success" role="alert">
@@ -26,6 +26,8 @@
                   <div>Last Name: <span class="border-bottom">{{$patient->last_name}}</span><br/></div>
                   <div>Birth Date: <span class="border-bottom">{{$patient->birthdate}}</span><br/></div>
                   <div>Weight: <span class="border-bottom">{{$patient->weight}}</span><br/></div>
+                  <div>Gender: <span class="border-bottom">{{$patient->gender}}</span><br/></div>
+                  <div>Study Id: <span class="border-bottom">{{$patient->study_id}}</span><br/></div>
                   <div>Number of medical cases: <span class="border-bottom">{{$patient->medicalCases()->count()}}</span><br/></div>
                 </div>
               </div>
