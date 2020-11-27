@@ -10,6 +10,8 @@ use App\Node;
 use Illuminate\Http\Request;
 use Datatables;
 use DB;
+use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\Storage;
 
 class PatientsController extends Controller
 {
@@ -122,17 +124,34 @@ class PatientsController extends Controller
   * @return PatientsController@findDuplicates
   */
   public function merge(Request $request){
-    //creating a new patient
-    $hybrid_patient=Patient::create([
-      'first_name'=>$request->first_name,
-      'last_name'=>$request->last_name
-    ]);
     //finding the medical cases to update
     $first_patient=Patient::find($request->firstp_id);
     $second_patient=Patient::find($request->secondp_id);
 
+    $consent_array=array();
+    if($first_patient->consent){
+      array_push($consent_array,$first_patient->consent);
+    }
+    if($second_patient->consent){
+      array_push($consent_array,$second_patient->consent);
+    }
+
+    $consent = serialize($consent_array);
+    //creating a new patient
+    $hybrid_patient=new Patient([
+      'first_name'=>$request->first_name,
+      'last_name'=>$request->last_name,
+      'local_patient_id'=>$request->local_patient_id,
+      'birthdate'=>$request->birthdate,
+      'weight'=>$request->weight,
+      'gender'=>$request->gender,
+      'group_id'=>$request->group_id,
+      'consent'=>$consent,
+    ]);
+    $hybrid_patient->save();
+
     $first_person_array=array();
-    if($first_patient->medicalCases){
+    if(sizeof($first_patient->medicalCases)>0){
       foreach($first_patient->medicalCases as $first_medical_case){
         $first_medical_case->update([
           "patient_id"=>$hybrid_patient->id
@@ -140,7 +159,8 @@ class PatientsController extends Controller
         array_push($first_person_array,$first_medical_case->medical_case_answers->count());
       }
     }
-    if($second_patient->medicalCases){
+
+    if(sizeof($second_patient->medicalCases)>0){
       foreach($second_patient->medicalCases as $second_medical_case){
         if(!(in_array($second_medical_case->medical_case_answers->count(),$first_person_array))){
           $second_medical_case->update([

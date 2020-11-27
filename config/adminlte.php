@@ -191,23 +191,28 @@ return [
 
     'menu' => [
 
+        // [
+        //   'text' => 'Duplicates',
+        //   'icon' => 'fas fa-fw fa-clone',
+        //   'submenu' => [
+        //     [
+        //         'text' => 'Patients',
+        //         'url'  => '/patients/duplicates',
+        //         'icon' => 'fas fa-fw fa-users',
+        //     ],
+        //     [
+        //         'text' => 'Medical Cases',
+        //         'url'  => '/medicalcases/duplicates',
+        //         'icon' => 'fas fa-fw fa-pencil-alt',
+        //     ],
+        //   ],
+        // ],
         [
           'text' => 'Duplicates',
-          'icon' => 'fas fa-fw fa-clone',
-          'submenu' => [
-            [
-                'text' => 'Patients',
-                'url'  => '/patients/duplicates',
-                'icon' => 'fas fa-fw fa-users',
-            ],
-            [
-                'text' => 'Medical Cases',
-                'url'  => '/medicalcases/duplicates',
-                'icon' => 'fas fa-fw fa-pencil-alt',
-            ],
-          ],
-        ],
+          'url'  => '/patients/duplicates',
+          'icon' => 'fas fa-fw fa-users',
 
+        ],
         [
             'text' => 'Patient list',
             'url'  => '/patients',
