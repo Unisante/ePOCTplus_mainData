@@ -12,6 +12,10 @@ use Datatables;
 use DB;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\PatientExport;
+use App\Exports\MedicalCaseExport;
+use App\Exports\DataSheet;
+use Excel;
 
 class PatientsController extends Controller
 {
@@ -196,4 +200,15 @@ class PatientsController extends Controller
     }
   }
 
+  public function patientIntoExcel(){
+    return Excel::download(new PatientExport,'patients.xlsx');
+  }
+  public function patientIntoCsv(){
+    return Excel::download(new PatientExport,'patients.csv');
+  }
+  public function allDataIntoExcel(){
+    // return Excel::download(new PatientExport,'patients.csv');
+    // return Excel::download(new MedicalCaseExport,'Medicase.csv');
+    return Excel::download(new DataSheet,'MainData.xlsx');
+  }
 }

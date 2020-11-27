@@ -7,10 +7,12 @@ use App\Node;
 use App\AnswerType;
 use App\MedicalCaseAnswer;
 use App\User;
+use App\DiagnosisReference;
+use App\Exports\MedicalCaseExport;
+use Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use DB;
-
 
 class MedicalCasesController extends Controller
 {
@@ -56,13 +58,12 @@ class MedicalCasesController extends Controller
         array_push($medicalCaseInfo,json_decode(json_encode($data)));
       }
     }
-    $diagnoses=$medicalCase->diagnoses();
+    $diagnoses=DiagnosisReference::getDiagnoses($medicalCase->id);
     $data=array(
       'medicalCase'=>$medicalCase,
       'medicalCaseInfo'=>$medicalCaseInfo,
       'diagnoses'=>$diagnoses
     );
-    // dd('ibu');
     return view('medicalCases.show')->with($data);
   }
 
@@ -240,5 +241,12 @@ class MedicalCasesController extends Controller
         'MedicalCasesController@findDuplicates'
       )->with('status','Row Deleted!');
     }
+  }
+
+  public function medicalCaseIntoExcel(){
+    return Excel::download(new MedicalCaseExport,'medicalCases.xlsx');
+  }
+  public function medicalCaseIntoCsv(){
+    return Excel::download(new MedicalCaseExport,'medicalCases.csv');
   }
 }

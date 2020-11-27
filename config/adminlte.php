@@ -222,7 +222,7 @@ return [
 
         [
             'text' => 'Medical Cases',
-            'url'  => '/medicalCases',
+            'url'  => '/medicalcases',
             'icon' => 'fas fa-fw fa-file',
         ],
 
@@ -231,7 +231,11 @@ return [
           'url'  => '/questions',
           'icon' => 'fas fa-fw fa-question-circle',
         ],
-
+        [
+          'text' => 'Export',
+          'url'  => '/export-mainData-csv',
+          'icon' => 'fas fa-fw fa-file',
+        ],
         [
             'text' => 'profile',
             'url'  => '#',

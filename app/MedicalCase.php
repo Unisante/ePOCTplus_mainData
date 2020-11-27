@@ -2,8 +2,24 @@
 
 namespace App;
 
+use Illuminate\Http\Request;
+use Carbon\Carbon;
+use DateTime;
+use Madzipper;
+use File;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use OwenIt\Auditing\Contracts\Auditable;
+use Intervention\Image\ImageManagerStatic as Image;
+use App\DiagnosisReference;
+use App\Diagnosis;
+use App\Patient;
+use App\MedicalCaseAnswer;
+use App\Node;
+use App\Algorithm;
+use App\PatientConfig;
+use App\Answer;
+use Illuminate\Support\Facades\Storage;
 
 class MedicalCase extends Model implements Auditable
 {
@@ -11,35 +27,36 @@ class MedicalCase extends Model implements Auditable
   protected $guarded = [];
 
   /**
-  * Checks the json for medical case creation
-  * @params $json
-  * @params $patient_id
-  * @params &$response
+  * Checks the medical_case.json for medical case creation
+  * @params $data_to_parse
   * @return void
   */
-  public static function parse_json($json, $patient_id, &$response){
-    $algorithm = Algorithm::getOrCreate($json['algorithm_id'], $json['name']);
-    $version = Version::getOrCreate($json['version'], $algorithm->id);
-    $medical_case = self::get_or_create($json['main_data_medical_case_id'], $patient_id, $version->id);
-    $response['medical_cases'][$json['id']] = $medical_case->id;
-    MedicalCaseAnswer::parse_answers($json, $medical_case);
+  public static function parse_data($data_to_parse){
+    $medical_case = self::get_or_create($data_to_parse,$data_to_parse['version_id']);
+    MedicalCaseAnswer::getOrCreate($data_to_parse['nodes'], $medical_case);
+    DiagnosisReference::parse_data($medical_case->id,$data_to_parse['diagnoses'],$data_to_parse['version_id']);
   }
 
   /**
   * Create or get medical case
-  * @params $local_id
-  * @params $patient_id
+  * @params $data_to_save
   * @params $version_id
-  *
   * @return $medical_case
   */
-  public static function get_or_create($local_id, $patient_id, $version_id){
-    if ($local_id == null) {
-      $medical_case = MedicalCase::create(['patient_id' => $patient_id, 'version_id' => $version_id]);
-    } else {
-      $medical_case = MedicalCase::find($local_id);
-    }
-
+  public static function get_or_create($data_to_save,$version_id){
+    $medical_case = MedicalCase::firstOrCreate(
+      [
+        'local_medical_case_id'=>$data_to_save['local_medical_case_id']
+      ],
+      [
+        'patient_id'=>$data_to_save['patient_id'],
+        'version_id'=>$version_id,
+        'created_at'=>new DateTime($data_to_save['created_at']),
+        'updated_at'=>new DateTime($data_to_save['updated_at']),
+        'isEligible'=>$data_to_save['isEligible'],
+        'consent'=>$data_to_save['consent']
+      ]
+    );
     return $medical_case;
   }
 
@@ -52,13 +69,19 @@ class MedicalCase extends Model implements Auditable
   }
 
   /**
-  * Make medical case relation
+  * Make medical case answers relation
   * @return one to many medical cases retionship
   */
   public function medical_case_answers(){
     return $this->hasMany('App\MedicalCaseAnswer');
   }
+
+  /**
+  * Make diagnosis relation
+  * @return one to many medical cases retionship
+  */
   public function diagnoses(){
     return $this->hasMany('App\Diagnosis');
   }
+
 }
