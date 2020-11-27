@@ -25,6 +25,9 @@ class PatientsController extends Controller
   */
   public function __construct(){
     $this->middleware('auth');
+
+    $this->middleware('permission:Merge_Duplicates', ['only' => ['findDuplicates','mergeShow','searchDuplicates','merge']]);
+    $this->middleware('permission:Delete_Patient',['only'=>['destroy']]);
   }
 
   /**
@@ -170,6 +173,8 @@ class PatientsController extends Controller
           $second_medical_case->update([
             "patient_id"=>$hybrid_patient->id
           ]);
+        }else{
+          $second_medical_case->delete();
         }
       }
     }

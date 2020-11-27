@@ -154,14 +154,15 @@ return [
     'dashboard_url' => 'home',
 
     'logout_url' => 'logout',
-
+    // 'logout_url' => false,
     'login_url' => 'login',
 
     'register_url' => 'register',
+    // 'password_reset_url' => false,
 
     'password_reset_url' => 'password/reset',
 
-    'password_email_url' => 'password/email',
+    // 'password_email_url' => 'password/email',
 
     /*
     |--------------------------------------------------------------------------
@@ -190,7 +191,6 @@ return [
     */
 
     'menu' => [
-
         // [
         //   'text' => 'Duplicates',
         //   'icon' => 'fas fa-fw fa-clone',

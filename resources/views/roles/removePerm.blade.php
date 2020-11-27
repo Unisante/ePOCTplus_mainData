@@ -24,11 +24,8 @@
 @endif
 
 
-<form method="POST" action="{{ route('roles.update', $role->id) }}" accept-charset="UTF-8">
-  {{ csrf_field() }}
-  {{ method_field('patch') }}
-  <input name="_method" type="hidden" value="PUT">
-  <input name="do" id="addOrUpdate" type="hidden">
+<form method="POST" action="/role/removePerm/{{$role->id}}" accept-charset="UTF-8">
+  @csrf
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
       <div class="form-group">
@@ -41,8 +38,8 @@
         <strong>Permission:</strong>
         <br/>
         <select data-placeholder="Select Permissions" class="form-control tagsselector" name="permission[]" multiple="multiple">
-          @foreach($permission as $value)
-          <option value="{{ $value->id }}"  {{ $role->permissions->contains($value->id) ? 'selected' : '' }}>{{ $value->name }}</option>
+          @foreach($permissions as $value)
+          <option value="{{ $value->name }}"  {{ $role->permissions->contains($value->id) ? 'selected' : '' }}>{{ $value->name }}</option>
           <br/>
           @endforeach
 
@@ -51,7 +48,7 @@
     </div>
     <div class="row">
       <div class="col-xs-6 col-sm-6 col-md-6 text-center">
-        <button type="submit" class="btn btn-primary" onclick="addOrUpdate(update)">Update</button>
+        <button type="submit" class="btn btn-primary">Remove</button>
       </div>
     </div>
   </div>
