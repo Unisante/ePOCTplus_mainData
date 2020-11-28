@@ -29,15 +29,6 @@ Route::get('medical_case_answers', function(Request $request){
 // Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
 
 Route::post('sync_medical_cases',function(Request $request){
-    // code to check if the test user is available
-    $userdoesntExist = User::where('name','test')->doesntExist();
-    if($userdoesntExist){
-      User::create([
-        'name'=>'test',
-        'email'=>'test@dynamic.com',
-        'password'=>Hash::make('test123')
-      ]);
-    }
    $file=Storage::putFile('medical_cases_zip', $request->file);
    $unparsed_path = base_path().'/storage/app/unparsed_medical_cases';
    $parsed_folder='parsed_medical_cases';

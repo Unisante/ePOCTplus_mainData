@@ -23,7 +23,7 @@ class PermissionTableSeeder extends Seeder
         'Edit_Patient',
         'Edit_Case',
         'Merge_Duplicates',
-        'Delete_Pateint',
+        'Delete_Patient',
         'Delete_Case',
         'View_Audit_Trail'
      ];
