@@ -41,6 +41,11 @@
       "framework": "silex",
       "document-root": "public",
       "index-document": "index.php"
+      },
+      "laravel": {
+        "dont-discover": [
+            "laravel/dusk"
+        ]
       }
       },
     "autoload": {
