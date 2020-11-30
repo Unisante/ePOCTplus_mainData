@@ -1,6 +1,7 @@
 @extends('adminlte::page')
 @section('content')
 <link href="{{ asset('css/datatable.css') }}" rel="stylesheet">
+<link href="{{ asset('css/background.css') }}" rel="stylesheet">
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-10">
@@ -49,6 +50,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </div>
 @stop

@@ -86,6 +86,7 @@ class SaveCase implements ShouldQueue
           'consent'=>$this->individualData['consent'],
           'isEligible'=>$this->individualData['isEligible'],
           'version_id'=>$algorithm_n_version['version_id'],
+          'group_id'=>$patient_key['group_id'],
         );
         MedicalCase::parse_data($data_to_parse);
         if(Storage::Exists($this->filename) && !(Storage::Exists($parsed_folder.'/'.basename($this->filename)))){
