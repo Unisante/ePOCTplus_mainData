@@ -27,7 +27,7 @@
                         </div>
                       </div>
                       @Foreach($currentUser->roles as $role)
-                      @if($role->name=='ADMIN')
+                      @if($role->name=='Administrator')
                       <div class="col border-right">
                         <div>
                           <span>Main Data Users: </span>

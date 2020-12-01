@@ -35,7 +35,8 @@ class HomeController extends Controller
         'mdCases'=> MedicalCase::all()->count(),
         'patientCount'=> Patient::all()->count(),
       );
-        return view('home')->with($data);
+      error_log(Auth::user()->getPermissionsViaRoles());
+      return view('home')->with($data);
     }
 
     public function forgotPassword(Request $request){
@@ -45,9 +46,15 @@ class HomeController extends Controller
         return Redirect::back()->withErrors($message);
       }
       $random_password=Str::random(10);
+      $user=User::where('email',$request->email)->update(
+        [
+          'password'=>Hash::make($random_password)
+        ]
+      );
+      if($user){
         $body = 'Your password has been reset to '. $random_password;
-
-      dispatch(new ResetAccountPasswordJob($body,$request->email));
-      return redirect('/');
+        dispatch(new ResetAccountPasswordJob($body,$request->email));
+        return redirect('/');
+      }
     }
 }

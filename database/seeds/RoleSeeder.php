@@ -34,11 +34,11 @@ class RoleSeeder extends Seeder
         $data_manager->givePermissionTo('Reset_User_Password');
         $data_manager->givePermissionTo('Reset_Own_Password');
         // create statictician
-        $statictician=Role::firstOrCreate(['name'=>'Statictician']);
-        $data_manager->givePermissionTo('View_Patient');
-        $data_manager->givePermissionTo('View_Case');
-        $data_manager->givePermissionTo('Reset_User_Password');
-        $data_manager->givePermissionTo('Reset_Own_Password');
+        $statistician=Role::firstOrCreate(['name'=>'Statistician']);
+        $statistician->givePermissionTo('View_Patient');
+        $statistician->givePermissionTo('View_Case');
+        $statistician->givePermissionTo('Reset_User_Password');
+        $statistician->givePermissionTo('Reset_Own_Password');
         //create default user
         $user = User::firstOrCreate([
           'name'=>'Main Data',
