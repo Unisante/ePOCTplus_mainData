@@ -9,7 +9,13 @@
       <div class="card">
         <div class="card-header d-flex ">
           <span><h3>Medical Cases</h3></span>
-          <button class="btn btn-outline-dark ml-auto p-2" onclick="compareMedicalCases()"> Compare</button>
+
+          <div class="ml-auto p-2">
+            {{-- <a href="{{route('medicalCasesController.medicalCaseIntoCsv')}}" class="btn btn-outline-dark">Export Csv</a>
+            <a href="{{route('medicalCasesController.medicalCaseIntoExcel')}}" class="btn btn-outline-dark"> Export Excel</a> --}}
+            <button class="btn btn-outline-dark" onclick="compareMedicalCases()"> Compare</button>
+
+          </div>
         </div>
         <div class="card-body">
           @if (session('status'))
@@ -46,7 +52,7 @@
                 </tbody>
               </table>
               @else
-              <p>No Medical Case Found</p>
+              <p>No Medical Cases Found</p>
               @endif
             </div>
           </div>
