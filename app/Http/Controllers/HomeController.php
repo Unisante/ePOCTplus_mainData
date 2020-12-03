@@ -8,6 +8,7 @@ use App\Patient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use App\Jobs\ResetAccountPasswordJob;
 
 class HomeController extends Controller
