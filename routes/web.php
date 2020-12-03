@@ -16,6 +16,9 @@ Route::get('/', function () {
 });
 
 Route::post('/user/password/reset','HomeController@forgotPassword')->name('HomeController@forgotPassword');
+Route::get('/check_password_reset_token/{id}','HomeController@checkToken')->name('HomeController@checkToken');
+Route::post('/reset_user_password','HomeController@makePassword')->name('HomeController@makePassword');
+
 Route::group(['middleware' => ['auth']], function() {
   Route::resource('roles', 'RolesController');
   Route::resource('users','UsersController');

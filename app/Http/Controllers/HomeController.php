@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Auth;
 use App\User;
+use App\PasswordReset;
 use App\MedicalCase;
 use App\Patient;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['forgotPassword']]);
+        $this->middleware('auth', ['except' => ['forgotPassword','makePassword','checkToken']]);
     }
 
     /**
@@ -36,7 +37,6 @@ class HomeController extends Controller
         'mdCases'=> MedicalCase::all()->count(),
         'patientCount'=> Patient::all()->count(),
       );
-      error_log(Auth::user()->getPermissionsViaRoles());
       return view('home')->with($data);
     }
 
@@ -44,18 +44,52 @@ class HomeController extends Controller
       $userNotIn=User::where('email',$request->email)->doesntExist();
       if($userNotIn){
         $message="Email doesn't exist in main data, please contact the admin";
-        return Redirect::back()->withErrors($message);
+        return Redirect::back()->with(['error'=>$message]);
       }
-      $random_password=Str::random(10);
-      $user=User::where('email',$request->email)->update(
-        [
-          'password'=>Hash::make($random_password)
-        ]
-      );
-      if($user){
-        $body = 'Your password has been reset to '. $random_password;
-        dispatch(new ResetAccountPasswordJob($body,$request->email));
-        return redirect('/');
+      $random_password=Str::random(30);
+      while (PasswordReset::where('token',$random_password)->exists()) {
+        $random_password=Str::random(30);
+      }
+      $user=User::where('email',$request->email)->first();
+      $saveCode=PasswordReset::saveReset($user,$random_password);
+
+      if($saveCode){
+        $body = 'Click this link to reset your password';
+        dispatch(new ResetAccountPasswordJob($body,$request->email,$user->name,$random_password));
+        $message="Email has been sent to you for password reset";
+        return Redirect::back()->with(['success'=>$message]);
       }
     }
+    public function checkToken($id, Request $request){
+      $code_exist=PasswordReset::where('token',$id)->exists();
+      $request->session()->put('reset_token', $id);
+      if($code_exist){
+        return view ('emails.reset')->with(['token'=>$id]);
+      }
+      return view('errors.404');
+    }
+  public function makePassword(Request $request){
+    $token = $request->session()->get('reset_token');
+    $code=PasswordReset::where('token',$token)->first();
+    $request->session()->forget('reset_token');
+    $user=User::where('email',$code->email)->update(
+          [
+            'password'=>Hash::make($request->password)
+          ]
+    );
+
+    if($user){
+      $user_to_log=User::where('email',$code->email)->first();
+      if (Auth::attempt(['email' => $user_to_log->email, 'password' => $user_to_log->password]))
+        {
+          return redirect()->action(
+            'HomeController@index'
+          );
+        }
+      return redirect('/');
+    }else{
+      $message="Something went Wrong,please retry or contact the administrator for help";
+      return Redirect::back()->with(['error'=>$message]);
+    }
+  }
 }
