@@ -73,17 +73,17 @@ class UsersController extends Controller
       while (PasswordReset::where('token',$random_password)->exists()) {
         $random_password=Str::random(30);
       }
+      $user=new User;
+      $user->name=$request->input('name');
+      $user->email=$email;
+      $user->password=Hash::make($random_password);
+      $user->syncRoles($request->input('role'));
+      $user->save();
       $saveCode=PasswordReset::saveReset($user,$random_password);
       if($saveCode){
-        $user=new User;
-        $user->name=$request->input('name');
-        $user->email=$email;
-        $user->password=Hash::make($random_password);
-        $user->syncRoles($request->input('role'));
         $body = 'Your account has been set in Main Data with the default password';
-        $user->save();
         dispatch(new ResetAccountPasswordJob($body,$email,$user->name,$random_password));
-        return back()->with('success', 'Email has been sent to'.$user->name);
+        return back()->with('success', 'Email has been sent to '.$user->name);
       }else{
         return back()->with('error', 'Something Went wrong');
       }
