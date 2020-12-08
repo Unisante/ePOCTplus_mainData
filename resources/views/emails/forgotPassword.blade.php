@@ -4,8 +4,10 @@
     <title>Main Data Tanzania</title>
 </head>
 <body>
-<p>Dear {{$username}}.{{ $body }} <a href="{{'https://dynamic.ihi.or.tz/check_password_reset_token/'.$code}}">Reset password</a></p>
+<p>Dear {{$username}}.{{ $body }} <a href="{{url('check_password_reset_token/'.$code)}}">Reset password</a></p>
 <p>Thank you</p>
 </body>
 </html>
+
+
 

@@ -22,7 +22,7 @@ class SaveCase implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $individualData;
     protected $filename;
-    // public $tries = 10;
+    public $tries = 10;
 
     /**
      * Create a new job instance.

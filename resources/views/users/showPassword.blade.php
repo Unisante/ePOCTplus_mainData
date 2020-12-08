@@ -43,13 +43,13 @@
         <div class="form-group row">
           <label for="name" class="col-md-5 col-form-label text-md-right">Enter Current Password<span class="required"></span></label>
           <div class="col-md-7">
-            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="current_password" >
+            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="current_password" required>
           </div>
         </div>
         <div class="form-group row">
           <label for="name" class="col-md-5 col-form-label text-md-right">Enter New Password<span class="required"></span></label>
           <div class="col-md-7">
-            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="new_password" >
+            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="new_password" required>
           </div>
         </div>
         <div class="form-group row justify-content-center">

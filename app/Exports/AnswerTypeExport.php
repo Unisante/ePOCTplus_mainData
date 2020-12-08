@@ -20,9 +20,9 @@ WithEvents
     {
       return [
         'answer_type_id',
-        'value',
-        'created_at',
-        'updated_at',
+        'answer_type_value',
+        'answer_type_created_at',
+        'answer_type_updated_at',
       ];
     }
     public function registerEvents():array

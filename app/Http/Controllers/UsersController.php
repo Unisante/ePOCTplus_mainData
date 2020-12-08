@@ -11,7 +11,7 @@ use Spatie\Permission\Models\Role;
 use DB;
 use Illuminate\Support\Str;
 use App\Jobs\RegisterUserJob;
-
+use App\Jobs\ResetAccountPasswordJob;
 
 class UsersController extends Controller
 {
@@ -60,6 +60,7 @@ class UsersController extends Controller
   * @return \Illuminate\Http\Response
   */
   public function store(Request $request) {
+    $email=Str::lower($request->input('email'));
     if (Auth::check()){
       $validatedData = $request->validate(array(
         'name' => 'required|string',
@@ -67,15 +68,14 @@ class UsersController extends Controller
         'role'=>'required',
       ));
       $random_password=Str::random(10);
-
       $user=new User;
       $user->name=$request->input('name');
-      $user->email=$request->input('email');
+      $user->email=$email;
       $user->password=Hash::make($random_password);
       $user->syncRoles($request->input('role'));
       if($user->save()){
         $body = 'Your account has been set in Main Data with the default password as '.$random_password;
-        dispatch(new RegisterUserJob($body,$request->input('email')));
+        dispatch(new RegisterUserJob($body,$email));
         return redirect()->route('users.index')->with('success','Information have been saved Successfully.');
       }
     }
@@ -179,9 +179,15 @@ class UsersController extends Controller
 
   public function resetPassword($id){
     $user=User::find($id);
-    $user->password=Hash::make('0000');
-    if($user->save()){
-      return back()->with('success', 'User passwod Successfully reset');
+    $random_password=Str::random(30);
+    while (PasswordReset::where('token',$random_password)->exists()) {
+      $random_password=Str::random(30);
+    }
+    $saveCode=PasswordReset::saveReset($user,$random_password);
+    if($saveCode){
+      $body = 'Click this link to reset your password';
+      dispatch(new ResetAccountPasswordJob($body,$email,$user->name,$random_password));
+      return back()->with('success', 'Email has been sent to'.$user->name);
     }else{
       return back()->with('error', 'Something Went wrong');
     }

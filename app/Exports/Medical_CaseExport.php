@@ -29,13 +29,14 @@ WithEvents
   {
     return [
       'medical_case_id',
-      'version_id',
-      'patient_id',
-      'created_at',
-      'updated_at',
-      'local_medical_case_id',
-      'consent',
-      'is_eligible'
+      'medical_case_version_id',
+      'medical_case_patient_id',
+      'medical_case_created_at',
+      'medical_case_updated_at',
+      'medical_case_local_medical_case_id',
+      'medical_case_consent',
+      'medical_case_is_eligible',
+      'medical_case_is_eligible'
     ];
   }
   private $heads;
@@ -80,7 +81,7 @@ WithEvents
   {
     return[
       AfterSheet::class => function(AfterSheet $event){
-        $event->sheet->getStyle('A1:H1')->applyFromArray([
+        $event->sheet->getStyle('A1:I1')->applyFromArray([
           'font'=>[
             'bold'=>true,
           ],

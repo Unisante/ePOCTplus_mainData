@@ -19,12 +19,12 @@ WithEvents
     {
       return [
         'medical_case_answer_id',
-        'medical_case_id',
-        'answer_id',
-        'node_id',
-        'value',
-        'created_at',
-        'updated_at'
+        'medical_case_answer_medical_case_id',
+        'medical_case_answer_answer_id',
+        'medical_case_answer_node_id',
+        'medical_case_answer_value',
+        'medical_case_answer_created_at',
+        'medical_case_answer_updated_at'
       ];
     }
     public function registerEvents():array

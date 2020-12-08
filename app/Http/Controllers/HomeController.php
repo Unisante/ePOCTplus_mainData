@@ -41,7 +41,8 @@ class HomeController extends Controller
     }
 
     public function forgotPassword(Request $request){
-      $userNotIn=User::where('email',$request->email)->doesntExist();
+      $email=Str::lower($request->email);
+      $userNotIn=User::where('email',$email)->doesntExist();
       if($userNotIn){
         $message="Email doesn't exist in main data, please contact the admin";
         return Redirect::back()->with(['error'=>$message]);
@@ -50,12 +51,12 @@ class HomeController extends Controller
       while (PasswordReset::where('token',$random_password)->exists()) {
         $random_password=Str::random(30);
       }
-      $user=User::where('email',$request->email)->first();
+      $user=User::where('email',$email)->first();
       $saveCode=PasswordReset::saveReset($user,$random_password);
 
       if($saveCode){
         $body = 'Click this link to reset your password';
-        dispatch(new ResetAccountPasswordJob($body,$request->email,$user->name,$random_password));
+        dispatch(new ResetAccountPasswordJob($body,$email,$user->name,$random_password));
         $message="Email has been sent to you for password reset";
         return Redirect::back()->with(['success'=>$message]);
       }
