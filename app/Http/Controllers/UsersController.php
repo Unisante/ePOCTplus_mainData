@@ -195,7 +195,7 @@ class UsersController extends Controller
     $saveCode=PasswordReset::saveReset($user,$random_password);
     if($saveCode){
       $body = 'Click this link to reset your password';
-      dispatch(new ResetAccountPasswordJob($body,$email,$user->name,$random_password));
+      dispatch(new ResetAccountPasswordJob($body,$user->email,$user->name,$random_password));
       return back()->with('success', 'Email has been sent to'.$user->name);
     }else{
       return back()->with('error', 'Something Went wrong');
