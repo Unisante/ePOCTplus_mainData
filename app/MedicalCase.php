@@ -81,8 +81,8 @@ class MedicalCase extends Model implements Auditable
   * Make diagnosis relation
   * @return one to many medical cases retionship
   */
-  public function diagnoses(){
-    return $this->hasMany('App\Diagnosis');
+  public function diagnosesReferences(){
+    return $this->hasMany('App\DiagnosisReference');
   }
 
 }

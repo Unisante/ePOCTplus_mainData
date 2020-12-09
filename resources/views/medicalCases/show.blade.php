@@ -30,14 +30,18 @@
               @if($medicalCase)
               <div class="showmdCard mb-2">
                 <div class="card-header">
-                  <span class="font-weight-bold">Created At: </span>
+                  <div class="d-flex justify-content-between">
+                    <span class="font-weight-bold">Created At: </span>
                   <span>{{$medicalCase->created_at}}</span>
+                  </div>
                 </div>
                 <div class="card-header">
-                  <span class="font-weight-bold">Updated At: </span>
+                  <div class="d-flex justify-content-between">
+                    <span class="font-weight-bold">Updated At: </span>
                   <span>{{$medicalCase->created_at}}</span> </div>
+                  </div>
                   <div class="card-header">
-                    <div>
+                    <div class="d-flex justify-content-between">
                       <span class="font-weight-bold">Patient Name:</span>
                       <span class="border-bottom">
                         {{$medicalCase->patient->first_name}}

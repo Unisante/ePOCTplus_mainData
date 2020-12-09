@@ -103,7 +103,7 @@
                       <td>Group Id:</td>
                       <td>
                         <input type="radio" name="group_id" value="{{$first_patient->group_id}}" checked>
-                        <label id="label_id">{{$first_patient->gender}}</label>
+                        <label id="label_id">{{$first_patient->group_id}}</label>
                         <div class="check"></div>
                       </td>
                       <td>
@@ -112,19 +112,7 @@
                         <div class="check"></div>
                       </td>
                     </tr>
-                    <tr>
-                      <td>Group Id:</td>
-                      <td>
-                        <input type="radio" name="consent" value="{{$first_patient->consent}}" checked>
-                        <label id="label_id">{{$first_patient->consent}}</label>
-                        <div class="check"></div>
-                      </td>
-                      <td>
-                        <input type="radio" name="consent" value="{{$second_patient->consent}}">
-                        <label id="label_id">{{$second_patient->consent}}</label>
-                        <div class="check"></div>
-                      </td>
-                    </tr>
+                    
                     <tr>
                       <td>Number of medical Cases:</td>
                       <td>
