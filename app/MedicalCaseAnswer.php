@@ -55,7 +55,7 @@ class MedicalCaseAnswer extends Model implements Auditable
       ]
     );
   }
-  
+
   /**
    * Get all audits of one medical case
    * @params $id
@@ -67,5 +67,11 @@ class MedicalCaseAnswer extends Model implements Auditable
   }
   public function medical_case(){
     return $this->belongsTo('App\MedicalCase');
+  }
+  public function answer(){
+    return $this->belongsTo('App\Answer');
+  }
+  public function node(){
+    return $this->belongsTo('App\Node');
   }
 }

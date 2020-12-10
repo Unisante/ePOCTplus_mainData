@@ -79,12 +79,12 @@ class MedicalCasesController extends Controller
   public function compare($firstId,$secondId){
     $first_medical_case =  MedicalCase::find($firstId);
     $second_medical_case = MedicalCase::find($secondId);
-
+    $medical_case_info= self::comparison($first_medical_case,$second_medical_case);
+    // dd($medical_case_info);
     //medicase details for first medical case
-    $medical_case_info=self::detailFind($first_medical_case,"first_case");
-
+    // $medical_case_info=self::detailFind($first_medical_case,"first_case");
     //medicase details for second medical case
-    $medical_case_info=self::detailFind($second_medical_case,"second_case",$medical_case_info);
+    // $medical_case_info=self::detailFind($second_medical_case,"second_case",$medical_case_info);
     $data=array(
       'first_medical_case'=>$first_medical_case,
       'second_medical_case'=>$second_medical_case,
@@ -93,6 +93,89 @@ class MedicalCasesController extends Controller
     return view ('medicalCases.compare')->with($data);
   }
 
+  /**
+  * Compare questions between two Medical cases
+  * @params first_medical_case
+  * @params second_medical_case
+  * @return $all_questions
+  */
+  public function comparison($first_medical_case,$second_medical_case){
+    //find the questions id in first medical case
+    $first_case_questions=[];
+    $first_medical_case->medical_case_answers->each(function ($answer)use (&$first_case_questions) {
+      $first_case_questions[]=$answer->node_id;
+    });
+    //find the questions id in second medical case
+    $second_case_questions=[];
+    $second_medical_case->medical_case_answers->each(function ($answer)use (&$second_case_questions) {
+      $second_case_questions[]=$answer->node_id;
+    });
+    //find the common question in the two arrays
+    $common_questions_id=array_intersect(
+      $first_case_questions,
+      $second_case_questions
+    );
+    //find the answers for each medical case
+    $common_questions=[];
+    foreach($common_questions_id as $question_id){
+      $first_case_answer=$first_medical_case->medical_case_answers->where('node_id',$question_id)->first();
+      $first_answer=$first_case_answer->value;
+      if($first_case_answer->answer){
+        $first_answer=$first_case_answer->answer->label;
+      }
+      $second_case_answer=$second_medical_case->medical_case_answers->where('node_id',$question_id)->first();
+      $second_answer=$first_case_answer->value;
+      if($second_case_answer->answer){
+        $second_answer=$second_case_answer->answer->label;
+      }
+      $common_questions[]=array(
+        "medal_c_id"=>$second_case_answer->node->medal_c_id,
+        "question_label"=>$second_case_answer->node->label,
+        "question_stage"=>$second_case_answer->node->stage,
+        "first_answer"=>$first_answer,
+        "second_answer"=>$second_answer
+      );
+    }
+    //find the uncommon questions in the two arrays
+    $uncommon_questions_id = array_merge(
+      array_diff($first_case_questions, $second_case_questions),
+      array_diff($second_case_questions, $first_case_questions)
+    );
+    $uncommon_questions=[];
+    foreach($uncommon_questions_id as $question_id){
+      // finding for the first medical case
+      $first_case_answer=$first_medical_case->medical_case_answers->where('node_id',$question_id)->first();
+      if($first_case_answer){
+        $first_answer=$first_case_answer->value;
+        if($first_case_answer->answer){
+          $first_answer=$first_case_answer->answer->label;
+        }
+        $uncommon_questions[]=array(
+          "medal_c_id"=>$first_case_answer->node->medal_c_id,
+          "question_label"=>$first_case_answer->node->label,
+          "question_stage"=>$first_case_answer->node->stage,
+          "first_answer"=>$first_answer,
+          "second_answer"=>$second_answer=null
+        );
+      }
+      $second_case_answer=$second_medical_case->medical_case_answers->where('node_id',$question_id)->first();
+      if($second_case_answer){
+        $second_answer=$first_case_answer->value;
+        if($second_case_answer->answer){
+          $second_answer=$first_case_answer->answer->label;
+        }
+        $uncommon_questions[]=array(
+          "medal_c_id"=>$second_case_answer->node->medal_c_id,
+          "question_label"=>$second_case_answer->node->label,
+          "question_stage"=>$second_case_answer->node->stage,
+          "first_answer"=>$first_answer=null,
+          "second_answer"=>$second_answer
+        );
+      }
+    }
+    $all_questions=array_merge($common_questions,$uncommon_questions);
+    return $all_questions;
+  }
   /**
   * Display an answer of a specific medical case
   * @params $medicalCaseId
