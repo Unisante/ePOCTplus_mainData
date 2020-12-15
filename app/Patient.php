@@ -9,6 +9,12 @@ class Patient extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable;
 
+  protected $fillable = [
+    'id',
+    'first_name',
+    'last_name',
+  ];
+
   protected $guarded = [];
   /*
   * recevieves a json file and makes a save to the database
