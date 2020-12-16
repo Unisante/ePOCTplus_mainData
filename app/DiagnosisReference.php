@@ -24,13 +24,16 @@ class DiagnosisReference extends Model
     $proposed_diagnoses=$diagnoses['proposed'];
     $additional_diagnoses=$diagnoses['additional'];
     $custom_diagnoses=$diagnoses['custom'];
-    $is_proposed=False;
     if($proposed_diagnoses){
       $is_proposed=True;
       self::store($medical_case_id,$proposed_diagnoses,$is_proposed,$version_id);
-    }else if($additional_diagnoses){
+    }
+    if($additional_diagnoses){
+      $is_proposed=False;
       self::store($medical_case_id,$additional_diagnoses,$is_proposed,$version_id);
-    }else if($custom_diagnoses){
+    }
+    if($custom_diagnoses){
+      dd($custom_diagnoses);
       // Custom_diagnosis::store($custom_diagnoses,$medical_case_id);
     }
     // what to do with custom diagnoses and drugs?
@@ -49,6 +52,7 @@ class DiagnosisReference extends Model
     foreach($diagnoses as $diagnosis){
       $managements=$diagnosis['managements'];
       $drugs = $diagnosis['drugs'];
+      $agreed= isset($diagnosis['agreed'])?$diagnosis['agreed']:false;
       if(Diagnosis::where('medal_c_id',$diagnosis['id'])->doesntExist()){
         $medal_C_algorithm=Algorithm::fetchAlgorithm($version_id);
         Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version_id);
@@ -60,7 +64,7 @@ class DiagnosisReference extends Model
             'diagnosis_id'=>$local_diagnosis->id,
           ],
           [
-            'agreed'=>$diagnosis['agreed'],
+            'agreed'=>$agreed,
             'proposed_additional'=>$is_proposed
           ]
         );

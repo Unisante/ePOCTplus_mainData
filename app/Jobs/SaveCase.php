@@ -22,7 +22,7 @@ class SaveCase implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $individualData;
     protected $filename;
-    public $tries = 10;
+    public $tries = 1;
 
     /**
      * Create a new job instance.
@@ -52,7 +52,7 @@ class SaveCase implements ShouldQueue
       $patient_key=$this->individualData['patient'];
       if($patient_key['study_id']== $study_id && $this->individualData['isEligible']==$isEligible){
         $nodes=$this->individualData['nodes'];
-        $gender_answer= Answer::where('medal_c_id',$nodes[$algorithm_n_version["config_data"]->gender_question_id]['value'])->first();
+        $gender_answer= Answer::where('medal_c_id',$nodes[$algorithm_n_version["config_data"]->gender_question_id]['answer'])->first();
         $consent_file_name=$patient_key['uid'] .'_image.jpg';
         if($consent_file_64 = $patient_key['consent_file']){
             $img = Image::make($consent_file_64);
@@ -60,6 +60,16 @@ class SaveCase implements ShouldQueue
               mkdir($consent_path);
             }
             $img->save($consent_path.'/'.$consent_file_name);
+        }
+        $duplicateConditions=[
+          'first_name'=>$nodes[$algorithm_n_version["config_data"]->first_name_question_id]['value'],
+          'last_name'=>$nodes[$algorithm_n_version["config_data"]->last_name_question_id]['value'],
+          'birthdate'=>$nodes[$algorithm_n_version["config_data"]->birth_date_question_id]['value']
+        ];
+        $duplicate_flag=false;
+        $senseDuplicate=Patient::where($duplicateConditions)->exists();
+        if($senseDuplicate){
+          $duplicate_flag=true;
         }
         $issued_patient=Patient::firstOrCreate(
           [
@@ -73,6 +83,7 @@ class SaveCase implements ShouldQueue
           "gender"=>$gender_answer->label,
           "group_id"=>$patient_key['group_id'],
           "consent"=>$consent_file_name,
+          "duplicate"=>$duplicate_flag
           ]
         );
         $data_to_parse=array(
@@ -87,6 +98,7 @@ class SaveCase implements ShouldQueue
           'isEligible'=>$this->individualData['isEligible'],
           'version_id'=>$algorithm_n_version['version_id'],
           'group_id'=>$patient_key['group_id'],
+          'check-config'=>$algorithm_n_version["config_data"]
         );
         MedicalCase::parse_data($data_to_parse);
         if(Storage::Exists($this->filename) && !(Storage::Exists($parsed_folder.'/'.basename($this->filename)))){
