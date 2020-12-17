@@ -15,6 +15,11 @@ class Patient extends Model implements Auditable
     'last_name',
   ];
 
+  function isRedcapFlagged() : bool {
+    // TODO : return value of redcap flag in the database
+    return false;
+  }
+
   protected $guarded = [];
   /*
   * recevieves a json file and makes a save to the database

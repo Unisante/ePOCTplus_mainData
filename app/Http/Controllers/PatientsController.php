@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Exceptions\RedCapApiServiceException;
+use App\Followup;
 use App\Services\RedCapApiService;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use App\Patient;
 use App\Answer;

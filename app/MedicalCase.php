@@ -10,10 +10,22 @@ use App\DiagnosisReference;
 use App\Patient;
 use App\MedicalCaseAnswer;
 use App\Node;
+
+/**
+ * Class MedicalCase
+ * @package App
+ * @property Patient $patient
+ */
+
 class MedicalCase extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable;
   protected $guarded = [];
+
+  function isRedcapFlagged() : bool {
+    // TODO : return value of redcap flag in the database
+    return false;
+  }
 
   /**
   * Checks the json for medical case creation
