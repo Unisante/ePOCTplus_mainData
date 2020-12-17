@@ -37,10 +37,11 @@ Route::post('sync_medical_cases',function(Request $request){
     $zipper->make($request->file('file'))->extractTo($unparsed_path);
     $filename=basename($file);
     Storage::makeDirectory($parsed_folder);
-    foreach(Storage::allFiles('unparsed_medical_cases') as $filename){
-      $individualData = json_decode(Storage::get($filename), true);
-      dispatch(new SaveCase($individualData,$filename));
-    }
+    dispatch(new SaveCase());
+    // foreach(Storage::allFiles('unparsed_medical_cases') as $filename){
+    //   $individualData = json_decode(Storage::get($filename), true);
+    //   dispatch(new SaveCase($individualData,$filename));
+    // }
   //  Storage::delete($file);
     return response()->json(['response'=>'job received','status'=>200]);
   }

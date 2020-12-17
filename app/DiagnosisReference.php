@@ -33,7 +33,7 @@ class DiagnosisReference extends Model
       self::store($medical_case_id,$additional_diagnoses,$is_proposed,$version_id);
     }
     if($custom_diagnoses){
-      dd($custom_diagnoses);
+      // dd($custom_diagnoses);
       // Custom_diagnosis::store($custom_diagnoses,$medical_case_id);
     }
     // what to do with custom diagnoses and drugs?
@@ -52,7 +52,7 @@ class DiagnosisReference extends Model
     foreach($diagnoses as $diagnosis){
       $managements=$diagnosis['managements'];
       $drugs = $diagnosis['drugs'];
-      $agreed= isset($diagnosis['agreed'])?$diagnosis['agreed']:false;
+      $agreed= isset($diagnosis['agreed'])?$diagnosis['agreed']:True;
       if(Diagnosis::where('medal_c_id',$diagnosis['id'])->doesntExist()){
         $medal_C_algorithm=Algorithm::fetchAlgorithm($version_id);
         Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version_id);

@@ -35,7 +35,6 @@ class MedicalCase extends Model implements Auditable
     $medical_case = self::get_or_create($data_to_parse,$data_to_parse['version_id']);
     MedicalCaseAnswer::getOrCreate($data_to_parse['nodes'], $medical_case);
     DiagnosisReference::parse_data($medical_case->id,$data_to_parse['diagnoses'],$data_to_parse['version_id']);
-    self::followUp($medical_case,$data_to_parse);
   }
 
   /**
@@ -68,31 +67,29 @@ class MedicalCase extends Model implements Auditable
   * @params $data
   * @return Void
   */
-  public static function followUp($medical_case,$data){
-    $configurations=$data['check-config'];
-    $date=new DateTime($data['created_at']);
+  public static function makeFollowUp($medical_case){
+    $configurations=json_decode($medical_case->version->configurations->config);
+    $date=new DateTime($medical_case->created_at);
     $date->format('Y-m-d H:i:s');
     $first_name=self::fetchAttribute($medical_case,$configurations->first_name_question_id);
     $last_name=self::fetchAttribute($medical_case,$configurations->last_name_question_id);
     $gender=self::fetchAttribute($medical_case,$configurations->gender_question_id);
     $village_name=self::fetchAttribute($medical_case,$configurations->village_question_id);
-    if(! $medical_case->redcap){
-      $follow_up=[
-        'consultation_date'=>$date->format('Y-m-d'),
-        'consultation_time'=>$date->format('H:i:s'),
-        'first_name'=>isset($first_name)?$first_name:null,
-        'last_name'=>isset($last_name)?$last_name:null,
-        'gender'=>isset($gender)?$gender:null,
-        'hf_id'=>isset($medical_case->group_id)?$medical_case->group_id:null,
-        'village_name'=>isset($village_name)?$village_name:null,
-      ];
-      if(! in_array(null,$follow_up) ){
-        // call a follow up service
-        // dd($follow_up);
-      }
+    $follow_up=[
+      'consultation_id'=>$medical_case->local_medical_case_id,
+      'patient_id'=>$medical_case->patient->local_patient_id,
+      'hf_id'=>isset($medical_case->group_id)?$medical_case->group_id:null,
+      'consultation_date_time'=>$date->format('Y-m-d H:i:s'),
+      'first_name'=>isset($first_name)?$first_name:null,
+      'last_name'=>isset($last_name)?$last_name:null,
+      'gender'=>isset($gender)?$gender:null,
+      'village_name'=>isset($village_name)?$village_name:null,
+    ];
+    if(! in_array(null,$follow_up) ){
+      return (object)$follow_up;
     }
+    return (object)[];
     // check if the the things in the business rules apply
-    // check if the data is a duplicate
     // check if the data is already sent to redcap
   }
 
@@ -111,9 +108,7 @@ class MedicalCase extends Model implements Auditable
       return $record->value;
     }
   }
-  public static function dateAttributes(){
 
-  }
   /**
   * making a relationship to patient
   * @return one to one patient relationship
@@ -122,6 +117,13 @@ class MedicalCase extends Model implements Auditable
     return $this->belongsTo('App\Patient');
   }
 
+  /**
+  * making a relationship to patient
+  * @return one to one patient relationship
+  */
+  public function version(){
+    return $this->belongsTo('App\Version');
+  }
   /**
   * Make medical case answers relation
   * @return one to many medical cases retionship

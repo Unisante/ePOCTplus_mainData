@@ -17,4 +17,13 @@ class Version extends Model implements Auditable
       $version->save();
       return $version;
   }
+
+  /**
+  * making a relationship to medicalCase
+  * @return Many medical cases
+  */
+  public function configurations()
+  {
+    return $this->hasOne('App\PatientConfig');
+  }
 }
