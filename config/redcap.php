@@ -15,9 +15,12 @@ return [
         'firstName' => 'first_name',
         ],
       'followup' => [
-        'id' => 'record_id',
-        'patient_id' => 'patient_id',
-        'date_of_consultation' => 'date_of_consultation',
+        'redcap_event_name' => 'consultation_arm_1',
+        'dyn_fup_study_id_consultation' => 'dyn_fup_study_id_consultation',
+        'dyn_fup_study_id_patient' => 'dyn_fup_study_id_patient',
+        'dyn_fup_id_health_facility' => 'dyn_fup_id_health_facility',
+        'dyn_fup_date_time_consultation' => 'dyn_fup_date_time_consultation',
+        'dyn_fup_group' => 'dyn_fup_group',
       ]
     ],
 ];

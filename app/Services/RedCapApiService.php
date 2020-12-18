@@ -97,17 +97,12 @@ class RedCapApiService
    */
   public function exportPatient(Collection $patients): array
   {
-
-    $filteredPatients = $patients->filter(function (Patient $patient) {
-      return !$patient->isRedcapFlagged();
-    });
-
     // check if we still have patient to push
-    if (count($filteredPatients) !== 0) {
+    if (count($patients) !== 0) {
       // create redcap record for every patients
-      foreach ($filteredPatients as $patient) {
+      foreach ($patients as $patient) {
         // this is the mapping between redcap field (define in config) and patient model
-        // has to be update everytime we add a new fiedl
+        // has to be update everytime we add a new field
         $datas[$patient['id']] = [
           Config::get('redcap.identifiers.patient.id') => $patient->id,
           Config::get('redcap.identifiers.patient.firstName') => $patient->first_name,
@@ -132,23 +127,23 @@ class RedCapApiService
 
 
   /**
-   * @param Collection<Followup> $followups
+   * @param Collection<\stdClass> $followups
    * @throws RedCapApiServiceException
    */
   public function exportFollowup(Collection $followups): array
   {
-    // We keep followup only if patient exist in redcap and medicale case don't
-    $filteredFollowups = $followups->filter(function (Followup $followup) {
-      return (!$followup->isRedcapFlagForMedicalCase() and $followup->isRedcapFlagForPatient());
-    });
 
-    if (count($filteredFollowups) !== 0) {
-      foreach ($filteredFollowups as $followup) {
+    if (count($followups) !== 0) {
+      foreach ($followups as $followup) {
         // this is the mapping between redcap field (define in config) and followup model
         // has to be update everytime we add a new fiedl
-        $datas[$followup->getMedicalCase()->id] = [
-          Config::get('redcap.identifiers.followup.id') => $followup->getMedicalCase()->id,
-          Config::get('redcap.identifiers.followup.patient_id') => $followup->getPatient()->id,
+        $datas[$followup->consultation_id] = [
+          'redcap_event_name' => Config::get('redcap.identifiers.followup.redcap_event_name'),
+          Config::get('redcap.identifiers.followup.dyn_fup_study_id_consultation') => $followup->consultation_id,
+          Config::get('redcap.identifiers.followup.dyn_fup_study_id_patient') => $followup->patient_id,
+          Config::get('redcap.identifiers.followup.dyn_fup_id_health_facility') => $followup->health_facility,
+          Config::get('redcap.identifiers.followup.dyn_fup_date_time_consultation') => $followup->date_time_consultation,
+          Config::get('redcap.identifiers.followup.dyn_fup_group') => $followup->followup_group,
         ];
       }
 
