@@ -109,16 +109,24 @@ class SaveCase implements ShouldQueue
           Storage::Delete($filename);
         }
       }
-      $followUpArray=array();
+
+      $caseFollowUpArray=array();
+      $patientFollowUpArray=array();
       foreach(MedicalCase::where('redcap',false)->get() as $medicalcase){
         $followUp=MedicalCase::makeFollowUp($medicalcase);
         if(count(get_object_vars($followUp)) > 0){
-          $followUpArray[]=$followUp;
+          // find the patient related to this followup
+          if(! $medicalcase->patient->duplicate){
+            $patientFollowUpArray[]=$medicalcase->patient;
+            $caseFollowUpArray[]=$followUp;
+          }
         }
       }
-      $followUpCollection=collect($followUpArray);
+      $patientFollowUpArray=collect($patientFollowUpArray);
+      $casefollowUpCollection=collect($caseFollowUpArray);
+      // push patient service
       // call the service with this collection
-      
+      dd($patientFollowUpArray);
       // after calling the service
       $medicalcase_id_list=[];
       if(sizeof($medicalcase_id_list) > 0 ){
