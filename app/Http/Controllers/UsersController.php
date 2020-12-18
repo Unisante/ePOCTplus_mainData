@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Session;
 use App\User;
+use App\PasswordReset;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
@@ -9,26 +10,29 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use DB;
-
+use Illuminate\Support\Str;
+use App\Jobs\RegisterUserJob;
+use App\Jobs\ResetAccountPasswordJob;
 
 class UsersController extends Controller
 {
   /**
   * To block any non-authorized user
-  *
   * @return void
   */
   public function __construct(){
     $this->middleware('auth');
+    $this->middleware('permission:Access_ADMIN_PANEL', ['only' => ['index','create','show','edit']]);
+    $this->middleware('permission:Create_User', ['only' => ['store','edit','update','destroy']]);
+    $this->middleware('permission:Delete_User', ['only' => ['destroy']]);
   }
+
   /**
   * Display a listing of the resource.
-  *
   * @return \Illuminate\Http\Response
   */
   public function index(Request $request){
     if (Auth::check()){
-
       $search = $request->input('Search');
       if ($search !=""){
         $users = Approver::where('email','LIKE', '%' . $search . '%')
@@ -44,43 +48,50 @@ class UsersController extends Controller
 
   /**
   * Show the form for creating a new resource.
-  *
   * @return \Illuminate\Http\Response
   */
-  public function create(){
-    return view('users.create');
+  public function create() {
+    $roles=Role::all();
+    return view('users.create')->with('roles',$roles);
   }
 
   /**
   * Store a newly created resource in storage.
-  *
   * @param  \Illuminate\Http\Request  $request
   * @return \Illuminate\Http\Response
   */
   public function store(Request $request) {
+    $email=Str::lower($request->input('email'));
     if (Auth::check()){
       $validatedData = $request->validate(array(
         'name' => 'required|string',
-        'email' => 'required|string',
+        'email' => 'required|string|unique:users',
+        'role'=>'required',
       ));
-        $user=User::create([
-          'name'=>$request->name,
-          'email'=>$request->email,
-          'password'=>Hash::make($request->password)
-        ]);
-      if($user){
-        return redirect()->route('user.index')->with('success','Information have been saved Successfully.');;
 
+      $random_password=Str::random(30);
+      while (PasswordReset::where('token',$random_password)->exists()) {
+        $random_password=Str::random(30);
       }
-      else{
-        return back()->withinput()->with('errors','Error Occured, Probably this user exist');
+      $user=new User;
+      $user->name=$request->input('name');
+      $user->email=$email;
+      $user->password=Hash::make($random_password);
+      $user->syncRoles($request->input('role'));
+      $user->save();
+      $saveCode=PasswordReset::saveReset($user,$random_password);
+      if($saveCode){
+        $body = 'Your account has been set in Main Data with the default password';
+        dispatch(new ResetAccountPasswordJob($body,$email,$user->name,$random_password));
+        return back()->with('success', 'Email has been sent to '.$user->name);
+      }else{
+        return back()->with('error', 'Something Went wrong');
       }
     }
   }
 
   /**
   * Display the specified resource.
-  *
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
@@ -90,17 +101,19 @@ class UsersController extends Controller
 
   /**
   * Show the form for editing the specified resource.
-  *
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
-  public function edit(User $user){
-    return view('users.edit',compact('user'));
+  public function edit(User $user) {
+    $data=array(
+      'user'=>$user,
+      'roles'=>Role::all(),
+    );
+    return view('users.edit')->with($data);
   }
 
   /**
   * Update the specified resource in storage.
-  *
   * @param  \Illuminate\Http\Request  $request
   * @param  int  $id
   * @return \Illuminate\Http\Response
@@ -109,17 +122,84 @@ class UsersController extends Controller
     $validatedData = $request->validate(array(
       'name' => 'required|string',
       'email' => 'required|string',
+      'role'=>'required',
     ));
-    $user->update([
-      "email"=>$request->email,
-      "name"=>$request->name
-    ]);
-    if ($user){
-      return redirect()->route('user.index')->with('success','Information Updated Successfully');
+
+    $user->syncRoles($request->input('role'));
+    $user->email = $request->input('email');
+    $user->name = $request->input('name');
+
+    if ($user->save()){
+      return redirect()->route('users.index')->with('success','Information Updated Successfully');
     }
     else{
       return back()->withinput()->with('errors','Error Updating');
     }
   }
-  
+
+  /**
+  * Delete a particular user
+  * @param int $id
+  * @return \Illuminate\Http\Response
+  */
+  public function destroy($id){
+    $user=User::find($id);
+    if(DB::table("users")->where('id',$id)->delete()){
+      return redirect()->route('users.index')
+      ->with('success','User deleted successfully');
+    }else{
+      return redirect()->route('users.index')
+      ->with('error','Something Wrong happened!');
+    }
+  }
+
+  /**
+  * Show current user profile
+  * @return \Illuminate\Http\Response
+  */
+  public function profile(){
+    $currentUser=Auth::user();
+    return view('users.profile')->with('user',$currentUser);
+  }
+
+  /**
+   * Change user password
+   * @return \Illuminate\Http\Response
+   */
+  public function showChangePassword(){
+    $currentUser=Auth::user();
+    return view('users.showPassword')->with('user',$currentUser);
+  }
+  public function changePassword(Request $request){
+    $request->validate(array(
+      'current_password' => 'required|string',
+      'new_password' => 'required|string',
+    ));
+    if (!(Hash::check($request->input('current_password'), Auth::user()->password))) {
+      return back()->with('error', 'Wrong current Password!');
+    }
+     Auth::user()->password = Hash::make($request->input('new_password'));
+    if(Auth::user()->save()){
+      return redirect()->route('users.profile')->with('success','password has been saved Changed.');
+    }else{
+      return back()->with('error', 'Something Went wrong');
+    }
+  }
+
+  public function resetPassword($id){
+    $user=User::find($id);
+    $random_password=Str::random(30);
+    while (PasswordReset::where('token',$random_password)->exists()) {
+      $random_password=Str::random(30);
+    }
+    $saveCode=PasswordReset::saveReset($user,$random_password);
+    if($saveCode){
+      $body = 'Click this link to reset your password';
+      dispatch(new ResetAccountPasswordJob($body,$user->email,$user->name,$random_password));
+      return back()->with('success', 'Email has been sent to'.$user->name);
+    }else{
+      return back()->with('error', 'Something Went wrong');
+    }
+  }
+
 }

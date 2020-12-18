@@ -32,7 +32,7 @@ class MedicalCaseAnswersController extends Controller
       redirect()->back()->with('status', 'Something went wrong.');
     }
     return redirect()->action(
-      'medicalCasesController@show',
+      'MedicalCasesController@show',
       ['id' => $medicalCaseId]
     )->with('status','Answer is updated!');
   }

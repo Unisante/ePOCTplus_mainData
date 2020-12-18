@@ -13,47 +13,12 @@ class MedicalCaseAnswer extends Model implements Auditable
   protected $guarded = [];
 
   /*
-  * Checks if it key exist
-  * @params $json
+  * get or create medical case answers
+  * @params $nodes
   * @params $medical_case
   * @return void
   */
-  // public static function parse_answers($nodes, $medical_case,$algorithm){
-  //   $group_one=["Boolean","Array","Present","Positive"];
-  //   $group_two=["Integer","Float","Date","String"];
-  //   foreach($nodes as $node){
-  //     $check_value=isset($node['value'])?$node['value']:null;
-  //     $check_answer=isset($node['answer'])?$node['answer']:null;
-  //     if($check_value==null && $check_answer==null){
-  //       continue;
-  //     }
-  //     if(array_key_exists('value_format',$node) && in_array($node['value_format'], $group_one) && array_key_exists('answer',$node) && array_key_exists($node['answer'],$node['answers'])){
-  //       $issued_node=Node::getOrCreate($node,$algorithm);
-  //       foreach($node['answers'] as $answer){Answer::getOrCreate($issued_node,$answer);}
-  //       $issued_value=isset($node['value'])?$node['value']:null;
-  //       $medical_case_answer=Self::getOrCreate($medical_case,$node['answer'],$issued_node,$issued_value);
-  //     }elseif(array_key_exists('value_format',$node) && in_array($node['value_format'], $group_two)&& array_key_exists('value',$node)){
-  //       $issued_node=Node::getOrCreate($node,$algorithm);
-  //       $issued_value=$node['value'];
-  //       $medical_case_answer=Self::getOrCreateValue($medical_case,$issued_node,$issued_value);
-  //     }
-  //   }
-  // }
-  // public static function getOrCreateValue($medical_case,$node,$issued_value){
-  //   $main_d_answer_id=0;
-  //   $medical_case_answer = MedicalCaseAnswer::firstOrCreate(
-  //     [
-  //       'medical_case_id'=>$medical_case->id,
-  //       'answer_id'=>$main_d_answer_id,
-  //       'node_id'=>$node->id
-  //     ],
-  //     [
-  //       'value'=>$issued_value
-  //     ]
-  //   );
-  // }
   public static function getOrCreate($nodes,$medical_case){
-    // loop in the nodes
     foreach($nodes as $node){
       $node_issued= Node::where('medal_c_id',$node['id'])->first();
       $answer=isset($node['answer'])?$node['answer']:null;
@@ -70,8 +35,15 @@ class MedicalCaseAnswer extends Model implements Auditable
     }
   }
 
+  /*
+  * store medical case answer
+  * @params $medical_case_id
+  * @params $answer_id
+  * @params $node_id
+  * @params $value
+  * @return void
+  */
   public static function store($medical_case_id,$answer_id,$node_id,$value){
-
     MedicalCaseAnswer::firstOrCreate(
       [
         'medical_case_id'=>$medical_case_id,
@@ -83,6 +55,7 @@ class MedicalCaseAnswer extends Model implements Auditable
       ]
     );
   }
+
   /**
    * Get all audits of one medical case
    * @params $id
@@ -94,5 +67,11 @@ class MedicalCaseAnswer extends Model implements Auditable
   }
   public function medical_case(){
     return $this->belongsTo('App\MedicalCase');
+  }
+  public function answer(){
+    return $this->belongsTo('App\Answer');
+  }
+  public function node(){
+    return $this->belongsTo('App\Node');
   }
 }

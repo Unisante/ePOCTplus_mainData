@@ -47,6 +47,7 @@ return [
 
     'logo' => '<b>ePOCT+</b>Main data',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    // 'logo_img' => 'public/MedALDataLogo.png',
     'logo_img_class' => 'brand-image-xl',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
@@ -154,14 +155,15 @@ return [
     'dashboard_url' => 'home',
 
     'logout_url' => 'logout',
-
+    // 'logout_url' => false,
     'login_url' => 'login',
 
     'register_url' => 'register',
+    // 'password_reset_url' => false,
 
     'password_reset_url' => 'password/reset',
 
-    'password_email_url' => 'password/email',
+    // 'password_email_url' => 'password/email',
 
     /*
     |--------------------------------------------------------------------------
@@ -190,65 +192,74 @@ return [
     */
 
     'menu' => [
-
+        // [
+        //   'text' => 'Duplicates',
+        //   'icon' => 'fas fa-fw fa-clone',
+        //   'submenu' => [
+        //     [
+        //         'text' => 'Patients',
+        //         'url'  => '/patients/duplicates',
+        //         'icon' => 'fas fa-fw fa-users',
+        //     ],
+        //     [
+        //         'text' => 'Medical Cases',
+        //         'url'  => '/medicalcases/duplicates',
+        //         'icon' => 'fas fa-fw fa-pencil-alt',
+        //     ],
+        //   ],
+        // ],
         [
           'text' => 'Duplicates',
-          'icon' => 'fas fa-fw fa-clone',
-          'submenu' => [
-            [
-                'text' => 'Patients',
-                'url'  => '/patients/duplicates',
-                'icon' => 'fas fa-fw fa-users',
-            ],
-            [
-                'text' => 'Medical Cases',
-                'url'  => '/medicalcases/duplicates',
-                'icon' => 'fas fa-fw fa-pencil-alt',
-            ],
-          ],
+          'url'  => '/patients/duplicates',
+          'icon' => 'fas fa-fw fa-users',
+          'can' =>  'Merge_Duplicates'
         ],
-
         [
             'text' => 'Patient list',
             'url'  => '/patients',
             'icon' => 'fas fa-fw fa-list',
-
+            'can' =>  'View_Patient'
         ],
 
         [
             'text' => 'Medical Cases',
             'url'  => '/medicalcases',
             'icon' => 'fas fa-fw fa-file',
+            'can' =>  'View_Case'
         ],
 
         [
           'text' => 'Questions',
           'url'  => '/questions',
           'icon' => 'fas fa-fw fa-question-circle',
+          'can' =>  'View_Case'
         ],
         [
           'text' => 'Export',
           'url'  => '/export-mainData-csv',
           'icon' => 'fas fa-fw fa-file',
+          'can' =>  'Merge_Duplicates'
         ],
         [
             'text' => 'profile',
-            'url'  => '#',
+            'url'  => '/user/profile',
             'icon' => 'fas fa-fw fa-user',
+            'can' =>  'Reset_Own_Password'
         ],
         [
             'text' => 'change_password',
-            'url'  => '#',
+            'url'  => '/user/password',
             'icon' => 'fas fa-fw fa-lock',
+            'can' =>  'Reset_Own_Password'
         ],
         [
             'text' => 'Admin Corner',
             'icon' => 'fas fa-fw fa-cog',
-            //'can' => 'view users',
+            'can' => 'Access_ADMIN_PANEL',
             'submenu' => [
                 [
                     'text' => 'Users Management',
-                    'url'  => '/user',
+                    'url'  => '/users',
                     'icon' => 'fas fa-fw fa-users',
                    //'can' => 'view users',
                 ],
@@ -256,7 +267,7 @@ return [
 
                 [
                     'text' => 'Manage Roles',
-                    'url'  => '#',
+                    'url'  => '/roles',
                     'icon' => 'fas fa-fw fa-pencil-alt',
                    // 'can' => 'view users',
                 ],
@@ -280,7 +291,7 @@ return [
         JeroenNoten\LaravelAdminLte\Menu\Filters\HrefFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\SearchFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\ActiveFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\SubmenuFilter::class,
+        // JeroenNoten\LaravelAdminLte\Menu\Filters\SubmenuFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\ClassesFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\GateFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,

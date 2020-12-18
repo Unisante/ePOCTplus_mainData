@@ -19,11 +19,11 @@ WithEvents
   public function headings():array
     {
       return [
-        'algrorithm_id',
-        'medal_c_id',
-        'name',
-        'created_at',
-        'updated_at',
+        'algorithm_id',
+        'algorithm_medal_c_id',
+        'algorithm_name',
+        'algorithm_created_at',
+        'algorithm_updated_at',
       ];
     }
     public function registerEvents():array

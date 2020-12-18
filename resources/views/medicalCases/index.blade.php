@@ -11,8 +11,8 @@
           <span><h3>Medical Cases</h3></span>
 
           <div class="ml-auto p-2">
-            <a href="{{route('medicalCasesController.medicalCaseIntoCsv')}}" class="btn btn-outline-dark">Export Csv</a>
-            <a href="{{route('medicalCasesController.medicalCaseIntoExcel')}}" class="btn btn-outline-dark"> Export Excel</a>
+            {{-- <a href="{{route('medicalCasesController.medicalCaseIntoCsv')}}" class="btn btn-outline-dark">Export Csv</a>
+            <a href="{{route('medicalCasesController.medicalCaseIntoExcel')}}" class="btn btn-outline-dark"> Export Excel</a> --}}
             <button class="btn btn-outline-dark" onclick="compareMedicalCases()"> Compare</button>
 
           </div>
@@ -45,7 +45,7 @@
                     <th><input type="checkbox" class="messageCheckbox" value="{{$medicalCase->id}}"></th>
                     <td>{{$medicalCase->created_at}}</td>
                     <td>{{$medicalCase->patient->first_name}} {{$medicalCase->patient->last_name}}</td>
-                    <td><a href="{{route('medicalCasesController.show',[$medicalCase->id])}}" class="btn btn-outline-dark"> Show Medical Case</a>
+                    <td><a href="{{route('MedicalCasesController.show',[$medicalCase->id])}}" class="btn btn-outline-dark"> Show Medical Case</a>
                     </td>
                   </tr>
                   @endforeach

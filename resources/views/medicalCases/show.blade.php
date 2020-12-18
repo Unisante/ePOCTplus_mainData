@@ -8,8 +8,8 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-          <a href="/medicalCases" class="btn btn-outline-dark"> Back</a>
-          <a href="{{route('medicalCasesController.showCaseChanges',[$medicalCase->id])}}" class="btn btn-outline-dark float-right">View This Medical Case Changes</a>
+          <a href="/medicalcases" class="btn btn-outline-dark"> Back</a>
+          <a href="{{route('MedicalCasesController.showCaseChanges',[$medicalCase->id])}}" class="btn btn-outline-dark float-right">View This Medical Case Changes</a>
         </div>
         <div class="card-body">
           @if (session('status'))
@@ -30,14 +30,18 @@
               @if($medicalCase)
               <div class="showmdCard mb-2">
                 <div class="card-header">
-                  <span class="font-weight-bold">Created At: </span>
+                  <div class="d-flex justify-content-between">
+                    <span class="font-weight-bold">Created At: </span>
                   <span>{{$medicalCase->created_at}}</span>
+                  </div>
                 </div>
                 <div class="card-header">
-                  <span class="font-weight-bold">Updated At: </span>
+                  <div class="d-flex justify-content-between">
+                    <span class="font-weight-bold">Updated At: </span>
                   <span>{{$medicalCase->created_at}}</span> </div>
+                  </div>
                   <div class="card-header">
-                    <div>
+                    <div class="d-flex justify-content-between">
                       <span class="font-weight-bold">Patient Name:</span>
                       <span class="border-bottom">
                         {{$medicalCase->patient->first_name}}
@@ -72,7 +76,7 @@
                           <span class="font-weight-bold">Answer: </span>
                           <span>{{$case->answer}}</span>
                         </div>
-                        <a href="{{route('medicalCasesController.medicalCaseQuestion', [$medicalCase->id,$case->question->id])}}" class="btn btn-outline-light">Change Answer</a>
+                        <a href="{{route('MedicalCasesController.medicalCaseQuestion', [$medicalCase->id,$case->question->id])}}" class="btn btn-outline-light">Change Answer</a>
                       </div>
                       @endforeach
                     @else

@@ -11,9 +11,12 @@ use App\Answer;
 use App\MedicalCase;
 use App\User;
 use App\Node;
+use App\DiagnosisReference;
 use Illuminate\Http\Request;
 use Datatables;
 use DB;
+use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\Storage;
 use App\Exports\PatientExport;
 use App\Exports\MedicalCaseExport;
 use App\Exports\DataSheet;
@@ -27,6 +30,9 @@ class PatientsController extends Controller
   */
   public function __construct(){
     $this->middleware('auth');
+
+    $this->middleware('permission:Merge_Duplicates', ['only' => ['findDuplicates','mergeShow','searchDuplicates','merge']]);
+    $this->middleware('permission:Delete_Patient',['only'=>['destroy']]);
   }
 
   /**
@@ -130,33 +136,80 @@ class PatientsController extends Controller
   * @return PatientsController@findDuplicates
   */
   public function merge(Request $request){
-    //creating a new patient
-    $hybrid_patient=Patient::create([
-      'first_name'=>$request->first_name,
-      'last_name'=>$request->last_name
-    ]);
     //finding the medical cases to update
     $first_patient=Patient::find($request->firstp_id);
     $second_patient=Patient::find($request->secondp_id);
 
+    $consent_array=array();
+    if($first_patient->consent){
+      array_push($consent_array,$first_patient->consent);
+    }
+    if($second_patient->consent){
+      array_push($consent_array,$second_patient->consent);
+    }
+
+    $consent = serialize($consent_array);
+    //creating a new patient
+    $hybrid_patient=new Patient([
+      'first_name'=>$request->first_name,
+      'last_name'=>$request->last_name,
+      'local_patient_id'=>$request->local_patient_id,
+      'birthdate'=>$request->birthdate,
+      'weight'=>$request->weight,
+      'gender'=>$request->gender,
+      'group_id'=>$request->group_id,
+      'consent'=>$consent,
+    ]);
+    $hybrid_patient->save();
+
+    // new code
+    $casesId=array();
     $first_person_array=array();
-    if($first_patient->medicalCases){
+    if(sizeof($first_patient->medicalCases)>0){
       foreach($first_patient->medicalCases as $first_medical_case){
         $first_medical_case->update([
           "patient_id"=>$hybrid_patient->id
         ]);
-        array_push($first_person_array,$first_medical_case->medical_case_answers->count());
+        array_push($casesId,$first_medical_case->id);
       }
     }
-    if($second_patient->medicalCases){
+    $case_not_to_update=self::relateCases($casesId,$second_patient->medicalCases);
+
+    if(sizeof($second_patient->medicalCases)>0){
       foreach($second_patient->medicalCases as $second_medical_case){
-        if(!(in_array($second_medical_case->medical_case_answers->count(),$first_person_array))){
+        if(!(in_array($second_medical_case->id,$case_not_to_update))){
           $second_medical_case->update([
             "patient_id"=>$hybrid_patient->id
           ]);
+        }else{
+          $second_medical_case->diagnosesReferences->each->delete();
+          $second_medical_case->delete();
         }
       }
     }
+
+    // old code
+    // $first_person_array=array();
+    // if(sizeof($first_patient->medicalCases)>0){
+    //   foreach($first_patient->medicalCases as $first_medical_case){
+    //     $first_medical_case->update([
+    //       "patient_id"=>$hybrid_patient->id
+    //     ]);
+    //     array_push($first_person_array,$first_medical_case->medical_case_answers->count());
+    //   }
+    // }
+    // if(sizeof($second_patient->medicalCases)>0){
+    //   foreach($second_patient->medicalCases as $second_medical_case){
+    //     if(!(in_array($second_medical_case->medical_case_answers->count(),$first_person_array))){
+    //       $second_medical_case->update([
+    //         "patient_id"=>$hybrid_patient->id
+    //       ]);
+    //     }else{
+    //       $second_medical_case->diagnosesReferences->each->delete();
+    //       $second_medical_case->delete();
+    //     }
+    //   }
+    // }
 
     //deleting first person and second person
     $first_patient->delete();
@@ -175,6 +228,9 @@ class PatientsController extends Controller
   public function destroy(Request $request){
     $patient=Patient::find($request->patient_id);
     if($patient->medicalCases){
+      foreach($patient->medicalCases as $case){
+        $case->diagnosesReferences->each->delete();
+      }
       $patient->medicalCases->each->delete();
     }
     if($patient->delete()){
@@ -194,5 +250,29 @@ class PatientsController extends Controller
     // return Excel::download(new PatientExport,'patients.csv');
     // return Excel::download(new MedicalCaseExport,'Medicase.csv');
     return Excel::download(new DataSheet,'MainData.xlsx');
+  }
+
+  public function relateCases($casesId,$medicalCases){
+    $casesNotToUpdate=array();
+    foreach($medicalCases as $spmd){
+      foreach($casesId as $caseId){
+        $fpmd=MedicalCase::find($caseId);
+        $spnodeIdArray=[];
+        foreach($spmd->medical_case_answers as $ans){
+          array_push($spnodeIdArray,$ans->node_id);
+        }
+        $fpnodeIdArray=[];
+        foreach($fpmd->medical_case_answers as $ans){
+          array_push($fpnodeIdArray,$ans->node_id);
+        }
+        $difference = array_diff($spnodeIdArray,$fpnodeIdArray);
+        $difference2 = array_diff($fpnodeIdArray,$spnodeIdArray);
+        // if there is no difference,cupture the second case id
+        if(! $difference && ! $difference2 ){
+          array_push($casesNotToUpdate,$spmd->id);
+        }
+      }
+    }
+    return $casesNotToUpdate;
   }
 }

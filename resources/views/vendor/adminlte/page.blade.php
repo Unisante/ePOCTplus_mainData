@@ -53,7 +53,7 @@
 @endif
 
 @section('body')
-    <div class="wrapper">
+    <div class="wrapper bimage">
         @if(config('adminlte.layout_topnav') || View::getSection('layout_topnav'))
         <nav class="main-header navbar {{config('adminlte.classes_topnav_nav', 'navbar-expand-md')}} {{config('adminlte.topnav_color', 'navbar-white navbar-light')}}">
             <div class="{{config('adminlte.classes_topnav_container', 'container')}}">
@@ -97,6 +97,7 @@
                     @yield('content_top_nav_right')
                     @if(Auth::user())
                         <li class="nav-item">
+
                             <a class="nav-link" href="#"
                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                             >
@@ -127,7 +128,9 @@
             @if(config('adminlte.logo_img_xl'))
                 <a href="{{ $dashboard_url }}" class="brand-link logo-switch">
                     <img src="{{ asset(config('adminlte.logo_img', 'vendor/adminlte/dist/img/AdminLTELogo.png')) }}" alt="{{config('adminlte.logo_img_alt', 'AdminLTE')}}" class="{{config('adminlte.logo_img_class', 'brand-image-xl')}} logo-xs">
-                    <img src="{{ asset(config('adminlte.logo_img_xl')) }}" alt="{{config('adminlte.logo_img_alt', 'AdminLTE')}}" class="{{config('adminlte.logo_img_xl_class', 'brand-image-xs')}} logo-xl">
+                {{-- <img src="{{asset('images/MedALDataLogo.png')}}" width="180" height="140" alt="Computer Hope"> --}}
+                {{-- <span>MedAL-data</span> --}}
+                    {{-- <img src="{{ asset('images/MedALDataLogo.png') }}" alt="{{config('adminlte.logo_img_alt', 'AdminLTE')}}" class="{{config('adminlte.logo_img_xl_class', 'brand-image-xs')}} logo-xl"> --}}
                 </a>
             @else
                 <a href="{{ $dashboard_url }}" class="brand-link {{ config('adminlte.classes_brand') }}">

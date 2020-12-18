@@ -41,16 +41,21 @@
           </div>
           <div class="row justify-content-center">
             <div class="col-md-10">
-              <form action="{{route('PatientsController@searchDuplicates')}}" method="POST" id="searchform" class="input-group mb-3">
+              <form action="{{route('PatientsController@searchDuplicates')}}" method="POST" id="searchform" >
                 @csrf
-                <div class="input-group-prepend">
-                  <button class="btn btn-outline-secondary" type="Submit">Search</button>
-                </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <button class="btn btn-outline-secondary" type="Submit">Search</button>
+                  </div>
                 <select class="custom-select" name="search" form="searchform">
                   <option selected>Choose...</option>
                   <option value="first_name">First Name</option>
                   <option value="last_name">Last Name</option>
+                  <option value="gender">Gender</option>
+                  <option value="created_at">created_at</option>
+                  <option value="local_patient_id">local patient id</option>
                 </select>
+              </div>
               </form>
               @if($catchEachDuplicate)
               <table class="table table-hover table-bordered">

@@ -18,12 +18,12 @@ WithEvents
 {
   public function headings():array{
     return [
-      'managementReference_id',
-      'agreed',
-      'diagnosis_id',
-      'created_at',
-      'updated_at',
-      'management_id',
+      'management_reference_id',
+      'management_reference_agreed',
+      'management_reference_diagnosis_id',
+      'management_reference_created_at',
+      'management_reference_updated_at',
+      'management_reference_management_id',
     ];
   }
   public function registerEvents():array

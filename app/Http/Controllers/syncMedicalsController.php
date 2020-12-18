@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Algorithm;
 use App\Patient;
-use App\Config;
 use App\Answer;
 use App\MedicalCase;
 use Madzipper;
@@ -13,35 +12,39 @@ use File;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Arr;
+use App\Jobs\fetchAlgorithm;
 class syncMedicalsController extends Controller
 {
     public function syncMedicalCases(Request $request){
       $study_id='Test';
       $isEligible=true;
+
       if($request->file('file')){
-        $unparsed_path = base_path().'\app\medicalCases\unparsed_medical_cases';
-        $parsed_path = base_path().'\app\medicalCases\parsed_medical_cases';
-        $consent_path = base_path().'\app\consentFiles';
+        $unparsed_path = base_path().'/storage/medicalCases/unparsed_medical_cases';
+        $parsed_path = base_path().'/storage/medicalCases/parsed_medical_cases';
+        $consent_path = base_path().'/storage/consentFiles';
         Madzipper::make($request->file('file'))->extractTo($unparsed_path);
         $files = File::allFiles($unparsed_path);
         foreach($files as $path){
           $jsonString = file_get_contents($path);
           $individualData = json_decode($jsonString, true);
+
+          $algorithm_id = json_decode($individualData['algorithm_id'], true);
+          $version_id = json_decode($individualData['version_id'], true);
           $dataForAlgorithm=array(
-            "algorithm_id"=> $individualData['algorithm_id'],
-            "version_id"=> $individualData['version_id'],
+            "algorithm_id"=> $algorithm_id,
+            "version_id"=> $version_id,
           );
-          Algorithm::ifOrExists($dataForAlgorithm);
+          $algorithm_n_version=Algorithm::ifOrExists($dataForAlgorithm);
           $patient_key=$individualData['patient'];
           if($patient_key['study_id']== $study_id && $individualData['isEligible']==$isEligible){
             $patient=new Patient;
             $patient->local_patient_id=$patient_key['uid'];
-            $config= Config::getConfig($individualData['version_id']);
-            $birth_date_question_id=$config->birth_date_question_id;
-            $first_name_question_id=$config->first_name_question_id;
-            $last_name_question_id=$config->last_name_question_id;
-            $weight_question_id=$config->weight_question_id;
-            $gender_question_id=$config->gender_question_id;
+            $birth_date_question_id=$algorithm_n_version["config_data"]->birth_date_question_id;
+            $first_name_question_id=$algorithm_n_version["config_data"]->first_name_question_id;
+            $last_name_question_id=$algorithm_n_version["config_data"]->last_name_question_id;
+            $weight_question_id=$algorithm_n_version["config_data"]->weight_question_id;
+            $gender_question_id=$algorithm_n_version["config_data"]->gender_question_id;
 
             if($patient_not_exist=Patient::where('local_patient_id',$patient_key['uid'])->doesntExist()){
               $nodes=$individualData['nodes'];
@@ -64,7 +67,7 @@ class syncMedicalsController extends Controller
               if(!File::exists($consent_path)) {
                 mkdir($consent_path);
               }
-              $img->save($consent_path.'\\'.$consent_file_name);
+              $img->save($consent_path.'/'.$consent_file_name);
               $issued_patient->save();
             }
             $data_to_parse=array(
@@ -73,19 +76,18 @@ class syncMedicalsController extends Controller
               'created_at'=>$individualData['created_at'],
               'updated_at'=>$individualData['updated_at'],
               'patient_id'=>$issued_patient->id,
-              'algorithm_id'=>$individualData['algorithm_id'],
-              'algorithm_name'=>$individualData['algorithm_name'],
               'nodes'=>$individualData['nodes'],
               'diagnoses'=>$individualData['diagnoses'],
               'consent'=>$individualData['consent'],
-              'isEligible'=>$individualData['isEligible']
+              'isEligible'=>$individualData['isEligible'],
+              'version_id'=>$algorithm_n_version['version_id'],
             );
             MedicalCase::parse_data($data_to_parse);
           }
           if(!File::exists($parsed_path)) {
             mkdir($parsed_path);
           }
-          $new_path=$parsed_path.'\\'.pathinfo($path)['filename'].'.'.pathinfo($path)['extension'];
+          $new_path=$parsed_path.'/'.pathinfo($path)['filename'].'.'.pathinfo($path)['extension'];
           $move = File::move($path, $new_path);
         }
         return response()->json(
@@ -99,6 +101,6 @@ class syncMedicalsController extends Controller
             "data_received"=>False,
           ]
         );
-      }
+    }
   }
 }
