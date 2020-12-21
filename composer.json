@@ -13,6 +13,7 @@
         "fideloper/proxy": "^4.0",
         "intervention/image": "^2.5",
         "jeroennoten/laravel-adminlte": "^3.5",
+        "iu-redcap/phpcap": "^1.1",
         "laravel/framework": "6.0.*",
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^6.1",

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Services\RedCapApiService;
 use Illuminate\Support\Facades\Schema;
 use App\Patient;
 use App\Answer;
