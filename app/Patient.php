@@ -9,11 +9,6 @@ class Patient extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable;
 
-  protected $fillable = [
-    'id',
-    'first_name',
-    'last_name',
-  ];
 
   function isRedcapFlagged() : bool {
     // TODO : return value of redcap flag in the database
@@ -21,7 +16,7 @@ class Patient extends Model implements Auditable
   }
 
   protected $guarded = [];
-  
+
   /*
   * recevieves a json file and makes a save to the database
   * @param  mixed  json file of the patient

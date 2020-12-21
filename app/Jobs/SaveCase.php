@@ -64,7 +64,6 @@ class SaveCase implements ShouldQueue
               }
               $img->save($consent_path.'/'.$consent_file_name);
           }
-
           $duplicateConditions=[
             'first_name'=>$nodes[$algorithm_n_version["config_data"]->first_name_question_id]['value'],
             'last_name'=>$nodes[$algorithm_n_version["config_data"]->last_name_question_id]['value'],
@@ -126,16 +125,7 @@ class SaveCase implements ShouldQueue
       }
       $patientFollowUpArray=collect($patientFollowUpArray);
       $casefollowUpCollection=collect($caseFollowUpArray);
-
       $redCapApiService = new RedCapApiService();
-      // $patients = Patient::All();
-      // $medicalCases = MedicalCase::All();
-      // $redCapApiService->exportPatient($patients);
-      // $redCapApiService->exportFollowup($casefollowUpCollection);
-      // push patient service
-      // call the service with this collection
-      // dd($patientFollowUpArray);
-      // after calling the service
       $medicalcase_id_list=$redCapApiService->exportFollowup($casefollowUpCollection);
 
       if(sizeof($medicalcase_id_list) > 0 ){

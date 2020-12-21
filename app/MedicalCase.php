@@ -91,11 +91,11 @@ class MedicalCase extends Model implements Auditable
       'first_name'=>isset($first_name)?$first_name:null,
       'last_name'=>isset($last_name)?$last_name:null,
       'gender'=>isset($gender)?$gender:null,
-      'village_name'=>isset($village_name)?$village_name:null,
+      'village_name'=>isset($village_name)?$village_name:"null",
       'group_id'=>1
     ];
     if(! in_array(null,$follow_up) ){
-      $follow_up=new FollowUp($medical_case,$first_name,$last_name,$gender,$village_name);
+      $follow_up=new FollowUp($medical_case,$follow_up['first_name'],$follow_up['last_name'],$follow_up['gender'],$follow_up['village_name']);
       return $follow_up;
     }
     return null;
@@ -112,6 +112,9 @@ class MedicalCase extends Model implements Auditable
   public static function fetchAttribute($medical_case,$medal_c_id){
     $node=Node::where('medal_c_id',$medal_c_id)->first();
     $record=$medical_case->medical_case_answers()->where('node_id',$node->id)->first();
+    if($record == null){
+      return null;
+    }
     if($record->answer_id){
       return $record->answer->label;
     }else{
@@ -122,7 +125,6 @@ class MedicalCase extends Model implements Auditable
   public function listUnfollowed(){
     $caseFollowUpCollection=new Collection();
     foreach(MedicalCase::where('redcap',false)->get() as $medicalcase){
-      $followUp=MedicalCase::makeFollowUp($medicalcase);
       $followUp=MedicalCase::makeFollowUp($medicalcase);
         // find the patient related to this followup
       $caseFollowUpCollection->add($followUp);
