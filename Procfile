@@ -1,2 +1,2 @@
 web: vendor/bin/heroku-php-apache2 public/
-worker: php artisan queue:work --daemon && php artisan queue:restart
+worker: php artisan queue:listen --daemon
