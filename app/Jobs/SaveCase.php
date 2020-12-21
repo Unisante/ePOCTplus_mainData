@@ -49,11 +49,14 @@ class SaveCase implements ShouldQueue
       $study_id="Dynamic Tanzania";
       $isEligible=true;
       foreach(Storage::allFiles('unparsed_medical_cases') as $filename){
+        error_log("in the first foreach");
         $individualData = json_decode(Storage::get($filename), true);
         $dataForAlgorithm=array("algorithm_id"=> $individualData['algorithm_id'],"version_id"=> $individualData['version_id'],);
         $algorithm_n_version=Algorithm::ifOrExists($dataForAlgorithm);
+        error_log("after fetching algorithm");
         $patient_key=$individualData['patient'];
         if($patient_key['study_id']== $study_id && $individualData['isEligible']==$isEligible){
+          error_log("saving");
           $nodes=$individualData['nodes'];
           $gender_answer= Answer::where('medal_c_id',$nodes[$algorithm_n_version["config_data"]->gender_question_id]['answer'])->first();
           $consent_file_name=$patient_key['uid'] .'_image.jpg';
@@ -74,6 +77,7 @@ class SaveCase implements ShouldQueue
           if($senseDuplicate){
             $duplicate_flag=true;
           }
+          error_log("saving patient");
           $issued_patient=Patient::firstOrCreate(
             [
               "local_patient_id"=>$patient_key['uid']
@@ -103,6 +107,7 @@ class SaveCase implements ShouldQueue
             'group_id'=>$patient_key['group_id'],
             'check-config'=>$algorithm_n_version["config_data"]
           );
+          error_log("saving medical cases");
           MedicalCase::parse_data($data_to_parse);
           if(Storage::Exists($filename) && !(Storage::Exists($parsed_folder.'/'.basename($filename)))){
               Storage::move($filename, $parsed_folder.'/'.basename($filename));
@@ -114,6 +119,7 @@ class SaveCase implements ShouldQueue
       $caseFollowUpArray=array();
       $patientFollowUpArray=array();
       foreach(MedicalCase::where('redcap',false)->get() as $medicalcase){
+        error_log("second loop");
         $followUp=MedicalCase::makeFollowUp($medicalcase);
         if($followUp != null){
           // find the patient related to this followup
