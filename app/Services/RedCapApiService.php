@@ -51,10 +51,10 @@ class RedCapApiService
       Config::get('redcap.identifiers.api_token_followup')
     );
 
-    $this->projectPersonalData = $this->getRedCapProject(
-      Config::get('redcap.identifiers.api_url_personal_data'),
-      Config::get('redcap.identifiers.api_token_personal_data')
-    );
+    // $this->projectPersonalData = $this->getRedCapProject(
+    //   Config::get('redcap.identifiers.api_url_personal_data'),
+    //   Config::get('redcap.identifiers.api_token_personal_data')
+    // );
 
   }
 
@@ -134,16 +134,17 @@ class RedCapApiService
   {
 
     if (count($followups) !== 0) {
+      /** @var Followup $followup*/
       foreach ($followups as $followup) {
         // this is the mapping between redcap field (define in config) and followup model
-        // has to be update everytime we add a new fiedl
-        $datas[$followup->consultation_id] = [
+        // has to be update everytime we add a new field
+        $datas[$followup->getConsultationId()] = [
           'redcap_event_name' => Config::get('redcap.identifiers.followup.redcap_event_name'),
-          Config::get('redcap.identifiers.followup.dyn_fup_study_id_consultation') => $followup->consultation_id,
-          Config::get('redcap.identifiers.followup.dyn_fup_study_id_patient') => $followup->patient_id,
-          Config::get('redcap.identifiers.followup.dyn_fup_id_health_facility') => $followup->health_facility,
-          Config::get('redcap.identifiers.followup.dyn_fup_date_time_consultation') => $followup->date_time_consultation,
-          Config::get('redcap.identifiers.followup.dyn_fup_group') => $followup->followup_group,
+          Config::get('redcap.identifiers.followup.dyn_fup_study_id_consultation') => $followup->getConsultationId(),
+          Config::get('redcap.identifiers.followup.dyn_fup_study_id_patient') => $followup->getPatientId(),
+          Config::get('redcap.identifiers.followup.dyn_fup_id_health_facility') => $followup->getFacilityId(),
+          Config::get('redcap.identifiers.followup.dyn_fup_date_time_consultation') => $followup->getConsultationDate(),
+          Config::get('redcap.identifiers.followup.dyn_fup_group') => $followup->getGroupId(),
         ];
       }
 

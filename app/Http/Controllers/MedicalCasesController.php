@@ -327,7 +327,7 @@ class MedicalCasesController extends Controller
     return view('medicalCases.unfollowed')->with("unfollowed",$allunfollowed->listUnfollowed());
   }
   public function followUpDone(){
-    $allfollowed=New MedicalCase;
+    $allfollowed=new MedicalCase;
     return view('medicalCases.followed')->with("followed",$allfollowed->listFollowed());
   }
   public function medicalCaseIntoExcel(){

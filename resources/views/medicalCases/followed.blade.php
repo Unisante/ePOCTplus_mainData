@@ -38,11 +38,11 @@
                   @foreach($followed as $followup)
                   <tr>
                     <th scope="row">{{ $loop->index+1 }}</th>
-                    <td>{{$followup->consultation_id}}</td>
-                    <td>{{$followup->patient_id}}</td>
-                    <td>{{$followup->hf_id}}</td>
-                    <td>{{$followup->consultation_date_time}}</td>
-                    <td>{{$followup->village_name}}</td>
+                    <td>{{$followup->getConsultationId()}}</td>
+                    <td>{{$followup->getPatientId()}}</td>
+                    <td>{{$followup->getFacilityId()}}</td>
+                    <td>{{$followup->getConsultationDate()}}</td>
+                    <td>{{$followup->getVillage()}}</td>
                     <td>Actions</td>
                   </tr>
                   @endforeach

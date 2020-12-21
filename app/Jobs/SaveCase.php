@@ -16,6 +16,7 @@ use App\Answer;
 use App\Patient;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Log;
+use App\Services\RedCapApiService;
 
 class SaveCase implements ShouldQueue
 {
@@ -114,7 +115,7 @@ class SaveCase implements ShouldQueue
       $patientFollowUpArray=array();
       foreach(MedicalCase::where('redcap',false)->get() as $medicalcase){
         $followUp=MedicalCase::makeFollowUp($medicalcase);
-        if(count(get_object_vars($followUp)) > 0){
+        if($followUp != null){
           // find the patient related to this followup
           if(! $medicalcase->patient->duplicate){
             $patientFollowUpArray[]=$medicalcase->patient;
@@ -124,24 +125,26 @@ class SaveCase implements ShouldQueue
       }
       $patientFollowUpArray=collect($patientFollowUpArray);
       $casefollowUpCollection=collect($caseFollowUpArray);
-      // $redCapApiService = new RedCapApiService();
+
+      $redCapApiService = new RedCapApiService();
       // $patients = Patient::All();
       // $medicalCases = MedicalCase::All();
       // $redCapApiService->exportPatient($patients);
-      // $redCapApiService->exportMedicalCase($medicalCases);
+      // $redCapApiService->exportFollowup($casefollowUpCollection);
       // push patient service
       // call the service with this collection
-      dd($patientFollowUpArray);
+      // dd($patientFollowUpArray);
       // after calling the service
-      $medicalcase_id_list=[];
+      $medicalcase_id_list=$redCapApiService->exportFollowup($casefollowUpCollection);
+
       if(sizeof($medicalcase_id_list) > 0 ){
-        $medicalcase_id_list->each(function ($medicalcase_id, $key) {
+        foreach($medicalcase_id_list as $medicalcase_id){
           MedicalCase::where('local_medical_case_id',$medicalcase_id)->update(
             [
               'redcap'=>True
             ]
           );
-        });
+        }
       }
     }
 }

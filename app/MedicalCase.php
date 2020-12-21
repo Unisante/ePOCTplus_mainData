@@ -19,6 +19,8 @@ use App\Node;
 use App\Algorithm;
 use App\PatientConfig;
 use App\Answer;
+use App\FollowUp;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
 class MedicalCase extends Model implements Auditable
@@ -73,6 +75,7 @@ class MedicalCase extends Model implements Auditable
   * @return Void
   */
   public static function makeFollowUp($medical_case){
+
     $configurations=json_decode($medical_case->version->configurations->config);
     $date=new DateTime($medical_case->created_at);
     $date->format('Y-m-d H:i:s');
@@ -89,11 +92,13 @@ class MedicalCase extends Model implements Auditable
       'last_name'=>isset($last_name)?$last_name:null,
       'gender'=>isset($gender)?$gender:null,
       'village_name'=>isset($village_name)?$village_name:null,
+      'group_id'=>1
     ];
     if(! in_array(null,$follow_up) ){
-      return (object)$follow_up;
+      $follow_up=new FollowUp($medical_case,$first_name,$last_name,$gender,$village_name);
+      return $follow_up;
     }
-    return (object)[];
+    return null;
     // check if the the things in the business rules apply
     // check if the data is already sent to redcap
   }
@@ -115,33 +120,24 @@ class MedicalCase extends Model implements Auditable
   }
 
   public function listUnfollowed(){
-    $caseFollowUpArray=array();
+    $caseFollowUpCollection=new Collection();
     foreach(MedicalCase::where('redcap',false)->get() as $medicalcase){
       $followUp=MedicalCase::makeFollowUp($medicalcase);
-      if(count(get_object_vars($followUp)) > 0){
+      $followUp=MedicalCase::makeFollowUp($medicalcase);
         // find the patient related to this followup
-        if(! $medicalcase->patient->duplicate){
-          $caseFollowUpArray[]=$followUp;
-        }
-      }
+      $caseFollowUpCollection->add($followUp);
     }
-    $casefollowUpCollection=collect($caseFollowUpArray);
-    return $casefollowUpCollection;
+    return $caseFollowUpCollection;
   }
 
   public function listFollowed(){
-    $caseFollowUpArray=array();
+    $caseFollowUpCollection=new Collection();
     foreach(MedicalCase::where('redcap',true)->get() as $medicalcase){
       $followUp=MedicalCase::makeFollowUp($medicalcase);
-      if(count(get_object_vars($followUp)) > 0){
         // find the patient related to this followup
-        if(! $medicalcase->patient->duplicate){
-          $caseFollowUpArray[]=$followUp;
-        }
-      }
+      $caseFollowUpCollection->add($followUp);
     }
-    $casefollowUpCollection=collect($caseFollowUpArray);
-    return $casefollowUpCollection;
+    return $caseFollowUpCollection;
   }
   /**
   * making a relationship to patient
