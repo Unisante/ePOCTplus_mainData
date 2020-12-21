@@ -26,6 +26,11 @@ class MedicalCase extends Model implements Auditable
   use \OwenIt\Auditing\Auditable;
   protected $guarded = [];
 
+  function isRedcapFlagged() : bool {
+    // TODO : return value of redcap flag in the database
+    return false;
+  }
+
   /**
   * Checks the medical_case.json for medical case creation
   * @params $data_to_parse

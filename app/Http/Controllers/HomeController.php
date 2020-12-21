@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Services\RedCapApiService;
 use Auth;
 use App\User;
 use App\PasswordReset;
 use App\MedicalCase;
 use App\Patient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;

@@ -932,48 +932,6 @@
             "time": "2019-11-02T09:15:47+00:00"
         },
         {
-            "name": "iu-redcap/phpcap",
-            "version": "1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/IUREDCap/phpcap.git",
-                "reference": "c9392813fbd8a7001fa5695409475808b2a48213"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/IUREDCap/phpcap/zipball/c9392813fbd8a7001fa5695409475808b2a48213",
-                "reference": "c9392813fbd8a7001fa5695409475808b2a48213",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-openssl": "*",
-                "php": ">=5.6.0"
-            },
-            "require-dev": {
-                "apigen/apigen": "v4.1.2",
-                "erusev/parsedown": "1.6.2",
-                "kzykhys/php-csv-parser": "1.4.1",
-                "phpunit/phpunit": "6.5.8",
-                "squizlabs/php_codesniffer": "3.2.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "IU\\PHPCap\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "PHP library for accessing the REDCap API",
-            "keywords": [
-                "redcap"
-            ],
-            "time": "2020-03-24T18:42:48+00:00"
-        },
-        {
             "name": "jakub-onderka/php-console-color",
             "version": "v0.2",
             "source": {
