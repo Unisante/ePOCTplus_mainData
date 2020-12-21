@@ -50,7 +50,8 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('/medicalcases/duplicates','MedicalCasesController@findDuplicates');
   Route::post('/medicalCases/duplicates/search','MedicalCasesController@searchDuplicates')->name('MedicalCasesController@searchDuplicates');
   Route::post('/medicalCases/duplicates/delete','MedicalCasesController@destroy')->name('MedicalCasesController@destroy');
-
+  Route::get('/followUp/delayed','MedicalCasesController@followUpDelayed');
+  Route::get('/followUp/done','MedicalCasesController@followUpDone');
   //for questions
   Route::get('/questions','QuestionsController@index')->name('QuestionsController.index');
   Route::get('/question/{id}','QuestionsController@show')->name('QuestionsController@show');

@@ -109,6 +109,35 @@ class MedicalCase extends Model implements Auditable
     }
   }
 
+  public function listUnfollowed(){
+    $caseFollowUpArray=array();
+    foreach(MedicalCase::where('redcap',false)->get() as $medicalcase){
+      $followUp=MedicalCase::makeFollowUp($medicalcase);
+      if(count(get_object_vars($followUp)) > 0){
+        // find the patient related to this followup
+        if(! $medicalcase->patient->duplicate){
+          $caseFollowUpArray[]=$followUp;
+        }
+      }
+    }
+    $casefollowUpCollection=collect($caseFollowUpArray);
+    return $casefollowUpCollection;
+  }
+
+  public function listFollowed(){
+    $caseFollowUpArray=array();
+    foreach(MedicalCase::where('redcap',true)->get() as $medicalcase){
+      $followUp=MedicalCase::makeFollowUp($medicalcase);
+      if(count(get_object_vars($followUp)) > 0){
+        // find the patient related to this followup
+        if(! $medicalcase->patient->duplicate){
+          $caseFollowUpArray[]=$followUp;
+        }
+      }
+    }
+    $casefollowUpCollection=collect($caseFollowUpArray);
+    return $casefollowUpCollection;
+  }
   /**
   * making a relationship to patient
   * @return one to one patient relationship

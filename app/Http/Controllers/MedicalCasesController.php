@@ -194,7 +194,7 @@ class MedicalCasesController extends Controller
     );
     return view('medicalCases.question')->with($data);
   }
-  
+
   /**
   * Find the details of the medical case
   * @params $medical Case
@@ -322,6 +322,14 @@ class MedicalCasesController extends Controller
     }
   }
 
+  public function followUpDelayed(){
+    $allunfollowed=New MedicalCase;
+    return view('medicalCases.unfollowed')->with("unfollowed",$allunfollowed->listUnfollowed());
+  }
+  public function followUpDone(){
+    $allfollowed=New MedicalCase;
+    return view('medicalCases.followed')->with("followed",$allfollowed->listFollowed());
+  }
   public function medicalCaseIntoExcel(){
     return Excel::download(new MedicalCaseExport,'medicalCases.xlsx');
   }
