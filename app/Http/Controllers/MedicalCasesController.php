@@ -155,9 +155,9 @@ class MedicalCasesController extends Controller
       }
       $second_case_answer=$second_medical_case->medical_case_answers->where('node_id',$question_id)->first();
       if($second_case_answer){
-        $second_answer=$first_case_answer->value;
+        $second_answer=$second_case_answer->value;
         if($second_case_answer->answer){
-          $second_answer=$first_case_answer->answer->label;
+          $second_answer=$second_case_answer->answer->label;
         }
         $uncommon_questions[]=array(
           "medal_c_id"=>$second_case_answer->node->medal_c_id,

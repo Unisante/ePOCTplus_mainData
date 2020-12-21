@@ -76,7 +76,7 @@
                           <span class="font-weight-bold">Answer: </span>
                           <span>{{$case->answer}}</span>
                         </div>
-                        <a href="{{route('MedicalCasesController.medicalCaseQuestion', [$medicalCase->id,$case->question->id])}}" class="btn btn-outline-light">Change Answer</a>
+                        {{-- <a href="{{route('MedicalCasesController.medicalCaseQuestion', [$medicalCase->id,$case->question->id])}}" class="btn btn-outline-light">Change Answer</a> --}}
                       </div>
                       @endforeach
                     @else

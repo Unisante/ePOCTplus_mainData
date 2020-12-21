@@ -46,7 +46,7 @@ class SaveCase implements ShouldQueue
     {
       $consent_path = base_path().'/storage/app/consentFiles';
       $parsed_folder='parsed_medical_cases';
-      $study_id='Test';
+      $study_id="Dynamic Tanzania";
       $isEligible=true;
       foreach(Storage::allFiles('unparsed_medical_cases') as $filename){
         $individualData = json_decode(Storage::get($filename), true);
@@ -64,6 +64,7 @@ class SaveCase implements ShouldQueue
               }
               $img->save($consent_path.'/'.$consent_file_name);
           }
+
           $duplicateConditions=[
             'first_name'=>$nodes[$algorithm_n_version["config_data"]->first_name_question_id]['value'],
             'last_name'=>$nodes[$algorithm_n_version["config_data"]->last_name_question_id]['value'],
