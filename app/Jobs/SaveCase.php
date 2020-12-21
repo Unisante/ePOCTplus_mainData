@@ -124,11 +124,11 @@ class SaveCase implements ShouldQueue
       }
       $patientFollowUpArray=collect($patientFollowUpArray);
       $casefollowUpCollection=collect($caseFollowUpArray);
-      $redCapApiService = new RedCapApiService();
-      $patients = Patient::All();
-      $medicalCases = MedicalCase::All();
-      $redCapApiService->exportPatient($patients);
-      $redCapApiService->exportMedicalCase($medicalCases);
+      // $redCapApiService = new RedCapApiService();
+      // $patients = Patient::All();
+      // $medicalCases = MedicalCase::All();
+      // $redCapApiService->exportPatient($patients);
+      // $redCapApiService->exportMedicalCase($medicalCases);
       // push patient service
       // call the service with this collection
       dd($patientFollowUpArray);
