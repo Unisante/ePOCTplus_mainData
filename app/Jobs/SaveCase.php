@@ -21,8 +21,8 @@ use App\Services\RedCapApiService;
 class SaveCase implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    // protected $individualData;
-    // protected $filename;
+    protected $individualData;
+    protected $filename;
     public $tries = 1;
 
     /**
@@ -31,10 +31,10 @@ class SaveCase implements ShouldQueue
      * @params $filename
      * @return void
      */
-    public function __construct()
+    public function __construct($individualData,$filename)
     {
-        // $this->individualData=$individualData;
-        // $this->filename=$filename;
+        $this->individualData=$individualData;
+        $this->filename=$filename;
     }
 
     /**
@@ -48,16 +48,13 @@ class SaveCase implements ShouldQueue
       $parsed_folder='parsed_medical_cases';
       $study_id="Dynamic Tanzania";
       $isEligible=true;
-      foreach(Storage::allFiles('unparsed_medical_cases') as $filename){
-        error_log("in the first foreach");
-        $individualData = json_decode(Storage::get($filename), true);
-        $dataForAlgorithm=array("algorithm_id"=> $individualData['algorithm_id'],"version_id"=> $individualData['version_id'],);
+      // foreach(Storage::allFiles('unparsed_medical_cases') as $this->filename){
+        $this->individualData = json_decode(Storage::get($this->filename), true);
+        $dataForAlgorithm=array("algorithm_id"=> $this->individualData['algorithm_id'],"version_id"=> $this->individualData['version_id'],);
         $algorithm_n_version=Algorithm::ifOrExists($dataForAlgorithm);
-        error_log("after fetching algorithm");
-        $patient_key=$individualData['patient'];
-        if($patient_key['study_id']== $study_id && $individualData['isEligible']==$isEligible){
-          error_log("saving");
-          $nodes=$individualData['nodes'];
+        $patient_key=$this->individualData['patient'];
+        if($patient_key['study_id']== $study_id && $this->individualData['isEligible']==$isEligible){
+          $nodes=$this->individualData['nodes'];
           $gender_answer= Answer::where('medal_c_id',$nodes[$algorithm_n_version["config_data"]->gender_question_id]['answer'])->first();
           $consent_file_name=$patient_key['uid'] .'_image.jpg';
           if($consent_file_64 = $patient_key['consent_file']){
@@ -77,7 +74,6 @@ class SaveCase implements ShouldQueue
           if($senseDuplicate){
             $duplicate_flag=true;
           }
-          error_log("saving patient");
           $issued_patient=Patient::firstOrCreate(
             [
               "local_patient_id"=>$patient_key['uid']
@@ -94,54 +90,51 @@ class SaveCase implements ShouldQueue
             ]
           );
           $data_to_parse=array(
-            'local_medical_case_id'=>$individualData['id'],
-            'version_id'=>$individualData['version_id'],
-            'created_at'=>$individualData['created_at'],
-            'updated_at'=>$individualData['updated_at'],
+            'local_medical_case_id'=>$this->individualData['id'],
+            'version_id'=>$this->individualData['version_id'],
+            'created_at'=>$this->individualData['created_at'],
+            'updated_at'=>$this->individualData['updated_at'],
             'patient_id'=>$issued_patient->id,
-            'nodes'=>$individualData['nodes'],
-            'diagnoses'=>$individualData['diagnoses'],
-            'consent'=>$individualData['consent'],
-            'isEligible'=>$individualData['isEligible'],
+            'nodes'=>$this->individualData['nodes'],
+            'diagnoses'=>$this->individualData['diagnoses'],
+            'consent'=>$this->individualData['consent'],
+            'isEligible'=>$this->individualData['isEligible'],
             'version_id'=>$algorithm_n_version['version_id'],
             'group_id'=>$patient_key['group_id'],
             'check-config'=>$algorithm_n_version["config_data"]
           );
-          error_log("saving medical cases");
           MedicalCase::parse_data($data_to_parse);
-          if(Storage::Exists($filename) && !(Storage::Exists($parsed_folder.'/'.basename($filename)))){
-              Storage::move($filename, $parsed_folder.'/'.basename($filename));
+          if(Storage::Exists($this->filename) && !(Storage::Exists($parsed_folder.'/'.basename($this->filename)))){
+              Storage::move($this->filename, $parsed_folder.'/'.basename($this->filename));
           }
-          Storage::Delete($filename);
+          Storage::Delete($this->filename);
         }
-      }
+      // }
 
-      $caseFollowUpArray=array();
-      $patientFollowUpArray=array();
-      foreach(MedicalCase::where('redcap',false)->get() as $medicalcase){
-        error_log("second loop");
-        $followUp=MedicalCase::makeFollowUp($medicalcase);
-        if($followUp != null){
-          // find the patient related to this followup
-          if(! $medicalcase->patient->duplicate){
-            $patientFollowUpArray[]=$medicalcase->patient;
-            $caseFollowUpArray[]=$followUp;
-          }
-        }
-      }
-      $patientFollowUpArray=collect($patientFollowUpArray);
-      $casefollowUpCollection=collect($caseFollowUpArray);
-      $redCapApiService = new RedCapApiService();
-      $medicalcase_id_list=$redCapApiService->exportFollowup($casefollowUpCollection);
-
-      if(sizeof($medicalcase_id_list) > 0 ){
-        foreach($medicalcase_id_list as $medicalcase_id){
-          MedicalCase::where('local_medical_case_id',$medicalcase_id)->update(
-            [
-              'redcap'=>True
-            ]
-          );
-        }
-      }
+      // $caseFollowUpArray=array();
+      // $patientFollowUpArray=array();
+      // foreach(MedicalCase::where('redcap',false)->get() as $medicalcase){
+      //   $followUp=MedicalCase::makeFollowUp($medicalcase);
+      //   if($followUp != null){
+      //     // find the patient related to this followup
+      //     if(! $medicalcase->patient->duplicate){
+      //       $patientFollowUpArray[]=$medicalcase->patient;
+      //       $caseFollowUpArray[]=$followUp;
+      //     }
+      //   }
+      // }
+      // $patientFollowUpArray=collect($patientFollowUpArray);
+      // $casefollowUpCollection=collect($caseFollowUpArray);
+      // $redCapApiService = new RedCapApiService();
+      // $medicalcase_id_list=$redCapApiService->exportFollowup($casefollowUpCollection);
+      // if(sizeof($medicalcase_id_list) > 0 ){
+      //   foreach($medicalcase_id_list as $medicalcase_id){
+      //     MedicalCase::where('local_medical_case_id',$medicalcase_id)->update(
+      //       [
+      //         'redcap'=>True
+      //       ]
+      //     );
+      //   }
+      // }
     }
 }
