@@ -6,6 +6,8 @@ use App\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use App\Jobs\SaveCase;
+use App\Jobs\RedcapPush;
+
 use Madnest\Madzipper\Madzipper;
 /*
 |--------------------------------------------------------------------------
@@ -42,7 +44,9 @@ Route::post('sync_medical_cases',function(Request $request){
       $individualData = json_decode(Storage::get($filename), true);
       dispatch(new SaveCase($individualData,$filename));
     }
+    dispatch(new RedcapPush());
   //  Storage::delete($file);
+
     return response()->json(['response'=>'job received','status'=>200]);
   }
   return response()->json(['response'=>'file is null','status'=>400]);
