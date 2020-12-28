@@ -49,7 +49,7 @@ class SaveCase implements ShouldQueue
       $study_id="Dynamic Tanzania";
       $isEligible=true;
       // foreach(Storage::allFiles('unparsed_medical_cases') as $this->filename){
-        $this->individualData = json_decode(Storage::get($this->filename), true);
+        // $this->individualData = json_decode(Storage::get($this->filename), true);
         $dataForAlgorithm=array("algorithm_id"=> $this->individualData['algorithm_id'],"version_id"=> $this->individualData['version_id'],);
         $algorithm_n_version=Algorithm::ifOrExists($dataForAlgorithm);
         $patient_key=$this->individualData['patient'];
