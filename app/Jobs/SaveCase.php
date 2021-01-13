@@ -17,6 +17,7 @@ use App\Patient;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Log;
 use App\Services\RedCapApiService;
+use App\HealthFacility;
 
 class SaveCase implements ShouldQueue
 {
@@ -57,6 +58,9 @@ class SaveCase implements ShouldQueue
           $nodes=$this->individualData['nodes'];
           $gender_answer= Answer::where('medal_c_id',$nodes[$algorithm_n_version["config_data"]->gender_question_id]['answer'])->first();
           $consent_file_name=$patient_key['uid'] .'_image.jpg';
+          if(HealthFacility::where('group_id',(int)$patient_key['group_id'])->doesntExist()){
+            $fetchHF=HealthFacility::fetchHealthFacility((int)$patient_key['group_id']);
+          }
           if($consent_file_64 = $patient_key['consent_file']){
               $img = Image::make($consent_file_64);
               if(!File::exists($consent_path)) {

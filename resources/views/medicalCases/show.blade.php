@@ -108,7 +108,7 @@
                           @if($diagnosis->proposed)
                           <span>Proposed</span>
                           @else
-                          <span>Additioanl</span>
+                          <span>Additional</span>
                           @endif
                         </div>
                       </div>

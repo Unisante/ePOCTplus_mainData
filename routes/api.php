@@ -47,7 +47,7 @@ Route::post('sync_medical_cases',function(Request $request){
     dispatch(new RedcapPush());
   //  Storage::delete($file);
 
-    return response()->json(['response'=>'job received','status'=>200]);
+    return response()->json(['data_received'=> true,'status'=>200]);
   }
-  return response()->json(['response'=>'file is null','status'=>400]);
+  return response()->json(['data_received'=> false,'status'=>400]);
 });

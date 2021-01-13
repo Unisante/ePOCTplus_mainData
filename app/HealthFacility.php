@@ -10,7 +10,7 @@ class HealthFacility extends Model
   // fetch the the facility information
 
   public static function fetchHealthFacility($group_id = null){
-    if(!$group_id){
+    if($group_id != null ){
       $facility_doesnt_exist=HealthFacility::where('group_id',$group_id)->doesntExist();
       if($facility_doesnt_exist){
         // setting headers for when we secure this part of quering from medal c
@@ -20,7 +20,7 @@ class HealthFacility extends Model
         // ));
         $curl = curl_init();
         curl_setopt_array($curl, array(
-          CURLOPT_URL => 'https://liwi-test.wavelab.top/api/v1/versions/'.$group_id,
+          CURLOPT_URL => 'https://liwi-test.wavelab.top/api/v1/health_facilities/'.$group_id,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
@@ -46,16 +46,18 @@ class HealthFacility extends Model
     }
   }
   public static function store($healthFacilityInfo){
-    HealthFacility::firstOrCreate(
-      [
-        'facility_name'=>$healthFacilityInfo['facility_name']
-      ],
-      [
-        'group_id'=>$healthFacilityInfo['group_id'],
-        'long'=>$healthFacilityInfo['long'],
-        'lat'=>$healthFacilityInfo['lat'],
-        'hf_mode'=>$healthFacilityInfo['hf_mode']
-      ]
-    );
+    if($healthFacilityInfo['id'] != null && $healthFacilityInfo['name'] && $healthFacilityInfo['longitude'] != null && $healthFacilityInfo['latitude'] != null && $healthFacilityInfo['architecture'] != null){
+      $facility=HealthFacility::firstOrCreate(
+        [
+          'facility_name'=>$healthFacilityInfo['name']
+        ],
+        [
+          'group_id'=>$healthFacilityInfo['id'],
+          'long'=>$healthFacilityInfo['longitude'],
+          'lat'=>$healthFacilityInfo['latitude'],
+          'hf_mode'=>$healthFacilityInfo['architecture']
+        ]
+      );
+    }
   }
 }
