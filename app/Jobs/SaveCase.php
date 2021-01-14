@@ -68,6 +68,8 @@ class SaveCase implements ShouldQueue
               }
               $img->save($consent_path.'/'.$consent_file_name);
           }
+
+
           $duplicateConditions=[
             'first_name'=>$nodes[$algorithm_n_version["config_data"]->first_name_question_id]['value'],
             'last_name'=>$nodes[$algorithm_n_version["config_data"]->last_name_question_id]['value'],
@@ -89,6 +91,9 @@ class SaveCase implements ShouldQueue
             "weight"=>$nodes[$algorithm_n_version["config_data"]->weight_question_id]['value'],
             "gender"=>$gender_answer->label,
             "group_id"=>$patient_key['group_id'],
+            "other_group_id"=>$patient_key['other_group_id'],
+            "other_study_id"=>$patient_key['other_study_id'],
+            "other_uid"=>$patient_key['other_uid'],
             "consent"=>$consent_file_name,
             "duplicate"=>$duplicate_flag
             ]

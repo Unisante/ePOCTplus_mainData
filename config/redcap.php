@@ -6,13 +6,22 @@ return [
       'api_url_followup' => env('REDCAP_IDENTIFIERS_API_URL_FOLLOWUP', ''),
       'api_token_followup' => env('REDCAP_IDENTIFIERS_API_TOKEN_FOLLOWUP', ''),
 
-      'api_url_personal_data' => env('REDCAP_IDENTIFIERS_API_URL_PERSONAL_DATA', ''),
-      'api_token_personal_data' => env('REDCAP_IDENTIFIERS_API_TOKEN_PERSONAL_DATA', ''),
+      'api_url_patient' => env('REDCAP_IDENTIFIERS_API_URL_PATIENT', ''),
+      'api_token_patient' => env('REDCAP_IDENTIFIERS_API_TOKEN_PATIENT', ''),
 
       'patient' => [
-        'id' => 'record_id',
-        'lastName' => 'last_name',
-        'firstName' => 'first_name',
+        'dyn_pat_study_id_patient' => 'dyn_pat_study_id_patient',
+        'dyn_pat_first_name' => 'dyn_pat_first_name',
+        'dyn_pat_last_name' => 'dyn_pat_last_name',
+        'dyn_pat_dob' => 'dyn_pat_dob',
+        'dyn_pat_village' => 'dyn_pat_village',
+        'dyn_pat_sex' => 'dyn_pat_sex',
+        'dyn_pat_first_name_caregiver' => 'dyn_pat_first_name_caregiver',
+        'dyn_pat_last_name_caregiver' => 'dyn_pat_last_name_caregiver',
+        'dyn_pat_relationship_child' => 'dyn_pat_relationship_child',
+        'dyn_pat_relationship_child_other' => 'dyn_pat_relationship_child_other',
+        'dyn_pat_phone_caregiver' => 'dyn_pat_phone_caregiver',
+        'dyn_pat_phone_caregiver_2' => 'dyn_pat_phone_caregiver_2',
         ],
       'followup' => [
         'redcap_event_name' => 'consultation_arm_1',

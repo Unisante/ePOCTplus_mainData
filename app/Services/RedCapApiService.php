@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Exceptions\RedCapApiServiceException;
 use App\Followup;
+use App\PatientFollowUp;
 use App\MedicalCase;
 use App\Patient;
 use App\RedCapProject;
@@ -18,7 +19,7 @@ class RedCapApiService
   /**
    * @var RedCapProject
    */
-  protected $projectPersonalData;
+  protected $projectPatient;
 
   /**
    * @var RedCapProject
@@ -51,6 +52,11 @@ class RedCapApiService
       Config::get('redcap.identifiers.api_token_followup')
     );
 
+    $this->projectPatient = $this->getRedCapProject(
+
+      Config::get('redcap.identifiers.api_url_patient'),
+      Config::get('redcap.identifiers.api_token_patient')
+    );
     // $this->projectPersonalData = $this->getRedCapProject(
     //   Config::get('redcap.identifiers.api_url_personal_data'),
     //   Config::get('redcap.identifiers.api_token_personal_data')
@@ -94,25 +100,34 @@ class RedCapApiService
   /**
    * @param Collection<Patient> $patients
    * @throws RedCapApiServiceException
-   */
+  */
   public function exportPatient(Collection $patients): array
   {
     // check if we still have patient to push
     if (count($patients) !== 0) {
+      /** @var PatientFollowUp $patient*/
       // create redcap record for every patients
       foreach ($patients as $patient) {
         // this is the mapping between redcap field (define in config) and patient model
         // has to be update everytime we add a new field
-        $datas[$patient['id']] = [
-          Config::get('redcap.identifiers.patient.id') => $patient->id,
-          Config::get('redcap.identifiers.patient.firstName') => $patient->first_name,
-          Config::get('redcap.identifiers.patient.lastName') => $patient->last_name,
+        $datas[$patient->getPatientId()] = [
+          Config::get('redcap.identifiers.patient.dyn_pat_study_id_patient') => $patient->getLocalPatientId(),
+          Config::get('redcap.identifiers.patient.dyn_pat_first_name') => $patient->getFirstname(),
+          Config::get('redcap.identifiers.patient.dyn_pat_last_name') => $patient->getLastName(),
+          Config::get('redcap.identifiers.patient.dyn_pat_dob') => $patient->getBirthDay(),
+          Config::get('redcap.identifiers.patient.dyn_pat_sex') => $patient->getGender(),
+
+          Config::get('redcap.identifiers.patient.dyn_pat_first_name_caregiver') => $patient->getCareGiverFirstName(),
+          Config::get('redcap.identifiers.patient.dyn_pat_last_name_caregiver') => $patient->getCareGiverLastName(),
+          Config::get('redcap.identifiers.patient.dyn_pat_relationship_child') => $patient->getChildrelation(),
+          Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver') => $patient->getPhoneNumber(),
+          Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver_2') => $patient->getOtherPhoneNumber(),
         ];
       }
 
       // call redcap API
       try {
-        return $this->projectPersonalData->importRecords($datas, null, null, null, null, 'ids');
+        return $this->projectPatient->importRecords($datas, null, null, null, null, 'ids');
       } catch (PhpCapException $e) {
         // unique field redcap error
         if ($e->getCode() === 7) {
