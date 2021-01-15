@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\MedicalCase;
 use App\PatientFollowUp;
+use App\Patient;
 use App\Services\RedCapApiService;
 
 class RedcapPush implements ShouldQueue
@@ -38,21 +39,26 @@ class RedcapPush implements ShouldQueue
         $followUp=MedicalCase::makeFollowUp($medicalcase);
         if($followUp != null){
           if(! $medicalcase->patient->duplicate){
-                  // $patientFollowUpArray[]=$medicalcase->patient;
-                  $patientFollowUpArray[]=new PatientFollowUp($medicalcase);
-                  // $patientFollowUp=new PatientFollowUp($medicalcase->patient);
-                  $caseFollowUpArray[]=$followUp;
+            if(! $medicalcase->patient->redcap){
+              $patientFollowUpArray[]=new PatientFollowUp($medicalcase);
+            }
+            $caseFollowUpArray[]=$followUp;
           }
         }
       }
       $patientFollowUpCollection=collect($patientFollowUpArray);
-
       $casefollowUpCollection=collect($caseFollowUpArray);
-
       $redCapApiService = new RedCapApiService();
-      // dd($patientFollowUpCollection);
-      // send data to patient project
       $patient_id_list=$redCapApiService->exportPatient($patientFollowUpCollection);
+      if(sizeof($patient_id_list)>0){
+        foreach($patient_id_list as $local_patient_id){
+          Patient::where('local_patient_id',$local_patient_id)->update(
+            [
+              'redcap'=>True
+            ]
+          );
+        }
+      }
       $medicalcase_id_list=$redCapApiService->exportFollowup($casefollowUpCollection);
       if(sizeof($medicalcase_id_list) > 0 ){
         foreach($medicalcase_id_list as $medicalcase_id){
