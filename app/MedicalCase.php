@@ -88,14 +88,10 @@ class MedicalCase extends Model implements Auditable
       'patient_id'=>$medical_case->patient->local_patient_id,
       'hf_id'=>isset($medical_case->group_id)?$medical_case->group_id:null,
       'consultation_date_time'=>$date->format('Y-m-d H:i:s'),
-      'first_name'=>isset($first_name)?$first_name:null,
-      'last_name'=>isset($last_name)?$last_name:null,
-      'gender'=>isset($gender)?$gender:null,
-      'village_name'=>isset($village_name)?$village_name:"null",
       'group_id'=>1
     ];
     if(! in_array(null,$follow_up) ){
-      $follow_up=new FollowUp($medical_case,$follow_up['first_name'],$follow_up['last_name'],$follow_up['gender'],$follow_up['village_name']);
+      $follow_up=new FollowUp($medical_case);
       return $follow_up;
     }
     return null;

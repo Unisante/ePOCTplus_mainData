@@ -160,6 +160,12 @@ class RedCapApiService
           Config::get('redcap.identifiers.followup.dyn_fup_id_health_facility') => $followup->getFacilityId(),
           Config::get('redcap.identifiers.followup.dyn_fup_date_time_consultation') => $followup->getConsultationDate(),
           Config::get('redcap.identifiers.followup.dyn_fup_group') => $followup->getGroupId(),
+
+          Config::get('redcap.identifiers.patient.dyn_pat_first_name_caregiver') => $followup->getCareGiverFirstName(),
+          Config::get('redcap.identifiers.patient.dyn_pat_last_name_caregiver') => $followup->getCareGiverLastName(),
+          Config::get('redcap.identifiers.patient.dyn_pat_relationship_child') => $followup->getChildrelation(),
+          Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver') => $followup->getPhoneNumber(),
+          Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver_2') => $followup->getOtherPhoneNumber(),
         ];
       }
 

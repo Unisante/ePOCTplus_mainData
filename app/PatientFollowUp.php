@@ -39,13 +39,6 @@ class PatientFollowUp{
     }else{
       $this->gender=2;
     }
-    // $this->caregiver_first_name='Thanos';
-    // $this->caregiver_last_name='Valdermot';
-    // $this->child_relation=3;
-    // $this->phone_number='0657181624';
-    // $this->other_phone_number='';
-    // $this->complete=2;
-
   }
 
   public function getPatientId():int
@@ -134,7 +127,11 @@ class PatientFollowUp{
   private function setVillage($config){
     $village_node_id=$config->village;
     $case_answer=self::findCaseAnswer($village_node_id);
-    $this->village=$case_answer->value;
+    if($case_answer == null){
+      $this->village=null;
+    }else{
+      $this->village=$case_answer->value;
+    }
   }
   private function setCareGiverFirstName($config){
     $caregiver_first_name_node_id=$config->caregiver_first_name;
