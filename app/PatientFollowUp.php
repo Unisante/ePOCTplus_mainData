@@ -61,7 +61,7 @@ class PatientFollowUp{
   {
     return $this->birthday;
   }
-  public function getVillage():string
+  public function getVillage()
   {
     return $this->village;
   }
@@ -149,23 +149,19 @@ class PatientFollowUp{
   }
   private function setChildRelation($config){
     $relation=[
-      1=>'Mother',
-      2=>'Father',
-      3=>'Brother',
-      4=>'Sister',
-      5=>'Uncle',
-      6=>'Aunt',
-      7=>'Grandmother',
-      8=>'GrandFather',
-      9=>'Cousin',
-      10=>'Other'
+      1=>'Mother/Father',
+      2=>'Brother/Sister',
+      3=>'Aunt/Uncle',
+      4=>'Grandparents',
+      5=>'Cousin',
+      6=>'Other',
     ];
     $child_relation_node_id=$config->child_relation;
     $case_answer=self::findCaseAnswer($child_relation_node_id);
     if(in_array($case_answer->value,$relation)){
       $this->child_relation=array_search($case_answer->value,$relation,true);
     }else{
-      $this->child_relation=10;
+      $this->child_relation=6;
     }
   }
   private function setPhoneNumber($config){

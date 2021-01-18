@@ -122,6 +122,7 @@ class RedCapApiService
           Config::get('redcap.identifiers.patient.dyn_pat_relationship_child') => $patient->getChildrelation(),
           Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver') => $patient->getPhoneNumber(),
           Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver_2') => $patient->getOtherPhoneNumber(),
+          Config::get('redcap.identifiers.patient.dyn_pat_village') => $patient->getVillage()
         ];
       }
 
@@ -166,6 +167,7 @@ class RedCapApiService
           Config::get('redcap.identifiers.patient.dyn_pat_relationship_child') => $followup->getChildrelation(),
           Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver') => $followup->getPhoneNumber(),
           Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver_2') => $followup->getOtherPhoneNumber(),
+
         ];
       }
 
