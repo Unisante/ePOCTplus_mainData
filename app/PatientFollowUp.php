@@ -150,18 +150,19 @@ class PatientFollowUp{
   private function setChildRelation($config){
     $relation=[
       1=>'Mother/Father',
-      2=>'Brother/Sister',
+      2=>'Sister/Brother',
       3=>'Aunt/Uncle',
-      4=>'Grandparents',
+      4=>'Grandparent',
       5=>'Cousin',
-      6=>'Other',
+      6=>'Neighbour/Friend',
+      7=>'Other',
     ];
     $child_relation_node_id=$config->child_relation;
     $case_answer=self::findCaseAnswer($child_relation_node_id);
     if(in_array($case_answer->value,$relation)){
-      $this->child_relation=array_search($case_answer->value,$relation,true);
+      $this->child_relation=array_search($case_answer->answer->label,$relation,true);
     }else{
-      $this->child_relation=6;
+      $this->child_relation=7;
     }
   }
   private function setPhoneNumber($config){
