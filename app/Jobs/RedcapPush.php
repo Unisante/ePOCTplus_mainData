@@ -40,6 +40,7 @@ class RedcapPush implements ShouldQueue
         if($followUp != null){
           if(! $medicalcase->patient->duplicate){
             if(! $medicalcase->patient->redcap){
+              // dd(new PatientFollowUp($medicalcase));
               $patientFollowUpArray[]=new PatientFollowUp($medicalcase);
             }
             $caseFollowUpArray[]=$followUp;

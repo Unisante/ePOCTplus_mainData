@@ -159,7 +159,7 @@ class PatientFollowUp{
     ];
     $child_relation_node_id=$config->child_relation;
     $case_answer=self::findCaseAnswer($child_relation_node_id);
-    if(in_array($case_answer->value,$relation)){
+    if(in_array($case_answer->answer->label,$relation)){
       $this->child_relation=array_search($case_answer->answer->label,$relation,true);
     }else{
       $this->child_relation=7;

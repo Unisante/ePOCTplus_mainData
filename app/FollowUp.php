@@ -3,6 +3,9 @@ namespace App;
 
 use DateTime;
 use App\ConsultationConfig;
+use App\Answer;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 class FollowUp{
 
   /** @var String $consultation_id*/
@@ -126,8 +129,9 @@ class FollowUp{
     ];
     $child_relation_node_id=$config->child_relation;
     $case_answer=self::findCaseAnswer($child_relation_node_id);
-    if(in_array($case_answer->value,$relation)){
-      $this->child_relation=array_search($case_answer->value,$relation,true);
+    $relation_label=$case_answer->answer->label;
+    if(in_array($relation_label,$relation)){
+      $this->child_relation=array_search(strval($case_answer->answer->label),$relation,true);
     }else{
       $this->child_relation=7;
     }
