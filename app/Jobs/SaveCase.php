@@ -47,7 +47,7 @@ class SaveCase implements ShouldQueue
     {
       $consent_path = base_path().'/storage/app/consentFiles';
       $parsed_folder='parsed_medical_cases';
-      $study_id="Dynamic Tanzania";
+      $study_id=env('STUDY_ID');
       $isEligible=true;
       // foreach(Storage::allFiles('unparsed_medical_cases') as $this->filename){
         // $this->individualData = json_decode(Storage::get($this->filename), true);

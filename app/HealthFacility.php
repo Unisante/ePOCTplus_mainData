@@ -60,4 +60,11 @@ class HealthFacility extends Model
       );
     }
   }
+
+  public function medical_cases(){
+    return $this->hasMany('App\MedicalCase','group_id','group_id');
+  }
+  public function patients(){
+    return $this->hasMany('App\Patient','group_id','group_id');
+  }
 }

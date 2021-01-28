@@ -56,6 +56,9 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('/questions','QuestionsController@index')->name('QuestionsController.index');
   Route::get('/question/{id}','QuestionsController@show')->name('QuestionsController@show');
 
+  //for facilities
+  Route::get('/facilities/index','FacilitiesController@index')->name('FacilitiesController.index');
+
   //for downloading exports
   Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('MedicalCasesController.medicalCaseIntoExcel');
   Route::get('/export-medicalCase-csv','MedicalCasesController@medicalCaseIntoCsv')->name('MedicalCasesController.medicalCaseIntoCsv');

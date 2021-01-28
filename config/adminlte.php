@@ -200,7 +200,7 @@ return [
             [
                 'text' => 'Done',
                 'url'  => '/followUp/done',
-                'icon' => 'fas fa-fw fa-users',
+                'icon' => 'fas fa-fw fa-check-circle',
             ],
             [
                 'text' => 'Delayed',
@@ -213,6 +213,12 @@ return [
           'text' => 'Duplicates',
           'url'  => '/patients/duplicates',
           'icon' => 'fas fa-fw fa-users',
+          'can' =>  'Merge_Duplicates'
+        ],
+        [
+          'text' => 'Facilities',
+          'url'  => '/facilities/index',
+          'icon' => 'fas fa-fw fa-cart-plus',
           'can' =>  'Merge_Duplicates'
         ],
         [
