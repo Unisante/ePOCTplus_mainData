@@ -192,22 +192,28 @@ return [
     */
 
     'menu' => [
+        // [
+        //   'text' => 'Follow-Up',
+        //   'icon' => 'fas fa-fw fa-clone',
+        //   'can' =>  'Merge_Duplicates',
+        //   'submenu' => [
+        //     [
+        //         'text' => 'Done',
+        //         'url'  => '/followUp/done',
+        //         'icon' => 'fas fa-fw fa-check-circle',
+        //     ],
+        //     [
+        //         'text' => 'Delayed',
+        //         'url'  => '/followUp/delayed',
+        //         'icon' => 'fas fa-fw fa-pencil-alt',
+        //     ],
+        //   ],
+        // ],
         [
           'text' => 'Follow-Up',
-          'icon' => 'fas fa-fw fa-clone',
-          'can' =>  'Merge_Duplicates',
-          'submenu' => [
-            [
-                'text' => 'Done',
-                'url'  => '/followUp/done',
-                'icon' => 'fas fa-fw fa-check-circle',
-            ],
-            [
-                'text' => 'Delayed',
-                'url'  => '/followUp/delayed',
-                'icon' => 'fas fa-fw fa-pencil-alt',
-            ],
-          ],
+          'url'  => '/followUp/done',
+          'icon' => 'fas fa-fw fa-check-circle',
+          'can' =>  'Merge_Duplicates'
         ],
         [
           'text' => 'Duplicates',
