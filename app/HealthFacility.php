@@ -40,25 +40,27 @@ class HealthFacility extends Model
           ]);
         } else {
           $health_facilty = json_decode($response, true);
-          self::store($health_facilty);
+          if(array_key_exists('id',$health_facilty)){
+            self::store($health_facilty);
+          }
         }
       }
     }
   }
   public static function store($healthFacilityInfo){
-    if($healthFacilityInfo['id'] != null && $healthFacilityInfo['name'] && $healthFacilityInfo['longitude'] != null && $healthFacilityInfo['latitude'] != null && $healthFacilityInfo['architecture'] != null){
-      $facility=HealthFacility::firstOrCreate(
-        [
-          'facility_name'=>$healthFacilityInfo['name']
-        ],
-        [
-          'group_id'=>$healthFacilityInfo['id'],
-          'long'=>$healthFacilityInfo['longitude'],
-          'lat'=>$healthFacilityInfo['latitude'],
-          'hf_mode'=>$healthFacilityInfo['architecture']
-        ]
-      );
-    }
+      if($healthFacilityInfo['id'] != null && $healthFacilityInfo['name'] && $healthFacilityInfo['longitude'] != null && $healthFacilityInfo['latitude'] != null && $healthFacilityInfo['architecture'] != null){
+        $facility=HealthFacility::firstOrCreate(
+          [
+            'facility_name'=>$healthFacilityInfo['name']
+          ],
+          [
+            'group_id'=>$healthFacilityInfo['id'],
+            'long'=>$healthFacilityInfo['longitude'],
+            'lat'=>$healthFacilityInfo['latitude'],
+            'hf_mode'=>$healthFacilityInfo['architecture']
+          ]
+        );
+      }
   }
 
   public function medical_cases(){

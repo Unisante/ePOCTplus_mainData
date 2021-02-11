@@ -24,6 +24,8 @@ class DiagnosisReference extends Model
     $proposed_diagnoses=$diagnoses['proposed'];
     $additional_diagnoses=$diagnoses['additional'];
     $custom_diagnoses=$diagnoses['custom'];
+    $additional_drugs=$diagnoses['additionalDrugs'];
+
     if($proposed_diagnoses){
       $is_proposed=True;
       self::store($medical_case_id,$proposed_diagnoses,$is_proposed,$version_id);
@@ -33,11 +35,13 @@ class DiagnosisReference extends Model
       self::store($medical_case_id,$additional_diagnoses,$is_proposed,$version_id);
     }
     if($custom_diagnoses){
-      // dd($custom_diagnoses);
-      // Custom_diagnosis::store($custom_diagnoses,$medical_case_id);
+      Custom_diagnosis::store($custom_diagnoses,$medical_case_id);
     }
-    // what to do with custom diagnoses and drugs?
-    // what to do with additional drugs?
+    if($additional_drugs){
+      AdditionalDrug::store($additional_drugs,$medical_case_id,$version_id);
+    }
+
+
   }
 
   /**
