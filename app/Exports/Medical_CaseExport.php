@@ -36,7 +36,8 @@ WithEvents
       'medical_case_local_medical_case_id',
       'medical_case_consent',
       'medical_case_is_eligible',
-      'medical_case_is_eligible'
+      'medical_case_group_id',
+      'medical_case_redcap'
     ];
   }
   private $heads;

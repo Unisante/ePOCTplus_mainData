@@ -77,16 +77,34 @@ class PatientsController extends Controller
   * @return $catchEachDuplicate
   */
   public function findDuplicates(){
-    $duplicates = Patient::select('first_name','last_name')
-    ->groupBy('first_name','last_name')
-    ->havingRaw('COUNT(*) > 1')
-    ->get();
-    $catchEachDuplicate=array();
-    foreach($duplicates as $duplicate){
-      $users = Patient::where('first_name', $duplicate->first_name)->get();
-      array_push($catchEachDuplicate,$users);
-    }
-    return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
+    // $duplicates = Patient::select('first_name','last_name')
+    // ->groupBy('first_name','last_name')
+    // ->havingRaw('COUNT(*) > 1')
+    // ->get();
+      $patients= Patient::where('merged',0)->get();
+      $duplicateArray=[];
+      foreach($patients as $patient){
+        // $patientDuplicate=Patient::where('other_uid',$patient->local_patient_id)
+        //                   ->where('merged',0)->get();
+
+        $patientDuplicate=Patient::where(
+          [
+            ['other_uid',$patient->local_patient_id],
+            ['merged',0],
+          ]
+          )->get()->toArray();
+        if(Patient::where('other_uid',$patient->local_patient_id)->exists()){
+          array_push($patientDuplicate,$patient);
+          array_push($duplicateArray,$patientDuplicate);
+        }
+      }
+      // return $duplicateArray;
+    // $catchEachDuplicate=array();
+    // foreach($duplicates as $duplicate){
+    //   $users = Patient::where('first_name', $duplicate->first_name)->get();
+    //   array_push($catchEachDuplicate,$users);
+    // }
+    return view('patients.showDuplicates')->with("catchEachDuplicate",$duplicateArray);
   }
 
   /**
@@ -111,23 +129,106 @@ class PatientsController extends Controller
    * @return view
    */
   public function searchDuplicates(Request $request){
-    $columns = Schema::getColumnListing('patients');
-    $search_value=$request->search;
-    if(in_array($search_value, $columns)){
-      $duplicates = Patient::select($search_value)
-      ->groupBy($search_value)
-      ->havingRaw('COUNT(*) > 1')
-      ->get();
+    $criteria=$request->input('searchCriteria');
+    if(! $criteria){
+      return redirect()->action(
+          'PatientsController@findDuplicates'
+      );
+    }
+    $tablecolumns = Schema::getColumnListing('patients');
+    if(sizeOf(array_diff($criteria,$tablecolumns))==0){
+      if(sizeOf($criteria)==1){
+        $scriteria=strval($criteria[0]);
+        $duplicates = Patient::select($scriteria)
+        ->where('merged',0)
+        ->groupBy($criteria[0])
+        ->havingRaw('COUNT(*) > 1')
+        ->get()->toArray();
+        $catchEachDuplicate=array();
+        foreach($duplicates as $duplicate){
+          $patients = Patient::where([
+            [$scriteria, $duplicate[$scriteria]],
+            ['merged',0]
+          ]
+            )->get();
+          array_push($catchEachDuplicate,$patients);
+        }
+        return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
+      }
+      else if(sizeOf($criteria)==2){
+        $duplicates = Patient::select($criteria[0],$criteria[1])
+        ->where('merged',0)
+        ->groupBy($criteria[0],$criteria[1])
+        ->havingRaw('COUNT(*) > 1')
+        ->get()->toArray();
+        $catchEachDuplicate=array();
+        foreach($duplicates as $duplicate){
+          $patients = Patient::where(
+            [
+              [$criteria[0], $duplicate[$criteria[0]]],
+              [$criteria[1], $duplicate[$criteria[1]]],
+              ['merged',0]
+          ]
+          )->get();
+          array_push($catchEachDuplicate,$patients);
+        }
+        return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
+      }else if(sizeOf($criteria)==3){
+        $duplicates = Patient::select($criteria[0],$criteria[1],$criteria[2])
+        ->where('merged',0)
+        ->groupBy($criteria[0],$criteria[1],$criteria[2])
+        ->havingRaw('COUNT(*) > 1')
+        ->get()->toArray();
+        $catchEachDuplicate=array();
+        foreach($duplicates as $duplicate){
+          $patients = Patient::where(
+            [
+              [$criteria[0], $duplicate[$criteria[0]]],
+              [$criteria[1], $duplicate[$criteria[1]]],
+              [$criteria[2], $duplicate[$criteria[2]]],
+              ['merged',0]
+          ]
+          )->get();
+          array_push($catchEachDuplicate,$patients);
+        }
+        return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
+      }else{
+        return redirect()->action(
+          'PatientsController@findDuplicates'
+        );
+      }
+
+      // $duplicates = Patient::select("first_name","last_name")
+      // ->groupBy("first_name","last_name")
+      // ->havingRaw('COUNT(*) > 1')
+      // ->get();
+      // return $duplicates;
       $catchEachDuplicate=array();
       foreach($duplicates as $duplicate){
-        $users = Patient::where($search_value, $duplicate->$search_value)->get();
+        $users = Patient::where($criterias, $duplicate->$criterias)->get();
         array_push($catchEachDuplicate,$users);
       }
       return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
     }
     return redirect()->action(
-      'PatientsController@findDuplicates'
+        'PatientsController@findDuplicates'
     );
+    // $search_value=$request->search;
+    // if(in_array($search_value, $columns)){
+    //   $duplicates = Patient::select($search_value)
+    //   ->groupBy($search_value)
+    //   ->havingRaw('COUNT(*) > 1')
+    //   ->get();
+    //   $catchEachDuplicate=array();
+    //   foreach($duplicates as $duplicate){
+    //     $users = Patient::where($search_value, $duplicate->$search_value)->get();
+    //     array_push($catchEachDuplicate,$users);
+    //   }
+    //   return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
+    // }
+    // return redirect()->action(
+    //   'PatientsController@findDuplicates'
+    // );
   }
 
   /**
@@ -211,9 +312,14 @@ class PatientsController extends Controller
     //   }
     // }
 
-    //deleting first person and second person
-    $first_patient->delete();
-    $second_patient->delete();
+    //making the first person and second person record termed as merged
+    $first_patient->merged=1;
+    $first_patient->merged_with=$second_patient->local_patient_id;
+    $first_patient->save();
+
+    $second_patient->merged=1;
+    $second_patient->merged_with=$first_patient->local_patient_id;
+    $second_patient->save();
 
     return redirect()->action(
       'PatientsController@findDuplicates'

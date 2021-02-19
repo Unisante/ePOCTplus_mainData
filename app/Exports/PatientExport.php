@@ -29,6 +29,9 @@ class PatientExport implements
       'patient_gender',
       'patient_group_id',
       'patient_consent',
+      'patient_other_uid',
+      'merged',
+      'merged_with',
       'patient_created_at',
       'patient_updated_at',
     ];
@@ -37,7 +40,7 @@ class PatientExport implements
   {
     return[
       AfterSheet::class => function(AfterSheet $event){
-        $event->sheet->getStyle('A1:K1')->applyFromArray([
+        $event->sheet->getStyle('A1:N1')->applyFromArray([
           'font'=>[
             'bold'=>true,
           ],
@@ -52,7 +55,7 @@ class PatientExport implements
   */
   public function collection()
   {
-    return Patient::select('id','local_patient_id','first_name','last_name','birthdate','weight','gender','group_id','consent','created_at','updated_at')->get();
+    return Patient::select('id','local_patient_id','first_name','last_name','birthdate','weight','gender','group_id','consent','other_uid','merged','merged_with','created_at','updated_at')->get();
   }
   public function title():string
   {
