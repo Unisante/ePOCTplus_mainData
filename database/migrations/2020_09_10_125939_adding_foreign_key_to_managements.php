@@ -14,6 +14,7 @@ class AddingForeignKeyToManagements extends Migration
     public function up()
     {
         Schema::table('managements', function (Blueprint $table) {
+          // $table->integer('custom_diagnosis_id')->unsigned()->nullable();
           $table->foreign('custom_diagnosis_id')->references('id')->on('custom_diagnoses');
         });
     }
