@@ -89,7 +89,8 @@ class PatientsController extends Controller
           [
             ['other_uid',$patient->local_patient_id],
             ['merged',0],
-            ['id','!=' , $patient->id]
+            ['id','!=' , $patient->id],
+            ['status',0]
           ]
           )
           ->get()->toArray();
@@ -106,15 +107,18 @@ class PatientsController extends Controller
       foreach($markedPatients as $patient){
           $patientDuplicate=Patient::where([
             ['last_name',$patient->last_name],
-            ['merged',0]
+            ['merged',0],
+            ['status',0]
           ])
           ->orWhere([
             ['first_name',$patient->first_name],
-            ['merged',0]
+            ['merged',0],
+            ['status',0]
           ])
           ->orWhere([
             ['birthdate',$patient->birthdate],
-            ['merged',0]
+            ['merged',0],
+            ['status',0]
           ])
           ->get()->toArray();
         if(sizeOf($patientDuplicate) > 1 ){
@@ -158,7 +162,7 @@ class PatientsController extends Controller
       if(sizeOf($criteria)==1){
         $scriteria=strval($criteria[0]);
         $duplicates = Patient::select($scriteria)
-        ->where('merged',0)
+        ->where([['merged',0],['status',0]])
         ->groupBy($criteria[0])
         ->havingRaw('COUNT(*) > 1')
         ->get()->toArray();
@@ -166,7 +170,8 @@ class PatientsController extends Controller
         foreach($duplicates as $duplicate){
           $patients = Patient::where([
             [$scriteria, $duplicate[$scriteria]],
-            ['merged',0]
+            ['merged',0],
+            ['status',0]
           ]
             )->get();
           array_push($catchEachDuplicate,$patients);
@@ -333,10 +338,12 @@ class PatientsController extends Controller
     //making the first person and second person record termed as merged
     $first_patient->merged=1;
     $first_patient->merged_with=$second_patient->local_patient_id;
+    $first_patient->status=1;
     $first_patient->save();
 
     $second_patient->merged=1;
     $second_patient->merged_with=$first_patient->local_patient_id;
+    $second_patient->status=1;
     $second_patient->save();
 
     return redirect()->action(
