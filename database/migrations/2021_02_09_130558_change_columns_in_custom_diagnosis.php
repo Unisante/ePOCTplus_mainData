@@ -29,9 +29,15 @@ class ChangeColumnsInCustomDiagnosis extends Migration
     public function down()
     {
       Schema::table('custom_diagnoses', function(Blueprint $table) {
-        $table->renameColumn('label', 'medal_c_id');
-        $table->renameColumn('drugs', 'description');
-        $table->dropColumn('medical_case_id');
+        if(Schema::hasColumn('custom_diagnoses', 'label')){
+          $table->renameColumn('label', 'medal_c_id');
+        }
+        if(Schema::hasColumn('custom_diagnoses', 'drugs')){
+          $table->renameColumn('drugs', 'description');
+        }
+        if(Schema::hasColumn('custom_diagnoses', 'medical_case_id')){
+          $table->dropColumn('medical_case_id');
+        }
       });
     }
 }

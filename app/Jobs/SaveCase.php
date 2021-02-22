@@ -72,6 +72,7 @@ class SaveCase implements ShouldQueue
         if(HealthFacility::where('group_id',(int)$patient_key['group_id'])->doesntExist()){
           $fetchHF=HealthFacility::fetchHealthFacility((int)$patient_key['group_id']);
         }
+        
         if($consent_file_64 = $patient_key['consent_file']){
             $img = Image::make($consent_file_64);
             if(!File::exists($consent_path)) {
@@ -87,8 +88,8 @@ class SaveCase implements ShouldQueue
         ];
         $duplicate_flag=false;
         $senseDuplicate=Patient::where($duplicateConditions)->exists();
-
-        if( $patient_key['other_uid'] || $senseDuplicate ){
+        $existingPatient=Answer::where('medal_c_id',$nodes[3783]['answer'])->first();
+        if( $patient_key['other_uid'] || $senseDuplicate || $existingPatient->label == 'Yes'){
           $duplicate_flag=true;
         }
 

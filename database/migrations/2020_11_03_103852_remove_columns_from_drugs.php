@@ -14,7 +14,12 @@ class RemoveColumnsFromDrugs extends Migration
     public function up()
     {
         Schema::table('drugs', function (Blueprint $table) {
-          $table->dropColumn(['reference', 'is_anti_malarial','is_antibiotic','formulationSelected','custom_diagnosis_id']);
+          $columns=['reference', 'is_anti_malarial','is_antibiotic','formulationSelected','custom_diagnosis_id'];
+          foreach($columns as $column){
+            if(Schema::hasColumn('drugs', $column)){
+              $table->dropColumn($column);
+            }
+          }
         });
     }
 

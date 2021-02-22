@@ -14,7 +14,12 @@ class RemoveColumnsFromManagements extends Migration
     public function up()
     {
         Schema::table('managements', function (Blueprint $table) {
-          $table->dropColumn(['reference','custom_diagnosis_id']);
+          $columns=['reference','custom_diagnosis_id'];
+          foreach($columns as $column){
+            if(Schema::hasColumn('managements', $column)){
+              $table->dropColumn($column);
+            }
+          }
         });
     }
 

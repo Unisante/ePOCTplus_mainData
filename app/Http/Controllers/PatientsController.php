@@ -83,27 +83,45 @@ class PatientsController extends Controller
     // ->get();
       $patients= Patient::where('merged',0)->get();
       $duplicateArray=[];
+      // find by other_uid
       foreach($patients as $patient){
-        // $patientDuplicate=Patient::where('other_uid',$patient->local_patient_id)
-        //                   ->where('merged',0)->get();
-
         $patientDuplicate=Patient::where(
           [
             ['other_uid',$patient->local_patient_id],
             ['merged',0],
+            ['id','!=' , $patient->id]
           ]
-          )->get()->toArray();
+          )
+          ->get()->toArray();
         if(Patient::where('other_uid',$patient->local_patient_id)->exists()){
           array_push($patientDuplicate,$patient);
           array_push($duplicateArray,$patientDuplicate);
         }
       }
-      // return $duplicateArray;
-    // $catchEachDuplicate=array();
-    // foreach($duplicates as $duplicate){
-    //   $users = Patient::where('first_name', $duplicate->first_name)->get();
-    //   array_push($catchEachDuplicate,$users);
-    // }
+      // find by dulicate is true and check if he already exists in the previous duplicate group
+      $markedPatients=Patient::where([
+        ['duplicate',1],
+        ['merged',0]
+      ])->get();
+      foreach($markedPatients as $patient){
+          $patientDuplicate=Patient::where([
+            ['last_name',$patient->last_name],
+            ['merged',0]
+          ])
+          ->orWhere([
+            ['first_name',$patient->first_name],
+            ['merged',0]
+          ])
+          ->orWhere([
+            ['birthdate',$patient->birthdate],
+            ['merged',0]
+          ])
+          ->get()->toArray();
+        if(sizeOf($patientDuplicate) > 1 ){
+          // array_push($patientDuplicate,$patient);
+          array_push($duplicateArray,$patientDuplicate);
+        }
+      }
     return view('patients.showDuplicates')->with("catchEachDuplicate",$duplicateArray);
   }
 

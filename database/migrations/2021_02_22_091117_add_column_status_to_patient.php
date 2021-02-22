@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeColumnsInFormulations extends Migration
+class AddColumnStatusToPatient extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class ChangeColumnsInFormulations extends Migration
      */
     public function up()
     {
-        Schema::table('formulations', function (Blueprint $table) {
-          if(! Schema::hasColumn('formulations', 'administration_route_category')){
-            $table->string('administration_route_category')->nullable();
-          }
+        Schema::table('patients', function (Blueprint $table) {
+            $table->boolean('status')->default(0);
         });
     }
 
@@ -27,8 +25,8 @@ class ChangeColumnsInFormulations extends Migration
      */
     public function down()
     {
-        Schema::table('formulations', function (Blueprint $table) {
-            //
+        Schema::table('patients', function (Blueprint $table) {
+            $table->dropColumn('status');
         });
     }
 }

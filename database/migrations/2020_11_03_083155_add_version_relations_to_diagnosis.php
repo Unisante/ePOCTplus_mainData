@@ -27,7 +27,9 @@ class AddVersionRelationsToDiagnosis extends Migration
     public function down()
     {
         Schema::table('diagnoses', function (Blueprint $table) {
-          $table->dropColumn('version_id');
+          if(Schema::hasColumn('diagnoses', 'version_id')){
+            $table->dropColumn('version_id');
+          }
         });
     }
 }
