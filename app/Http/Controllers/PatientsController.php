@@ -51,6 +51,7 @@ class PatientsController extends Controller
   */
   public function show($id){
     $patient=Patient::find($id);
+    $patient->related_ids=implode(',',unserialize($patient->related_ids));
     return view('patients.showPatient')->with('patient',$patient);
   }
 
@@ -81,10 +82,11 @@ class PatientsController extends Controller
     // ->groupBy('first_name','last_name')
     // ->havingRaw('COUNT(*) > 1')
     // ->get();
-      $patients= Patient::where('merged',0)->get();
+      $patients= Patient::where([['merged',0],['status',0]])->get();
       $duplicateArray=[];
-      // find by other_uid
       foreach($patients as $patient){
+        // $patientDuplicate=Patient::whereIn('related_ids',$patient->local_patient_id)->get();
+        // dd($patientDuplicate);
         $patientDuplicate=Patient::where(
           [
             ['other_uid',$patient->local_patient_id],
@@ -94,8 +96,12 @@ class PatientsController extends Controller
           ]
           )
           ->get()->toArray();
-        if(Patient::where('other_uid',$patient->local_patient_id)->exists()){
-          array_push($patientDuplicate,$patient);
+        if(Patient::where([
+          ['other_uid',$patient->local_patient_id],
+          ['merged',0],
+          ['id','!=' , $patient->id],
+          ['status',0]])->exists()){
+          array_push($patientDuplicate,$patient->toArray());
           array_push($duplicateArray,$patientDuplicate);
         }
       }
@@ -122,8 +128,23 @@ class PatientsController extends Controller
           ])
           ->get()->toArray();
         if(sizeOf($patientDuplicate) > 1 ){
-          // array_push($patientDuplicate,$patient);
-          array_push($duplicateArray,$patientDuplicate);
+          $pairExist=False;
+          collect($duplicateArray)->each(function ($duplicateGroup) use(&$patientDuplicate,&$pairExist){
+            $existingIds=[];$incomingIds=[];
+            collect($duplicateGroup)->each(function($arrayPatient)use(&$existingIds){
+               array_push($existingIds,$arrayPatient['id']);
+            });
+            collect($patientDuplicate)->each(function($arrayPatient)use(&$incomingIds){
+              array_push($incomingIds,$arrayPatient['id']);
+            });
+            sort($existingIds);sort($incomingIds);
+            if ($existingIds===$incomingIds) {
+              $pairExist=True;
+            }
+          });
+          if(!$pairExist){
+            array_push($duplicateArray,$patientDuplicate);
+          }
         }
       }
     return view('patients.showDuplicates')->with("catchEachDuplicate",$duplicateArray);
@@ -136,8 +157,11 @@ class PatientsController extends Controller
   * @return $patients
   */
   public function mergeShow($firstId,$secondId){
+
     $first_patient =  Patient::find($firstId);
     $second_patient = Patient::find($secondId);
+    $first_patient->related_ids=implode(',',unserialize($first_patient->related_ids));
+    $second_patient->related_ids=implode(',',unserialize($second_patient->related_ids));
     $data=array(
       'first_patient'=>$first_patient,
       'second_patient'=>$second_patient,
@@ -236,22 +260,6 @@ class PatientsController extends Controller
     return redirect()->action(
         'PatientsController@findDuplicates'
     );
-    // $search_value=$request->search;
-    // if(in_array($search_value, $columns)){
-    //   $duplicates = Patient::select($search_value)
-    //   ->groupBy($search_value)
-    //   ->havingRaw('COUNT(*) > 1')
-    //   ->get();
-    //   $catchEachDuplicate=array();
-    //   foreach($duplicates as $duplicate){
-    //     $users = Patient::where($search_value, $duplicate->$search_value)->get();
-    //     array_push($catchEachDuplicate,$users);
-    //   }
-    //   return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
-    // }
-    // return redirect()->action(
-    //   'PatientsController@findDuplicates'
-    // );
   }
 
   /**
@@ -260,9 +268,39 @@ class PatientsController extends Controller
   * @return PatientsController@findDuplicates
   */
   public function merge(Request $request){
+    if($request->has("Keep")){
+      $first_patient=Patient::find($request->firstp_id);
+      $first_patient->status=1;
+      $first_patient->save();
+      $second_patient=Patient::find($request->secondp_id);
+      $second_patient->status=1;
+      $second_patient->save();
+      return redirect()->action(
+        'PatientsController@findDuplicates'
+      )->with('status',' Rows Kept as Non Duplicates');
+    }
+
     //finding the medical cases to update
     $first_patient=Patient::find($request->firstp_id);
     $second_patient=Patient::find($request->secondp_id);
+
+    // testing the ability to carry all id's
+    $first_patient_ids=unserialize($first_patient->related_ids);
+    $second_patient_ids=unserialize($second_patient->related_ids);
+    $AllrelatedIds= array_filter(
+      array_merge(
+        array_diff($first_patient_ids, $second_patient_ids),
+        array_diff($second_patient_ids, $first_patient_ids)
+      )
+    );
+    if(! in_array($first_patient->local_patient_id,$AllrelatedIds)){
+      array_push($AllrelatedIds,$first_patient->local_patient_id);
+    }
+    if(! in_array($second_patient->local_patient_id,$AllrelatedIds)){
+      array_push($AllrelatedIds,$second_patient->local_patient_id);
+    }
+
+
 
     $consent_array=array();
     if($first_patient->consent){
@@ -271,60 +309,49 @@ class PatientsController extends Controller
     if($second_patient->consent){
       array_push($consent_array,$second_patient->consent);
     }
-
     $consent = serialize($consent_array);
+    //finding all the cases that belong to each of the patients
+
     //creating a new patient
     $hybrid_patient=new Patient([
       'first_name'=>$request->first_name,
       'last_name'=>$request->last_name,
-      'local_patient_id'=>$request->local_patient_id,
+      'local_patient_id'=>collect([$first_patient,$second_patient])->sortByDesc('updated_at')->first()->local_patient_id,
       'birthdate'=>$request->birthdate,
       'weight'=>$request->weight,
       'gender'=>$request->gender,
       'group_id'=>$request->group_id,
       'consent'=>$consent,
+      "related_ids"=>serialize($AllrelatedIds)
     ]);
     $hybrid_patient->save();
 
-    // new code
-    $casesId=array();
-    $first_person_array=array();
-    if(sizeof($first_patient->medicalCases)>0){
-      foreach($first_patient->medicalCases as $first_medical_case){
-        $first_medical_case->update([
-          "patient_id"=>$hybrid_patient->id
-        ]);
-        array_push($casesId,$first_medical_case->id);
-      }
-    }
-    $case_not_to_update=self::relateCases($casesId,$second_patient->medicalCases);
-
-    if(sizeof($second_patient->medicalCases)>0){
-      foreach($second_patient->medicalCases as $second_medical_case){
-        if(!(in_array($second_medical_case->id,$case_not_to_update))){
-          $second_medical_case->update([
-            "patient_id"=>$hybrid_patient->id
-          ]);
-        }else{
-          $second_medical_case->diagnosesReferences->each->delete();
-          $second_medical_case->delete();
-        }
-      }
-    }
+    $first_patient->medicalCases()->each(function($case)use(&$hybrid_patient){
+      $case->patient_id=$hybrid_patient->id;
+      $case->save();
+    });
+    $second_patient->medicalCases()->each(function($case)use(&$hybrid_patient){
+      $case->patient_id=$hybrid_patient->id;
+      $case->save();
+    });
 
     // old code
+    // $casesId=array();
     // $first_person_array=array();
     // if(sizeof($first_patient->medicalCases)>0){
     //   foreach($first_patient->medicalCases as $first_medical_case){
     //     $first_medical_case->update([
     //       "patient_id"=>$hybrid_patient->id
     //     ]);
-    //     array_push($first_person_array,$first_medical_case->medical_case_answers->count());
+    //     array_push($casesId,$first_medical_case->id);
     //   }
     // }
+
+    // $case_not_to_update=self::relateCases($casesId,$second_patient->medicalCases);
+
     // if(sizeof($second_patient->medicalCases)>0){
     //   foreach($second_patient->medicalCases as $second_medical_case){
-    //     if(!(in_array($second_medical_case->medical_case_answers->count(),$first_person_array))){
+    //     if(!(in_array($second_medical_case->id,$case_not_to_update))){
     //       $second_medical_case->update([
     //         "patient_id"=>$hybrid_patient->id
     //       ]);
@@ -384,6 +411,7 @@ class PatientsController extends Controller
   }
 
   public function relateCases($casesId,$medicalCases){
+
     $casesNotToUpdate=array();
     foreach($medicalCases as $spmd){
       foreach($casesId as $caseId){

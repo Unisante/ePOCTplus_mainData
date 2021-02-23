@@ -13,7 +13,7 @@
           </div>
           @endif
           <div class="row justify-content-center">
-            <form action="/patients/merge" method="POST">
+            <form action="/patients/merge" method="POST" name="form">
               @csrf
               <table class="table">
                 <thead>
@@ -22,25 +22,25 @@
                   <th scope="col">Second Patient</th>
                 </thead>
                 <tbody>
-                    <tr>
-                      <td>Patient Id:</td>
+                    {{-- <tr> --}}
+                      {{-- <td>Patient Id:</td>
                       <td>
-                        <label class="container">{{$first_patient->local_patient_id}}
+                        <label class="container">{{$first_patient->related_ids}}
                         <input type="radio" name="local_patient_id" value="{{$first_patient->local_patient_id}}" checked>
                         <span class="checkmark"></span>
-                        </label>
+                        </label> --}}
                         {{-- <label id="label_id">{{$first_patient->local_patient_id}}</label>
                         <div class="check"></div> --}}
-                      </td>
-                      <td>
+                      {{-- </td> --}}
+                      {{-- <td>
                         <label class="container">{{$second_patient->local_patient_id}}
                         <input type="radio" name="local_patient_id" value="{{$second_patient->local_patient_id}}">
                         <span class="checkmark"></span>
-                        </label>
+                        </label> --}}
                         {{-- <label id="label_id">{{$second_patient->local_patient_id}}</label>
                         <div class="check"></div> --}}
-                      </td>
-                    </tr>
+                      {{-- </td> --}}
+                    {{-- </tr> --}}
                     <tr>
                       <td>First Name:</td>
                       <td>
@@ -155,7 +155,25 @@
                         <div class="check"></div> --}}
                       </td>
                     </tr>
-
+                    <tr>
+                      <td>Related Ids:</td>
+                      <td>
+                        <label class="container">{{$first_patient->related_ids}}
+                        <input type="radio" name="related_ids" value="{{$first_patient->related_ids}}" checked>
+                        <span class="checkmark"></span>
+                        </label>
+                        {{-- <label id="label_id">{{$first_patient->related_ids}}</label>
+                        <div class="check"></div> --}}
+                      </td>
+                      <td>
+                        <label class="container">{{$second_patient->related_ids}}
+                        <input type="radio" name="related_ids" value="{{$second_patient->related_ids}}">
+                        <span class="checkmark"></span>
+                        </label>
+                        {{-- <label id="label_id">{{$second_patient->related_ids}}</label>
+                        <div class="check"></div> --}}
+                      </td>
+                    </tr>
                     <tr>
                       <td>Number of medical Cases:</td>
                       <td>
@@ -169,7 +187,13 @@
               </table>
               <input id="patient_id" type="text" name="firstp_id" value="{{$first_patient->id}}" hidden>
               <input id="patient_id" type="text" name="secondp_id" value="{{$second_patient->id}}" hidden>
-              <input type="submit" name="button" value="Merge"/></form>
+
+              <div class="row ">
+                <div class="float-right">
+                  <input type="submit" name="merge" id="merge" value="Merge Cases"/>
+                  <input type="submit" name="Keep" id="Keep" value="Keep both Cases">
+                </div>
+              </div>
             </form>
           </div>
         </div>

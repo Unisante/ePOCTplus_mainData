@@ -72,7 +72,7 @@ class SaveCase implements ShouldQueue
         if(HealthFacility::where('group_id',(int)$patient_key['group_id'])->doesntExist()){
           $fetchHF=HealthFacility::fetchHealthFacility((int)$patient_key['group_id']);
         }
-        
+
         if($consent_file_64 = $patient_key['consent_file']){
             $img = Image::make($consent_file_64);
             if(!File::exists($consent_path)) {
@@ -89,10 +89,9 @@ class SaveCase implements ShouldQueue
         $duplicate_flag=false;
         $senseDuplicate=Patient::where($duplicateConditions)->exists();
         $existingPatient=Answer::where('medal_c_id',$nodes[3783]['answer'])->first();
-        if( $patient_key['other_uid'] || $senseDuplicate || $existingPatient->label == 'Yes'){
+        if($patient_key['other_uid'] || $senseDuplicate || $existingPatient->label == 'Yes'){
           $duplicate_flag=true;
         }
-
         $issued_patient=Patient::firstOrCreate(
           [
             "local_patient_id"=>$patient_key['uid']
@@ -108,7 +107,8 @@ class SaveCase implements ShouldQueue
           "other_study_id"=>$patient_key['other_study_id'],
           "other_uid"=>$patient_key['other_uid'],
           "consent"=>$consent_file_name,
-          "duplicate"=>$duplicate_flag
+          "duplicate"=>$duplicate_flag,
+          "related_ids"=>serialize([$patient_key['other_uid']])
           ]
         );
         $data_to_parse=array(
@@ -132,32 +132,5 @@ class SaveCase implements ShouldQueue
         }
         Storage::Delete($this->filename);
       }
-      // }
-
-      // $caseFollowUpArray=array();
-      // $patientFollowUpArray=array();
-      // foreach(MedicalCase::where('redcap',false)->get() as $medicalcase){
-      //   $followUp=MedicalCase::makeFollowUp($medicalcase);
-      //   if($followUp != null){
-      //     // find the patient related to this followup
-      //     if(! $medicalcase->patient->duplicate){
-      //       $patientFollowUpArray[]=$medicalcase->patient;
-      //       $caseFollowUpArray[]=$followUp;
-      //     }
-      //   }
-      // }
-      // $patientFollowUpArray=collect($patientFollowUpArray);
-      // $casefollowUpCollection=collect($caseFollowUpArray);
-      // $redCapApiService = new RedCapApiService();
-      // $medicalcase_id_list=$redCapApiService->exportFollowup($casefollowUpCollection);
-      // if(sizeof($medicalcase_id_list) > 0 ){
-      //   foreach($medicalcase_id_list as $medicalcase_id){
-      //     MedicalCase::where('local_medical_case_id',$medicalcase_id)->update(
-      //       [
-      //         'redcap'=>True
-      //       ]
-      //     );
-      //   }
-      // }
     }
 }

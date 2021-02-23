@@ -14,7 +14,9 @@ class Patient extends Model implements Auditable
     // TODO : return value of redcap flag in the database
     return false;
   }
-
+  protected $casts = [
+    'related_ids' => 'array'
+  ];
   protected $guarded = [];
 
   /*

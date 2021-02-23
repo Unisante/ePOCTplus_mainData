@@ -28,6 +28,7 @@
                   <div class="d-flex justify-content-between"> <span>Weight: </span> <span class="border-bottom">{{$patient->weight}}</span></div>
                   <div class="d-flex justify-content-between"> <span>Gender:</span>  <span class="border-bottom">{{$patient->gender}}</span></div>
                   <div class="d-flex justify-content-between"> <span>Group Id:</span>  <span class="border-bottom">{{$patient->group_id}}</span></div>
+                  <div class="d-flex justify-content-between"> <span>Related Ids:</span>  <span class="border-bottom">{{$patient->related_ids}}</span></div>
                   <div class="d-flex justify-content-between"> <span>Number of medical cases:</span>  <span class="border-bottom">{{$patient->medicalCases()->count()}}</span></div>
                 </div>
               </div>
