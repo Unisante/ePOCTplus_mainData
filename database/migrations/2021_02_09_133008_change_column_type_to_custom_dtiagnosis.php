@@ -14,7 +14,7 @@ class ChangeColumnTypeToCustomDtiagnosis extends Migration
     public function up()
     {
         Schema::table('custom_diagnoses', function (Blueprint $table) {
-          // $table->string('label')->change();
+          $table->string('label')->change();
         });
     }
 

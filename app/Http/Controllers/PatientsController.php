@@ -160,8 +160,14 @@ class PatientsController extends Controller
 
     $first_patient =  Patient::find($firstId);
     $second_patient = Patient::find($secondId);
-    $first_patient->related_ids=implode(',',$first_patient->related_ids);
-    $second_patient->related_ids=implode(',',$second_patient->related_ids);
+    if($first_patient->related_ids != null){
+      $first_patient->related_ids=implode(',',$first_patient->related_ids);
+    }
+    if($second_patient->related_ids != null){
+      $second_patient->related_ids=implode(',',$second_patient->related_ids);
+    }
+    // $first_patient->related_ids=implode(',',$first_patient->related_ids);
+    // $second_patient->related_ids=implode(',',$second_patient->related_ids);
     $data=array(
       'first_patient'=>$first_patient,
       'second_patient'=>$second_patient,
