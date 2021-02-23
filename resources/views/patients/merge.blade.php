@@ -158,17 +158,17 @@
                     <tr>
                       <td>Related Ids:</td>
                       <td>
-                        <label class="container">{{$first_patient->related_ids}}
-                        <input type="radio" name="related_ids" value="{{$first_patient->related_ids}}" checked>
-                        <span class="checkmark"></span>
+                        <label>{{$first_patient->related_ids}}
+                        {{-- <input type="radio" name="related_ids" value="{{$first_patient->related_ids}}" checked> --}}
+                        {{-- <span class="checkmark"></span> --}}
                         </label>
                         {{-- <label id="label_id">{{$first_patient->related_ids}}</label>
                         <div class="check"></div> --}}
                       </td>
                       <td>
-                        <label class="container">{{$second_patient->related_ids}}
-                        <input type="radio" name="related_ids" value="{{$second_patient->related_ids}}">
-                        <span class="checkmark"></span>
+                        <label >{{$second_patient->related_ids}}
+                        {{-- <input type="radio" name="related_ids" value="{{$second_patient->related_ids}}"> --}}
+                        {{-- <span class="checkmark"></span> --}}
                         </label>
                         {{-- <label id="label_id">{{$second_patient->related_ids}}</label>
                         <div class="check"></div> --}}

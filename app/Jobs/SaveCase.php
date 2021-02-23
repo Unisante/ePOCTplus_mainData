@@ -108,7 +108,7 @@ class SaveCase implements ShouldQueue
           "other_uid"=>$patient_key['other_uid'],
           "consent"=>$consent_file_name,
           "duplicate"=>$duplicate_flag,
-          "related_ids"=>serialize([$patient_key['other_uid']])
+          "related_ids"=>[$patient_key['other_uid']]
           ]
         );
         $data_to_parse=array(

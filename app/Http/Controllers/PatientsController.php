@@ -51,7 +51,7 @@ class PatientsController extends Controller
   */
   public function show($id){
     $patient=Patient::find($id);
-    $patient->related_ids=implode(',',unserialize($patient->related_ids));
+    $patient->related_ids=implode(',',$patient->related_ids);
     return view('patients.showPatient')->with('patient',$patient);
   }
 
@@ -85,8 +85,7 @@ class PatientsController extends Controller
       $patients= Patient::where([['merged',0],['status',0]])->get();
       $duplicateArray=[];
       foreach($patients as $patient){
-        // $patientDuplicate=Patient::whereIn('related_ids',$patient->local_patient_id)->get();
-        // dd($patientDuplicate);
+        $keyword=$patient->local_patient_id;
         $patientDuplicate=Patient::where(
           [
             ['other_uid',$patient->local_patient_id],
@@ -95,6 +94,7 @@ class PatientsController extends Controller
             ['status',0]
           ]
           )
+          ->orWhere([['merged',0],['status',0],['id','!=' , $patient->id]])->whereJsonContains('related_ids',[$keyword])
           ->get()->toArray();
         if(Patient::where([
           ['other_uid',$patient->local_patient_id],
@@ -160,8 +160,8 @@ class PatientsController extends Controller
 
     $first_patient =  Patient::find($firstId);
     $second_patient = Patient::find($secondId);
-    $first_patient->related_ids=implode(',',unserialize($first_patient->related_ids));
-    $second_patient->related_ids=implode(',',unserialize($second_patient->related_ids));
+    $first_patient->related_ids=implode(',',$first_patient->related_ids);
+    $second_patient->related_ids=implode(',',$second_patient->related_ids);
     $data=array(
       'first_patient'=>$first_patient,
       'second_patient'=>$second_patient,
@@ -285,8 +285,8 @@ class PatientsController extends Controller
     $second_patient=Patient::find($request->secondp_id);
 
     // testing the ability to carry all id's
-    $first_patient_ids=unserialize($first_patient->related_ids);
-    $second_patient_ids=unserialize($second_patient->related_ids);
+    $first_patient_ids=$first_patient->related_ids;
+    $second_patient_ids=$second_patient->related_ids;
     $AllrelatedIds= array_filter(
       array_merge(
         array_diff($first_patient_ids, $second_patient_ids),
@@ -322,7 +322,7 @@ class PatientsController extends Controller
       'gender'=>$request->gender,
       'group_id'=>$request->group_id,
       'consent'=>$consent,
-      "related_ids"=>serialize($AllrelatedIds)
+      "related_ids"=>$AllrelatedIds
     ]);
     $hybrid_patient->save();
 
