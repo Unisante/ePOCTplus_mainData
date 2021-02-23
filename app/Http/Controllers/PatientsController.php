@@ -291,8 +291,14 @@ class PatientsController extends Controller
     $second_patient=Patient::find($request->secondp_id);
 
     // testing the ability to carry all id's
-    $first_patient_ids=$first_patient->related_ids;
-    $second_patient_ids=$second_patient->related_ids;
+    $first_patient_ids=[];
+    if($first_patient->related_ids != null){
+      $first_patient_ids=$first_patient->related_ids;
+    }
+    $second_patient_ids=[];
+    if($second_patient->related_ids != null){
+      $second_patient_ids=$second_patient->related_ids;
+    }
     $AllrelatedIds= array_filter(
       array_merge(
         array_diff($first_patient_ids, $second_patient_ids),
@@ -305,8 +311,6 @@ class PatientsController extends Controller
     if(! in_array($second_patient->local_patient_id,$AllrelatedIds)){
       array_push($AllrelatedIds,$second_patient->local_patient_id);
     }
-
-
 
     $consent_array=array();
     if($first_patient->consent){
