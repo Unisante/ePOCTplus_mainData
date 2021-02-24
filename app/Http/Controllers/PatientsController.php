@@ -85,7 +85,7 @@ class PatientsController extends Controller
       $patients= Patient::where([['merged',0],['status',0]])->get();
       $duplicateArray=[];
       foreach($patients as $patient){
-        $keyword=$patient->local_patient_id;
+        $keyword=$patient->other_uid;
         $patientDuplicate=Patient::where(
           [
             ['other_uid',$patient->local_patient_id],
