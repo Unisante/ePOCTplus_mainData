@@ -20,20 +20,20 @@ WithEvents
     {
       return [
         'node_id',
-        'medal_c_id',
-        'reference',
-        'label',
-        'type',
-        'category',
-        'priority',
-        'stage',
-        'description',
-        'formula',
-        'answertype_id',
-        'algorithm_id',
-        'created_at',
-        'updated_at',
-        'is_identifiable'
+        'node_medal_c_id',
+        'node_reference',
+        'node_label',
+        'node_type',
+        'node_category',
+        'node_priority',
+        'node_stage',
+        'node_description',
+        'node_formula',
+        'node_answertype_id',
+        'node_algorithm_id',
+        'node_created_at',
+        'node_updated_at',
+        'node_is_identifiable'
       ];
     }
     public function registerEvents():array

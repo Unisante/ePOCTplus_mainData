@@ -1,12 +1,12 @@
 @extends('adminlte::page')
 
 @section('content')
-
+<link href="{{ asset('css/checkbox.css') }}" rel="stylesheet">
 <div class="container-fluid">
   <div class="row justify-content-center">
     <div class="col-md-12">
       <div class="card">
-        <div class="card-header"><button class="btn btn-outline-dark float-right" onclick="mergePatients()">Merge Duplicates</button></div>
+        <div class="card-header"><button class="btn btn-outline-dark float-right" onclick="mergePatients()">Compare Cases</button></div>
         <div class="card-body">
           @if (session('status'))
           <div class="alert alert-success" role="alert">
@@ -40,17 +40,37 @@
             </div>
           </div>
           <div class="row justify-content-center">
-            <div class="col-md-10">
-              <form action="{{route('PatientsController@searchDuplicates')}}" method="POST" id="searchform" class="input-group mb-3">
+            <div class="col-md-12">
+              <form action="{{route('PatientsController@searchDuplicates')}}" method="POST" id="searchform" >
                 @csrf
-                <div class="input-group-prepend">
-                  <button class="btn btn-outline-secondary" type="Submit">Search</button>
+                <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                  <div class="d-flex justify-content-between">
+                  <div class="form-check">
+                    <label class="container">
+                      <input type="checkbox" class="form-check-input" name="searchCriteria[]" value="first_name">First Name
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <label class="container">
+                      <input type="checkbox" class="form-check-input" name="searchCriteria[]" value="last_name">Last Name
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <label class="container">
+                      <input type="checkbox" class="form-check-input" name="searchCriteria[]" value="birthdate">DOB
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <button class="btn btn-outline-secondary float-right" type="Submit">Search</button>
+                  </div>
                 </div>
-                <select class="custom-select" name="search" form="searchform">
-                  <option selected>Choose...</option>
-                  <option value="first_name">First Name</option>
-                  <option value="last_name">Last Name</option>
-                </select>
+                </div>
+              </div>
               </form>
               @if($catchEachDuplicate)
               <table class="table table-hover table-bordered">
@@ -59,30 +79,35 @@
                   <th scope="col">Patient Id</th>
                   <th scope="col">First Name</th>
                   <th scope="col">Last Name</th>
+                  <th scope="col">BirthDate</th>
                   <th scope="col">created_at</th>
                   <th scope="col">Actions</th>
                 </thead>
                 <tbody>
-                  @foreach($catchEachDuplicate as $relativeDuplicates)
+              @foreach($catchEachDuplicate as $relativeDuplicates)
                   <tr class="table-secondary"><td>For The {{ $loop->index + 1 }}'s Duplicate<td></tr>
-                    @foreach($relativeDuplicates as $duplicate)
-                    <tr>
-                      <th scope="row">{{ $loop->index + 1 }}</th>
-                      <td>{{$duplicate->id}}</td>
-                      <td>{{$duplicate->first_name}}</td>
-                      <td>{{$duplicate->last_name}}</td>
-                      <td>{{$duplicate->created_at}}</td>
-                      <td>
-                        <div id="action">
-                          <input type="checkbox" class="messageCheckbox" value="{{$duplicate->id}}">
-                          <a  class="btn btn-outline-dark" data-toggle="modal" data-target="#deleteRow" onclick="takeId({{$duplicate->id}})">Drop This Row</a>
-                        </div>
-                      </td>
-                    </tr>
-                    @endforeach
-                    @endforeach
-                  </tbody>
-                </table>
+                @foreach($relativeDuplicates as $duplicate)
+                <tr>
+                  <th scope="row">{{ $loop->index + 1 }}</th>
+                  <td>{{$duplicate['id']}}</td>
+                  <td>{{$duplicate['first_name']}}</td>
+                  <td>{{$duplicate['last_name']}}</td>
+                  <td>{{$duplicate['birthdate']}}</td>
+                  <td>{{$duplicate['created_at']}}</td>
+                  <td>
+                    <div id="action">
+                      <label class="container">
+                      <input type="checkbox" class="messageCheckbox" value="{{$duplicate['id']}}">
+                      <span class="checkmark"></span>
+                      </label>
+                      {{-- <a  class="btn btn-outline-dark" data-toggle="modal" data-target="#deleteRow" onclick="takeId({{$duplicate['id']}})">Drop This Row</a> --}}
+                    </div>
+                  </td>
+                </tr>
+                @endforeach
+              @endforeach
+            </tbody>
+          </table>
                 @else
                 <h2>There are no Duplicates</h2>
                 @endif

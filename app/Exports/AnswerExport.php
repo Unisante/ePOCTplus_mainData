@@ -19,11 +19,12 @@ WithEvents
   {
     return [
       'answer_id',
-      'medal_c_id',
-      'node_id',
-      'created_at',
-      'updated_at',
-      'label',
+      'answer_label',
+      'answer_medal_c_id',
+      'answer_node_id',
+      'answer_created_at',
+      'answer_updated_at',
+
     ];
   }
   public function registerEvents():array

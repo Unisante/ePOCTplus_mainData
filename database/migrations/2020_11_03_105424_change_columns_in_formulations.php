@@ -14,7 +14,9 @@ class ChangeColumnsInFormulations extends Migration
     public function up()
     {
         Schema::table('formulations', function (Blueprint $table) {
-          $table->string('administration_route_category')->nullable();
+          if(! Schema::hasColumn('formulations', 'administration_route_category')){
+            $table->string('administration_route_category')->nullable();
+          }
         });
     }
 

@@ -41,7 +41,7 @@
                 <tbody>
                   @foreach($medicalCases as $medicalCase)
                   <tr>
-                    <th scope="row">{{ $loop->index }}</th>
+                    <th scope="row">{{ $loop->index+1 }}</th>
                     <th><input type="checkbox" class="messageCheckbox" value="{{$medicalCase->id}}"></th>
                     <td>{{$medicalCase->created_at}}</td>
                     <td>{{$medicalCase->patient->first_name}} {{$medicalCase->patient->last_name}}</td>

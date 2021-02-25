@@ -8,58 +8,58 @@
   <h3 align="center">Register New User </h3>
   <!-- Example row of columns -->
   <div class="row col-sm-12 col-md-12 col-lg-12" style="background:white; margin: 10px">
-    <form action="{{route('user.store')}}" method="post">
+    <form action="{{route('users.store')}}" method="post" id="userCreate">
       {!! csrf_field() !!}
       <div class="form-group row">
         <label for="name" class="col-md-3 col-form-label text-md-right">Full Name<span class="required"><font color="red">*</font></span></label>
         <div class="col-md-9">
           <input id="name"
           type="text"
-          class="form-control @error('name') is-invalid @enderror"
+          class="form-control "
           name="name"
-          value="{{ old('name') }}"
           required autocomplete="name"
           autofocus >
-          @error('name')
-          <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-          </span>
-          @enderror
         </div>
       </div>
+
       <div class="form-group row">
         <label for="email" class="col-md-3 col-form-label text-md-right">E-mail Address<span class="required"><font color="red">*</font></span></label>
         <div class="col-md-9">
           <input id="email"
           type="email"
-          class="form-control @error('email') is-invalid @enderror"
+          class="form-control"
           name="email"
-          value="{{ old('email') }}"
+          required autocomplete="email"
           autofocus >
-          @error('email')
-          <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-          </span>
-          @enderror
         </div>
       </div>
-      <div class="form-group row">
-        <label for="password" class="col-md-3 col-form-label text-md-right">Password<span class="required"><font color="red">*</font></span></label>
+
+      {{-- <div class="form-group row">
+        <label for="name" class="col-md-3 col-form-label text-md-right">Password<span class="required"><font color="red">*</font></span></label>
         <div class="col-md-9">
-          <input id="password"
-          type="password"
-          class="form-control @error('password') is-invalid @enderror"
+          <input id="name"
+          type="text"
+          class="form-control"
           name="password"
-          value="{{ old('password') }}"
-          required autocomplete="password"
+          required autocomplete="name"
           autofocus >
-          @error('password')
-          <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-          </span>
-          @enderror
+        </div>
+      </div> --}}
+
+      <div class="form-group row">
+        <label for="name" class="col-md-3 col-form-label text-md-right">Roles<span class="required"></span></label>
+        <div class="col-md-9">
+          <div class="input-group mb-3">
+            <select class="custom-select" name="role" form="userCreate">
+              <option value="" selected >.....</option>
+              @foreach($roles as $role)
+              <option value="{{$role->name}}">{{$role->name}}</option>
+              @endforeach
+            </select>
+          </div>
         </div>
       </div>
+
       <div class="form-group row mb-0">
         <div class="col-md-6 offset-md-4">
           <button type="submit" class="btn btn-primary">
@@ -68,4 +68,6 @@
         </div>
       </div>
     </form>
+
+
     @stop

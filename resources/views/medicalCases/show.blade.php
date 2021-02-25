@@ -30,14 +30,18 @@
               @if($medicalCase)
               <div class="showmdCard mb-2">
                 <div class="card-header">
-                  <span class="font-weight-bold">Created At: </span>
+                  <div class="d-flex justify-content-between">
+                    <span class="font-weight-bold">Created At: </span>
                   <span>{{$medicalCase->created_at}}</span>
+                  </div>
                 </div>
                 <div class="card-header">
-                  <span class="font-weight-bold">Updated At: </span>
+                  <div class="d-flex justify-content-between">
+                    <span class="font-weight-bold">Updated At: </span>
                   <span>{{$medicalCase->created_at}}</span> </div>
+                  </div>
                   <div class="card-header">
-                    <div>
+                    <div class="d-flex justify-content-between">
                       <span class="font-weight-bold">Patient Name:</span>
                       <span class="border-bottom">
                         {{$medicalCase->patient->first_name}}
@@ -72,7 +76,7 @@
                           <span class="font-weight-bold">Answer: </span>
                           <span>{{$case->answer}}</span>
                         </div>
-                        <a href="{{route('MedicalCasesController.medicalCaseQuestion', [$medicalCase->id,$case->question->id])}}" class="btn btn-outline-light">Change Answer</a>
+                        {{-- <a href="{{route('MedicalCasesController.medicalCaseQuestion', [$medicalCase->id,$case->question->id])}}" class="btn btn-outline-light">Change Answer</a> --}}
                       </div>
                       @endforeach
                     @else
@@ -104,7 +108,7 @@
                           @if($diagnosis->proposed)
                           <span>Proposed</span>
                           @else
-                          <span>Additioanl</span>
+                          <span>Additional</span>
                           @endif
                         </div>
                       </div>

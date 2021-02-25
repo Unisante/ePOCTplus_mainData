@@ -10,6 +10,12 @@ class Answer extends Model implements Auditable
   use \OwenIt\Auditing\Auditable;
   protected $guarded = [];
 
+  /**
+  * Create or get answers
+  * @params $nodeSaved
+  * @params $node
+  * @return void
+  */
   public static function getOrCreate($nodeSaved,$node){
     if(array_key_exists('answers',$node)){
       $answers=isset($node['answers'])?$node['answers']:[];
@@ -25,6 +31,5 @@ class Answer extends Model implements Auditable
         );
       }
     }
-    return True;
   }
 }

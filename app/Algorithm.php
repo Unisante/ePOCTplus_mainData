@@ -12,13 +12,17 @@ class Algorithm extends Model implements Auditable
   use \OwenIt\Auditing\Auditable;
   protected $guarded = [];
 
-  // checks if it exists and if not,it creates the existance,if it does.It returns true
+  /**
+  * Checks the the algorithm version
+  * @params $algorithm_id
+  * @params $version_id
+  * @return array
+  */
   public static function ifOrExists($data){
     // check if the algorithm exist in the database
     $algorithm_doesnt_exist=Algorithm::where('medal_c_id',$data['algorithm_id'])->doesntExist();
     $version_doesnt_exist=Version::where('medal_c_id',$data['version_id'])->doesntExist();
     if($algorithm_doesnt_exist){
-      error_log("inside for algorithm");
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // saving a new algorithm
@@ -39,7 +43,6 @@ class Algorithm extends Model implements Auditable
       ];
     }
     else if ($version_doesnt_exist){
-      error_log("inside for algorithm version");
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // find the algorithm
@@ -55,7 +58,6 @@ class Algorithm extends Model implements Auditable
         "config_data"=>$config_data,
       ];
     }else{
-      error_log("inside return algorithm");
       $version =Version::where('medal_c_id',$data['version_id'])->first();
       $config_data=PatientConfig::getConfig($version->id);
       return [
@@ -65,6 +67,12 @@ class Algorithm extends Model implements Auditable
 
     }
   }
+
+  /**
+  * fetch algorithm version from medal c
+  * @params $version_id
+  * @return array
+  */
   public static function fetchAlgorithm($version_id){
     // setting headers for when we secure this part of quering from medal c
     // curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -73,7 +81,8 @@ class Algorithm extends Model implements Auditable
     // ));
     $curl = curl_init();
     curl_setopt_array($curl, array(
-      CURLOPT_URL => 'https://liwi-test.wavelab.top/api/v1/versions/'.$version_id,
+      // CURLOPT_URL => 'https://liwi-test.wavelab.top/api/v1/versions/'.$version_id,
+      CURLOPT_URL => 'https://medalc.unisante.ch/api/v1/versions/'.$version_id,
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => "",
       CURLOPT_MAXREDIRS => 10,
@@ -96,6 +105,13 @@ class Algorithm extends Model implements Auditable
       return $medal_C_algorithm;
     }
   }
+
+  /**
+  * store algorithm
+  * @params $name
+  * @params $medal_c_id
+  * @return algorithm
+  */
   public static function store($name,$medal_c_id){
     $algorithm = new Algorithm;
     $algorithm->name = $name;

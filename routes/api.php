@@ -2,9 +2,14 @@
 
 use Illuminate\Http\Request;
 use App\MedicalCaseAnswer;
+use App\User;
+use App\JsonLog;
+use App\HealthFacility;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use App\Jobs\SaveCase;
+use App\Jobs\RedcapPush;
+
 use Madnest\Madzipper\Madzipper;
 /*
 |--------------------------------------------------------------------------
@@ -21,24 +26,46 @@ use Madnest\Madzipper\Madzipper;
 //    return $request->user();
 //});
 
-Route::get('medical_case_answers', function(Request $request) {
-
+Route::get('medical_case_answers', function(Request $request){
     return MedicalCaseAnswer::all();
 });
 
-Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
-Route::post('queue_sync_medical_cases',function(Request $request){
-   $file=Storage::putFile('medical_cases_zip', $request->file);
-   $unparsed_path = base_path().'/storage/app/unparsed_medical_cases';
-   $parsed_folder='parsed_medical_cases';
-   $zipper=new Madzipper();
-   $zipper->make($request->file('file'))->extractTo($unparsed_path);
-   $filename=basename($file);
-   Storage::makeDirectory($parsed_folder);
-   foreach(Storage::allFiles('unparsed_medical_cases') as $filename){
-    $individualData = json_decode(Storage::get($filename), true);
-    dispatch(new SaveCase($individualData,$filename));
-   }
-  //  Storage::delete($file);
-   return response()->json(['response'=>'job received','status'=>200]);
+// Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
+
+Route::post('sync_medical_cases',function(Request $request){
+  if($request->file){
+    $file=Storage::putFile('medical_cases_zip', $request->file);
+    $unparsed_path = base_path().'/storage/app/unparsed_medical_cases';
+    $parsed_folder='parsed_medical_cases';
+    $zipper=new Madzipper();
+    $zipper->make($request->file('file'))->extractTo($unparsed_path);
+    $filename=basename($file);
+    Storage::makeDirectory($parsed_folder);
+    foreach(Storage::allFiles('unparsed_medical_cases') as $filename){
+      $individualData = json_decode(Storage::get($filename), true);
+      dispatch(new SaveCase($individualData,$filename));
+    }
+    dispatch(new RedcapPush());
+    return response()->json(['data_received'=> true,'status'=>200]);
+  }
+  return response()->json(['data_received'=> false,'status'=>400]);
+});
+
+Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
+  if(HealthFacility::where('group_id',$health_facility_id)->doesntExist()){
+    return response()->json(
+      [
+        'status'=>404,
+        'response'=>'The facility does not exist in medAL-Data'
+      ]
+    );
+  }
+  $facility=HealthFacility::where('group_id',$health_facility_id)->first();
+  return response()->json([
+    "health_facility_id"=>$facility->group_id,
+    "facility_name"=>$facility->facility_name,
+    "nb_of_cases_synced"=>$facility->medical_cases->count(),
+    "timestamp_json_log"=>$facility->log_cases->sortByDesc('created_at')->pluck('created_at')->first(),
+    "total_nb_of_json_log"=>$facility->log_cases->count(),
+  ]);
 });

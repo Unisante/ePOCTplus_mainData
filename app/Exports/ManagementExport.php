@@ -19,13 +19,13 @@ WithEvents
     {
       return [
         'management_id',
-        'medal_c_id',
-        'type',
-        'label',
-        'description',
-        'diagnostic_id',
-        'created_at',
-        'updated_at',
+        'management_medal_c_id',
+        'management_type',
+        'management_label',
+        'management_description',
+        'management_diagnosis_id',
+        'management_created_at',
+        'management_updated_at',
       ];
     }
     public function registerEvents():array

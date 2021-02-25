@@ -18,13 +18,13 @@ WithEvents
 {
   public function headings():array{
       return [
-        'diagnosisReference_id',
-        'agreed',
-        'proposed_additional',
-        'diagnosis_id',
-        'medical_case_id',
-        'created_at',
-        'updated_at',
+        'diagnosis_reference_id',
+        'diagnosis_reference_agreed',
+        'diagnosis_reference_proposed_additional',
+        'diagnosis_reference_diagnosis_id',
+        'diagnosis_reference_medical_case_id',
+        'diagnosis_reference_created_at',
+        'diagnosis_reference_updated_at',
       ];
   }
   public function registerEvents():array

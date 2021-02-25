@@ -19,13 +19,13 @@ WithEvents
     {
       return [
         'diagnosis_id',
-        'medal_c_id',
-        'label',
-        'diagnostic_id',
-        'created_at',
-        'updated_at',
-        'type',
-        'version_id',
+        'diagnosis_medal_c_id',
+        'diagnosis_label',
+        'diagnosis_diagnostic_id',
+        'diagnosis_created_at',
+        'diagnosis_updated_at',
+        'diagnosis_type',
+        'diagnosis_version_id',
       ];
     }
     public function registerEvents():array

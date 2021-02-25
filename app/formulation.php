@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Formulation extends Model
 {
   protected $guarded = [];
+
+  /**
+  * store drugs formulations
+  * @params $drug_id
+  * @params $formulations
+  * @return void
+  */
   public static function store($drug_id,$formulations){
     foreach($formulations as $formulation){
       $formulationToSave= new Formulation;

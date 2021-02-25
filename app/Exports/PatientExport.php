@@ -21,23 +21,27 @@ class PatientExport implements
   {
     return [
       'patient_id',
-      'local_patient_id',
-      'first_name',
-      'last_name',
-      'birthdate',
-      'weight',
-      'gender',
-      'group_id',
-      'consent',
-      'created_at',
-      'updated_at',
+      'patient_local_patient_id',
+      'patient_first_name',
+      'patient_last_name',
+      'patient_birthdate',
+      'patient_weight',
+      'patient_gender',
+      'patient_group_id',
+      'patient_consent',
+      'patient_other_uid',
+      'merged',
+      'merged_with',
+      'related_ids',
+      'patient_created_at',
+      'patient_updated_at',
     ];
   }
   public function registerEvents():array
   {
     return[
       AfterSheet::class => function(AfterSheet $event){
-        $event->sheet->getStyle('A1:K1')->applyFromArray([
+        $event->sheet->getStyle('A1:O1')->applyFromArray([
           'font'=>[
             'bold'=>true,
           ],
@@ -52,7 +56,7 @@ class PatientExport implements
   */
   public function collection()
   {
-    return Patient::select('id','local_patient_id','first_name','last_name','birthdate','weight','gender','group_id','consent','created_at','updated_at')->get();
+    return Patient::select('id','local_patient_id','first_name','last_name','birthdate','weight','gender','group_id','consent','other_uid','merged','merged_with','related_ids','created_at','updated_at')->get();
   }
   public function title():string
   {

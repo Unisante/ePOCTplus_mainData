@@ -65,12 +65,12 @@
                         @endif
                     </div>
                     <div class="row">
-                        <div class="col-8">
+                        {{-- <div class="col-8">
                             <div class="icheck-primary">
                                 <input type="checkbox" name="remember" id="remember">
                                 <label for="remember">{{ __('adminlte::adminlte.remember_me') }}</label>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-4">
                             <button type="submit" class="btn btn-primary btn-block btn-flat">
                                 {{ __('adminlte::adminlte.sign_in') }}
@@ -81,8 +81,13 @@
                 <p class="mt-2 mb-1">
                     <a href="{{ $password_reset_url }}">
                         {{ __('adminlte::adminlte.i_forgot_my_password') }}
+
                     </a>
+                    {{-- <a class="btn btn-primary" href="{{ route('users.resetOwnUserPassword') }}"> I forgot my password</a> --}}
+                    {{-- <a class="btn btn-primary" href="/user/reset"> I forgot my password</a> --}}
                 </p>
+                {{-- <a class="primary" href="{{ route('users.resetOwnUserPassword') }}"> I forgot my password</a> --}}
+                {{-- @if ($register_url) --}}
                 {{-- @if ($register_url)
                     <p class="mb-0">
                         <a href="{{ $register_url }}">

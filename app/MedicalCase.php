@@ -19,6 +19,8 @@ use App\Node;
 use App\Algorithm;
 use App\PatientConfig;
 use App\Answer;
+use App\FollowUp;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
 class MedicalCase extends Model implements Auditable
@@ -26,11 +28,14 @@ class MedicalCase extends Model implements Auditable
   use \OwenIt\Auditing\Auditable;
   protected $guarded = [];
 
+  function isRedcapFlagged() : bool {
+    // TODO : return value of redcap flag in the database
+    return false;
+  }
+
   /**
-  * Checks the json for medical case creation
-  * @params $json
-  * @params $patient_id
-  * @params &$response
+  * Checks the medical_case.json for medical case creation
+  * @params $data_to_parse
   * @return void
   */
   public static function parse_data($data_to_parse){
@@ -39,88 +44,10 @@ class MedicalCase extends Model implements Auditable
     DiagnosisReference::parse_data($medical_case->id,$data_to_parse['diagnoses'],$data_to_parse['version_id']);
   }
 
-  public static function syncMedicalCases($file_to_sync){
-    $study_id='Test';
-    $isEligible=true;
-      // $file=Storage::get($file_to_sync);
-      // dd($file);
-    // if($request->file('file')){
-      $unparsed_path = base_path().'/storage/medicalCases/unparsed_medical_cases';
-      $parsed_path = base_path().'/storage/medicalCases/parsed_medical_cases';
-      $consent_path = base_path().'/storage/consentFiles';
-      Madzipper::make($file_to_sync)->extractTo($unparsed_path);
-      $files = File::allFiles($unparsed_path);
-
-      foreach($files as $path){
-        $individualData = json_decode(file_get_contents($path), true);
-        $dataForAlgorithm=array("algorithm_id"=> $individualData['algorithm_id'],"version_id"=> $individualData['version_id'],);
-        Algorithm::ifOrExists($dataForAlgorithm);
-        $patient_key=$individualData['patient'];
-        if($patient_key['study_id']== $study_id && $individualData['isEligible']==$isEligible){
-          $config= PatientConfig::getConfig($individualData['version_id']);
-          $nodes=$individualData['nodes'];
-          $gender_answer= Answer::where('medal_c_id',$nodes[$config->gender_question_id]['value'])->first();
-          $consent_file_name=$patient_key['uid'] .'_image.jpg';
-          if($consent_file_64 = $patient_key['consent_file']){
-            $img = Image::make($consent_file_64);
-            if(!File::exists($consent_path)) {
-              mkdir($consent_path);
-            }
-            $img->save($consent_path.'/'.$consent_file_name);
-          }
-          $issued_patient=Patient::firstOrCreate(
-            [
-              "local_patient_id"=>$patient_key['uid']
-            ],
-            [
-            "first_name"=>$nodes[$config->first_name_question_id]['value'],
-            "last_name"=>$nodes[$config->last_name_question_id]['value'],
-            "birthdate"=>$nodes[$config->birth_date_question_id]['value'],
-            "weight"=>$nodes[$config->weight_question_id]['value'],
-            "gender"=>$gender_answer->label,
-            "group_id"=>$patient_key['group_id'],
-            "consent"=>$consent_file_name,
-            ]
-          );
-          $data_to_parse=array(
-            'local_medical_case_id'=>$individualData['id'],
-            'version_id'=>$individualData['version_id'],
-            'created_at'=>$individualData['created_at'],
-            'updated_at'=>$individualData['updated_at'],
-            'patient_id'=>$issued_patient->id,
-            'algorithm_id'=>$individualData['algorithm_id'],
-            'nodes'=>$individualData['nodes'],
-            'diagnoses'=>$individualData['diagnoses'],
-            'consent'=>$individualData['consent'],
-            'isEligible'=>$individualData['isEligible']
-          );
-          self::parse_data($data_to_parse);
-        }
-        if(!File::exists($parsed_path)) {
-          mkdir($parsed_path);
-        }
-        $new_path=$parsed_path.'/'.pathinfo($path)['filename'].'.'.pathinfo($path)['extension'];
-        $move = File::move($path, $new_path);
-      }
-
-      return response()->json(
-        [
-          "data_received"=>True,
-        ]
-      );
-    // }
-    // return response()->json(
-    //   [
-    //     "data_received"=>False,
-    //   ]
-    // );
-  }
   /**
   * Create or get medical case
-  * @params $local_id
-  * @params $patient_id
+  * @params $data_to_save
   * @params $version_id
-  *
   * @return $medical_case
   */
   public static function get_or_create($data_to_save,$version_id){
@@ -134,12 +61,82 @@ class MedicalCase extends Model implements Auditable
         'created_at'=>new DateTime($data_to_save['created_at']),
         'updated_at'=>new DateTime($data_to_save['updated_at']),
         'isEligible'=>$data_to_save['isEligible'],
-        'consent'=>$data_to_save['consent']
+        'consent'=>$data_to_save['consent'],
+        'group_id'=>$data_to_save['group_id'],
       ]
     );
     return $medical_case;
   }
 
+  /**
+  * Make follow up
+  * @params $medical_case
+  * @params $data
+  * @return Void
+  */
+  public static function makeFollowUp($medical_case){
+
+    $configurations=json_decode($medical_case->version->configurations->config);
+    $date=new DateTime($medical_case->created_at);
+    $date->format('Y-m-d H:i:s');
+    $first_name=self::fetchAttribute($medical_case,$configurations->first_name_question_id);
+    $last_name=self::fetchAttribute($medical_case,$configurations->last_name_question_id);
+    $gender=self::fetchAttribute($medical_case,$configurations->gender_question_id);
+    $village_name=self::fetchAttribute($medical_case,$configurations->village_question_id);
+    $follow_up=[
+      'consultation_id'=>$medical_case->local_medical_case_id,
+      'patient_id'=>$medical_case->patient->local_patient_id,
+      'hf_id'=>isset($medical_case->group_id)?$medical_case->group_id:null,
+      'consultation_date_time'=>$date->format('Y-m-d H:i:s'),
+      'group_id'=>1
+    ];
+    if(! in_array(null,$follow_up) ){
+      $follow_up=new FollowUp($medical_case);
+      return $follow_up;
+    }
+    return null;
+    // check if the the things in the business rules apply
+    // check if the data is already sent to redcap
+  }
+
+  /**
+  * fetch attribute
+  * @params $medical_case
+  * @params $medal_c_id
+  * @return Void
+  */
+  public static function fetchAttribute($medical_case,$medal_c_id){
+    $node=Node::where('medal_c_id',$medal_c_id)->first();
+    $record=$medical_case->medical_case_answers()->where('node_id',$node->id)->first();
+    if($record == null){
+      return null;
+    }
+    if($record->answer_id){
+      return $record->answer->label;
+    }else{
+      return $record->value;
+    }
+  }
+
+  public function listUnfollowed(){
+    $caseFollowUpCollection=new Collection();
+    foreach(MedicalCase::where('redcap',false)->get() as $medicalcase){
+      $followUp=MedicalCase::makeFollowUp($medicalcase);
+        // find the patient related to this followup
+      $caseFollowUpCollection->add($followUp);
+    }
+    return $caseFollowUpCollection;
+  }
+
+  public function listFollowed(){
+    $caseFollowUpCollection=new Collection();
+    foreach(MedicalCase::where('redcap',true)->get() as $medicalcase){
+      $followUp=MedicalCase::makeFollowUp($medicalcase);
+        // find the patient related to this followup
+      $caseFollowUpCollection->add($followUp);
+    }
+    return $caseFollowUpCollection;
+  }
   /**
   * making a relationship to patient
   * @return one to one patient relationship
@@ -149,14 +146,26 @@ class MedicalCase extends Model implements Auditable
   }
 
   /**
-  * Make medical case relation
+  * making a relationship to patient
+  * @return one to one patient relationship
+  */
+  public function version(){
+    return $this->belongsTo('App\Version');
+  }
+  /**
+  * Make medical case answers relation
   * @return one to many medical cases retionship
   */
   public function medical_case_answers(){
     return $this->hasMany('App\MedicalCaseAnswer');
   }
-  public function diagnoses(){
-    return $this->hasMany('App\Diagnosis');
+
+  /**
+  * Make diagnosis relation
+  * @return one to many medical cases retionship
+  */
+  public function diagnosesReferences(){
+    return $this->hasMany('App\DiagnosisReference');
   }
 
 }

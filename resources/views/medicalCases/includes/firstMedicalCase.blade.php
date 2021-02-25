@@ -2,16 +2,21 @@
 <div class="card">
   <div class="card-color">
     <div class="card-header">
-      <span class="font-weight-bold">Created At: </span>
-      <span class="border-bottom">{{$first_medical_case->created_at}}</span>
+      <div class="d-flex justify-content-between">
+        <span class="font-weight-bold text-white">Created At: </span>
+        <span class="border-bottom text-white">{{$first_medical_case->created_at}}</span>
+      </div>
+    </div>
+    <div class="card-header ">
+      <div class="d-flex justify-content-between">
+        <span class="font-weight-bold text-white">Updated At: </span>
+        <span class="border-bottom text-white">{{$first_medical_case->created_at}}</span>
+      </div>
     </div>
     <div class="card-header">
-      <span class="font-weight-bold">Updated At: </span>
-      <span class="border-bottom">{{$first_medical_case->created_at}}</span> </div>
-    <div class="card-header">
-      <div>
-        <span class="font-weight-bold">Patient Name:</span>
-        <span class="border-bottom">
+      <div class="d-flex justify-content-between">
+        <span class="font-weight-bold text-white">Patient Name:</span>
+        <span class="border-bottom text-white">
           {{$first_medical_case->patient->first_name}}
           {{$first_medical_case->patient->last_name}}
         </span>

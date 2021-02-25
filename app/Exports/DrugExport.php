@@ -19,15 +19,15 @@ WithEvents
     {
       return [
         'drug_id',
-        'medal_c_id',
-        'type',
-        'label',
-        'description',
-        'diagnosis_id',
-        'created_at',
-        'updated_at',
-        'is_anti_malarial',
-        'is_antibiotic'
+        'drug_medal_c_id',
+        'drug_type',
+        'drug_label',
+        'drug_description',
+        'drug_diagnosis_id',
+        'drug_created_at',
+        'drug_updated_at',
+        'drug_is_anti_malarial',
+        'drug_is_antibiotic'
       ];
     }
     public function registerEvents():array
