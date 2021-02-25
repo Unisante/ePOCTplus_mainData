@@ -82,7 +82,7 @@ WithEvents
   {
     return[
       AfterSheet::class => function(AfterSheet $event){
-        $event->sheet->getStyle('A1:I1')->applyFromArray([
+        $event->sheet->getStyle('A1:J1')->applyFromArray([
           'font'=>[
             'bold'=>true,
           ],

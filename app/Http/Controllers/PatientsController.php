@@ -78,10 +78,6 @@ class PatientsController extends Controller
   * @return $catchEachDuplicate
   */
   public function findDuplicates(){
-    // $duplicates = Patient::select('first_name','last_name')
-    // ->groupBy('first_name','last_name')
-    // ->havingRaw('COUNT(*) > 1')
-    // ->get();
       $patients= Patient::where([['merged',0],['status',0]])->get();
       $duplicateArray=[];
       foreach($patients as $patient){
@@ -166,8 +162,6 @@ class PatientsController extends Controller
     if($second_patient->related_ids != null){
       $second_patient->related_ids=implode(',',$second_patient->related_ids);
     }
-    // $first_patient->related_ids=implode(',',$first_patient->related_ids);
-    // $second_patient->related_ids=implode(',',$second_patient->related_ids);
     $data=array(
       'first_patient'=>$first_patient,
       'second_patient'=>$second_patient,
@@ -250,12 +244,6 @@ class PatientsController extends Controller
           'PatientsController@findDuplicates'
         );
       }
-
-      // $duplicates = Patient::select("first_name","last_name")
-      // ->groupBy("first_name","last_name")
-      // ->havingRaw('COUNT(*) > 1')
-      // ->get();
-      // return $duplicates;
       $catchEachDuplicate=array();
       foreach($duplicates as $duplicate){
         $users = Patient::where($criterias, $duplicate->$criterias)->get();
@@ -345,33 +333,6 @@ class PatientsController extends Controller
       $case->save();
     });
 
-    // old code
-    // $casesId=array();
-    // $first_person_array=array();
-    // if(sizeof($first_patient->medicalCases)>0){
-    //   foreach($first_patient->medicalCases as $first_medical_case){
-    //     $first_medical_case->update([
-    //       "patient_id"=>$hybrid_patient->id
-    //     ]);
-    //     array_push($casesId,$first_medical_case->id);
-    //   }
-    // }
-
-    // $case_not_to_update=self::relateCases($casesId,$second_patient->medicalCases);
-
-    // if(sizeof($second_patient->medicalCases)>0){
-    //   foreach($second_patient->medicalCases as $second_medical_case){
-    //     if(!(in_array($second_medical_case->id,$case_not_to_update))){
-    //       $second_medical_case->update([
-    //         "patient_id"=>$hybrid_patient->id
-    //       ]);
-    //     }else{
-    //       $second_medical_case->diagnosesReferences->each->delete();
-    //       $second_medical_case->delete();
-    //     }
-    //   }
-    // }
-
     //making the first person and second person record termed as merged
     $first_patient->merged=1;
     $first_patient->merged_with=$second_patient->local_patient_id;
@@ -415,8 +376,6 @@ class PatientsController extends Controller
     return Excel::download(new PatientExport,'patients.csv');
   }
   public function allDataIntoExcel(){
-    // return Excel::download(new PatientExport,'patients.csv');
-    // return Excel::download(new MedicalCaseExport,'Medicase.csv');
     return Excel::download(new DataSheet,'MainData.xlsx');
   }
 
