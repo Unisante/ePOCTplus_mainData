@@ -18,7 +18,7 @@ WithEvents
   public function headings():array
   {
     return [
-      'Id',
+      'answer_id',
       'medal_c_id',
       'node_id',
       'created_at',
@@ -49,6 +49,6 @@ WithEvents
   }
   public function title():string
   {
-    return 'Answers';
+    return 'answers';
   }
 }

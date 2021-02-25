@@ -8,8 +8,8 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-          <a href="/medicalCases" class="btn btn-outline-dark"> Back</a>
-          <a href="{{route('medicalCasesController.showCaseChanges',[$medicalCase->id])}}" class="btn btn-outline-dark float-right">View This Medical Case Changes</a>
+          <a href="/medicalcases" class="btn btn-outline-dark"> Back</a>
+          <a href="{{route('MedicalCasesController.showCaseChanges',[$medicalCase->id])}}" class="btn btn-outline-dark float-right">View This Medical Case Changes</a>
         </div>
         <div class="card-body">
           @if (session('status'))
@@ -72,7 +72,7 @@
                           <span class="font-weight-bold">Answer: </span>
                           <span>{{$case->answer}}</span>
                         </div>
-                        <a href="{{route('medicalCasesController.medicalCaseQuestion', [$medicalCase->id,$case->question->id])}}" class="btn btn-outline-light">Change Answer</a>
+                        <a href="{{route('MedicalCasesController.medicalCaseQuestion', [$medicalCase->id,$case->question->id])}}" class="btn btn-outline-light">Change Answer</a>
                       </div>
                       @endforeach
                     @else
@@ -89,7 +89,7 @@
                         </div>
                         <div class="card-header">
                           <span class="font-weight-bold">diagnostic ID: </span>
-                          <span>{{$diagnosis->diagnostic_id}}</span>
+                          <span>{{$diagnosis->diagnosis_medal_c_id}}</span>
                         </div>
                         <div class="card-header">
                           <span class="font-weight-bold">Agreed: </span>
@@ -101,7 +101,7 @@
                         </div>
                         <div class="card-header">
                           <span class="font-weight-bold">Diagnosis type: </span>
-                          @if($diagnosis->proposed_additional)
+                          @if($diagnosis->proposed)
                           <span>Proposed</span>
                           @else
                           <span>Additioanl</span>

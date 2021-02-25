@@ -19,7 +19,7 @@ WithEvents
   public function headings():array
     {
       return [
-        'Id',
+        'node_id',
         'medal_c_id',
         'reference',
         'label',
@@ -33,13 +33,14 @@ WithEvents
         'algorithm_id',
         'created_at',
         'updated_at',
+        'is_identifiable'
       ];
     }
     public function registerEvents():array
   {
     return[
       AfterSheet::class => function(AfterSheet $event){
-        $event->sheet->getStyle('A1:N1')->applyFromArray([
+        $event->sheet->getStyle('A1:O1')->applyFromArray([
           'font'=>[
             'bold'=>true,
           ],
@@ -58,6 +59,6 @@ WithEvents
     }
     public function title():string
     {
-      return 'Nodes';
+      return 'nodes';
     }
 }

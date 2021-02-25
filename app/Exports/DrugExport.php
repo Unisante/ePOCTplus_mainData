@@ -18,26 +18,23 @@ WithEvents
   public function headings():array
     {
       return [
-        'Id',
+        'drug_id',
         'medal_c_id',
         'type',
-        'reference',
         'label',
         'description',
-        'is_anti_malarial',
-        'is_antibiotic',
-        'formulationSelected',
         'diagnosis_id',
-        'custom_diagnosis_id',
         'created_at',
         'updated_at',
+        'is_anti_malarial',
+        'is_antibiotic'
       ];
     }
     public function registerEvents():array
     {
       return[
         AfterSheet::class => function(AfterSheet $event){
-          $event->sheet->getStyle('A1:M1')->applyFromArray([
+          $event->sheet->getStyle('A1:J1')->applyFromArray([
             'font'=>[
               'bold'=>true,
             ],
@@ -56,6 +53,6 @@ WithEvents
     }
     public function title():string
     {
-      return 'Drugs';
+      return 'drugs';
     }
 }

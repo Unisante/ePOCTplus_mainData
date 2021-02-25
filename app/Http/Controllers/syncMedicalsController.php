@@ -3,69 +3,104 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Algorithm;
 use App\Patient;
+use App\Answer;
 use App\MedicalCase;
+use Madzipper;
+use File;
+use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Arr;
+use App\Jobs\fetchAlgorithm;
 class syncMedicalsController extends Controller
 {
     public function syncMedicalCases(Request $request){
-      $data1=$request->getContent();
-      $data=$request->json()->all();
       $study_id='Test';
-      foreach($data as $individualData){
-        $patient=new Patient;
+      $isEligible=true;
 
-        $patient_key=$individualData['patient'];
-        if($patient_key['study_id']== $study_id){
-          $patient->local_patient_id=$patient_key['uid'];
-          //gain the id to search in the nodes
-          $config=$individualData['config'];
-          $birth_date_question_id=$config['basic_questions']['birth_date_question_id'];
-          $first_name_question_id=$config['basic_questions']['first_name_question_id'];
-          $last_name_question_id=$config['basic_questions']['last_name_question_id'];
-          $weight_question_id=$config['basic_questions']['weight_question_id'];
-          $gender_question_id=$config['basic_questions']['gender_question_id'];
+      if($request->file('file')){
+        $unparsed_path = base_path().'/storage/medicalCases/unparsed_medical_cases';
+        $parsed_path = base_path().'/storage/medicalCases/parsed_medical_cases';
+        $consent_path = base_path().'/storage/consentFiles';
+        Madzipper::make($request->file('file'))->extractTo($unparsed_path);
+        $files = File::allFiles($unparsed_path);
+        foreach($files as $path){
+          $jsonString = file_get_contents($path);
+          $individualData = json_decode($jsonString, true);
 
-          //find the values in the node
-          $nodes=$individualData['nodes'];
-          foreach ($nodes as $node){
-            if($node['id']==$birth_date_question_id){$patient->birthdate=$node['value'];}
-            if($node['id']==$first_name_question_id){$patient->first_name=$node['value'];}
-            if($node['id']==$last_name_question_id){$patient->last_name=$node['value'];}
-            if($node['id']==$weight_question_id){$patient->weight=$node['value'];}
-            if($node['id']==$gender_question_id){
-              foreach($node['answers'] as $answer){
-                if ($answer['id']==$node['answer']){$patient->gender=$answer['label'];}
-              }
+          $algorithm_id = json_decode($individualData['algorithm_id'], true);
+          $version_id = json_decode($individualData['version_id'], true);
+          $dataForAlgorithm=array(
+            "algorithm_id"=> $algorithm_id,
+            "version_id"=> $version_id,
+          );
+          $algorithm_n_version=Algorithm::ifOrExists($dataForAlgorithm);
+          $patient_key=$individualData['patient'];
+          if($patient_key['study_id']== $study_id && $individualData['isEligible']==$isEligible){
+            $patient=new Patient;
+            $patient->local_patient_id=$patient_key['uid'];
+            $birth_date_question_id=$algorithm_n_version["config_data"]->birth_date_question_id;
+            $first_name_question_id=$algorithm_n_version["config_data"]->first_name_question_id;
+            $last_name_question_id=$algorithm_n_version["config_data"]->last_name_question_id;
+            $weight_question_id=$algorithm_n_version["config_data"]->weight_question_id;
+            $gender_question_id=$algorithm_n_version["config_data"]->gender_question_id;
+
+            if($patient_not_exist=Patient::where('local_patient_id',$patient_key['uid'])->doesntExist()){
+              $nodes=$individualData['nodes'];
+              $patient->birthdate=$nodes[$birth_date_question_id]['value'];
+              $patient->first_name=$nodes[$first_name_question_id]['value'];
+              $patient->last_name=$nodes[$last_name_question_id]['value'];
+              $patient->weight=$nodes[$weight_question_id]['value'];
+              $gender_answer= Answer::where('medal_c_id',$nodes[$gender_question_id]['value'])->first();
+              $patient->gender=$gender_answer->label;
+              $patient->group_id=$patient_key['group_id'];
+              $patient->save();
             }
+            $issued_patient=Patient::where('local_patient_id',$patient_key['uid'])->first();
+            $consent_exist=$issued_patient->consent;
+            if(!$consent_exist){
+              $consent_file_name=$issued_patient->local_patient_id .'_image.jpg';
+              $issued_patient->consent=$consent_file_name;
+              $consent_file_64 = $patient_key['consent_file'];
+              $img = Image::make($consent_file_64);
+              if(!File::exists($consent_path)) {
+                mkdir($consent_path);
+              }
+              $img->save($consent_path.'/'.$consent_file_name);
+              $issued_patient->save();
+            }
+            $data_to_parse=array(
+              'local_medical_case_id'=>$individualData['id'],
+              'version_id'=>$individualData['version_id'],
+              'created_at'=>$individualData['created_at'],
+              'updated_at'=>$individualData['updated_at'],
+              'patient_id'=>$issued_patient->id,
+              'nodes'=>$individualData['nodes'],
+              'diagnoses'=>$individualData['diagnoses'],
+              'consent'=>$individualData['consent'],
+              'isEligible'=>$individualData['isEligible'],
+              'version_id'=>$algorithm_n_version['version_id'],
+            );
+            MedicalCase::parse_data($data_to_parse);
           }
-          //find if the patient already exist of create
-          $issued_patient = Patient::firstOrCreate(
-            [
-              'local_patient_id'=>$patient_key['uid'],
-            ],
-            [
-              'first_name'=>$patient->first_name,
-              'last_name'=>$patient->last_name,
-              'birthdate'=>$patient->birthdate,
-              'weight'=>$patient->weight,
-              'gender'=>$patient->gender
-            ]
-          );
-          $data_to_parse=array(
-            'local_medical_case_id'=>$individualData['id'],
-            'version_id'=>$individualData['version_id'],
-            'created_at'=>$individualData['created_at'],
-            'updated_at'=>$individualData['updated_at'],
-            'patient_id'=>$issued_patient->id,
-            'algorithm_id'=>$individualData['algorithm_id'],
-            'algorithm_name'=>$individualData['algorithm_name'],
-            'version_name'=>$individualData['version_name'],
-            'nodes'=>$individualData['nodes'],
-            'diagnoses'=>$individualData['diagnoses']
-          );
-          MedicalCase::parse_data($data_to_parse);
+          if(!File::exists($parsed_path)) {
+            mkdir($parsed_path);
+          }
+          $new_path=$parsed_path.'/'.pathinfo($path)['filename'].'.'.pathinfo($path)['extension'];
+          $move = File::move($path, $new_path);
         }
-      }
-      return response()->json(["data"=>'all cool']);
+        return response()->json(
+          [
+            "data_received"=>True,
+          ]
+        );
+      }else{
+        return response()->json(
+          [
+            "data_received"=>False,
+          ]
+        );
     }
+  }
 }

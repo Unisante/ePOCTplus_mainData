@@ -19,7 +19,7 @@ WithEvents
   public function headings():array
     {
       return [
-        'id',
+        'algrorithm_id',
         'medal_c_id',
         'name',
         'created_at',
@@ -49,6 +49,6 @@ WithEvents
     }
     public function title():string
     {
-      return 'Algorithms';
+      return 'algorithms';
     }
 }

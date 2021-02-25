@@ -18,7 +18,7 @@ WithEvents
   public function headings():array
     {
       return [
-        'Id',
+        'medical_case_answer_id',
         'medical_case_id',
         'answer_id',
         'node_id',
@@ -50,6 +50,6 @@ WithEvents
     }
     public function title():string
     {
-      return 'Medical Case answers';
+      return 'medical_case_answers';
     }
 }

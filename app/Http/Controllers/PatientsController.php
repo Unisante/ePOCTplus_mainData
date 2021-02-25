@@ -187,6 +187,8 @@ class PatientsController extends Controller
     return Excel::download(new PatientExport,'patients.csv');
   }
   public function allDataIntoExcel(){
+    // return Excel::download(new PatientExport,'patients.csv');
+    // return Excel::download(new MedicalCaseExport,'Medicase.csv');
     return Excel::download(new DataSheet,'MainData.xlsx');
   }
 }
