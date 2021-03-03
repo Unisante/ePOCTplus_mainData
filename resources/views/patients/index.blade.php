@@ -12,7 +12,7 @@
           <div class="ml-auto p-2">
             {{-- <a href="{{route('PatientsController.patientIntoCsv')}}" class="btn btn-outline-dark">Export Csv</a>
             <a href="{{route('PatientsController.patientIntoExcel')}}" class="btn btn-outline-dark"> Export Excel</a> --}}
-          <button class="btn btn-outline-dark " onclick="comparePatients()"> Compare</button>
+          {{-- <button class="btn btn-outline-dark " onclick="comparePatients()"> Compare</button> --}}
           </div>
         </div>
         <div class="card-body">
@@ -30,10 +30,12 @@
                 <thead>
                   <tr>
                     <th scope="col">SN</th>
-                    <th>checkbox</th>
+                    {{-- <th>checkbox</th> --}}
                     <th scope="col">First Name</th>
+                    <th scope="col">Middle Name</th>
                     <th scope="col">Last Name</th>
                     <th scope="col">Birthdate</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
@@ -41,10 +43,16 @@
                   @foreach($patients as $patient)
                   <tr>
                     <td scope="row">{{ $loop->index }}</td>
-                    <td><input type="checkbox" class="messageCheckbox" value="{{$patient->id}}"></td>
+                    {{-- <td><input type="checkbox" class="messageCheckbox" value="{{$patient->id}}"></td> --}}
                     <td>{{$patient->first_name}}</td>
+                    <td>{{$patient->middle_name}}</td>
                     <td>{{$patient->last_name}}</td>
                     <td>{{$patient->birthdate}}</td>
+                    @if($patient->merged)
+                    <td>Merged</td>
+                    @else
+                    <td>Active</td>
+                    @endif
                     <td><a href="{{route('PatientsController.show',[$patient->id])}}" class="btn btn-outline-dark"> Show Patient</a></td>
                   </tr>
                   @endforeach

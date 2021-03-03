@@ -55,6 +55,12 @@
                   </div>
                   <div class="form-check">
                     <label class="container">
+                      <input type="checkbox" class="form-check-input" name="searchCriteria[]" value="middle_name">Middle Name
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <label class="container">
                       <input type="checkbox" class="form-check-input" name="searchCriteria[]" value="last_name">Last Name
                       <span class="checkmark"></span>
                     </label>
@@ -78,6 +84,7 @@
                   <th scope="col">Sn</th>
                   <th scope="col">Patient Id</th>
                   <th scope="col">First Name</th>
+                  <th scope="col">Middle Name</th>
                   <th scope="col">Last Name</th>
                   <th scope="col">BirthDate</th>
                   <th scope="col">created_at</th>
@@ -91,6 +98,7 @@
                   <th scope="row">{{ $loop->index + 1 }}</th>
                   <td>{{$duplicate['id']}}</td>
                   <td>{{$duplicate['first_name']}}</td>
+                  <td>{{$duplicate['middle_name']}}</td>
                   <td>{{$duplicate['last_name']}}</td>
                   <td>{{$duplicate['birthdate']}}</td>
                   <td>{{$duplicate['created_at']}}</td>

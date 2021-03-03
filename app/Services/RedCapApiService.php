@@ -115,25 +115,26 @@ class RedCapApiService
           Config::get('redcap.identifiers.patient.dyn_pat_first_name') => $patient->getFirstname(),
           Config::get('redcap.identifiers.patient.dyn_pat_last_name') => $patient->getLastName(),
           Config::get('redcap.identifiers.patient.dyn_pat_dob') => $patient->getBirthDay(),
+          Config::get('redcap.identifiers.patient.dyn_pat_village') => $patient->getVillage(),
           Config::get('redcap.identifiers.patient.dyn_pat_sex') => $patient->getGender(),
-
           Config::get('redcap.identifiers.patient.dyn_pat_first_name_caregiver') => $patient->getCareGiverFirstName(),
           Config::get('redcap.identifiers.patient.dyn_pat_last_name_caregiver') => $patient->getCareGiverLastName(),
           Config::get('redcap.identifiers.patient.dyn_pat_relationship_child') => $patient->getChildrelation(),
           Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver') => $patient->getPhoneNumber(),
-          Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver_2') => $patient->getOtherPhoneNumber(),
-          Config::get('redcap.identifiers.patient.dyn_pat_village') => $patient->getVillage()
+          Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver_2') => $patient->getOtherPhoneNumber()
+
         ];
       }
 
       // call redcap API
       try {
-        return $this->projectPatient->importRecords($datas, null, null, null, null, 'ids');
+        return $this->projectPatient->importRecords(json_encode($datas), null, null, null, null, 'ids');
       } catch (PhpCapException $e) {
         // unique field redcap error
         if ($e->getCode() === 7) {
           throw new RedCapApiServiceException("unique field error", 7, $e);
         }
+        throw new RedCapApiServiceException($e);
         throw new RedCapApiServiceException("Failed to create participant {}", 0, $e);
       }
     } else {

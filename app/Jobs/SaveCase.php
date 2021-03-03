@@ -80,15 +80,18 @@ class SaveCase implements ShouldQueue
             }
             $img->save($consent_path.'/'.$consent_file_name);
         }
-
         $duplicateConditions=[
-          'first_name'=>$nodes[$algorithm_n_version["config_data"]->first_name_question_id]['value'],
-          'last_name'=>$nodes[$algorithm_n_version["config_data"]->last_name_question_id]['value'],
-          'birthdate'=>$nodes[$algorithm_n_version["config_data"]->birth_date_question_id]['value']
+          'first_name'=>isset($nodes[$algorithm_n_version["config_data"]->first_name_question_id])?$nodes[$algorithm_n_version["config_data"]->first_name_question_id]['value']:null,
+          'last_name'=>isset($nodes[$algorithm_n_version["config_data"]->last_name_question_id])?$nodes[$algorithm_n_version["config_data"]->last_name_question_id]['value']:null,
+          'birthdate'=>isset($nodes[$algorithm_n_version["config_data"]->birth_date_question_id])?$nodes[$algorithm_n_version["config_data"]->birth_date_question_id]['value']:null,
+          'middle_name'=>isset($nodes[$algorithm_n_version["config_data"]->middle_name_patient_id])?$nodes[$algorithm_n_version["config_data"]->middle_name_patient_id]['value']:null,
+          'other_id'=>isset($nodes[$algorithm_n_version["config_data"]->other_id_patient_id])?$nodes[$algorithm_n_version["config_data"]->other_id_patient_id]['value']:null
         ];
+        $duplicateConditions=array_filter($duplicateConditions);
         $duplicate_flag=false;
         $senseDuplicate=Patient::where($duplicateConditions)->exists();
-        $existingPatient=Answer::where('medal_c_id',$nodes[3783]['answer'])->first();
+        // dd($algorithm_n_version['config_data']->parent_in_study_id);
+        $existingPatient=Answer::where('medal_c_id',$nodes[$algorithm_n_version['config_data']->parent_in_study_id]['answer'])->first();
         if($patient_key['other_uid'] || $senseDuplicate || $existingPatient->label == 'Yes'){
           $duplicate_flag=true;
         }
@@ -98,6 +101,7 @@ class SaveCase implements ShouldQueue
           ],
           [
           "first_name"=>$nodes[$algorithm_n_version["config_data"]->first_name_question_id]['value'],
+          "middle_name"=>isset($nodes[$algorithm_n_version["config_data"]->middle_name_patient_id])?$nodes[$algorithm_n_version["config_data"]->middle_name_patient_id]['value']:'',
           "last_name"=>$nodes[$algorithm_n_version["config_data"]->last_name_question_id]['value'],
           "birthdate"=>$nodes[$algorithm_n_version["config_data"]->birth_date_question_id]['value'],
           "weight"=>$nodes[$algorithm_n_version["config_data"]->weight_question_id]['value'],
@@ -106,6 +110,7 @@ class SaveCase implements ShouldQueue
           "other_group_id"=>$patient_key['other_group_id'],
           "other_study_id"=>$patient_key['other_study_id'],
           "other_uid"=>$patient_key['other_uid'],
+          "other_id"=>isset($nodes[$algorithm_n_version["config_data"]->other_id_patient_id])?$nodes[$algorithm_n_version["config_data"]->other_id_patient_id]['value']:'',
           "consent"=>$consent_file_name,
           "duplicate"=>$duplicate_flag,
           "related_ids"=>[$patient_key['other_uid']]

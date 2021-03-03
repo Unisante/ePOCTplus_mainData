@@ -33,7 +33,7 @@ class Algorithm extends Model implements Auditable
       // checking to see if there is a version of the algorithm
       $version = Version::store($medal_C_algorithm['version_name'],$medal_C_algorithm['version_id'],$algorithm->id);
       $config_questions = $medal_C_algorithm['config']['basic_questions'];
-      $config_data=PatientConfig::getOrCreate($config_questions,$version->id);
+      $config_data=PatientConfig::getOrCreate($version->id);
       // have to store the nodes for the algorithm
       Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
       $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
@@ -50,7 +50,7 @@ class Algorithm extends Model implements Auditable
       // create a version
       $version = Version::store($medal_C_algorithm['version_name'],$medal_C_algorithm['version_id'],$algorithm->id);
       $config_questions = $medal_C_algorithm['config']['basic_questions'];
-      $config_data=PatientConfig::getOrCreate($config_questions,$version->id);
+      $config_data=PatientConfig::getOrCreate($version->id);
       Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
       $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
       return [
@@ -59,7 +59,7 @@ class Algorithm extends Model implements Auditable
       ];
     }else{
       $version =Version::where('medal_c_id',$data['version_id'])->first();
-      $config_data=PatientConfig::getConfig($version->id);
+      $config_data=PatientConfig::getOrCreate($version->id);
       return [
         "version_id"=>$version->id,
         "config_data"=>$config_data

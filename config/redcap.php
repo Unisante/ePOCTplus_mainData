@@ -12,6 +12,7 @@ return [
       'patient' => [
         'dyn_pat_study_id_patient' => 'dyn_pat_study_id_patient',
         'dyn_pat_first_name' => 'dyn_pat_first_name',
+        'dyn_pat_middle_name'=> 'dyn_pat_middle_name',
         'dyn_pat_last_name' => 'dyn_pat_last_name',
         'dyn_pat_dob' => 'dyn_pat_dob',
         'dyn_pat_village' => 'dyn_pat_village',
@@ -21,7 +22,9 @@ return [
         'dyn_pat_relationship_child' => 'dyn_pat_relationship_child',
         'dyn_pat_relationship_child_other' => 'dyn_pat_relationship_child_other',
         'dyn_pat_phone_caregiver' => 'dyn_pat_phone_caregiver',
+        'dyn_pat_phone_owner'=>'dyn_pat_phone_owner',
         'dyn_pat_phone_caregiver_2' => 'dyn_pat_phone_caregiver_2',
+        'dyn_pat_phone_owner2'=>'dyn_pat_phone_owner2'
         ],
       'followup' => [
         'redcap_event_name' => 'consultation_arm_1',
@@ -30,6 +33,7 @@ return [
         'dyn_fup_id_health_facility' => 'dyn_fup_id_health_facility',
         'dyn_fup_date_time_consultation' => 'dyn_fup_date_time_consultation',
         'dyn_fup_group' => 'dyn_fup_group',
+        'dyn_pat_sex_caregiver'=>'dyn_pat_sex_caregiver'
       ]
     ],
 ];

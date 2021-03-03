@@ -13,13 +13,13 @@ class CreateConsultationConfigsTable extends Migration
      */
     public function up()
     {
-        Schema::create('consultation_configs', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->text('config')->nullable();
-            $table->integer('version_id')->unsigned();
-            $table->foreign('version_id')->references('id')->on('versions');
-            $table->timestamps();
-        });
+        // Schema::create('consultation_configs', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->text('config')->nullable();
+        //     $table->integer('version_id')->unsigned();
+        //     $table->foreign('version_id')->references('id')->on('versions');
+        //     $table->timestamps();
+        // });
     }
 
     /**

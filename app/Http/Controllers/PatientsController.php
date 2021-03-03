@@ -178,6 +178,26 @@ class PatientsController extends Controller
           array_push($catchEachDuplicate,$patients);
         }
         return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
+      }else if(sizeOf($criteria)==4){
+        $duplicates = Patient::select($criteria[0],$criteria[1],$criteria[2],$criteria[3])
+        ->where('merged',0)
+        ->groupBy($criteria[0],$criteria[1],$criteria[2],$criteria[3])
+        ->havingRaw('COUNT(*) > 1')
+        ->get()->toArray();
+        $catchEachDuplicate=array();
+        foreach($duplicates as $duplicate){
+          $patients = Patient::where(
+            [
+              [$criteria[0], $duplicate[$criteria[0]]],
+              [$criteria[1], $duplicate[$criteria[1]]],
+              [$criteria[2], $duplicate[$criteria[2]]],
+              [$criteria[3], $duplicate[$criteria[3]]],
+              ['merged',0]
+          ]
+          )->get();
+          array_push($catchEachDuplicate,$patients);
+        }
+        return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
       }else{
         return redirect()->action(
           'PatientsController@findDuplicates'
@@ -216,15 +236,16 @@ class PatientsController extends Controller
     $allrelatedIds=$patient->combinePairIds($first_patient->related_ids,$second_patient->related_ids);
     $allrelatedIds=$patient->addLocalPatientIds($first_patient->local_patient_id,$second_patient->local_patient_id,$allrelatedIds);
     $consent = $patient->addConsentList($first_patient->consent,$second_patient->consent);
-
     //creating a new patient
     $hybrid_patient=new Patient([
       'first_name'=>$request->first_name,
+      'middle_name'=>$request->middle_name,
       'last_name'=>$request->last_name,
       'local_patient_id'=>collect([$first_patient,$second_patient])->sortByDesc('updated_at')->first()->local_patient_id,
       'birthdate'=>$request->birthdate,
       'weight'=>$request->weight,
       'gender'=>$request->gender,
+      'other_id'=>$request->other_id,
       'group_id'=>$request->group_id,
       'consent'=>$consent,
       "related_ids"=>$allrelatedIds

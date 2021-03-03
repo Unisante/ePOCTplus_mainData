@@ -61,6 +61,25 @@
                       </td>
                     </tr>
                     <tr>
+                      <td>Middle Name:</td>
+                      <td>
+                        <label class="container">{{$first_patient->middle_name}}
+                        <input type="radio"  name="middle_name" value="{{$first_patient->middle_name}}" checked>
+                        <span class="checkmark"></span>
+                        </label>
+                        {{-- <label id="label_id">{{$first_patient->first_name}}</label>
+                        <div class="check"></div> --}}
+                      </td>
+                      <td>
+                        <label class="container">{{$second_patient->middle_name}}
+                        <input type="radio"  name="middle_name" value="{{$first_patient->middle_name}}">
+                        <span class="checkmark"></span>
+                        </label>
+                        {{-- <label id="label_id">{{$second_patient->first_name}}</label>
+                        <div class="check"></div> --}}
+                      </td>
+                    </tr>
+                    <tr>
                       <td>Last Name:</td>
                       <td>
                         <label class="container">{{$first_patient->last_name}}
@@ -133,6 +152,25 @@
                         <span class="checkmark"></span>
                         </label>
                         {{-- <label id="label_id">{{$second_patient->gender}}</label>
+                        <div class="check"></div> --}}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Other Id:</td>
+                      <td>
+                        <label class="container">{{$first_patient->other_id}}
+                        <input type="radio" name="other_id" value="{{$first_patient->other_id}}" checked>
+                        <span class="checkmark"></span>
+                        </label>
+                        {{-- <label id="label_id">{{$first_patient->group_id}}</label>
+                        <div class="check"></div> --}}
+                      </td>
+                      <td>
+                        <label class="container">{{$second_patient->group_id}}
+                        <input type="radio" name="other_id" value="{{$second_patient->other_id}}">
+                        <span class="checkmark"></span>
+                        </label>
+                        {{-- <label id="label_id">{{$second_patient->group_id}}</label>
                         <div class="check"></div> --}}
                       </td>
                     </tr>

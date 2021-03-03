@@ -75,11 +75,11 @@ class MedicalCase extends Model implements Auditable
   * @return Void
   */
   public static function makeFollowUp($medical_case){
-
     $configurations=json_decode($medical_case->version->configurations->config);
     $date=new DateTime($medical_case->created_at);
     $date->format('Y-m-d H:i:s');
     $first_name=self::fetchAttribute($medical_case,$configurations->first_name_question_id);
+    $middle_name=self::fetchAttribute($medical_case,$configurations->middle_name_patient_id);
     $last_name=self::fetchAttribute($medical_case,$configurations->last_name_question_id);
     $gender=self::fetchAttribute($medical_case,$configurations->gender_question_id);
     $village_name=self::fetchAttribute($medical_case,$configurations->village_question_id);
@@ -151,6 +151,9 @@ class MedicalCase extends Model implements Auditable
   */
   public function version(){
     return $this->belongsTo('App\Version');
+  }
+  public function facility(){
+    return $this->belongsTo('App\HealthFacility','group_id','group_id');
   }
   /**
   * Make medical case answers relation
