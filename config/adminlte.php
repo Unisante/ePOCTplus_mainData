@@ -241,12 +241,12 @@ return [
             'can' =>  'View_Case'
         ],
 
-        [
-          'text' => 'Questions',
-          'url'  => '/questions',
-          'icon' => 'fas fa-fw fa-question-circle',
-          'can' =>  'View_Case'
-        ],
+        // [
+        //   'text' => 'Questions',
+        //   'url'  => '/questions',
+        //   'icon' => 'fas fa-fw fa-question-circle',
+        //   'can' =>  'View_Case'
+        // ],
         [
           'text' => 'Export',
           'url'  => '/export-mainData-csv',

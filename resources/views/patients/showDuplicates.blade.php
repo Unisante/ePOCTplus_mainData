@@ -44,8 +44,8 @@
               <form action="{{route('PatientsController@searchDuplicates')}}" method="POST" id="searchform" >
                 @csrf
                 <div class="row">
-                <div class="col-md-4"></div>
-                <div class="col-md-8">
+                {{-- <div class="col-md-4"></div> --}}
+                <div class="col-md-12">
                   <div class="d-flex justify-content-between">
                   <div class="form-check">
                     <label class="container">
@@ -68,6 +68,12 @@
                   <div class="form-check">
                     <label class="container">
                       <input type="checkbox" class="form-check-input" name="searchCriteria[]" value="birthdate">DOB
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <label class="container">
+                      <input type="checkbox" class="form-check-input" name="searchCriteria[]" value="other_id">Id Card
                       <span class="checkmark"></span>
                     </label>
                   </div>

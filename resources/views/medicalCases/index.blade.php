@@ -26,7 +26,7 @@
           @include('layouts.compareModal')
           @include('layouts.datatable')
           <div class="row">
-            <div class="col-md-8 offset-md-2">
+            <div class="col-md-10 offset-md-1">
               @if(count($medicalCases)>0)
               <table class="table">
                 <thead>
@@ -36,7 +36,7 @@
                     <th scope="col">Date</th>
                     <th scope="col">Belogs TO</th>
                     <th scope="col">Came From</th>
-                    <th scope="col">Actions</th>
+                    {{-- <th scope="col">Actions</th> --}}
                   </tr>
                 </thead>
                 <tbody>
@@ -45,9 +45,10 @@
                     <th scope="row">{{ $loop->index+1 }}</th>
                     {{-- <th><input type="checkbox" class="messageCheckbox" value="{{$medicalCase->id}}"></th> --}}
                     <td>{{$medicalCase->created_at}}</td>
-                    <td>{{$medicalCase->patient->first_name}} {{$medicalCase->patient->last_name}}</td>
+                    {{-- <td>{{$medicalCase->patient->first_name}} {{$medicalCase->patient->last_name}}</td> --}}
+                    <td>{{$medicalCase->patient->local_patient_id}}</td>
                     <td>{{$medicalCase->facility->facility_name}}</td>
-                    <td><a href="{{route('MedicalCasesController.show',[$medicalCase->id])}}" class="btn btn-outline-dark"> Show Medical Case</a>
+                    {{-- <td><a href="{{route('MedicalCasesController.show',[$medicalCase->id])}}" class="btn btn-outline-dark"> Show Medical Case</a> --}}
                     </td>
                   </tr>
                   @endforeach

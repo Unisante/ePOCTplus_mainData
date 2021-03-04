@@ -24,13 +24,14 @@
           @include('layouts.compareModal')
           @include('layouts.datatable')
           <div class="row">
-            <div class="col-md-8 offset-md-2">
+            <div class="col-md-12">
               @if(count($patients)>0)
               <table class="table">
                 <thead>
                   <tr>
                     <th scope="col">SN</th>
                     {{-- <th>checkbox</th> --}}
+                    <th scope="col">Patient Uid</th>
                     <th scope="col">First Name</th>
                     <th scope="col">Middle Name</th>
                     <th scope="col">Last Name</th>
@@ -44,6 +45,7 @@
                   <tr>
                     <td scope="row">{{ $loop->index }}</td>
                     {{-- <td><input type="checkbox" class="messageCheckbox" value="{{$patient->id}}"></td> --}}
+                    <td>{{$patient->local_patient_id}}</td>
                     <td>{{$patient->first_name}}</td>
                     <td>{{$patient->middle_name}}</td>
                     <td>{{$patient->last_name}}</td>

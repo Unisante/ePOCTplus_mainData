@@ -22,7 +22,7 @@
                 <div class="card-header">{{$patient->first_name}}'s Details</div>
                 <div class="card-body">
                   <div class="d-flex justify-content-between"> <span>Patient Id:</span>  <span class="border-bottom">{{$patient->local_patient_id}}</span></div>
-                  <div class="d-flex justify-content-between"> <span>Other Id:</span>  <span class="border-bottom">{{$patient->pther_id}}</span></div>
+                  <div class="d-flex justify-content-between"> <span>Other Id:</span>  <span class="border-bottom">{{$patient->other_id}}</span></div>
                   <div class="d-flex justify-content-between"> <span>First Name:</span>  <span class="border-bottom">{{$patient->first_name}}</span></div>
                   <div class="d-flex justify-content-between"> <span>Middle Name:</span>  <span class="border-bottom">{{$patient->middle_name}}</span></div>
                   <div class="d-flex justify-content-between"> <span>Last Name:</span>  <span class="border-bottom">{{$patient->last_name}}</span></div>

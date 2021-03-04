@@ -9,7 +9,7 @@
       <div class="card">
         <div class="card-header d-flex ">
           <span>
-            <h3>Delayed Follow-ups</h3>
+            <h3>Follow-ups In Redcap</h3>
           </span>
         </div>
         <div class="card-body">

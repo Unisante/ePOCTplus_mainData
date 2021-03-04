@@ -198,6 +198,27 @@ class PatientsController extends Controller
           array_push($catchEachDuplicate,$patients);
         }
         return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
+      }else if(sizeOf($criteria)==5){
+        $duplicates = Patient::select($criteria[0],$criteria[1],$criteria[2],$criteria[3],$criteria[4])
+        ->where('merged',0)
+        ->groupBy($criteria[0],$criteria[1],$criteria[2],$criteria[3],$criteria[4])
+        ->havingRaw('COUNT(*) > 1')
+        ->get()->toArray();
+        $catchEachDuplicate=array();
+        foreach($duplicates as $duplicate){
+          $patients = Patient::where(
+            [
+              [$criteria[0], $duplicate[$criteria[0]]],
+              [$criteria[1], $duplicate[$criteria[1]]],
+              [$criteria[2], $duplicate[$criteria[2]]],
+              [$criteria[3], $duplicate[$criteria[3]]],
+              [$criteria[4], $duplicate[$criteria[4]]],
+              ['merged',0]
+          ]
+          )->get();
+          array_push($catchEachDuplicate,$patients);
+        }
+        return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
       }else{
         return redirect()->action(
           'PatientsController@findDuplicates'
