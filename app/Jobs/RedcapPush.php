@@ -103,8 +103,12 @@ class RedcapPush implements ShouldQueue
             Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver') => $patient->getPhoneNumber(),
             Config::get('redcap.identifiers.patient.dyn_pat_phone_owner') => $patient->getPhoneOwner(),
             Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver_2') => $patient->getOtherPhoneNumber(),
-            Config::get('redcap.identifiers.patient.dyn_pat_phone_owner2') => $patient->getOtherOwner()
+            Config::get('redcap.identifiers.patient.dyn_pat_phone_owner2') => $patient->getOtherOwner(),
+            Config::get('redcap.identifiers.patient.complete')=>2,
           ];
+          if(in_array('', $datas[$patient->getPatientId()], true) || in_array(null , $datas[$patient->getPatientId()], true)){
+            $datas[$patient->getPatientId()][Config::get('redcap.identifiers.patient.complete')]=0;
+          }
         }
         $data = array(
           'token' => '91D6C0EB77CC58FC26184EFFD7146CEC',
@@ -115,7 +119,7 @@ class RedcapPush implements ShouldQueue
           'forceAutoNumber' => 'false',
           'data' => json_encode($datas),
           'returnContent' => 'ids',
-          'returnFormat' => 'json'
+          'returnFormat' => 'json',
         );
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://redcap.ihi.or.tz/api/');
@@ -149,9 +153,14 @@ class RedcapPush implements ShouldQueue
             Config::get('redcap.identifiers.followup.dyn_pat_sex_caregiver') => $followup->getCareGiverGender(),
             Config::get('redcap.identifiers.patient.dyn_pat_relationship_child') => $followup->getChildrelation(),
             Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver') => $followup->getPhoneNumber(),
+            Config::get('redcap.identifiers.patient.dyn_pat_phone_owner') => $followup->getPhoneOwner(),
             Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver_2') => $followup->getOtherPhoneNumber(),
-
+            Config::get('redcap.identifiers.patient.dyn_pat_phone_owner2') => $followup->getOtherOwner(),
+            Config::get('redcap.identifiers.followup.identification_complete') => 2,
           ];
+          if(in_array('', $datas[$followup->getConsultationId()], true) || in_array(null , $datas[$followup->getConsultationId()], true)){
+            $datas[$followup->getPatientId()][Config::get('redcap.identifiers.patient.identification_complete')]=0;
+          }
         }
         $data = array(
           'token' => 'D9B380589E1277EA1DF0C59158016B3C',

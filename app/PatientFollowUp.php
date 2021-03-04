@@ -194,10 +194,9 @@ class PatientFollowUp{
     $phone_owner_node_id=$config->phone_number_owner_id;
     $case_answer=self::findCaseAnswer($phone_owner_node_id);
     $this->phone_owner='';
-    if($case_answer != null ){
-      $this->phone_owner=$case_answer->value;
+    if($case_answer != null){
+      $this->phone_owner=$case_answer->answer->label;
     }
-
   }
   private function setOtherPhoneNumber($config){
     $other_phone_number_node_id=$config->other_number_id;
@@ -209,7 +208,7 @@ class PatientFollowUp{
     $case_answer=self::findCaseAnswer($other_phone_owner_node_id);
     $this->other_owner='';
     if($case_answer != null){
-      $this->other_owner=$case_answer->value;
+      $this->other_owner=$case_answer->answer->label;
     }
   }
 }

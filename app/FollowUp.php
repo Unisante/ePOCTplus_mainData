@@ -26,6 +26,8 @@ class FollowUp{
   protected $phone_number;
   protected $other_phone_number;
   protected $case;
+  protected $phone_owner;
+  protected $other_owner;
 
   public function __construct($medical_case){
     $this->case=$medical_case;
@@ -92,6 +94,8 @@ class FollowUp{
     self::setChildRelation($config);
     self::setPhoneNumber($config);
     self::setOtherPhoneNumber($config);
+    self::setPhoneOwner($config);
+    self::setOtherPhoneOwner($config);
   }
   private function findCaseAnswer($medal_c_id){
     $node=Node::where('medal_c_id',$medal_c_id)->first();
@@ -161,10 +165,27 @@ class FollowUp{
     $case_answer=self::findCaseAnswer($phone_number_node_id);
     $this->phone_number=$case_answer->value;
   }
+  private function setPhoneOwner($config){
+    $phone_owner_node_id=$config->phone_number_owner_id;
+    $case_answer=self::findCaseAnswer($phone_owner_node_id);
+    $this->phone_owner='';
+    if($case_answer != null){
+      $this->phone_owner=$case_answer->answer->label;
+    }
+  }
   private function setOtherPhoneNumber($config){
     $other_phone_number_node_id=$config->other_number_id;
     $case_answer=self::findCaseAnswer($other_phone_number_node_id);
     $this->other_phone_number=$case_answer->value;
+  }
+
+  private function setOtherPhoneOwner($config){
+    $other_phone_owner_node_id=$config->other_number_owner_id;
+    $case_answer=self::findCaseAnswer($other_phone_owner_node_id);
+    $this->other_owner='';
+    if($case_answer != null){
+      $this->other_owner=$case_answer->answer->label;
+    }
   }
 
   public function getCareGiverFirstName()
@@ -190,5 +211,13 @@ class FollowUp{
   public function getOtherPhoneNumber()
   {
     return $this->other_phone_number;
+  }
+  public function getPhoneOwner()
+  {
+    return $this->phone_owner;
+  }
+  public function getOtherOwner()
+  {
+    return $this->other_owner;
   }
 }

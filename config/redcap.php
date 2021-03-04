@@ -24,7 +24,8 @@ return [
         'dyn_pat_phone_caregiver' => 'dyn_pat_phone_caregiver',
         'dyn_pat_phone_owner'=>'dyn_pat_phone_owner',
         'dyn_pat_phone_caregiver_2' => 'dyn_pat_phone_caregiver_2',
-        'dyn_pat_phone_owner2'=>'dyn_pat_phone_owner2'
+        'dyn_pat_phone_owner2'=>'dyn_pat_phone_owner2',
+        'complete'=>'patient_information_complete'
         ],
       'followup' => [
         'redcap_event_name' => 'consultation_arm_1',
@@ -33,7 +34,8 @@ return [
         'dyn_fup_id_health_facility' => 'dyn_fup_id_health_facility',
         'dyn_fup_date_time_consultation' => 'dyn_fup_date_time_consultation',
         'dyn_fup_group' => 'dyn_fup_group',
-        'dyn_pat_sex_caregiver'=>'dyn_pat_sex_caregiver'
+        'dyn_pat_sex_caregiver'=>'dyn_pat_sex_caregiver',
+        'identification_complete'=>'identification_information_complete'
       ]
     ],
 ];
