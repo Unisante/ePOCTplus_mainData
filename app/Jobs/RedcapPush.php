@@ -52,6 +52,7 @@ class RedcapPush implements ShouldQueue
       $patientFollowUpCollection=collect($patientFollowUpArray);
       $casefollowUpCollection=collect($caseFollowUpArray);
       $redCapApiService = new RedCapApiService();
+      // dd(Config::get('redcap.identifiers.api_url_patient'));
       $patient_id_list=$this->exportRedCapPatients($patientFollowUpCollection);
       // $patient_id_list=$redCapApiService->exportPatient($patientFollowUpCollection);
       if($patient_id_list != null && is_array($patient_id_list)){
@@ -110,8 +111,9 @@ class RedcapPush implements ShouldQueue
             $datas[$patient->getPatientId()][Config::get('redcap.identifiers.patient.complete')]=0;
           }
         }
+
         $data = array(
-          'token' => '91D6C0EB77CC58FC26184EFFD7146CEC',
+          'token' => Config::get('redcap.identifiers.api_token_patient'),
           'content' => 'record',
           'format' => 'json',
           'type' => 'flat',
@@ -122,7 +124,7 @@ class RedcapPush implements ShouldQueue
           'returnFormat' => 'json',
         );
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://redcap.ihi.or.tz/api/');
+        curl_setopt($ch, CURLOPT_URL, Config::get('redcap.identifiers.api_url_patient'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_VERBOSE, 0);
@@ -163,7 +165,7 @@ class RedcapPush implements ShouldQueue
           }
         }
         $data = array(
-          'token' => 'D9B380589E1277EA1DF0C59158016B3C',
+          'token' => Config::get('redcap.identifiers.api_token_followup'),
           'content' => 'record',
           'format' => 'json',
           'type' => 'flat',
@@ -174,7 +176,7 @@ class RedcapPush implements ShouldQueue
           'returnFormat' => 'json'
         );
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://redcap.ihi.or.tz/api/');
+        curl_setopt($ch, CURLOPT_URL, Config::get('redcap.identifiers.api_url_followup'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_VERBOSE, 0);
