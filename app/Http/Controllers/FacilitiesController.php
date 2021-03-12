@@ -17,7 +17,7 @@ class FacilitiesController extends Controller
       foreach($facilities as $facility){
         //find all medical cases related to that health facility
         $latest_case=$facility->medical_cases->sortByDesc('updated_at')->first()->toArray();
-        error_log($latest_case);
+        // error_log($latest_case);
         $facility->last_case_time=null;
         // dd($latest_case['updated_at']);
         $number_cases=$facility->medical_cases->count();
