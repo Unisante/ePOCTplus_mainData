@@ -16,16 +16,18 @@ class FacilitiesController extends Controller
       $facilities=HealthFacility::all();
       foreach($facilities as $facility){
         //find all medical cases related to that health facility
-        $latest_case=$facility->medical_cases->sortByDesc('updated_at')->first()->toArray();
-        // error_log($latest_case);
-        $facility->last_case_time=null;
-        // dd($latest_case['updated_at']);
-        $number_cases=$facility->medical_cases->count();
-        $number_patients=$facility->patients->count();
-        $facility->number_patients=$number_patients;
-        $facility->number_cases=$number_cases;
-        if($latest_case != null){
-          $facility->last_case_time=$latest_case['updated_at'];
+        if(! $facility->medical_cases->isEmpty()){
+          $latest_case=$facility->medical_cases->sortByDesc('updated_at')->first()->toArray();
+          // error_log($latest_case);
+          $facility->last_case_time=null;
+          // dd($latest_case['updated_at']);
+          $number_cases=$facility->medical_cases->count();
+          $number_patients=$facility->patients->count();
+          $facility->number_patients=$number_patients;
+          $facility->number_cases=$number_cases;
+          if($latest_case != null){
+            $facility->last_case_time=$latest_case['updated_at'];
+          }
         }
       }
       return view('facilities.index')->with('facilities',$facilities);
