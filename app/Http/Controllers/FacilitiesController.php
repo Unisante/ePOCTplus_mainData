@@ -18,11 +18,10 @@ class FacilitiesController extends Controller
         //find all medical cases related to that health facility
         $latest_case=$facility->medical_cases->sortByDesc('updated_at')->first();
         $number_cases=$facility->medical_cases->count();
-        // dd($facility->patients->count());
         $number_patients=$facility->patients->count();
         $facility->number_patients=$number_patients;
         $facility->number_cases=$number_cases;
-        $facility->last_case_time=$latest_case;
+        $facility->last_case_time=$latest_case->updated_at;
       }
       return view('facilities.index')->with('facilities',$facilities);
     }

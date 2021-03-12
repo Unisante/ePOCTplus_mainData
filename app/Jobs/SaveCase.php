@@ -72,7 +72,6 @@ class SaveCase implements ShouldQueue
         if(HealthFacility::where('group_id',(int)$patient_key['group_id'])->doesntExist()){
           $fetchHF=HealthFacility::fetchHealthFacility((int)$patient_key['group_id']);
         }
-
         if($consent_file_64 = $patient_key['consent_file']){
             $img = Image::make($consent_file_64);
             if(!File::exists($consent_path)) {
