@@ -28,8 +28,8 @@ class Drug extends Model
             ],
             [
               'type'=>$node['type'],
-              'label'=>$node['label'],
-              'description'=>$node['description'],
+              'label'=>$node['label'][env('LANGUAGE')],
+              'description'=>isset($node['description'][env('LANGUAGE')])?$node['description'][env('LANGUAGE')]:'',
               'is_antibiotic' => $is_antibiotic,
               'is_anti_malarial' => $is_anti_malarial
             ]

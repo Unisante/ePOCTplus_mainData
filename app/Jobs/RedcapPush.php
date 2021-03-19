@@ -68,6 +68,7 @@ class RedcapPush implements ShouldQueue
       }
 
       $medicalcase_id_list=$this->exportRedcapFollowUps($casefollowUpCollection);
+      dd($medicalcase_id_list);
       // $medicalcase_id_list=$redCapApiService->exportFollowup($casefollowUpCollection);
       if($medicalcase_id_list != null && is_array($patient_id_list)){
         if(sizeof($medicalcase_id_list) > 0 ){
@@ -160,10 +161,12 @@ class RedcapPush implements ShouldQueue
             Config::get('redcap.identifiers.patient.dyn_pat_phone_owner2') => $followup->getOtherOwner(),
             Config::get('redcap.identifiers.followup.identification_complete') => 2,
           ];
+
           if(in_array('', $datas[$followup->getConsultationId()], true) || in_array(null , $datas[$followup->getConsultationId()], true)){
-            $datas[$followup->getPatientId()][Config::get('redcap.identifiers.patient.identification_complete')]=0;
+            $datas[$followup->getConsultationId()][Config::get('redcap.identifiers.followup.identification_complete')]=0;
           }
         }
+        // dd( $datas);
         $data = array(
           'token' => Config::get('redcap.identifiers.api_token_followup'),
           'content' => 'record',
