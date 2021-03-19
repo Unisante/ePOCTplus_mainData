@@ -45,7 +45,7 @@ Route::post('sync_medical_cases',function(Request $request){
       $individualData = json_decode(Storage::get($filename), true);
       dispatch(new SaveCase($individualData,$filename));
     }
-    dispatch(new RedcapPush());
+    // dispatch(new RedcapPush());
     return response()->json(['data_received'=> true,'status'=>200]);
   }
   return response()->json(['data_received'=> false,'status'=>400]);
