@@ -68,7 +68,6 @@ class RedcapPush implements ShouldQueue
       }
 
       $medicalcase_id_list=$this->exportRedcapFollowUps($casefollowUpCollection);
-      dd($medicalcase_id_list);
       // $medicalcase_id_list=$redCapApiService->exportFollowup($casefollowUpCollection);
       if($medicalcase_id_list != null && is_array($patient_id_list)){
         if(sizeof($medicalcase_id_list) > 0 ){
