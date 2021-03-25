@@ -16,7 +16,8 @@ class FollowUp{
   protected $first_name;
   protected $middle_name;
   protected $last_name;
-  protected $gender;
+  protected $child_gender;
+  protected $birthdate;
   protected $village;
   protected $group_id;
   protected $caregiver_first_name;
@@ -87,6 +88,11 @@ class FollowUp{
     // }
     $config = PatientConfig::where('version_id',$this->case->version_id)->first();
     $config=json_decode($config->config);
+    $this->setPatientFirstName($config);
+    $this->setPatientMiddleName($config);
+    $this->setPatientLastName($config);
+    $this->setPatientGender($config);
+    $this->setBirthdate($config);
     $this->setVillage($config);
     $this->setCareGiverFirstName($config);
     $this->setCareGiverLastName($config);
@@ -100,6 +106,60 @@ class FollowUp{
   private function findCaseAnswer($medal_c_id){
     $node=Node::where('medal_c_id',$medal_c_id)->first();
     return $this->case->medical_case_answers()->where('node_id',$node->id)->first();
+  }
+  private function setPatientFirstName($config){
+    $first_name_node_id=$config->first_name_patient_id;
+    $case_answer=$this->findCaseAnswer($first_name_node_id);
+    if($case_answer == null){
+      $this->first_name=null;
+    }else{
+      $this->first_name=$case_answer->value;
+    }
+  }
+  private function setPatientMiddleName($config){
+    $middle_name_node_id=$config->middle_name_patient_id;
+    $case_answer=$this->findCaseAnswer($middle_name_node_id);
+    if($case_answer == null){
+      $this->middle_name=null;
+    }else{
+      $this->middle_name=$case_answer->value;
+    }
+  }
+  private function setPatientLastName($config){
+    $last_name_node_id=$config->last_name_patient_id;
+    $case_answer=$this->findCaseAnswer($last_name_node_id);
+    if($case_answer == null){
+      $this->last_name=null;
+    }else{
+      $this->last_name=$case_answer->value;
+    }
+  }
+  public function setPatientGender($config){
+    $relation=[
+      1=>'Female',
+      2=>'Male',
+    ];
+    $gender_node_id=$config->gender_patient_id;
+    $case_answer=$this->findCaseAnswer($gender_node_id);
+    $this->child_gender=1;
+    if($case_answer != null){
+      $gender_label=$case_answer->answer->label;
+      if(in_array($gender_label,$relation)){
+        $this->child_gender=array_search(strval($case_answer->answer->label),$relation,true);
+      }else{
+        $this->child_gender=1;
+      }
+    }
+    // dd($this->child_gender);
+  }
+  public function setBirthdate($config){
+    $birthdate_node_id=$config->birth_date_patient_id;
+    $case_answer=$this->findCaseAnswer($birthdate_node_id);
+    $this->birthdate=date("Y-m-d");
+    if($case_answer){
+      $date=new DateTime($case_answer->value);
+      $this->birthdate=$date->format('Y-m-d');
+    }
   }
   private function setVillage($config){
     $village_node_id=$config->village_question_id;
@@ -222,5 +282,24 @@ class FollowUp{
   public function getOtherOwner()
   {
     return $this->other_owner;
+  }
+  public function getFirstName()
+  {
+    return $this->first_name;
+  }
+  public function getMiddleName()
+  {
+    return $this->middle_name;
+  }
+  public function getLastName()
+  {
+    return $this->last_name;
+  }
+  public function getGender()
+  {
+    return $this->child_gender;
+  }
+  public function getBirthdate(){
+    return $this->birthdate;
   }
 }

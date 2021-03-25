@@ -37,49 +37,66 @@ class RedcapPush implements ShouldQueue
     {
       $caseFollowUpArray=array();
       $patientFollowUpArray=array();
-      MedicalCase::where('redcap',false)->get()->each(function($medicalcase) use (&$patientFollowUpArray,&$caseFollowUpArray){
+      // MedicalCase::where('redcap',false)->get()->each(function($medicalcase) use (&$patientFollowUpArray,&$caseFollowUpArray){
+      //   $followUp=MedicalCase::makeFollowUp($medicalcase);
+      //   if($followUp != null){
+      //     // if(! $medicalcase->patient->duplicate){
+      //       if(! $medicalcase->patient->redcap){
+      //         $patientFollowUpArray[]=new PatientFollowUp($medicalcase);
+      //       }
+      //       $caseFollowUpArray[]=$followUp;
+      //     // }
+      //   }
+      // });
+
+      MedicalCase::where('redcap',false)->get()->each(function($medicalcase) use (&$caseFollowUpArray){
         $followUp=MedicalCase::makeFollowUp($medicalcase);
         if($followUp != null){
-          // if(! $medicalcase->patient->duplicate){
-            if(! $medicalcase->patient->redcap){
-              $patientFollowUpArray[]=new PatientFollowUp($medicalcase);
-            }
             $caseFollowUpArray[]=$followUp;
-          // }
         }
       });
-
-      $patientFollowUpCollection=collect($patientFollowUpArray);
       $casefollowUpCollection=collect($caseFollowUpArray);
-      $redCapApiService = new RedCapApiService();
-      // dd(Config::get('redcap.identifiers.api_url_patient'));
-      $patient_id_list=$this->exportRedCapPatients($patientFollowUpCollection);
-      // $patient_id_list=$redCapApiService->exportPatient($patientFollowUpCollection);
-      if($patient_id_list != null && is_array($patient_id_list)){
-        if(sizeof($patient_id_list)>0){
-          foreach($patient_id_list as $local_patient_id){
-            Patient::where('local_patient_id',$local_patient_id)->update(
-              [
-                'redcap'=>True
-              ]
-            );
-          }
-        }
-      }
-
       $medicalcase_id_list=$this->exportRedcapFollowUps($casefollowUpCollection);
-      // $medicalcase_id_list=$redCapApiService->exportFollowup($casefollowUpCollection);
-      if($medicalcase_id_list != null && is_array($patient_id_list)){
-        if(sizeof($medicalcase_id_list) > 0 ){
-          foreach($medicalcase_id_list as $medicalcase_id){
-            MedicalCase::where('local_medical_case_id',$medicalcase_id)->update(
-              [
-                'redcap'=>True
-              ]
-            );
-          }
-        }
+      if($medicalcase_id_list != null){
+        collect($medicalcase_id_list)->each(function($case_id){
+          MedicalCase::where('local_medical_case_id',$case_id)->update(
+            [
+              'redcap'=>True
+            ]
+          );
+        });
       }
+      // $patientFollowUpCollection=collect($patientFollowUpArray);
+      // $casefollowUpCollection=collect($caseFollowUpArray);
+      // $redCapApiService = new RedCapApiService();
+      // // dd(Config::get('redcap.identifiers.api_url_patient'));
+      // $patient_id_list=$this->exportRedCapPatients($patientFollowUpCollection);
+      // // $patient_id_list=$redCapApiService->exportPatient($patientFollowUpCollection);
+      // if($patient_id_list != null && is_array($patient_id_list)){
+      //   if(sizeof($patient_id_list)>0){
+      //     foreach($patient_id_list as $local_patient_id){
+      //       Patient::where('local_patient_id',$local_patient_id)->update(
+      //         [
+      //           'redcap'=>True
+      //         ]
+      //       );
+      //     }
+      //   }
+      // }
+
+      // $medicalcase_id_list=$this->exportRedcapFollowUps($casefollowUpCollection);
+      // $medicalcase_id_list=$redCapApiService->exportFollowup($casefollowUpCollection);
+      // if($medicalcase_id_list != null && is_array($patient_id_list)){
+      //   if(sizeof($medicalcase_id_list) > 0 ){
+      //     foreach($medicalcase_id_list as $medicalcase_id){
+      //       MedicalCase::where('local_medical_case_id',$medicalcase_id)->update(
+      //         [
+      //           'redcap'=>True
+      //         ]
+      //       );
+      //     }
+      //   }
+      // }
     }
 
     /**
@@ -145,27 +162,31 @@ class RedcapPush implements ShouldQueue
         /** @var Followup $followup*/
         foreach ($followups as $followup) {
           $datas[$followup->getConsultationId()] = [
-            'redcap_event_name' => Config::get('redcap.identifiers.followup.redcap_event_name'),
+            // 'redcap_event_name' => Config::get('redcap.identifiers.followup.redcap_event_name'),
             Config::get('redcap.identifiers.followup.dyn_fup_study_id_consultation') => $followup->getConsultationId(),
             Config::get('redcap.identifiers.followup.dyn_fup_study_id_patient') => $followup->getPatientId(),
+            Config::get('redcap.identifiers.followup.dyn_fup_firstname') => $followup->getFirstname(),
+            Config::get('redcap.identifiers.followup.dyn_fup_middlename') => $followup->getMiddleName(),
+            Config::get('redcap.identifiers.followup.dyn_fup_lastname') => $followup->getLastName(),
+            Config::get('redcap.identifiers.followup.dyn_fup_sex') => $followup->getGender(),
+            Config::get('redcap.identifiers.followup.dyn_fup_birth_date') => $followup->getBirthdate(),
             Config::get('redcap.identifiers.followup.dyn_fup_id_health_facility') => $followup->getFacilityId(),
             Config::get('redcap.identifiers.followup.dyn_fup_date_time_consultation') => $followup->getConsultationDate(),
-            Config::get('redcap.identifiers.patient.dyn_pat_first_name_caregiver') => $followup->getCareGiverFirstName(),
-            Config::get('redcap.identifiers.patient.dyn_pat_last_name_caregiver') => $followup->getCareGiverLastName(),
-            Config::get('redcap.identifiers.followup.dyn_pat_sex_caregiver') => $followup->getCareGiverGender(),
-            Config::get('redcap.identifiers.patient.dyn_pat_relationship_child') => $followup->getChildrelation(),
-            Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver') => $followup->getPhoneNumber(),
-            Config::get('redcap.identifiers.patient.dyn_pat_phone_owner') => $followup->getPhoneOwner(),
-            Config::get('redcap.identifiers.patient.dyn_pat_phone_caregiver_2') => $followup->getOtherPhoneNumber(),
-            Config::get('redcap.identifiers.patient.dyn_pat_phone_owner2') => $followup->getOtherOwner(),
-            Config::get('redcap.identifiers.followup.identification_complete') => 2,
+            Config::get('redcap.identifiers.followup.dyn_fup_first_name_caregiver') => $followup->getCareGiverFirstName(),
+            Config::get('redcap.identifiers.followup.dyn_fup_last_name_caregiver') => $followup->getCareGiverLastName(),
+            Config::get('redcap.identifiers.followup.dyn_fup_sex_caregiver') => $followup->getCareGiverGender(),
+            Config::get('redcap.identifiers.followup.dyn_fup_relationship_child') => $followup->getChildrelation(),
+            Config::get('redcap.identifiers.followup.dyn_fup_phone_caregiver') => $followup->getPhoneNumber(),
+            Config::get('redcap.identifiers.followup.dyn_fup_phone_owner') => $followup->getPhoneOwner(),
+            Config::get('redcap.identifiers.followup.dyn_fup_phone_caregiver_2') => $followup->getOtherPhoneNumber(),
+            Config::get('redcap.identifiers.followup.dyn_fup_phone_owner2') => $followup->getOtherOwner(),
+            Config::get('redcap.identifiers.followup.dyn_fup_consultation_id') => $followup->getConsultationId(),
+            // Config::get('redcap.identifiers.followup.identification_complete') => 2,
           ];
-
-          if(in_array('', $datas[$followup->getConsultationId()], true) || in_array(null , $datas[$followup->getConsultationId()], true)){
-            $datas[$followup->getConsultationId()][Config::get('redcap.identifiers.followup.identification_complete')]=0;
-          }
+          // if(in_array('', $datas[$followup->getConsultationId()], true) || in_array(null , $datas[$followup->getConsultationId()], true)){
+          //   $datas[$followup->getConsultationId()][Config::get('redcap.identifiers.followup.identification_complete')]=0;
+          // }
         }
-        // dd( $datas);
         $data = array(
           'token' => Config::get('redcap.identifiers.api_token_followup'),
           'content' => 'record',
