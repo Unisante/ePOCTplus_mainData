@@ -180,7 +180,8 @@ class RedcapPush implements ShouldQueue
             Config::get('redcap.identifiers.followup.dyn_fup_phone_owner') => $followup->getPhoneOwner(),
             Config::get('redcap.identifiers.followup.dyn_fup_phone_caregiver_2') => $followup->getOtherPhoneNumber(),
             Config::get('redcap.identifiers.followup.dyn_fup_phone_owner2') => $followup->getOtherOwner(),
-            Config::get('redcap.identifiers.followup.dyn_fup_consultation_id') => $followup->getConsultationId(),
+            // Config::get('redcap.identifiers.followup.dyn_fup_consultation_id') => $followup->getConsultationId(),
+            Config::get('redcap.identifiers.followup.dyn_fup_followup_status') => 1
             // Config::get('redcap.identifiers.followup.identification_complete') => 2,
           ];
           // if(in_array('', $datas[$followup->getConsultationId()], true) || in_array(null , $datas[$followup->getConsultationId()], true)){

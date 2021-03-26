@@ -48,7 +48,8 @@ return [
         'dyn_fup_group' => 'dyn_fup_group',
         'dyn_fup_sex_caregiver'=>'dyn_fup_sex_caregiver',
         'dyn_fup_consultation_id'=>'dyn_fup_consultation_id',
-        'identification_complete'=>'identification_information_complete'
+        'identification_complete'=>'identification_information_complete',
+        'dyn_fup_followup_status'=>'dyn_fup_followup_status'
       ]
     ],
 ];
