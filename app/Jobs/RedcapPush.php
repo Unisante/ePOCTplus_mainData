@@ -36,7 +36,7 @@ class RedcapPush implements ShouldQueue
     public function handle()
     {
       $caseFollowUpArray=array();
-      $patientFollowUpArray=array();
+      // $patientFollowUpArray=array();
       // MedicalCase::where('redcap',false)->get()->each(function($medicalcase) use (&$patientFollowUpArray,&$caseFollowUpArray){
       //   $followUp=MedicalCase::makeFollowUp($medicalcase);
       //   if($followUp != null){

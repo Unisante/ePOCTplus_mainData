@@ -79,17 +79,24 @@ class SaveCase implements ShouldQueue
             }
             $img->save($consent_path.'/'.$consent_file_name);
         }
+        // dd($algorithm_n_version["config_data"]);
+        $other_id='';
+        if(property_exists($algorithm_n_version["config_data"],'other_id_patient_id')){
+          $other_id=isset($nodes[$algorithm_n_version["config_data"]->other_id_patient_id])?$nodes[$algorithm_n_version["config_data"]->other_id_patient_id]['value']:null;
+        }
+
+        // dd($other_id);
         $duplicateConditions=[
           'first_name'=>isset($nodes[$algorithm_n_version["config_data"]->first_name_question_id])?$nodes[$algorithm_n_version["config_data"]->first_name_question_id]['value']:null,
           'last_name'=>isset($nodes[$algorithm_n_version["config_data"]->last_name_question_id])?$nodes[$algorithm_n_version["config_data"]->last_name_question_id]['value']:null,
           'birthdate'=>isset($nodes[$algorithm_n_version["config_data"]->birth_date_question_id])?$nodes[$algorithm_n_version["config_data"]->birth_date_question_id]['value']:null,
           'middle_name'=>isset($nodes[$algorithm_n_version["config_data"]->middle_name_patient_id])?$nodes[$algorithm_n_version["config_data"]->middle_name_patient_id]['value']:null,
-          'other_id'=>isset($nodes[$algorithm_n_version["config_data"]->other_id_patient_id])?$nodes[$algorithm_n_version["config_data"]->other_id_patient_id]['value']:null
+          'other_id'=>$other_id
         ];
         $duplicateConditions=array_filter($duplicateConditions);
         $duplicate_flag=false;
         $senseDuplicate=Patient::where($duplicateConditions)->exists();
-        // dd($algorithm_n_version['config_data']->parent_in_study_id);
+        // dd($nodes[$algorithm_n_version['config_data']->parent_in_study_id]);
         $existingPatient=Answer::where('medal_c_id',$nodes[$algorithm_n_version['config_data']->parent_in_study_id]['answer'])->first();
         // dd(Answer::where('medal_c_id',$nodes[$algorithm_n_version['config_data']->parent_in_study_id]['answer'])->exists());
         // dd($existingPatient);

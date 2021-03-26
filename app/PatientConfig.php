@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\Version;
 class PatientConfig extends Model
 {
   protected $table = 'patient_configs';
@@ -15,12 +15,13 @@ class PatientConfig extends Model
   * @params $version_id
   * @return $config_data
   */
-  public static function getOrCreate($version_id){
-    $dataConfig=self::fetchConfig($version_id);
+  public static function getOrCreate($version){
+
+    $dataConfig=self::fetchConfig($version->medal_c_id);
     $configurations=json_encode($dataConfig);
     $config_fetch=PatientConfig::firstOrCreate(
       [
-        "version_id"=>$version_id,
+        "version_id"=>$version->id,
       ],
       [
         "config"=>$configurations
