@@ -71,12 +71,12 @@
                       <span class="checkmark"></span>
                     </label>
                   </div>
-                  <div class="form-check">
+                  <!-- <div class="form-check">
                     <label class="container">
                       <input type="checkbox" class="form-check-input" name="searchCriteria[]" value="other_id">Id Card
                       <span class="checkmark"></span>
                     </label>
-                  </div>
+                  </div> -->
                   <div class="form-check">
                     <button class="btn btn-outline-secondary float-right" type="Submit">Search</button>
                   </div>
@@ -133,5 +133,3 @@
     </div>
   </div>
   @stop
-
-

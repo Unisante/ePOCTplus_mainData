@@ -104,32 +104,28 @@ class Patient extends Model implements Auditable
     ]
     )->get();
     $duplicateArray=[];
-    foreach($nonMergedPatients as $patient){
-      $keyword=$patient->other_uid;
-      $patientDuplicate=self::where(
-        [
-          ['other_uid',$patient->local_patient_id],
-          ['merged',0],
-          ['id','!=' , $patient->id],
-          // ['status',0]
-        ]
-        )
-        ->orWhere([
-          ['merged',0],
-          // ['status',0],
-          ['id','!=' , $patient->id]
-          ])->whereJsonContains('related_ids',[$keyword])
-        ->get()->toArray();
-      if(self::where([
-        ['other_uid',$patient->local_patient_id],
-        ['merged',0],
-        ['id','!=' , $patient->id],
-        // ['status',0]
-        ])->exists()){
-        array_push($patientDuplicate,$patient->toArray());
-        array_push($duplicateArray,$patientDuplicate);
-      }
-    }
+        $nonMergedPatients->each(function($patient)use (&$duplicateArray){
+          $keyword=$patient->other_uid;
+          if(! $keyword){
+            $keyword='nothingToSearch';
+          }
+          $patientDuplicate=self::where(
+            [
+              ['other_uid',$patient->local_patient_id],
+              ['merged',0],
+              ['id','!=' , $patient->id],
+            ]
+            )
+            ->orWhere([
+              ['merged',0],
+              ['id','!=' , $patient->id]
+              ])->whereJsonContains('related_ids',[$keyword])
+            ->get()->toArray();
+            if($patientDuplicate){
+            array_push($patientDuplicate,$patient->toArray());
+            array_push($duplicateArray,$patientDuplicate);
+          }
+        });
     return $duplicateArray;
   }
   public function findByDuplicateKey($duplicateArray){
