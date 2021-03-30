@@ -225,7 +225,7 @@ return [
           'text' => 'Facilities',
           'url'  => '/facilities/index',
           'icon' => 'fas fa-fw fa-cart-plus',
-          'can' =>  'Merge_Duplicates'
+          'can' =>  'View_Patient'
         ],
         [
             'text' => 'Patient list',

@@ -29,7 +29,7 @@
                     <th scope="col">facility_id</th>
                     <th scope="col">consultation date</th>
                     <th scope="col">village_name</th>
-                    <th scope="col">Actions</th>
+                    {{-- <th scope="col">Actions</th> --}}
                   </tr>
                 </thead>
                 <tbody>
@@ -41,7 +41,7 @@
                     <td>{{$followup->getFacilityId()}}</td>
                     <td>{{$followup->getConsultationDate()}}</td>
                     <td>{{$followup->getVillage()}}</td>
-                    <td>Actions</td>
+                    {{-- <td>Actions</td> --}}
                   </tr>
                   @endforeach
                 </tbody>
