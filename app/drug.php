@@ -39,4 +39,12 @@ class Drug extends Model
       }
     }
   }
+
+  /**
+  * Create a relation with answers
+  * @return relation
+  */
+  public function formulations(){
+    return $this->hasMany('App\Formulation');
+  }
 }

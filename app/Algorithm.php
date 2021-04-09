@@ -26,6 +26,7 @@ class Algorithm extends Model implements Auditable
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // saving a new algorithm
+      // dd($medal_C_algorithm);
       $algorithm= Algorithm::firstOrCreate([
         "name"=>$medal_C_algorithm['algorithm_name'],
         "medal_c_id"=>$medal_C_algorithm['algorithm_id']

@@ -38,6 +38,7 @@ return [
         'dyn_fup_first_name_caregiver'=>'dyn_fup_first_name_caregiver',
         'dyn_fup_last_name_caregiver'=>'dyn_fup_last_name_caregiver',
         'dyn_fup_birth_date'=>'dyn_fup_birth_date',
+        'dyn_pat_village' => 'dyn_pat_village',
         'dyn_fup_relationship_child'=>'dyn_fup_relationship_child',
         'dyn_fup_phone_caregiver'=>'dyn_fup_phone_caregiver',
         'dyn_fup_phone_owner'=>'dyn_fup_phone_owner',

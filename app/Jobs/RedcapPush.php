@@ -170,6 +170,7 @@ class RedcapPush implements ShouldQueue
             Config::get('redcap.identifiers.followup.dyn_fup_lastname') => $followup->getLastName(),
             Config::get('redcap.identifiers.followup.dyn_fup_sex') => $followup->getGender(),
             Config::get('redcap.identifiers.followup.dyn_fup_birth_date') => $followup->getBirthdate(),
+            Config::get('redcap.identifiers.followup.dyn_pat_village') => $followup->getVillage(),
             Config::get('redcap.identifiers.followup.dyn_fup_id_health_facility') => $followup->getFacilityId(),
             Config::get('redcap.identifiers.followup.dyn_fup_date_time_consultation') => $followup->getConsultationDate(),
             Config::get('redcap.identifiers.followup.dyn_fup_first_name_caregiver') => $followup->getCareGiverFirstName(),
