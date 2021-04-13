@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 class AnswerExport implements FromCollection,
 WithTitle,
-ShouldAutoSize,
+// ShouldAutoSize,
 WithHeadings,
 WithEvents
 {

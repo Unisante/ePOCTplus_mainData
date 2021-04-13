@@ -13,6 +13,12 @@ class FacilitiesController extends Controller
     }
 
     public function index(){
+      // dd("its me");
+      // $geocode=file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?latlng=48.283273,14.295041&sensor=false');
+      //   $output= json_decode($geocode);
+      //   dd($output);
+      //   dd($output->results[0]->formatted_address);
+      
       $facilities=HealthFacility::all();
       foreach($facilities as $facility){
         //find all medical cases related to that health facility

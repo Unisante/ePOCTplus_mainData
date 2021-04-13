@@ -14,7 +14,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 
 class CustomDiagnosisExport implements FromCollection,
 WithHeadings,
-ShouldAutoSize,
+// ShouldAutoSize,
 WithTitle,
 WithEvents
 {

@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 class PatientExport implements
   FromCollection,
   WithHeadings,
-  ShouldAutoSize,
+  // ShouldAutoSize,
   WithTitle,
   WithEvents
 {

@@ -14,7 +14,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 
 class AdditionalDrugExport implements FromCollection,
 WithHeadings,
-ShouldAutoSize,
+// ShouldAutoSize,
 WithTitle,
 WithEvents
 {
@@ -47,7 +47,7 @@ WithEvents
         }
       ];
     }
-    
+
   /**
   * @return \Illuminate\Support\Collection
   */
