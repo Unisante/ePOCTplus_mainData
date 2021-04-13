@@ -25,7 +25,7 @@ class Diagnosis extends Model
             'diagnostic_id'=>$node['diagnostic_id']
           ],
           [
-            'label'=>$node['label'],
+            'label'=>$node['label'][env('LANGUAGE')],
             'type'=>$node['type'],
             'version_id'=>$version_id
           ]

@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Formulation;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Patient;
@@ -24,6 +25,7 @@ class DataSheet implements WithMultipleSheets
         $sheets[]=new ManagementReferenceExport;
         $sheets[]= new DiagnosisExport;
         $sheets[]= new DrugExport;
+        $sheets[]= new FormulationExport;
         $sheets[]=new ManagementExport;
         $sheets[]= new NodeExport;
         $sheets[]= new AnswerTypeExport;

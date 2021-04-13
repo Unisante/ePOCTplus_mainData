@@ -15,7 +15,7 @@
           @endif
           @include('layouts.compareModal')
           <div class="row">
-            <div class="col-md-8 offset-md-2">
+            <div class="col-md-12">
               @if(count($questions)>0)
               <table class="table">
                 <thead>

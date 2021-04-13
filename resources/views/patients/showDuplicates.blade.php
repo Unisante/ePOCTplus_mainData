@@ -44,12 +44,18 @@
               <form action="{{route('PatientsController@searchDuplicates')}}" method="POST" id="searchform" >
                 @csrf
                 <div class="row">
-                <div class="col-md-4"></div>
-                <div class="col-md-8">
+                {{-- <div class="col-md-4"></div> --}}
+                <div class="col-md-12">
                   <div class="d-flex justify-content-between">
                   <div class="form-check">
                     <label class="container">
                       <input type="checkbox" class="form-check-input" name="searchCriteria[]" value="first_name">First Name
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <label class="container">
+                      <input type="checkbox" class="form-check-input" name="searchCriteria[]" value="middle_name">Middle Name
                       <span class="checkmark"></span>
                     </label>
                   </div>
@@ -65,6 +71,12 @@
                       <span class="checkmark"></span>
                     </label>
                   </div>
+                  <!-- <div class="form-check">
+                    <label class="container">
+                      <input type="checkbox" class="form-check-input" name="searchCriteria[]" value="other_id">Id Card
+                      <span class="checkmark"></span>
+                    </label>
+                  </div> -->
                   <div class="form-check">
                     <button class="btn btn-outline-secondary float-right" type="Submit">Search</button>
                   </div>
@@ -78,6 +90,7 @@
                   <th scope="col">Sn</th>
                   <th scope="col">Patient Id</th>
                   <th scope="col">First Name</th>
+                  <th scope="col">Middle Name</th>
                   <th scope="col">Last Name</th>
                   <th scope="col">BirthDate</th>
                   <th scope="col">created_at</th>
@@ -91,6 +104,7 @@
                   <th scope="row">{{ $loop->index + 1 }}</th>
                   <td>{{$duplicate['id']}}</td>
                   <td>{{$duplicate['first_name']}}</td>
+                  <td>{{$duplicate['middle_name']}}</td>
                   <td>{{$duplicate['last_name']}}</td>
                   <td>{{$duplicate['birthdate']}}</td>
                   <td>{{$duplicate['created_at']}}</td>
@@ -119,5 +133,3 @@
     </div>
   </div>
   @stop
-
-

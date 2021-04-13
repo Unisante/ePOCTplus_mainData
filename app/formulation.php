@@ -29,7 +29,7 @@ class Formulation extends Model
       $formulationToSave->maximal_dose_per_kg = $formulation['maximal_dose_per_kg'];
       $formulationToSave->maximal_dose = $formulation['maximal_dose'];
       $formulationToSave->doses_per_day = $formulation['doses_per_day'];
-      $formulationToSave->description = $formulation['description'];
+      $formulationToSave->description = isset($formulation['description'][env('LANGUAGE')])?$formulation['description'][env('LANGUAGE')]:'';
       $formulationToSave->save();
     }
   }

@@ -5,12 +5,14 @@ namespace App;
 use DateTime;
 use App\ConsultationConfig;
 use App\node;
+use App\PatientConfig;
 
 class PatientFollowUp{
   /** @var String $patient_id*/
   protected $patient_id;
   protected $local_patient_id;
   protected $first_name;
+  protected $middle_name;
   protected $last_name;
   protected $birthday;
   protected $gender;
@@ -20,18 +22,21 @@ class PatientFollowUp{
   protected $caregiver_last_name;
   protected $child_relation;
   protected $phone_number;
+  protected $phone_owner;
   protected $other_phone_number;
+  protected $other_owner;
   protected $complete;
   protected $case;
 
   public function __construct($medicalcase){
     $patient=$medicalcase->patient;
     $this->case=$medicalcase;
-    self::getConfig();
+    $this->getConfig();
     $date=new DateTime($patient->birthtdate);
     $this->patient_id=$patient->id;
     $this->local_patient_id=$patient->local_patient_id;
     $this->first_name=$patient->first_name;
+    $this->middle_name=$patient->middle_name;
     $this->last_name=$patient->last_name;
     $this->birthday=$date->format('Y-m-d');
     if($patient->gender=='Female'){
@@ -52,6 +57,13 @@ class PatientFollowUp{
   public function getFirstname():string
   {
     return $this->first_name;
+  }
+  public function getMiddlename():string
+  {
+    if($this->middle_name == null){
+      return $this->middle_name='';
+    }
+    return $this->middle_name;
   }
   public function getLastName():string
   {
@@ -85,6 +97,14 @@ class PatientFollowUp{
   {
     return $this->phone_number;
   }
+  public function getPhoneOwner()
+  {
+    return $this->phone_owner;
+  }
+  public function getOtherOwner()
+  {
+    return $this->other_owner;
+  }
   public function getOtherPhoneNumber()
   {
     return $this->other_phone_number;
@@ -93,40 +113,43 @@ class PatientFollowUp{
   // create a function to fetch the variables if they are not yet in the database
   // create a function to fetch this values in the medical case
   private function getConfig(){
-    $configurations_preset=json_encode([
-      "village"=> 3436,
-      "caregiver_first_name"=> 3822,
-      "caregiver_last_name"=> 2176,
-      "child_relation"=> 2178,
-      "phone_number"=> 2179,
-      "other_phone_number"=> 2180
-    ]);
-    if(ConsultationConfig::all()->isEmpty()){
-      $configurations= ConsultationConfig::create(
-        [
-          "version_id"=>$this->case->version_id,
-        ],
-        [
-          "config"=>$configurations_preset
-        ]
-      );
-    }
-    $config = ConsultationConfig::where('version_id',$this->case->version_id)->first();
+    // $configurations_preset=json_encode([
+    //   "village"=> 3436,
+    //   "caregiver_first_name"=> 3822,
+    //   "caregiver_last_name"=> 2176,
+    //   "child_relation"=> 2178,
+    //   "phone_number"=> 2179,
+    //   "other_phone_number"=> 2180
+    // ]);
+    // if(ConsultationConfig::all()->isEmpty()){
+    //   $configurations= ConsultationConfig::create(
+    //     [
+    //       "version_id"=>$this->case->version_id,
+    //     ],
+    //     [
+    //       "config"=>$configurations_preset
+    //     ]
+    //   );
+    // }
+
+    $config = PatientConfig::where('version_id',$this->case->version_id)->first();
     $config=json_decode($config->config);
-    self::setVillage($config);
-    self::setCareGiverFirstName($config);
-    self::setCareGiverLastName($config);
-    self::setChildRelation($config);
-    self::setPhoneNumber($config);
-    self::setOtherPhoneNumber($config);
+    $this->setVillage($config);
+    $this->setCareGiverFirstName($config);
+    $this->setCareGiverLastName($config);
+    $this->setChildRelation($config);
+    $this->setPhoneNumber($config);
+    $this->setOtherPhoneNumber($config);
+    $this->setPhoneOwner($config);
+    $this->setOtherPhoneOwner($config);
   }
   private function findCaseAnswer($medal_c_id){
     $node=Node::where('medal_c_id',$medal_c_id)->first();
     return $this->case->medical_case_answers()->where('node_id',$node->id)->first();
   }
   private function setVillage($config){
-    $village_node_id=$config->village;
-    $case_answer=self::findCaseAnswer($village_node_id);
+    $village_node_id=$config->village_question_id;
+    $case_answer=$this->findCaseAnswer($village_node_id);
     if($case_answer == null){
       $this->village=null;
     }else{
@@ -134,8 +157,8 @@ class PatientFollowUp{
     }
   }
   private function setCareGiverFirstName($config){
-    $caregiver_first_name_node_id=$config->caregiver_first_name;
-    $case_answer=self::findCaseAnswer($caregiver_first_name_node_id);
+    $caregiver_first_name_node_id=$config->first_name_caregiver_id;
+    $case_answer=$this->findCaseAnswer($caregiver_first_name_node_id);
     if($case_answer == null){
       $this->caregiver_first_name=null;
     }else{
@@ -143,8 +166,8 @@ class PatientFollowUp{
     }
   }
   private function setCareGiverLastName($config){
-    $caregiver_last_name_node_id=$config->caregiver_last_name;
-    $case_answer=self::findCaseAnswer($caregiver_last_name_node_id);
+    $caregiver_last_name_node_id=$config->last_name_caregiver_id;
+    $case_answer=$this->findCaseAnswer($caregiver_last_name_node_id);
     $this->caregiver_last_name=$case_answer->value;
   }
   private function setChildRelation($config){
@@ -157,8 +180,8 @@ class PatientFollowUp{
       6=>'Neighbour/Friend',
       7=>'Other',
     ];
-    $child_relation_node_id=$config->child_relation;
-    $case_answer=self::findCaseAnswer($child_relation_node_id);
+    $child_relation_node_id=$config->relationship_to_child_id;
+    $case_answer=$this->findCaseAnswer($child_relation_node_id);
     if(in_array($case_answer->answer->label,$relation)){
       $this->child_relation=array_search($case_answer->answer->label,$relation,true);
     }else{
@@ -166,13 +189,32 @@ class PatientFollowUp{
     }
   }
   private function setPhoneNumber($config){
-    $phone_number_node_id=$config->phone_number;
-    $case_answer=self::findCaseAnswer($phone_number_node_id);
+    $phone_number_node_id=$config->phone_number_caregiver_id;
+    $case_answer=$this->findCaseAnswer($phone_number_node_id);
     $this->phone_number=$case_answer->value;
   }
+  private function setPhoneOwner($config){
+    $phone_owner_node_id=$config->phone_number_owner_id;
+    $case_answer=$this->findCaseAnswer($phone_owner_node_id);
+    $this->phone_owner='';
+    if($case_answer != null){
+      $this->phone_owner=$case_answer->answer->label;
+    }
+  }
   private function setOtherPhoneNumber($config){
-    $other_phone_number_node_id=$config->other_phone_number;
-    $case_answer=self::findCaseAnswer($other_phone_number_node_id);
+    $other_phone_number_node_id=$config->other_number_id;
+    $case_answer=$this->findCaseAnswer($other_phone_number_node_id);
     $this->other_phone_number=$case_answer->value;
+  }
+  private function setOtherPhoneOwner($config){
+    $other_phone_owner_node_id=$config->other_number_owner_id;
+    $case_answer=$this->findCaseAnswer($other_phone_owner_node_id);
+    $this->other_owner='';
+    if($case_answer != null){
+      $this->other_owner='';
+      if($case_answer->answer != null){
+        $this->other_owner=$case_answer->answer->label;
+      }
+    }
   }
 }

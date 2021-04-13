@@ -26,6 +26,7 @@ class Algorithm extends Model implements Auditable
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // saving a new algorithm
+      // dd($medal_C_algorithm);
       $algorithm= Algorithm::firstOrCreate([
         "name"=>$medal_C_algorithm['algorithm_name'],
         "medal_c_id"=>$medal_C_algorithm['algorithm_id']
@@ -33,7 +34,7 @@ class Algorithm extends Model implements Auditable
       // checking to see if there is a version of the algorithm
       $version = Version::store($medal_C_algorithm['version_name'],$medal_C_algorithm['version_id'],$algorithm->id);
       $config_questions = $medal_C_algorithm['config']['basic_questions'];
-      $config_data=PatientConfig::getOrCreate($config_questions,$version->id);
+      $config_data=PatientConfig::getOrCreate($version);
       // have to store the nodes for the algorithm
       Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
       $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
@@ -43,6 +44,7 @@ class Algorithm extends Model implements Auditable
       ];
     }
     else if ($version_doesnt_exist){
+      // dd("am here");
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // find the algorithm
@@ -50,7 +52,7 @@ class Algorithm extends Model implements Auditable
       // create a version
       $version = Version::store($medal_C_algorithm['version_name'],$medal_C_algorithm['version_id'],$algorithm->id);
       $config_questions = $medal_C_algorithm['config']['basic_questions'];
-      $config_data=PatientConfig::getOrCreate($config_questions,$version->id);
+      $config_data=PatientConfig::getOrCreate($version);
       Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
       $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
       return [
@@ -59,12 +61,11 @@ class Algorithm extends Model implements Auditable
       ];
     }else{
       $version =Version::where('medal_c_id',$data['version_id'])->first();
-      $config_data=PatientConfig::getConfig($version->id);
+      $config_data=PatientConfig::getOrCreate($version);
       return [
         "version_id"=>$version->id,
         "config_data"=>$config_data
       ];
-
     }
   }
 

@@ -73,10 +73,10 @@ class DiagnosisReference extends Model
           ]
         );
         if($managements){
-          ManagementReference::store($local_diagnosis->id,$managements);
+          ManagementReference::store($diagnosis->id,$managements);
         }
         if($drugs){
-          DrugReference::store($local_diagnosis->id,$drugs);
+          DrugReference::store($diagnosis->id,$drugs);
         }
         // what to do with its drugs if its proposed
         // if its not proposed,how do you link it with its drugs

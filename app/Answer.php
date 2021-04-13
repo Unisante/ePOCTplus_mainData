@@ -26,7 +26,7 @@ class Answer extends Model implements Auditable
             'node_id'=>$nodeSaved->id
           ],
           [
-            'label' => $answer['label']
+            'label' => $answer['label'][env('LANGUAGE')]
           ]
         );
       }

@@ -9,7 +9,7 @@ class Node extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable;
   protected $guarded = [];
-  
+
   /**
   * Create a relation with answers
   * @return relation
@@ -39,12 +39,12 @@ class Node extends Model implements Auditable
           ],
           [
             'reference' => $reference,
-            'label' => $node['label'],
+            'label' => $node['label'][env('LANGUAGE')],
             'type' => $node['type'],
             'category' => $node['category'],
             'priority' => $priority,
             'stage' => $stage,
-            'description' => $node['description'],
+            'description' => isset($node['description'][env('LANGUAGE')])?$node['description'][env('LANGUAGE')]:'',
             'formula' => $formula,
             'answer_type_id'=>$answerType->id,
             'algorithm_id'=>$algorithm->id,
