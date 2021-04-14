@@ -48,6 +48,6 @@ WithEvents
     }
     public function title():string
     {
-      return 'answer_type';
+      return 'answer_types';
     }
 }
