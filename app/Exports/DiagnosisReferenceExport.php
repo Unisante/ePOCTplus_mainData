@@ -45,7 +45,7 @@ WithEvents
   * @return \Illuminate\Support\Collection
   */
   public function collection(){
-    return DiagnosisReference::all();
+    return DiagnosisReference::all()->chunk(200);
   }
   public function title():string
     {

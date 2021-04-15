@@ -46,7 +46,7 @@ WithEvents
     */
     public function collection()
     {
-        return MedicalCaseAnswer::all();
+        return MedicalCaseAnswer::all()->chunk(300);
     }
     public function title():string
     {
