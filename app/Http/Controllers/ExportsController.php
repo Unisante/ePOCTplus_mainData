@@ -32,6 +32,7 @@ class ExportsController extends Controller
       return Excel::download(new Medical_CaseExport,'medical_cases.csv');
     }
     public function casesAnswers(){
+      ini_set('memory_limit', '4096M');
       return Excel::download(new MedicalCaseAnswerExport,'medical_case_answers.csv');
     }
     public function answers(){
