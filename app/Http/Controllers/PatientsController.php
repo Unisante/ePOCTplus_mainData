@@ -11,6 +11,7 @@ use App\Answer;
 use App\MedicalCase;
 use App\User;
 use App\Node;
+use App\Jobs\ExportZip;
 use App\DuplicatePair;
 use App\DiagnosisReference;
 use Illuminate\Http\Request;
@@ -342,35 +343,32 @@ class PatientsController extends Controller
     return Excel::download(new PatientExport,'patients.csv');
   }
   public function allDataIntoExcel(){
-    // find all the necessary csv.
-    // dd(Auth::user()->email);
     $user_email=Auth::user()->email;
-    Excel::store(new PatientExport, 'tempExcels/'.$user_email.'/patients.csv');
-    Excel::store(new Medical_CaseExport, 'tempExcels/'.$user_email.'/medical_cases.csv');
-    Excel::store(new MedicalCaseAnswerExport, 'tempExcels/'.$user_email.'/medical_case_answers.csv');
-    Excel::store(new AnswerExport, 'tempExcels/'.$user_email.'/answers.csv');
-    Excel::store(new DiagnosisReferenceExport, 'tempExcels/'.$user_email.'/diagnosis_references.csv');
-    Excel::store(new CustomDiagnosisExport, 'tempExcels/'.$user_email.'/custom_diagnoses.csv');
-    Excel::store(new DrugReferenceExport, 'tempExcels/'.$user_email.'/drug_references.csv');
-    Excel::store(new AdditionalDrugExport, 'tempExcels/'.$user_email.'/additional_drugs.csv');
-    Excel::store(new ManagementReferenceExport, 'tempExcels/'.$user_email.'/management_references.csv');
-    Excel::store(new DiagnosisExport, 'tempExcels/'.$user_email.'/diagnosis.csv');
-    Excel::store(new DrugExport, 'tempExcels/'.$user_email.'/drugs.csv');
-    Excel::store(new FormulationExport, 'tempExcels/'.$user_email.'/formulations.csv');
-    Excel::store(new ManagementExport, 'tempExcels/'.$user_email.'/managements.csv');
-    Excel::store(new NodeExport, 'tempExcels/'.$user_email.'/nodes.csv');
-    Excel::store(new AnswerTypeExport, 'tempExcels/'.$user_email.'/answer_types.csv');
-    Excel::store(new AlgorithmExport, 'tempExcels/'.$user_email.'/algorithms.csv');
-    Excel::store(new VersionExport, 'tempExcels/'.$user_email.'/versions.csv');
-
-    //make folder to store the zip files
     $tempFiles=base_path().'/storage/app/tempExcels/'.$user_email;
     $tempZip = base_path().'/storage/app/tempZips/'.$user_email.'.zip';
-    $zipper = new \Madnest\Madzipper\Madzipper;
-    $zipper->make($tempZip)->add($tempFiles)->close();
-    $zipTime = Carbon\Carbon::now()->addHours(3);
-    return response()->download($tempZip, $zipTime->format('y-m-d_h:m:s').'.zip', ['Content-Length: '. filesize($tempZip)]);
-    // return Excel::download(new DataSheet,'MainData.xlsx');
+    $file_exist=Storage::exists('tempZips/'.$user_email.'.zip');
+
+    if(Storage::exists('tempExcels/'.$user_email)){
+      Storage::deleteDirectory('tempExcels/'.$user_email);
+    }
+    if($file_exist){
+      Storage::delete('tempZips/'.$user_email.'.zip');
+    }
+
+    dispatch(new ExportZip($user_email,$tempFiles,$tempZip));
+    $file_exist=false;
+    while ($file_exist == false){
+      $file_exist=Storage::exists('tempZips/'.$user_email.'.zip');
+      if($file_exist){
+        $zipTime = Carbon\Carbon::now()->addHours(3);
+        return response()
+        ->download(
+          $tempZip,
+          $zipTime->format('y-m-d_h:m:s').'.zip',
+          ['Content-Length: '. filesize($tempZip)]
+        );
+      }
+    }
   }
 
   public function relateCases($casesId,$medicalCases){
