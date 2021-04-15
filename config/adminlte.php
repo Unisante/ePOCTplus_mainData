@@ -247,12 +247,95 @@ return [
         //   'icon' => 'fas fa-fw fa-question-circle',
         //   'can' =>  'View_Case'
         // ],
+        // [
+        //   'text' => 'Export',
+        //   'url'  => '/export-mainData-csv',
+        //   'icon' => 'fas fa-fw fa-file',
+        //   'can' =>  'Merge_Duplicates'
+        // ],
         [
-          'text' => 'Export',
-          'url'  => '/export-mainData-csv',
-          'icon' => 'fas fa-fw fa-file',
-          'can' =>  'Merge_Duplicates'
+          'text' => 'Exports',
+          'icon' => 'fas fa-fw fa-clone',
+          'can' =>  'Merge_Duplicates',
+          'submenu' => [
+            [
+                'text' => 'Patients',
+                'url'  => '/export/patients',
+            ],
+            [
+                'text' => 'Medical Cases',
+                'url'  => '/export/medicalcases',
+            ],
+            [
+              'text'=>'Case Answers',
+              'url'=>'/export/cases_answers'
+            ],
+            [
+              'text' => 'Answers',
+              'url'  => '/export/answers',
+            ],
+            [
+                'text' => 'Diagnosis References',
+                'url'  => '/export/diagnosis_references',
+            ],
+            [
+              'text' => 'Custom Diagnoses',
+              'url'  => '/export/custom_diagnoses',
+            ],
+            [
+                'text' => 'Drug references',
+                'url'  => '/export/drug_references',
+            ],
+            [
+              'text' => 'Additional Drugs',
+              'url'  => '/export/additional_drugs',
+            ],
+            [
+                'text' => 'Management References',
+                'url'  => '/export/management_references',
+            ],
+
+
+            [
+              'text' => 'Diagnoses',
+              'url'  => '/export/diagnoses',
+            ],
+            [
+                'text' => 'Drugs',
+                'url'  => '/export/drugs',
+            ],
+            [
+              'text' => 'Formulations',
+              'url'  => '/export/formulations',
+            ],
+            [
+                'text' => 'Managements',
+                'url'  => '/export/managements',
+            ],
+
+
+
+            [
+              'text' => 'Nodes',
+              'url'  => '/export/nodes',
+            ],
+            [
+                'text' => 'Answer Types',
+                'url'  => '/export/answer_types',
+            ],
+            [
+              'text' => 'Algorithms',
+              'url'  => '/export/algorithms',
+            ],
+            [
+                'text' => 'Algorithm Versions',
+                'url'  => '/export/algorithm_versions',
+            ],
+
+
+          ],
         ],
+
         [
             'text' => 'profile',
             'url'  => '/user/profile',

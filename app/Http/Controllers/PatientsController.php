@@ -343,6 +343,8 @@ class PatientsController extends Controller
     return Excel::download(new PatientExport,'patients.csv');
   }
   public function allDataIntoExcel(){
+    // return view('exports.index');
+
     $user_email=Auth::user()->email;
     $tempFiles=base_path().'/storage/app/tempExcels/'.$user_email;
     $tempZip = base_path().'/storage/app/tempZips/'.$user_email.'.zip';
