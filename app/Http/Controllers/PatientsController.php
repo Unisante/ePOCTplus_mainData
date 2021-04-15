@@ -11,17 +11,37 @@ use App\Answer;
 use App\MedicalCase;
 use App\User;
 use App\Node;
+use App\Jobs\ExportZip;
 use App\DuplicatePair;
 use App\DiagnosisReference;
 use Illuminate\Http\Request;
 use Datatables;
 use DB;
+use Carbon;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;
 use App\Exports\PatientExport;
-use App\Exports\MedicalCaseExport;
 use App\Exports\DataSheet;
+use App\Exports\DiagnosisReferenceExport;
+use App\Exports\AnswerExport;
+use App\Exports\Medical_CaseExport;
+use App\Exports\MedicalCaseAnswerExport;
+use App\Exports\DrugReferenceExport;
+use App\Exports\AlgorithmExport;
+use App\Exports\AdditionalDrugExport;
+use App\Exports\CustomDiagnosisExport;
+use App\Exports\ManagementReferenceExport;
+use App\Exports\DrugExport;
+use App\Exports\DiagnosisExport;
+use App\Exports\FormulationExport;
+use App\Exports\ManagementExport;
+use App\Exports\NodeExport;
+use App\Exports\AnswerTypeExport;
+use App\Exports\VersionExport;
 use Excel;
+use Auth;
+use Maatwebsite\Excel\Facades\Excel as FacadesExcel;
+use Madnest\Madzipper\Madzipper;
 
 class PatientsController extends Controller
 {
@@ -323,7 +343,34 @@ class PatientsController extends Controller
     return Excel::download(new PatientExport,'patients.csv');
   }
   public function allDataIntoExcel(){
-    return Excel::download(new DataSheet,'MainData.xlsx');
+    // return view('exports.index');
+
+    $user_email=Auth::user()->email;
+    $tempFiles=base_path().'/storage/app/tempExcels/'.$user_email;
+    $tempZip = base_path().'/storage/app/tempZips/'.$user_email.'.zip';
+    $file_exist=Storage::exists('tempZips/'.$user_email.'.zip');
+
+    if(Storage::exists('tempExcels/'.$user_email)){
+      Storage::deleteDirectory('tempExcels/'.$user_email);
+    }
+    if($file_exist){
+      Storage::delete('tempZips/'.$user_email.'.zip');
+    }
+
+    dispatch(new ExportZip($user_email,$tempFiles,$tempZip));
+    $file_exist=false;
+    while ($file_exist == false){
+      $file_exist=Storage::exists('tempZips/'.$user_email.'.zip');
+      if($file_exist){
+        $zipTime = Carbon\Carbon::now()->addHours(3);
+        return response()
+        ->download(
+          $tempZip,
+          $zipTime->format('y-m-d_h:m:s').'.zip',
+          ['Content-Length: '. filesize($tempZip)]
+        );
+      }
+    }
   }
 
   public function relateCases($casesId,$medicalCases){

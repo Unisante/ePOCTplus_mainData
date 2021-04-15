@@ -18,7 +18,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 
 class Medical_CaseExport implements FromCollection,
 WithHeadings,
-ShouldAutoSize,
+// ShouldAutoSize,
 WithTitle,
 WithEvents
 // WithEvents,

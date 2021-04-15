@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 class DiagnosisExport implements FromCollection,
 WithHeadings,
-ShouldAutoSize,
+// ShouldAutoSize,
 WithTitle,
 WithEvents
 {

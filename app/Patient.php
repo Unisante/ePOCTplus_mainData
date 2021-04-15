@@ -228,6 +228,7 @@ class Patient extends Model implements Auditable
     $consent = serialize($consent_array);
   }
 
+
   /**
   * making a relationship to medicalCase
   * @return Many medical cases

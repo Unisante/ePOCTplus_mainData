@@ -19,7 +19,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 
 class MedicalCaseExport implements FromCollection,
 WithHeadings,
-ShouldAutoSize,
+// ShouldAutoSize,
 WithTitle
 // WithEvents,
 // WithMapping

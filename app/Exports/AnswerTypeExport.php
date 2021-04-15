@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 
 class AnswerTypeExport implements FromCollection,
 WithHeadings,
-ShouldAutoSize,
+// ShouldAutoSize,
 WithTitle,
 WithEvents
 {
@@ -48,6 +48,6 @@ WithEvents
     }
     public function title():string
     {
-      return 'answer_type';
+      return 'answer_types';
     }
 }

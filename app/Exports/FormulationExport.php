@@ -9,7 +9,9 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
-class FormulationExport implements FromCollection,WithHeadings,ShouldAutoSize,WithEvents,WithTitle
+class FormulationExport implements FromCollection,WithHeadings,
+// ShouldAutoSize,
+WithEvents,WithTitle
 {
   public function headings():array
     {

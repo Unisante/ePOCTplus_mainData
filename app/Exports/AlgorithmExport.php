@@ -9,13 +9,18 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\Exportable;
+use Illuminate\Contracts\Support\Responsable;
 
 class AlgorithmExport implements FromCollection,
 WithHeadings,
-ShouldAutoSize,
+// ShouldAutoSize,
 WithTitle,
-WithEvents
+WithEvents,
+Responsable
 {
+  use Exportable;
+  private $fileName="algorithms.csv";
   public function headings():array
     {
       return [

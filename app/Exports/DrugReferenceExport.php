@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 class DrugReferenceExport implements FromCollection,
 WithHeadings,
 WithTitle,
-ShouldAutoSize,
+// ShouldAutoSize,
 WithEvents
 {
   public function headings():array{
