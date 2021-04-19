@@ -33,7 +33,7 @@ class FollowUp{
   public function __construct($medical_case){
     $this->case=$medical_case;
     $this->getConfig();
-    $date=new DateTime($medical_case->created_at);
+    $date=new DateTime($medical_case->updated_at);
     $date->format('Y-m-d H:i:s');
     $this->consultation_id=$medical_case->local_medical_case_id;
     $this->patient_id=$medical_case->patient->local_patient_id;

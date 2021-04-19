@@ -23,8 +23,17 @@ class MedicalCaseAnswer extends Model implements Auditable
       $node_issued= Node::where('medal_c_id',$node['id'])->first();
       $answer=isset($node['answer'])?$node['answer']:null;
       $value= isset($node['value'])?$node['value']:null;
+      if($value != null){
+        if(is_array($value)){
+          if(array_key_exists('label',$value)){
+            $value=$value['label']['en'];
+          }
+        }
+
+      }
       if($question_not_exist=Node::where('medal_c_id',$node['id'])->exists()){
-        if($node['answer']){
+        $answer=isset($node['answer'])?$node['answer']:null;
+        if($answer){
           $get_answer= Answer::where('medal_c_id',$node['answer'])->first();
           $answer=$get_answer->id;
           self::store($medical_case->id,$answer,$node_issued->id,$value);

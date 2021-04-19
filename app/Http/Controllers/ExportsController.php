@@ -25,6 +25,9 @@ use Excel;
 
 class ExportsController extends Controller
 {
+    public function __construct(){
+      $this->middleware('auth');
+    }
     public function Patients(){
       return Excel::download(new PatientExport,'patients.csv');
     }
