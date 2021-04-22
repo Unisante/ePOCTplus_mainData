@@ -13,6 +13,7 @@ use App\Patient;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Collection;
 use App\Services\RedCapApiService;
+use Illuminate\Support\Facades\Log;
 
 class RedcapPush implements ShouldQueue
 {
@@ -212,8 +213,8 @@ class RedcapPush implements ShouldQueue
         curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data, '', '&'));
         $output = curl_exec($ch);
-        // print $output;
-        // dd($output);
+        error_log($output);
+        Log::info('output',  ['output' => $output]);
         curl_close($ch);
         return json_decode($output);
       }
