@@ -46,6 +46,7 @@ class SaveCase implements ShouldQueue
      */
     public function handle()
     {
+
       $consent_path = base_path().'/storage/app/consentFiles';
       $parsed_folder='parsed_medical_cases';
       $study_id=env('STUDY_ID');
@@ -79,13 +80,10 @@ class SaveCase implements ShouldQueue
             }
             $img->save($consent_path.'/'.$consent_file_name);
         }
-        // dd($algorithm_n_version["config_data"]);
         $other_id='';
         if(property_exists($algorithm_n_version["config_data"],'other_id_patient_id')){
           $other_id=isset($nodes[$algorithm_n_version["config_data"]->other_id_patient_id])?$nodes[$algorithm_n_version["config_data"]->other_id_patient_id]['value']:null;
         }
-
-        // dd($other_id);
         $duplicateConditions=[
           'first_name'=>isset($nodes[$algorithm_n_version["config_data"]->first_name_question_id])?$nodes[$algorithm_n_version["config_data"]->first_name_question_id]['value']:null,
           'last_name'=>isset($nodes[$algorithm_n_version["config_data"]->last_name_question_id])?$nodes[$algorithm_n_version["config_data"]->last_name_question_id]['value']:null,
@@ -96,10 +94,7 @@ class SaveCase implements ShouldQueue
         $duplicateConditions=array_filter($duplicateConditions);
         $duplicate_flag=false;
         $senseDuplicate=Patient::where($duplicateConditions)->exists();
-        // dd($nodes[$algorithm_n_version['config_data']->parent_in_study_id]);
         $existingPatient=Answer::where('medal_c_id',$nodes[$algorithm_n_version['config_data']->parent_in_study_id]['answer'])->first();
-        // dd(Answer::where('medal_c_id',$nodes[$algorithm_n_version['config_data']->parent_in_study_id]['answer'])->exists());
-        // dd($existingPatient);
         if($patient_key['other_uid'] || $senseDuplicate || $existingPatient->label == 'Yes'){
           $duplicate_flag=true;
         }
