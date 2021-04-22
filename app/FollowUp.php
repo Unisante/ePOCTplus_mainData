@@ -6,6 +6,8 @@ use App\PatientConfig;
 use App\Answer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+
 class FollowUp{
 
   /** @var String $consultation_id*/
@@ -104,7 +106,10 @@ class FollowUp{
     $this->setOtherPhoneOwner($config);
   }
   private function findCaseAnswer($medal_c_id){
+    Log::debug("medal_c_id".$medal_c_id);
     $node=Node::where('medal_c_id',$medal_c_id)->first();
+    Log::debug("node".$node);
+    Log::debug("return".$this->case->medical_case_answers()->where('node_id',$node->id)->first());
     return $this->case->medical_case_answers()->where('node_id',$node->id)->first();
   }
   private function setPatientFirstName($config){
