@@ -24,6 +24,7 @@ WithEvents,WithTitle
         'formulation_unique_dose',
         'formulation_by_age',
         'formulation_minimal_dose_per_kg',
+        'formulation_minimal_dose_per_kg',
         'formulation_maximal_dose',
         'formulation_description',
         'formulation_doses_per_day',
