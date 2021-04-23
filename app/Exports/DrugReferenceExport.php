@@ -46,7 +46,7 @@ WithEvents
     */
     public function collection()
     {
-        return DrugReference::all();
+        return DrugReference::all()->chunk(200);
     }
 
     public function title():string

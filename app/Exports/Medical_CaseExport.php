@@ -97,7 +97,7 @@ WithEvents
     */
     public function collection()
     {
-      return MedicalCase::all();
+      return MedicalCase::all()->chunk(100);
     }
     // public function map($medicalCase):array{
     //   // dd(self::headings());

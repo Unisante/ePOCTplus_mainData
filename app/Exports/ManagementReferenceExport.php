@@ -44,7 +44,7 @@ WithEvents
   * @return \Illuminate\Support\Collection
   */
   public function collection(){
-      return ManagementReference::all();
+      return ManagementReference::all()->chunk(100);
   }
   public function title():string
     {

@@ -25,6 +25,9 @@ use Excel;
 
 class ExportsController extends Controller
 {
+    public function __construct(){
+      $this->middleware('auth');
+    }
     public function Patients(){
       return Excel::download(new PatientExport,'patients.csv');
     }
@@ -32,6 +35,7 @@ class ExportsController extends Controller
       return Excel::download(new Medical_CaseExport,'medical_cases.csv');
     }
     public function casesAnswers(){
+      ini_set('memory_limit', '4096M');
       return Excel::download(new MedicalCaseAnswerExport,'medical_case_answers.csv');
     }
     public function answers(){
