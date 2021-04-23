@@ -20,7 +20,7 @@ WithEvents
     return [
       'drug_reference_id',
       'drug_reference_drug_id',
-      'drug_reference_diagnosis_id',
+      'drug_reference_diagnosis_reference_id',
       'drug_reference_agreed',
       'drug_reference_created_at',
       'drug_reference_updated_at',
