@@ -94,7 +94,10 @@ class SaveCase implements ShouldQueue
         $duplicateConditions=array_filter($duplicateConditions);
         $duplicate_flag=false;
         $senseDuplicate=Patient::where($duplicateConditions)->exists();
+        $existingPatient=(object)["label"=>'No'];
+        if(strpos(env("STUDY_ID"), "Dynamic")!== false){
         $existingPatient=Answer::where('medal_c_id',$nodes[$algorithm_n_version['config_data']->parent_in_study_id]['answer'])->first();
+        }
         if($patient_key['other_uid'] || $senseDuplicate || $existingPatient->label == 'Yes'){
           $duplicate_flag=true;
         }
