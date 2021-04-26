@@ -79,7 +79,9 @@
         "post-install-cmd": [
             "php artisan clear-compiled",
             "chmod -R 777 public/",
-            "chmod -R 777 storage/"
+            "chmod -R 777 storage/",
+            "mkdir -p storage/framework/{cache,sessions,testing,views}",
+            "php artisan storage:link"
         ]
     }
 }
