@@ -82,7 +82,7 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('/export/answer_types','ExportsController@answer_types')->name('ExportsController.answer_types');
   Route::get('/export/algorithms','ExportsController@algorithms')->name('ExportsController.algorithms');
   Route::get('/export/algorithm_versions','ExportsController@algorithmVersions')->name('ExportsController.algorithmVersions');
-  Route::get('/export/cases_answers','ExportsController@casesAnswers')->name('ExportsController.casesAnswers');
+  Route::get('/export/cases_answers','ExportsController@casesAnswers2')->name('ExportsController.casesAnswers2');
 
 });
 

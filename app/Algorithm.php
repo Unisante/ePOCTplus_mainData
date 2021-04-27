@@ -84,6 +84,7 @@ class Algorithm extends Model implements Auditable
     curl_setopt_array($curl, array(
       // CURLOPT_URL => 'https://liwi-test.wavelab.top/api/v1/versions/'.$version_id,
       CURLOPT_URL => 'https://medalc.unisante.ch/api/v1/versions/'.$version_id,
+      // CURLOPT_URL => 'https://liwi.wavelab.top/api/v1/versions/'.$version_id,
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => "",
       CURLOPT_MAXREDIRS => 10,
@@ -102,6 +103,7 @@ class Algorithm extends Model implements Auditable
         "error"=>json_decode($err, true)
       ]);
     } else {
+      // dd($medal_C_algorithm);
       $medal_C_algorithm = json_decode($response, true);
       return $medal_C_algorithm;
     }

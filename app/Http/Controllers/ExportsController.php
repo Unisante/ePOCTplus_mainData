@@ -22,6 +22,7 @@ use App\Exports\NodeExport;
 use App\Exports\AnswerTypeExport;
 use App\Exports\VersionExport;
 use Excel;
+use App\MedicalCaseAnswer;
 
 class ExportsController extends Controller
 {
@@ -36,7 +37,44 @@ class ExportsController extends Controller
     }
     public function casesAnswers(){
       ini_set('memory_limit', '4096M');
+      ini_set('max_execution_time', '300');
       return Excel::download(new MedicalCaseAnswerExport,'medical_case_answers.csv');
+    }
+    public function casesAnswers2(){
+      ini_set('memory_limit', '4096M');
+      // $allCaseAnswersChunked=MedicalCaseAnswer::all()->chunk(20);
+      // return MedicalCaseAnswer::first();
+      // $allCaseAnswersChunked->each(function($chunk){
+      //   return $chunk;
+      // });
+      $callback = function(){
+        // Open output stream
+        $handle = fopen('php://output', 'w');
+        // Add CSV headers
+        fputcsv($handle, ["id","medical_case_id","answer_id","node_id","value","created_at","updated_at"]);
+        $case_answers=MedicalCaseAnswer::all();
+        $case_answers->each(function($case_answer)use (&$handle){
+          $c_answer=[
+            $case_answer->id,
+            $case_answer->medical_case_id,
+            $case_answer->answer_id,
+            $case_answer->node_id,
+            $case_answer->value,
+            $case_answer->created_at,
+            $case_answer->updated_at
+          ];
+          fputcsv($handle,$c_answer);
+        });
+        // Close the output stream
+        fclose($handle);
+    };
+    // build response headers so file downloads.
+    $headers = ['Content-Type' => 'text/csv',];
+    // return the response as a streamed response.
+    for ($i=0;$i<7;$i++){
+      return response()->streamDownload($callback, 'medical_case_answers.csv', $headers);
+    }
+    // return response()->streamDownload($callback, 'medical_case_answers.csv', $headers);
     }
     public function answers(){
       return Excel::download(new AnswerExport,'answers.csv');
