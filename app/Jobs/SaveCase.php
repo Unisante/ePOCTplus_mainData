@@ -46,9 +46,10 @@ class SaveCase implements ShouldQueue
      */
     public function handle()
     {
-
+      try{
       $consent_path = base_path().'/storage/app/consentFiles';
       $parsed_folder='parsed_medical_cases';
+      $failed_folder='failed_medical_cases';
       $study_id=env('STUDY_ID');
       $isEligible=true;
       $group_id=(int)$this->individualData['patient']['group_id'];
@@ -143,5 +144,13 @@ class SaveCase implements ShouldQueue
         }
         Storage::Delete($this->filename);
       }
+    }catch(\Exception $e){
+      error_log($e);
+      Log::info('savecase',  ['error_saving' => $e]);
+      if(Storage::Exists($this->filename) && !(Storage::Exists($failed_folder.'/'.basename($this->filename)))){
+        Storage::move($this->filename, $failed_folder.'/'.basename($this->filename));
+      }
+      Storage::Delete($this->filename);
     }
-}
+  }
+  }

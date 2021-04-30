@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use App\Jobs\SaveCase;
 use App\Jobs\RedcapPush;
+use Illuminate\Support\Facades\Log;
 
 use Madnest\Madzipper\Madzipper;
 /*
@@ -37,13 +38,16 @@ Route::post('sync_medical_cases',function(Request $request){
     $file=Storage::putFile('medical_cases_zip', $request->file);
     $unparsed_path = base_path().'/storage/app/unparsed_medical_cases';
     $parsed_folder='parsed_medical_cases';
+    $failed_folder='failed_medical_cases';
     $zipper=new Madzipper();
     $zipper->make($request->file('file'))->extractTo($unparsed_path);
     $filename=basename($file);
     Storage::makeDirectory($parsed_folder);
+    Storage::makeDirectory($failed_folder);
     foreach(Storage::allFiles('unparsed_medical_cases') as $filename){
       $individualData = json_decode(Storage::get($filename), true);
-      dispatch(new SaveCase($individualData,$filename));
+      ini_set('maximum_execution_time',300);
+        dispatch(new SaveCase($individualData,$filename));
     }
     if(strpos(env("STUDY_ID"), "Dynamic")!== false){
       dispatch(new RedcapPush());
