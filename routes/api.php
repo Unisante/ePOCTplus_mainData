@@ -2,14 +2,10 @@
 
 use Illuminate\Http\Request;
 use App\MedicalCaseAnswer;
-use App\User;
-use App\JsonLog;
 use App\HealthFacility;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\File;
 use App\Jobs\SaveCase;
 use App\Jobs\RedcapPush;
-use Illuminate\Support\Facades\Log;
 
 use Madnest\Madzipper\Madzipper;
 /*

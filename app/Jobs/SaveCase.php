@@ -9,7 +9,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\MedicalCase;
 use Illuminate\Support\Facades\Storage;
-use Madzipper;
 use File;
 use App\Algorithm;
 use App\JsonLog;
@@ -17,7 +16,6 @@ use App\Answer;
 use App\Patient;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Log;
-use App\Services\RedCapApiService;
 use App\HealthFacility;
 
 class SaveCase implements ShouldQueue

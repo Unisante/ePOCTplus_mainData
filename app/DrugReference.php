@@ -25,7 +25,6 @@ class DrugReference extends Model
       $designatedFormula=0;
       $issued_drug->formulations->each(function($formulation,$index)use (&$formulationSelected, &$designatedFormula){
         if($formulationSelected == $index){
-          // dd($formulation->id);
           $designatedFormula=$formulation->id;
         }
       });

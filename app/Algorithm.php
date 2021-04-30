@@ -26,7 +26,6 @@ class Algorithm extends Model implements Auditable
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // saving a new algorithm
-      // dd($medal_C_algorithm);
       $algorithm= Algorithm::firstOrCreate([
         "name"=>$medal_C_algorithm['algorithm_name'],
         "medal_c_id"=>$medal_C_algorithm['algorithm_id']
@@ -44,7 +43,6 @@ class Algorithm extends Model implements Auditable
       ];
     }
     else if ($version_doesnt_exist){
-      // dd("am here");
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // find the algorithm
@@ -103,7 +101,6 @@ class Algorithm extends Model implements Auditable
         "error"=>json_decode($err, true)
       ]);
     } else {
-      // dd($medal_C_algorithm);
       $medal_C_algorithm = json_decode($response, true);
       return $medal_C_algorithm;
     }
