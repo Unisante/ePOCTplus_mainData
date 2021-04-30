@@ -186,6 +186,7 @@ class RedcapPush implements ShouldQueue
             Config::get('redcap.identifiers.followup.dyn_fup_followup_status') => 1
             // Config::get('redcap.identifiers.followup.identification_complete') => 2,
           ];
+          Log::info('output',  ['data' => $datas]);
           // if(in_array('', $datas[$followup->getConsultationId()], true) || in_array(null , $datas[$followup->getConsultationId()], true)){
           //   $datas[$followup->getConsultationId()][Config::get('redcap.identifiers.followup.identification_complete')]=0;
           // }
