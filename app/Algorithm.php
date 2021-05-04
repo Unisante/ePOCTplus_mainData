@@ -37,7 +37,16 @@ class Algorithm extends Model implements Auditable
       $config_data=PatientConfig::getOrCreate($version);
       // have to store the nodes for the algorithm
       Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
-      $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
+      Diagnosis::store(
+        [
+          "diagnostics"=>$medal_C_algorithm['diagnostics'],
+          "is_arm_control"=>$medal_C_algorithm['is_arm_control'],
+          "health_cares"=>$medal_C_algorithm['health_cares'],
+          "version_id"=>$version->id
+        ]
+      );
+      // $final_diagnoses=isset($medal_C_algorithm['final_diagnostics'])?$medal_C_algorithm['final_diagnostics']:[];
+      // $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$final_diagnoses,$medal_C_algorithm['is_arm_control'],$version->id);
       return [
         "version_id"=>$version->id,
         "config_data"=>$config_data,
@@ -54,7 +63,16 @@ class Algorithm extends Model implements Auditable
       $config_questions = $medal_C_algorithm['config']['basic_questions'];
       $config_data=PatientConfig::getOrCreate($version);
       Node::getOrStore($medal_C_algorithm['nodes'],$algorithm);
-      $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version->id);
+      Diagnosis::store(
+        [
+          "diagnostics"=>$medal_C_algorithm['diagnostics'],
+          "is_arm_control"=>$medal_C_algorithm['is_arm_control'],
+          "health_cares"=>$medal_C_algorithm['health_cares'],
+          "version_id"=>$version->id
+        ]
+      );
+      // $final_diagnoses=isset($medal_C_algorithm['final_diagnostics'])?$medal_C_algorithm['final_diagnostics']:[];
+      // $diagnoses = Diagnosis::getOrStore($medal_C_algorithm['nodes'],$final_diagnoses,$medal_C_algorithm['is_arm_control'],$version->id);
       return [
         "version_id"=>$version->id,
         "config_data"=>$config_data,

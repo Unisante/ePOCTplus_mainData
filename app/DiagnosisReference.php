@@ -9,6 +9,7 @@ use App\DrugReference;
 use App\Custom_diagnosis;
 use App\Algorithm;
 use App\Version;
+use App\Management;
 class DiagnosisReference extends Model
 {
   protected $guarded = [];
@@ -25,12 +26,13 @@ class DiagnosisReference extends Model
     $additional_diagnoses=$diagnoses['additional'];
     $custom_diagnoses=$diagnoses['custom'];
     $additional_drugs=$diagnoses['additionalDrugs'];
-
+    // dd($diagnoses);
     if($proposed_diagnoses){
       $is_proposed=True;
       self::store($medical_case_id,$proposed_diagnoses,$is_proposed,$version_id);
     }
     if($additional_diagnoses){
+      // dd($additional_diagnoses);
       $is_proposed=False;
       self::store($medical_case_id,$additional_diagnoses,$is_proposed,$version_id);
     }
@@ -53,13 +55,25 @@ class DiagnosisReference extends Model
   * @return void
   */
   public static function store($medical_case_id,$diagnoses,$is_proposed,$version_id){
+    // dd($diagnoses);
     foreach($diagnoses as $diagnosis){
+      // dd($diagnosis);
       $managements=$diagnosis['managements'];
       $drugs = $diagnosis['drugs'];
       $agreed= isset($diagnosis['agreed'])?$diagnosis['agreed']:True;
+      // dd(Diagnosis::where('medal_c_id',$diagnosis['id'])->exists());
       if(Diagnosis::where('medal_c_id',$diagnosis['id'])->doesntExist()){
         $medal_C_algorithm=Algorithm::fetchAlgorithm($version_id);
-        Diagnosis::getOrStore($medal_C_algorithm['nodes'],$version_id);
+        $algorithm=Algorithm::where('medal_c_id',$medal_C_algorithm['algorithm_id'])->first();
+        $version = Version::store($medal_C_algorithm['version_name'],$medal_C_algorithm['version_id'],$algorithm->id);
+        Diagnosis::store(
+          [
+            "diagnostics"=>$medal_C_algorithm['diagnostics'],
+            "is_arm_control"=>$medal_C_algorithm['is_arm_control'],
+            "health_cares"=>$medal_C_algorithm['health_cares'],
+            "version_id"=>$version->id
+          ]
+        );
       }
       if($local_diagnosis=Diagnosis::where('medal_c_id',$diagnosis['id'])->first()){
         $diagnosis=DiagnosisReference::firstOrCreate(
@@ -73,13 +87,41 @@ class DiagnosisReference extends Model
           ]
         );
         if($managements){
-          ManagementReference::store($diagnosis->id,$managements);
+          foreach($managements as $management){
+            $issued_management=Management::where('medal_c_id',$management['id'])->doesntExist();
+            if($issued_management){
+              $medal_C_algorithm=Algorithm::fetchAlgorithm($version_id);
+              foreach($medal_C_algorithm['health_cares'] as $h_care){
+                if($h_care['category']=='management'){
+                  Management::firstOrCreate(
+                    [
+                      'medal_c_id'=>$h_care['id']
+                    ],
+                    [
+                      'type'=>$h_care['type'],
+                      'label'=>$h_care['label'][env('LANGUAGE')],
+                      'description'=>isset($h_care['description'][env('LANGUAGE')])?$h_care['description'][env('LANGUAGE')]:''
+                    ]
+                  );
+                }
+              }
+            }
+            $issued_management=Management::where('medal_c_id',$management['id'])->first();
+            ManagementReference::firstOrCreate(
+                [
+                  'diagnosis_id'=>$diagnosis->id,
+                  'management_id'=>$issued_management->id
+                ],
+                [
+                  'agreed'=>$agreed
+                ]
+
+            );
+          }
         }
         if($drugs){
           DrugReference::store($diagnosis->id,$drugs);
         }
-        // what to do with its drugs if its proposed
-        // if its not proposed,how do you link it with its drugs
       }
 
     }

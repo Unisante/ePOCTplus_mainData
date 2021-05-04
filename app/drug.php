@@ -23,7 +23,7 @@ class Drug extends Model
           $is_antibiotic= isset($node['is_antibiotic'])?$node['is_antibiotic']:null;
           $drug=Drug::firstOrCreate(
             [
-              'diagnosis_id'=>$diagnosis_id,
+              // 'diagnosis_id'=>$diagnosis_id,
               'medal_c_id'=>$node['id']
             ],
             [
