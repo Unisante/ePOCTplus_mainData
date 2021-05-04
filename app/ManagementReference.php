@@ -16,9 +16,11 @@ class ManagementReference extends Model
   * @return void
   */
   public static function store($diagnosis_id,$managements){
+    // dd($managements);
     foreach($managements as $management){
       $agreed= isset($management['agreed'])?$management['agreed']:false;
       $issued_management=Management::where('medal_c_id',$management['id'])->first();
+      dd($issued_management);
       if($issued_management){
         ManagementReference::firstOrCreate(
           [
