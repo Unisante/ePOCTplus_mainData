@@ -46,7 +46,7 @@ Route::post('sync_medical_cases',function(Request $request){
         dispatch(new SaveCase($individualData,$filename));
     }
     if(strpos(env("STUDY_ID"), "Dynamic")!== false){
-      // dispatch(new RedcapPush());
+      dispatch(new RedcapPush());
     }
     return response()->json(['data_received'=> true,'status'=>200]);
   }
