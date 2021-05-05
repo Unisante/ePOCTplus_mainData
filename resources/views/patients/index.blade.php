@@ -30,12 +30,12 @@
                 <thead>
                   <tr>
                     <th scope="col">SN</th>
-                    {{-- <th>checkbox</th> --}}
                     <th scope="col">Patient Uid</th>
                     <th scope="col">First Name</th>
                     <th scope="col">Middle Name</th>
                     <th scope="col">Last Name</th>
                     <th scope="col">Birthdate</th>
+                    <th scope="col">Facility</th>
                     <th scope="col">Status</th>
                     <th scope="col">Actions</th>
                   </tr>
@@ -44,12 +44,12 @@
                   @foreach($patients as $patient)
                   <tr>
                     <td scope="row">{{ $loop->index }}</td>
-                    {{-- <td><input type="checkbox" class="messageCheckbox" value="{{$patient->id}}"></td> --}}
                     <td>{{$patient->local_patient_id}}</td>
                     <td>{{$patient->first_name}}</td>
                     <td>{{$patient->middle_name}}</td>
                     <td>{{$patient->last_name}}</td>
                     <td>{{$patient->birthdate}}</td>
+                    <td>{{$patient->facility->facility_name}}</td>
                     @if($patient->merged)
                     <td>Merged</td>
                     @else

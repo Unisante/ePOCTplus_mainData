@@ -237,6 +237,8 @@ class Patient extends Model implements Auditable
   {
     return $this->hasMany('App\MedicalCase');
   }
-
+  public function facility(){
+    return $this->belongsTo('App\HealthFacility','group_id','group_id');
+  }
 
 }

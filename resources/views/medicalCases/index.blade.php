@@ -32,23 +32,20 @@
                 <thead>
                   <tr>
                     <th scope="col">SN</th>
-                    {{-- <th>checkbox</th> --}}
-                    <th scope="col">Date</th>
+                    <th scope="col">Case Id</th>
                     <th scope="col">Belogs TO</th>
+                    <th scope="col">Date Created</th>
                     <th scope="col">Came From</th>
-                    {{-- <th scope="col">Actions</th> --}}
                   </tr>
                 </thead>
                 <tbody>
                   @foreach($medicalCases as $medicalCase)
                   <tr>
                     <th scope="row">{{ $loop->index+1 }}</th>
-                    {{-- <th><input type="checkbox" class="messageCheckbox" value="{{$medicalCase->id}}"></th> --}}
-                    <td>{{$medicalCase->created_at}}</td>
-                    {{-- <td>{{$medicalCase->patient->first_name}} {{$medicalCase->patient->last_name}}</td> --}}
+                    <td>{{$medicalCase->local_medical_case_id}}</td>
                     <td>{{$medicalCase->patient->local_patient_id}}</td>
+                    <td>{{$medicalCase->created_at}}</td>
                     <td>{{$medicalCase->facility->facility_name}}</td>
-                    {{-- <td><a href="{{route('MedicalCasesController.show',[$medicalCase->id])}}" class="btn btn-outline-dark"> Show Medical Case</a> --}}
                     </td>
                   </tr>
                   @endforeach

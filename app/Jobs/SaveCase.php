@@ -19,6 +19,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Log;
 use App\Services\RedCapApiService;
 use App\HealthFacility;
+use DateTime;
 
 class SaveCase implements ShouldQueue
 {
@@ -120,7 +121,9 @@ class SaveCase implements ShouldQueue
           "other_id"=>isset($nodes[$algorithm_n_version["config_data"]->other_id_patient_id])?$nodes[$algorithm_n_version["config_data"]->other_id_patient_id]['value']:'',
           "consent"=>$consent_file_name,
           "duplicate"=>$duplicate_flag,
-          "related_ids"=>[$patient_key['other_uid']]
+          "related_ids"=>[$patient_key['other_uid']],
+          "created_at"=>new DateTime($patient_key['created_at']),
+          "updated_at"=>new DateTime($patient_key['updated_at']),
           ]
         );
         $data_to_parse=array(
