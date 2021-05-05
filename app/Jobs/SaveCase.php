@@ -141,6 +141,11 @@ class SaveCase implements ShouldQueue
             Storage::move($this->filename, $parsed_folder.'/'.basename($this->filename));
         }
         Storage::Delete($this->filename);
+      }else{
+        if(Storage::Exists($this->filename) && !(Storage::Exists($failed_folder.'/'.basename($this->filename)))){
+          Storage::move($this->filename, $failed_folder.'/'.basename($this->filename));
+        }
+        Storage::Delete($this->filename);
       }
     }catch(\Exception $e){
       error_log($e);
