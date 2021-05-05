@@ -42,6 +42,7 @@ use Excel;
 use Auth;
 use Maatwebsite\Excel\Facades\Excel as FacadesExcel;
 use Madnest\Madzipper\Madzipper;
+use App\HealthFacility;
 
 class PatientsController extends Controller
 {
