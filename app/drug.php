@@ -45,6 +45,6 @@ class Drug extends Model
   * @return relation
   */
   public function formulations(){
-    return $this->hasMany('App\Formulation');
+    return $this->hasMany('App\Formulation','id','drug_id');
   }
 }

@@ -241,18 +241,16 @@ return [
             'can' =>  'View_Case'
         ],
 
-        // [
-        //   'text' => 'Questions',
-        //   'url'  => '/questions',
-        //   'icon' => 'fas fa-fw fa-question-circle',
-        //   'can' =>  'View_Case'
-        // ],
-        // [
-        //   'text' => 'Export',
-        //   'url'  => '/export-mainData-csv',
-        //   'icon' => 'fas fa-fw fa-file',
-        //   'can' =>  'Merge_Duplicates'
-        // ],
+        [
+          'text' => 'Diagnosis List',
+          'url'  => '/exports/diagnosis_list',
+          'can' =>  'Merge_Duplicates'
+        ],
+        [
+          'text' => 'Drug List',
+          'url'  => '/exports/drug_list',
+          'can' =>  'Merge_Duplicates'
+        ],
         [
           'text' => 'Exports',
           'icon' => 'fas fa-fw fa-clone',
@@ -333,6 +331,10 @@ return [
             ],
 
 
+          //   [
+          //     'text' => 'Drug Results',
+          //     'url'  => '/export/drug_analysis',
+          // ],
           ],
         ],
 

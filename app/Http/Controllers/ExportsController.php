@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Diagnosis;
+use App\MedicalCase;
+use App\Drug;
+use App\Formulation;
+use App\DiagnosisReference;
+use App\DrugReference;
 use Illuminate\Http\Request;
 use App\Exports\PatientExport;
 use App\Exports\DataSheet;
@@ -22,6 +28,7 @@ use App\Exports\NodeExport;
 use App\Exports\AnswerTypeExport;
 use App\Exports\VersionExport;
 use Excel;
+use Illuminate\Support\Facades\DB;
 use App\MedicalCaseAnswer;
 
 class ExportsController extends Controller
@@ -119,5 +126,32 @@ class ExportsController extends Controller
     }
     public function algorithmVersions(){
       return Excel::download(new VersionExport,'algorithm_versions.csv');
+    }
+
+    public function drugsSummary(){
+      $drug_ref0=DrugReference::where('agreed',1)->get();
+      $drug_ref0->each(function($drug_ref){
+        $drug=Drug::find($drug_ref->drug_id);
+        $diagnosis_ref=DiagnosisReference::find($drug_ref->diagnosis_id);
+        $drug_ref->case_id=MedicalCase::find($diagnosis_ref->medical_case_id)->local_medical_case_id;
+        $diagnosis=Diagnosis::find($diagnosis_ref->diagnosis_id);
+        $formulations=Formulation::where('drug_id',$drug->id)->get();
+        $drug_ref->formulation=$formulations->get($drug_ref->formulationSelected);
+        $drug_ref->drug_label=$drug->label;
+        $drug_ref->diagnosis_label=$diagnosis->label;
+      });
+      return view('drugs.index')->with('drugs',$drug_ref0);
+    }
+    public function diagnosesSummary(){
+      $diagnoses_ref0=DiagnosisReference::where('agreed',true)->get();
+      $diagnoses_ref0->each(function($d_f){
+        $case=MedicalCase::find($d_f->medical_case_id);
+        $d_f->local_medical_case_id=$case->local_medical_case_id;
+        $d_f->patient_id=$case->patient->id;
+        $d_f->local_patient_id=$case->patient->local_patient_id;
+        $d_f->facility_name=$case->facility->facility_name;
+        $d_f->diagnosis_label=Diagnosis::find($d_f->diagnosis_id)->label;
+        });
+      return view('diagnoses.index')->with('diagnoses',$diagnoses_ref0);
     }
 }

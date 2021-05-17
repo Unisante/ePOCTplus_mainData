@@ -83,6 +83,10 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('/export/algorithms','ExportsController@algorithms')->name('ExportsController.algorithms');
   Route::get('/export/algorithm_versions','ExportsController@algorithmVersions')->name('ExportsController.algorithmVersions');
   Route::get('/export/cases_answers','ExportsController@casesAnswers2')->name('ExportsController.casesAnswers2');
+  Route::get('/export/drug_analysis','ExportsController@drugAnalysis')->name('ExportsController.drugAnalysis');
+  Route::get('/exports/diagnosis_list','ExportsController@diagnosesSummary')->name('ExportsController.diagnosesSummary');
+  Route::get('/exports/drug_list','ExportsController@drugsSummary')->name('ExportsController.drugsSummary');
+
 
 });
 
