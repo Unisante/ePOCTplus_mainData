@@ -59,6 +59,12 @@ Route::post('sync_medical_cases',function(Request $request){
     //save the zip file and find out the name of the saved zip file.
     $file=Storage::putFile('medical_cases_zip', $request->file);
     // return $file;
+    $parsed_folder='parsed_medical_cases';
+    $failed_folder='failed_medical_cases';
+    Storage::makeDirectory($this->failed_folder);
+    Storage::makeDirectory('extracted_cases_zip');
+    Storage::makeDirectory($parsed_folder);
+    Storage::makeDirectory($failed_folder);
     error_log('we are in the route');
     dispatch(new SaveZipCasesJob($file));
     if(strpos(env("STUDY_ID"), "Dynamic")!== false){

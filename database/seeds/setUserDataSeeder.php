@@ -28,6 +28,7 @@ class setUserDataSeeder extends Seeder
         // error_log(implode($userRoles->getRoleNames()));
         // error_log($user->role);
       });
+      Storage::makeDirectory('userDatas');
       Storage::put($userDataPath, $users_from_database);
       error_log("ready set to the json file");
     }
