@@ -61,7 +61,7 @@ Route::post('sync_medical_cases',function(Request $request){
     // return $file;
     $parsed_folder='parsed_medical_cases';
     $failed_folder='failed_medical_cases';
-    Storage::makeDirectory($this->failed_folder);
+    Storage::makeDirectory('failed_cases_zip');
     Storage::makeDirectory('extracted_cases_zip');
     Storage::makeDirectory($parsed_folder);
     Storage::makeDirectory($failed_folder);

@@ -48,7 +48,7 @@
                 </tbody>
               </table>
               @else
-              <p>No Medical Cases Found</p>
+              <p>No Drugs Found Found</p>
               @endif
             </div>
           </div>

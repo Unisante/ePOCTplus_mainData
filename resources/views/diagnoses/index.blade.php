@@ -53,7 +53,7 @@
                 </tbody>
               </table>
               @else
-              <p>No Medical Cases Found</p>
+              <p>No Diagnoses Found</p>
               @endif
             </div>
           </div>
