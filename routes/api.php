@@ -33,6 +33,12 @@ Route::get('medical_case_answers', function(Request $request){
 
 // Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
 
+
+Route::post('sync_medical_cases',function(Request $request){
+  return response()->json(['data_received' => true,'status' => 200]);
+});
+
+/*
 Route::post('sync_medical_cases',function(Request $request){
   if($request->file){
     $file=Storage::putFile('medical_cases_zip', $request->file);
@@ -56,6 +62,9 @@ Route::post('sync_medical_cases',function(Request $request){
   }
   return response()->json(['data_received'=> false,'status'=>400]);
 });
+*/
+
+
 
 Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
   if(HealthFacility::where('group_id',$health_facility_id)->doesntExist()){
