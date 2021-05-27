@@ -46,5 +46,19 @@ class RoleSeeder extends Seeder
           'password'=>Hash::make('DataAdmin')
         ]);
         $user->assignRole($admin);
+
+        $dataManagerUser = User::firstOrCreate([
+          'name'=>'data manager',
+          'email'=>'datamanager@dynamic.com',
+          'password'=>Hash::make('DataManager')
+        ]);
+        $dataManagerUser->assignRole($data_manager);
+
+        $statisticianUser = User::firstOrCreate([
+          'name'=>'statistician',
+          'email'=>'statistician@dynamic.com',
+          'password'=>Hash::make('statistician')
+        ]);
+        $statisticianUser->assignRole($statistician);
     }
 }
