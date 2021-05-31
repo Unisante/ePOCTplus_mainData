@@ -23,7 +23,6 @@ class Algorithm extends Model implements Auditable
     $algorithm_doesnt_exist=Algorithm::where('medal_c_id',$data['algorithm_id'])->doesntExist();
     $version_doesnt_exist=Version::where('medal_c_id',$data['version_id'])->doesntExist();
     if($algorithm_doesnt_exist){
-      dump("algorithm doesnt exist");
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // saving a new algorithm
