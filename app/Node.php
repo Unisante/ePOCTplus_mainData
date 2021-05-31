@@ -26,10 +26,9 @@ class Node extends Model implements Auditable
   */
   public static function getOrStore($nodes,$algorithm){
     $typeToAccept='Question';
-    dump($nodes);
     foreach($nodes as $node){
-      dump($node);
       if(array_key_exists('type', $node) && $node['type']==$typeToAccept){
+        dump("enters if for");
         $priority=isset($node['is_mandatory'])?$node['is_mandatory']:0;
         $reference=isset($node['reference'])?$node['reference']:0;
         $stage=isset($node['stage'])?$node['stage']:'';
@@ -53,6 +52,7 @@ class Node extends Model implements Auditable
             'is_identifiable'=>$node['is_identifiable']
           ]
         );
+        dump($nodeSaved,$node);
         Answer::getOrCreate($nodeSaved,$node);
       }
     }
