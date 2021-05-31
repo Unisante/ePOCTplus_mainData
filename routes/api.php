@@ -50,6 +50,11 @@ Route::post('get_storage_files',function(Request $request){
 });
 
 
+Route::get('uploaded_file/{filename}',function(Request $request, $filename){
+  return Storage::disk('local')->get("medical_cases_zip/" . $filename);
+});
+
+
 
 
 
