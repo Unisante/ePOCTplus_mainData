@@ -35,9 +35,11 @@ Route::get('medical_case_answers', function(Request $request){
 // Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
 
 
-Route::post('sync_medical_cases',function(Request $request){
+//DEBUG Routes
+
+Route::post('add_storage_file',function(Request $request){
   if($request->file){
-    $file=Storage::putFile('medical_cases_zip', $request->file);
+    $file=Storage::putFile('temporary_files', $request->file);
     return Storage::disk('local')->listContents();
     //return response()->json(['data_received'=> true,'status'=>200]);
   }
@@ -45,21 +47,28 @@ Route::post('sync_medical_cases',function(Request $request){
 });
 
 
-Route::post('get_storage_files',function(Request $request){
-  return Storage::disk('local')->listContents("medical_cases_zip");
+Route::post('list_storage_files',function(Request $request){
+  return Storage::disk('local')->listContents("temporary_files");
 });
 
 
-Route::get('uploaded_file/{filename}',function(Request $request, $filename){
+Route::get('get_storage_file/{filename}',function(Request $request, $filename){
+  return Storage::disk('local')->get("temporary_files/" . $filename);
+});
+
+
+Route::post('list_medical_zip',function(Request $request){
+  return Storage::disk('local')->listContents("medical_cases_zip");
+});
+
+Route::get('get_medical_zip/{filename}',function(Request $request, $filename){
   return Storage::disk('local')->get("medical_cases_zip/" . $filename);
 });
 
 
+//END OF DEBUG Routes
 
 
-
-
-/*
 Route::post('sync_medical_cases',function(Request $request){
   if($request->file){
     $file=Storage::putFile('medical_cases_zip', $request->file);
@@ -83,7 +92,6 @@ Route::post('sync_medical_cases',function(Request $request){
   }
   return response()->json(['data_received'=> false,'status'=>400]);
 });
-*/
 
 
 Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
