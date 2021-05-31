@@ -99,7 +99,7 @@ class SaveCase implements ShouldQueue
         $senseDuplicate=Patient::where($duplicateConditions)->exists();
         $existingPatient=(object)["label"=>'No'];
         if(strpos(env("STUDY_ID"), "Dynamic")!== false){
-          if $nodes === null {
+          if ($nodes === null) {
             dump("nodes is null");
           }
           dump($nodes[$algorithm_n_version['config_data']);
