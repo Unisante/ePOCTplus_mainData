@@ -27,6 +27,7 @@ class Node extends Model implements Auditable
   public static function getOrStore($nodes,$algorithm){
     $typeToAccept='Question';
     foreach($nodes as $node){
+      dump("Node:",$node);
       if(array_key_exists('type', $node) && $node['type']==$typeToAccept){
         $priority=isset($node['is_mandatory'])?$node['is_mandatory']:0;
         $reference=isset($node['reference'])?$node['reference']:0;
