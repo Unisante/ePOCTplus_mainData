@@ -10,6 +10,7 @@ use Illuminate\Http\File;
 use App\Jobs\SaveCase;
 use App\Jobs\RedcapPush;
 use Illuminate\Support\Facades\Log;
+use Spatie\TemporaryDirectory;
 
 use Madnest\Madzipper\Madzipper;
 /*
@@ -37,7 +38,8 @@ Route::get('medical_case_answers', function(Request $request){
 Route::post('sync_medical_cases',function(Request $request){
   if($request->file){
     $file=Storage::putFile('medical_cases_zip', $request->file);
-    return response()->json(['data_received'=> true,'status'=>200]);
+    return Storage::disk('local')->listContents();
+    //return response()->json(['data_received'=> true,'status'=>200]);
   }
   return response()->json(['data_received'=> false,'status'=>400]);
 });
