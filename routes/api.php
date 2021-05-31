@@ -46,7 +46,7 @@ Route::post('sync_medical_cases',function(Request $request){
 
 
 Route::post('get_storage_files',function(Request $request){
-  return Storage::disk('local')->listContents();
+  return Storage::disk('local')->listContents("medical_cases_zip");
 });
 
 
