@@ -102,7 +102,7 @@ class SaveCase implements ShouldQueue
           if ($nodes === null) {
             dump("nodes is null");
           }
-          dump($nodes[$algorithm_n_version['config_data']);
+          dump($nodes[$algorithm_n_version['config_data']->parent_in_study_id]['answer']);
         $existingPatient=Answer::where('medal_c_id',$nodes[$algorithm_n_version['config_data']->parent_in_study_id]['answer'])->first();
           dump($existingPatient);
         }
