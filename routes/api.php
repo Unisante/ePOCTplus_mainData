@@ -57,6 +57,7 @@ Route::post('sync_medical_cases_trial',function(Request $request){
 Route::post('sync_medical_cases',function(Request $request){
   if($request->file){
     //save the zip file and find out the name of the saved zip file.
+    Storage::makeDirectory('medical_cases_zip');
     $file=Storage::putFile('medical_cases_zip', $request->file);
     // return $file;
     $parsed_folder='parsed_medical_cases';
@@ -68,9 +69,9 @@ Route::post('sync_medical_cases',function(Request $request){
     Storage::makeDirectory($failed_folder);
     error_log('we are in the route');
     dispatch(new SaveZipCasesJob($file));
-    if(strpos(env("STUDY_ID"), "Dynamic")!== false){
-      dispatch(new RedcapPush());
-    }
+    // if(strpos(env("STUDY_ID"), "Dynamic")!== false){
+    //   dispatch(new RedcapPush());
+    // }
     return response()->json(['data_received'=> true,'message'=>'Zip File received','status'=>200]);
   }
   return response()->json(['data_received'=> false,'message'=>'No Zip File received','status'=>400]);
