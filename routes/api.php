@@ -63,6 +63,7 @@ Route::post('sync_medical_cases',function(Request $request){
     $failed_folder='failed_medical_cases';
     Storage::makeDirectory('failed_cases_zip');
     Storage::makeDirectory('extracted_cases_zip');
+    Storage::makeDirectory('unparsed_medical_cases');
     Storage::makeDirectory($parsed_folder);
     Storage::makeDirectory($failed_folder);
     error_log('we are in the route');
