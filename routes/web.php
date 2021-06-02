@@ -30,6 +30,11 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('roles/removeRole/{id}','RolesController@removeRolePermissionShow');
   Route::post('role/removePerm/{id}','RolesController@removeRolePermission');
 
+
+  //for devices
+  Route::get('/devices','DevicesController@index')->name('Devices.index');;
+
+
   //for patient
   Route::get('/patients','PatientsController@index')->name('Patients.index');;
   Route::get('/patient/{id}','PatientsController@show')->name('PatientsController.show');
