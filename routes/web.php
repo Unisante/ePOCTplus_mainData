@@ -45,7 +45,7 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('/medicalCases/{id}','MedicalCasesController@show')->name('MedicalCasesController.show');
   Route::get('/medicalCases/compare/{id1}/{id2}','MedicalCasesController@compare');
   Route::get('/medicalCases/{medicalCaseId}/question/{questionId}','MedicalCasesController@medicalCaseQuestion')->name('MedicalCasesController.medicalCaseQuestion');
-  Route::post('/medicalCases/{medicalCaseId}/question/{questionId}/update','medicalCaseAnswersController@update')->name('medicalCaseAnswersController.update');
+  Route::post('/medicalCases/{medicalCaseId}/question/{questionId}/update','MedicalCaseAnswersController@update')->name('MedicalCaseAnswersController.update');
   Route::get('/medicalCase/changes/{id}','MedicalCasesController@showCaseChanges')->name('MedicalCasesController.showCaseChanges');
   Route::get('/medicalcases/duplicates','MedicalCasesController@findDuplicates');
   Route::post('/medicalCases/duplicates/search','MedicalCasesController@searchDuplicates')->name('MedicalCasesController@searchDuplicates');
