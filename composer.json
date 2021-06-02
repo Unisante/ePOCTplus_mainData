@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.2.6",
+        "php": "^7.2.6 | ^8.0",
         "doctrine/dbal": "2.9.2",
         "fideloper/proxy": "^4.0",
         "intervention/image": "^2.5",
@@ -40,8 +40,15 @@
         "sort-packages": true
     },
     "extra": {
+      "heroku": {
+      "framework": "silex",
+      "document-root": "public",
+      "index-document": "index.php"
+      },
       "laravel": {
-        "dont-discover": []
+        "dont-discover": [
+            "laravel/dusk"
+        ]
       }
       },
     "autoload": {
