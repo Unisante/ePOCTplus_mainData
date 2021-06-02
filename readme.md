@@ -6,6 +6,23 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
+## Passport Integration
+
+In this section, we summarize the changes made to the server when integrating the Laravel Passport functionality. The plan is to have a new type of stakeholders which are in charge of registering devices such as medal-*reader* and medal-*hub* to the system, which will then allow these devices to fetch an access token from this server which it can then use to access API routes which we will protect with laravel's passport `auth:api` middleware, verifying the validity of tokens. Below, we summarize the functionality and provide details on the steps taken to integrate this into the server. 
+
+### OAuth Functionality Summary
+
+The server already uses Spaties permission package and therefore we will leverage this existing package to create a new permission `manage-devices` with an associated role `device-manager`, which, when held, gives access to a web page allowing to register new devices, such as *hubs* and *readers* into the system. Once registered, a device manager will then have to login to this server from the device, which under the hood uses the OAuth's PKCE authorization flow. (for more details about the protocol see: https://auth0.com/docs/flows/authorization-code-flow-with-proof-key-for-code-exchange-pkce). If the login is successful, the device will obtain a token which is tied to the users permission. This token will then be used automatically by the devices when hitting the `sync_medical_cases` API endpoint which will be guarded by both the `auth:api` and `permission:manage-devices` middlewares. 
+
+### Back-end Changes
+
+
+
+### Front-end Changes
+
+## Procedure for deploying the server on Heroku
+
+
 
 ## About Laravel
 
