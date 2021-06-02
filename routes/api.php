@@ -28,6 +28,10 @@ use Madnest\Madzipper\Madzipper;
 //    return $request->user();
 //});
 
+Route::middleware('auth:api',"permission:manage-devices")->get('/protected-api', function (Request $request) {
+    return $request->user();
+});
+
 Route::get('medical_case_answers', function(Request $request){
     return MedicalCaseAnswer::all();
 });
