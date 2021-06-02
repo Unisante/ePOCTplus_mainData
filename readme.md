@@ -48,6 +48,10 @@ for the passport installation to work properly. After changing the `composer.jso
 
 ### Front-end Changes
 
+#### Upgrade Laravel-Mix
+
+The version of Laravel mix in `package.json` was making the node compilation failed (on heroku) so it has been changed to : `"laravel-mix": "^5.0.1",` 
+
 ## Procedure for deploying the server on Heroku
 
 
