@@ -8,10 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Contracts\Auth\CanResetPassword;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements Auditable
 {
-    use Notifiable,HasRoles,\OwenIt\Auditing\Auditable;
+    use Notifiable,HasRoles,\OwenIt\Auditing\Auditable,HasApiTokens;
 
   /**
   * The attributes that are mass assignable.
