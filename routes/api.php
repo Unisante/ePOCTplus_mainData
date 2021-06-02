@@ -28,6 +28,7 @@ use Madnest\Madzipper\Madzipper;
 //    return $request->user();
 //});
 
+
 Route::middleware('auth:api',"permission:manage-devices")->get('/protected-api', function (Request $request) {
     return $request->user();
 });
