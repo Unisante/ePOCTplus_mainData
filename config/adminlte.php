@@ -216,6 +216,12 @@ return [
           'can' =>  'Merge_Duplicates'
         ],
         [
+          'text' => 'Manage Devices',
+          'url'  => '/devices',
+          'icon' => 'fas fa-tablet-alt',
+          'can' =>  'manage-devices'
+        ],
+        [
           'text' => 'Duplicates',
           'url'  => '/patients/duplicates',
           'icon' => 'fas fa-fw fa-users',
