@@ -16,6 +16,34 @@ The server already uses Spaties permission package and therefore we will leverag
 
 ### Back-end Changes
 
+#### Passport Installation
+
+In order to install passport we had to make slight changes of the laravel version currently used by this server. Originally, the `composer.json` file had the following version:
+
+```json
+ "require": {
+...
+        "laravel/framework": "6.0.*",
+...
+    },
+```
+
+Which we changed to: 
+
+```json
+"require": {
+    ....
+        "laravel/framework": "^6.20.26",
+    ...
+    },
+```
+
+for the passport installation to work properly. After changing the `composer.json` we run `composer update` followed by `composer require laravel/passport` which successfully installed passport's back-end routes.
+
+
+
+
+
 
 
 ### Front-end Changes
