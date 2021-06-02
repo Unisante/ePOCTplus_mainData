@@ -26,5 +26,17 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         //
+
+        Passport::routes(function ($router) {
+                    $router->forAuthorization();
+                    $router->forAccessTokens();
+                    $router->forTransientTokens();
+                    $router->forPersonalAccessTokens();
+                });
+            // Here the routes to manage clients are guarded with additionnal middleware
+        Route::group(['middleware'=>['web','auth','permission:manage-devices']], function(){ 
+            Passport::routes(function ($router) {
+                $router->forClients();
+            });
     }
 }
