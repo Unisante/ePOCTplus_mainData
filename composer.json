@@ -82,10 +82,7 @@
             "php artisan clear-compiled",
             "chmod -R 777 public/",
             "chmod -R 777 storage/",
-            "php artisan passport:keys",
-            "php artisan db:wipe --force",
-            "php artisan migrate --force",
-            "php artisan db:seed --force"
+            "php artisan passport:keys"
         ]
     }
 }
