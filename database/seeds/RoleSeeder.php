@@ -41,7 +41,7 @@ class RoleSeeder extends Seeder
         $statistician->givePermissionTo('Reset_Own_Password');
 
         $deviceManager=Role::firstOrCreate(['name'=>'Device Manager']);
-        $deviceManager->givePermissionTo('Manage_Devices');
+        $deviceManager->givePermissionTo('manage-devices');
         $deviceManager->givePermissionTo('Reset_User_Password');
         $deviceManager->givePermissionTo('Reset_Own_Password');
 
