@@ -18,10 +18,10 @@ class CreateOauthAuthCodesTable extends Migration
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->schema = Schema::connection($this->getConnection());
-    }
+    //public function __construct()
+    //{
+    //    $this->schema = Schema::connection($this->getConnection());
+    //}
 
     /**
      * Run the migrations.
