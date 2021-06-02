@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0065184d59cf042e71c3176cd3a4b800",
+    "content-hash": "a113ae09743ccc96c7e0521d4627d7d9",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -2368,16 +2368,16 @@
         },
         {
             "name": "markbaker/complex",
-            "version": "2.0.2",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MarkBaker/PHPComplex.git",
-                "reference": "d18272926d58065140314c01e18ec3dd7ae854ea"
+                "reference": "6f724d7e04606fd8adaa4e3bb381c3e9db09c946"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MarkBaker/PHPComplex/zipball/d18272926d58065140314c01e18ec3dd7ae854ea",
-                "reference": "d18272926d58065140314c01e18ec3dd7ae854ea",
+                "url": "https://api.github.com/repos/MarkBaker/PHPComplex/zipball/6f724d7e04606fd8adaa4e3bb381c3e9db09c946",
+                "reference": "6f724d7e04606fd8adaa4e3bb381c3e9db09c946",
                 "shasum": ""
             },
             "require": {
@@ -2455,7 +2455,7 @@
                 "complex",
                 "mathematics"
             ],
-            "time": "2021-05-24T10:53:30+00:00"
+            "time": "2021-06-02T09:44:11+00:00"
         },
         {
             "name": "markbaker/matrix",

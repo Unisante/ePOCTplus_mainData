@@ -40,15 +40,8 @@
         "sort-packages": true
     },
     "extra": {
-      "heroku": {
-      "framework": "silex",
-      "document-root": "public",
-      "index-document": "index.php"
-      },
       "laravel": {
-        "dont-discover": [
-            "laravel/dusk"
-        ]
+        "dont-discover": []
       }
       },
     "autoload": {
