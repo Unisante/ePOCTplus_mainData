@@ -1,5 +1,7 @@
 @extends('adminlte::page')
 
+
+ <!-- The contents of the layout/app.bade.php are included so that the view components work correctly -->
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -54,6 +56,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
+                    <!-- Here the Passport Vue Components are included -->
                     <passport-clients></passport-clients>
                     <passport-authorized-clients></passport-authorized-clients>
                     <passport-personal-access-tokens></passport-personal-access-tokens>
