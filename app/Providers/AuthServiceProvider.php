@@ -36,7 +36,7 @@ class AuthServiceProvider extends ServiceProvider
                     $router->forPersonalAccessTokens();
                 });
             // Here the routes to manage clients are guarded with additionnal middleware
-        Route::group(['middleware'=>['web','auth','permission:manage-devices']], function(){ 
+        Route::group(['middleware'=>['web','auth','permission:Manage_Devices']], function(){ 
             Passport::routes(function ($router) {
                 $router->forClients();
             });

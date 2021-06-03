@@ -219,7 +219,7 @@ return [
           'text' => 'Manage Devices',
           'url'  => '/devices',
           'icon' => 'fas fa-tablet-alt',
-          'can' =>  'manage-devices'
+          'can' =>  'Manage_Devices'
         ],
         [
           'text' => 'Duplicates',

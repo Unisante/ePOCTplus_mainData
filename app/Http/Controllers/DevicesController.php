@@ -10,7 +10,7 @@ class DevicesController extends Controller
 
     public function __construct(){
       $this->middleware('auth');
-      $this->middleware('permission:manage-devices', ['only' => ['index']]);
+      $this->middleware('permission:Manage_Devices', ['only' => ['index']]);
     }
 
     public function index(Request $request){

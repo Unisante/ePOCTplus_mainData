@@ -29,7 +29,7 @@ use Madnest\Madzipper\Madzipper;
 //});
 
 
-Route::middleware('auth:api',"permission:manage-devices")->get('/protected-api', function (Request $request) {
+Route::middleware('auth:api',"permission:Manage_Devices")->get('/protected-api', function (Request $request) {
     return $request->user();
 });
 
