@@ -67,7 +67,6 @@ class SaveCase implements ShouldQueue
       );
       $dataForAlgorithm=array("algorithm_id"=> $this->individualData['algorithm_id'],"version_id"=> $this->individualData['version_id'],);
       $algorithm_n_version=Algorithm::ifOrExists($dataForAlgorithm);
-      dump("Algo version:",$algorithm_n_version);
       $patient_key=$this->individualData['patient'];
       if($patient_key['study_id']== $study_id && $this->individualData['isEligible']==$isEligible){
         $nodes=$this->individualData['nodes'];
@@ -99,11 +98,7 @@ class SaveCase implements ShouldQueue
         $senseDuplicate=Patient::where($duplicateConditions)->exists();
         $existingPatient=(object)["label"=>'No'];
         if(strpos(env("STUDY_ID"), "Dynamic")!== false){
-          $tmpNode = $nodes[$algorithm_n_version['config_data']->parent_in_study_id];
-          dump("temporary Node",$tmpNode);
-          dump("where value",$nodes[$algorithm_n_version['config_data']->parent_in_study_id]['answer']);
           $existingPatient=Answer::where('medal_c_id',$nodes[$algorithm_n_version['config_data']->parent_in_study_id]['answer'])->first();
-          dump("existing patient",$existingPatient);
         }
         if($patient_key['other_uid'] || $senseDuplicate || $existingPatient->label == 'Yes'){
           $duplicate_flag=true;
