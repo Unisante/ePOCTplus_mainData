@@ -9,7 +9,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\MedicalCase;
 use Illuminate\Support\Facades\Storage;
-use Madzipper;
 use File;
 use App\Algorithm;
 use App\JsonLog;
@@ -17,7 +16,6 @@ use App\Answer;
 use App\Patient;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Log;
-use App\Services\RedCapApiService;
 use App\HealthFacility;
 use DateTime;
 
@@ -144,6 +142,11 @@ class SaveCase implements ShouldQueue
 
         if(Storage::Exists($this->filename) && !(Storage::Exists($parsed_folder.'/'.basename($this->filename)))){
             Storage::move($this->filename, $parsed_folder.'/'.basename($this->filename));
+        }
+        Storage::Delete($this->filename);
+      }else{
+        if(Storage::Exists($this->filename) && !(Storage::Exists($failed_folder.'/'.basename($this->filename)))){
+          Storage::move($this->filename, $failed_folder.'/'.basename($this->filename));
         }
         Storage::Delete($this->filename);
       }

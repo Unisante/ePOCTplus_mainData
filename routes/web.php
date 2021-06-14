@@ -45,7 +45,7 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('/medicalCases/{id}','MedicalCasesController@show')->name('MedicalCasesController.show');
   Route::get('/medicalCases/compare/{id1}/{id2}','MedicalCasesController@compare');
   Route::get('/medicalCases/{medicalCaseId}/question/{questionId}','MedicalCasesController@medicalCaseQuestion')->name('MedicalCasesController.medicalCaseQuestion');
-  Route::post('/medicalCases/{medicalCaseId}/question/{questionId}/update','medicalCaseAnswersController@update')->name('medicalCaseAnswersController.update');
+  Route::post('/medicalCases/{medicalCaseId}/question/{questionId}/update','MedicalCaseAnswersController@update')->name('MedicalCaseAnswersController.update');
   Route::get('/medicalCase/changes/{id}','MedicalCasesController@showCaseChanges')->name('MedicalCasesController.showCaseChanges');
   Route::get('/medicalcases/duplicates','MedicalCasesController@findDuplicates');
   Route::post('/medicalCases/duplicates/search','MedicalCasesController@searchDuplicates')->name('MedicalCasesController@searchDuplicates');
@@ -82,7 +82,11 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('/export/answer_types','ExportsController@answer_types')->name('ExportsController.answer_types');
   Route::get('/export/algorithms','ExportsController@algorithms')->name('ExportsController.algorithms');
   Route::get('/export/algorithm_versions','ExportsController@algorithmVersions')->name('ExportsController.algorithmVersions');
-  Route::get('/export/cases_answers','ExportsController@casesAnswers')->name('ExportsController.casesAnswers');
+  Route::get('/export/cases_answers','ExportsController@casesAnswers2')->name('ExportsController.casesAnswers2');
+  Route::get('/export/drug_analysis','ExportsController@drugAnalysis')->name('ExportsController.drugAnalysis');
+  Route::get('/exports/diagnosis_list','ExportsController@diagnosesSummary')->name('ExportsController.diagnosesSummary');
+  Route::get('/exports/drug_list','ExportsController@drugsSummary')->name('ExportsController.drugsSummary');
+
 
 });
 

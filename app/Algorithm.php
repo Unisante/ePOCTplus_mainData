@@ -26,7 +26,6 @@ class Algorithm extends Model implements Auditable
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // saving a new algorithm
-      // dd($medal_C_algorithm);
       $algorithm= Algorithm::firstOrCreate([
         "name"=>$medal_C_algorithm['algorithm_name'],
         "medal_c_id"=>$medal_C_algorithm['algorithm_id']
@@ -53,7 +52,6 @@ class Algorithm extends Model implements Auditable
       ];
     }
     else if ($version_doesnt_exist){
-      // dd("am here");
       $version_id=$data['version_id'];
       $medal_C_algorithm= self::fetchAlgorithm($version_id);
       // find the algorithm
@@ -102,6 +100,7 @@ class Algorithm extends Model implements Auditable
     curl_setopt_array($curl, array(
       // CURLOPT_URL => 'https://liwi-test.wavelab.top/api/v1/versions/'.$version_id,
       CURLOPT_URL => 'https://medalc.unisante.ch/api/v1/versions/'.$version_id,
+      // CURLOPT_URL => 'https://liwi.wavelab.top/api/v1/versions/'.$version_id,
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => "",
       CURLOPT_MAXREDIRS => 10,
