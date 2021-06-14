@@ -54,7 +54,7 @@
                       <span>No Description was given</span>
                       @endif
                     </div>
-                    {{ Form::open(['route' => ['medicalCaseAnswersController.update',$medicalCase,$question->id]]) }}
+                    {{ Form::open(['route' => ['MedicalCaseAnswersController.update',$medicalCase,$question->id]]) }}
                     <div class="input-group pl-3">
                       <div class="input-group-prepend">
                         {{Form::label('answer', 'Answer', array('class' => 'input-group-text'))}}
