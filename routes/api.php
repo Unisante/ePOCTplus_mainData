@@ -2,16 +2,13 @@
 
 use Illuminate\Http\Request;
 use App\MedicalCaseAnswer;
-use App\User;
-use App\JsonLog;
 use App\HealthFacility;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\File;
 use App\Jobs\SaveCase;
+use App\Jobs\SaveZipCasesJob;
 use App\Jobs\RedcapPush;
 use Illuminate\Support\Facades\Log;
 use Spatie\TemporaryDirectory;
-
 use Madnest\Madzipper\Madzipper;
 /*
 |--------------------------------------------------------------------------
@@ -73,8 +70,7 @@ Route::get('get_medical_zip/{filename}',function(Request $request, $filename){
 
 //END OF DEBUG Routes
 
-
-Route::post('sync_medical_cases',function(Request $request){
+Route::post('sync_medical_cases_trial',function(Request $request){
   if($request->file){
     $file=Storage::putFile('medical_cases_zip', $request->file);
     $unparsed_path = base_path().'/storage/app/unparsed_medical_cases';
@@ -91,13 +87,33 @@ Route::post('sync_medical_cases',function(Request $request){
         dispatch(new SaveCase($individualData,$filename));
     }
     if(strpos(env("STUDY_ID"), "Dynamic")!== false){
-      // dispatch(new RedcapPush());
+      dispatch(new RedcapPush());
     }
     return response()->json(['data_received'=> true,'status'=>200]);
   }
   return response()->json(['data_received'=> false,'status'=>400]);
 });
 
+Route::post('sync_medical_cases',function(Request $request){
+  if($request->file){
+    //save the zip file and find out the name of the saved zip file.
+    $file=Storage::putFile('medical_cases_zip', $request->file);
+    // return $file;
+    $parsed_folder='parsed_medical_cases';
+    $failed_folder='failed_medical_cases';
+    Storage::makeDirectory('failed_cases_zip');
+    Storage::makeDirectory('extracted_cases_zip');
+    Storage::makeDirectory($parsed_folder);
+    Storage::makeDirectory($failed_folder);
+    error_log('we are in the route');
+    dispatch(new SaveZipCasesJob($file));
+    if(strpos(env("STUDY_ID"), "Dynamic")!== false){
+      dispatch(new RedcapPush());
+    }
+    return response()->json(['data_received'=> true,'message'=>'Zip File received','status'=>200]);
+  }
+  return response()->json(['data_received'=> false,'message'=>'No Zip File received','status'=>400]);
+});
 
 Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
   if(HealthFacility::where('group_id',$health_facility_id)->doesntExist()){
