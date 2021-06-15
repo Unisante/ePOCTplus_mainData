@@ -6,6 +6,96 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
+
+
+# SOP: Setup of medAL-*data* system
+
+## Purpose and Scope
+
+This document lists instructions to setup a medAL-*data* server instance and is intended to be read carefully by the entities involved in setting up the various components of the medAL suite. 
+
+## Responsibilities and Procedures
+
+### Initial Requirements
+
+- Linux Server. Minimal requirements:
+  - 8GB RAM
+  - 300GB Disk capacity
+  - Operating System: Ubuntu >= 18.04
+- Controlling workstation (Linux / MacOS / Windows) with the following installed:
+  - **git** version control software (see https://git-scm.com/)
+  - bash terminal (for windows see : https://gitforwindows.org/)
+- Domain Name (In the installation we will use the name **example.com**) pointing to the server's IP address
+
+
+### Installation (Manual)
+
+#### Environment setup
+
+1. Open up two terminals **[t_local]** and **[t_remote]** on the controlling workstation, on **[t_remote]** connect to the root account of the remote server using ssh.
+
+#### Dokku installation on remote server
+
+1. **[t_remote]** : run the following commands to install docker:
+   ```bash
+   sudo apt update
+   sudo apt install apt-transport-https ca-certificates curl software-properties-common
+   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add
+   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+   sudo apt update
+   apt-cache policy docker-ce
+   sudo apt install docker-ce
+   ```
+   To check if the installation was successfull run `sudo systemctl status docker`
+2. **[t_remote]**: run the following commands to install nginx and set the firewall rules:
+   ```bash
+   sudo apt install nginx
+   sudo ufw allow 'Nginx Full'
+   ```
+3. **[t_remote]**: Install dokku with the following commands:
+   ```bash
+   wget https://raw.githubusercontent.com/dokku/dokku/v0.21.4/bootstrap.sh
+   sudo DOKKU_TAG=v0.21.4 bash bootstrap.sh
+   ```
+4. **[t_local]**: On the local workstation open a browser and head to your servers domain **example.com** where you will be able to setup the public SSH key used when deploying the source code to the server and optionnaly enable virtual hosting on the server:
+   -  If you already have a ssh key configured for **git** on your local workstation, then copy the value of the public key and paste in the dialog on dokku's web interface. Otherwise, follow this guide to generate new keys: https://betterprogramming.pub/how-to-set-up-multiple-ssh-keys-ae6688f76570
+   -  If you plan to host other web services on the remote server, then enable virtual hosting.
+   -  Enter your domain name **example.com** in the corresponding dialog box 
+
+#### Application Deployment
+
+1. **[t_remote]**: Run the following commands to create and configure the dokku app for the medal-*data* server:
+   ```bash
+   # Create the App
+   dokku apps:create medal-data
+   # Install the postgres DB plugin
+   sudo dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
+   # Create Database
+   dokku postgres:create medal-data-db
+   # Link the App to the database
+   dokku postgres:link medal-data-db medal-data
+   # Set Config variables for Laravel
+   dokku config:set medal-data DB_CONNECTION=postgres
+   # Add the PHP buildpack to the apps config
+   dokku config:set medal-data BUILDPACK_URL=https://github.com/heroku/heroku-buildpack-php
+   ```
+2. **[t_local]**: On the local workstation, clone the source code of the medal-data server from the bitbucket repository by running the command `git clone https://informatique_unisante@bitbucket.org/wavemind_swiss/liwi-main-data.git` and navigate to the project folder `cd liwi-main-data`. 
+3. **[t_local]**: Link and deploy the server with the following **git** commands (replace **example.com** with your own domain name):
+   ```bash
+   git remote add dokku dokku@example.com:medal-data
+   git push dokku master
+   ```
+   If the push did not work, then make sure you have correctly set up the SSH key on the dokku server using the web interface. (more information on https://dokku.com/docs/deployment/user-management/)
+4. **[t_remote]**: Back on the remote server, run the following command to set the APP_KEY environment variable:
+   ```bash
+   dokku config:set medal-data APP_KEY=$(dokku run medal-data php artisan key:generate --show)
+   ```
+5. **[t_remote]**: Finally, migrate the database using:
+   ```bash
+   dokku run medal-data php artisan migrate
+   ```
+
+
 ## Passport Integration
 
 In this section, we summarize the changes made to the server when integrating the Laravel Passport functionality. The plan is to have a new type of stakeholders which are in charge of registering devices such as medal-*reader* and medal-*hub* to the system, which will then allow these devices to fetch an access token from this server which it can then use to access API routes which we will protect with laravel's passport `auth:api` middleware, verifying the validity of tokens. Below, we summarize the functionality and provide details on the steps taken to integrate this into the server. 
