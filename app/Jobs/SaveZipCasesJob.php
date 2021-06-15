@@ -118,11 +118,15 @@ class SaveZipCasesJob implements ShouldQueue
                 $duplicate_flag=false;
                 $senseDuplicate=Patient::where($duplicateConditions)->exists();
 
-                $existingPatient=(object)["label"=>'No'];
-                if(array_key_exists($algorithm_n_version["config_data"]->parent_in_study_id,$nodes)){
-                $existingPatient=Answer::where('medal_c_id',$nodes[$algorithm_n_version['config_data']->parent_in_study_id]['id'])->first();
-                }
-                if($patient_key['other_uid'] || $senseDuplicate || $existingPatient->label == 'Yes'){
+                // $existingPatient=(object)["label"=>'No'];
+                // if(array_key_exists($algorithm_n_version["config_data"]->parent_in_study_id,$nodes)){
+                // $existingPatient=Answer::where('medal_c_id',$nodes[$algorithm_n_version['config_data']->parent_in_study_id]['id'])->first();
+                // if($existingPatient == null){
+                //   $existingPatient=(object)["label"=>'No'];
+                // }
+                // }
+                // || $existingPatient->label == 'Yes'
+                if($patient_key['other_uid'] || $senseDuplicate ){
                   $duplicate_flag=true;
                 }
                 var_dump("checking and saving patient...");
