@@ -1,6 +1,4 @@
 #!/bin/bash
-
-
 # Create the App
 dokku apps:create medal-data
 # Install the postgres DB plugin

@@ -1,7 +1,0 @@
-{
-    "scripts": {
-      "dokku": {
-        "postdeploy": "curl https://some.external.api.service.com/deployment?state=success"
-      }
-    }
-  }
