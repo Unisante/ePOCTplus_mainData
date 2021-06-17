@@ -14,4 +14,6 @@ dokku config:set medal-data BUILDPACK_URL=https://github.com/heroku/heroku-build
 
 dokku config:set medal-data APP_ENV=local
 
+dokku config:set medal-data Language
+
 #dokku plugin:install https://github.com/dokku/dokku-maintenance.git maintenance

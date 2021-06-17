@@ -1,6 +1,7 @@
 #!/bin/bash
 HOST=$1
 export DEBIAN_FRONTEND=noninteractive
+export LC_ALL="en_US.UTF-8"
 # install prerequisites
 echo "dokku dokku/vhost_enable boolean true" | sudo debconf-set-selections
 echo "dokku dokku/web_config boolean false" | sudo debconf-set-selections
