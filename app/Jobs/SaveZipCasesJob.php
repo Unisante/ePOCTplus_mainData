@@ -190,7 +190,8 @@ class SaveZipCasesJob implements ShouldQueue
           Storage::copy($this->zip_storage_path, 'extracted_cases_zip/'.basename($this->zip_storage_path));
           // Storage::Delete($this->zip_storage_path);
         }catch(\Exception $e){
-          var_dump($e);
+          error_log($e);
+          Log::info('savecase',  ['error_saving' => $e]);
           Storage::copy($this->zip_storage_path, 'failed_cases_zip/'.basename($this->zip_storage_path));
         }
     }
