@@ -8,7 +8,7 @@ echo "dokku dokku/web_config boolean false" | sudo debconf-set-selections
 echo "dokku dokku/hostname string $HOST" | sudo debconf-set-selections
 echo "dokku dokku/skip_key_file boolean true" | sudo debconf-set-selections
 echo "dokku dokku/key_file string /root/.ssh/medal-data-deploy-key.pub" | sudo debconf-set-selections
-echo "dokku dokku/nginx_enable boolean true" | sudo debconf-set-selections
+echo "dokku dokku/nginx_enable boolean false" | sudo debconf-set-selections
 sudo apt-get update -qq >/dev/null
 sudo apt-get -qq -y --no-install-recommends install apt-transport-https
 
