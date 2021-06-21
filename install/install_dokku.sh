@@ -1,4 +1,5 @@
 #!/bin/bash
+HOST=$1
 sudo apt update -y
 sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add
@@ -11,3 +12,5 @@ sudo ufw allow 'Nginx Full'
 wget https://raw.githubusercontent.com/dokku/dokku/master/bootstrap.sh;
 chmod +x bootstrap.sh
 sudo DOKKU_TAG=v0.21.4 bash bootstrap.sh
+sudo systemctl stop dokku-installer
+dokku domains:add-global $HOST
