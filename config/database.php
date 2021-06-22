@@ -72,11 +72,11 @@ return [
 
         'postgres' => [
           'driver' => 'pgsql',
-          'host' => parse_url(getenv("DATABASE_URL"))["host"],
-          'port' => parse_url(getenv("DATABASE_URL"))["port"],
-          'database' => substr(parse_url(getenv("DATABASE_URL"))["path"], 1),
-          'username' => parse_url(getenv("DATABASE_URL"))["user"],
-          'password' => parse_url(getenv("DATABASE_URL"))["pass"],
+          'host' => 'localhost',
+          'port' => 5432,
+          'database' => 'medal-data',
+          'username' => 'medal-data-2',
+          'password' => 'yolohahahuhu',
           'charset' => 'utf8',
           'prefix' => '',
           'prefix_indexes' => true,
