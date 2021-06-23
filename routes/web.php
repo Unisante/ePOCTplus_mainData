@@ -100,6 +100,11 @@ Route::group(['middleware' => ['auth']], function() {
 });
 
 
+Route::get("/front-end-test",function(Request $request){
+  return view("test.test");
+});
+
+
 
 
 

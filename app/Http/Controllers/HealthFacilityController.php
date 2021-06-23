@@ -42,7 +42,10 @@ class HealthFacilityController extends Controller
      */
     public function store(HealthFacilityRequest $request){
         $healthFacility = $this->newHealthFacility();
-        return $this->validateAndSave($request,$healthFacility);
+        $this->validateAndTranslate($request,$healthFacility);
+        $this->addDefaultValues($healthFacility);
+        $healthFacility->save();
+        return $this->success();
     }
 
     /**
@@ -59,7 +62,7 @@ class HealthFacilityController extends Controller
             return redirect()->route('health-facilities.index');
         }
         return view("healthFacilities.details",[
-            "healthFacility" => $healthFacility,
+            "facility" => $healthFacility,
         ]);
     }
 
@@ -87,7 +90,9 @@ class HealthFacilityController extends Controller
     public function update(HealthFacilityRequest $request, $id)
     {
         $healthFacility = $this->getHealthFacility($id);
-        return $this->validateAndSave($request,$healthFacility);
+        $this->validateAndTranslate($request,$healthFacility);
+        $healthFacility->save();
+        return $this->success();
     }
 
     /**
@@ -121,20 +126,21 @@ class HealthFacilityController extends Controller
     }
 
 
-    private function validateAndSave(HealthFacilityRequest $request,HealthFacility $healthFacility) {
+    private function validateAndTranslate(HealthFacilityRequest $request,HealthFacility $healthFacility){
         $validated = $request->validated();
         $healthFacility->name = $validated['name'];
         $healthFacility->country = $validated['country'];
         $healthFacility->area = $validated['area'];
         $healthFacility->pin_code = $validated['pin_code'];
+        $healthFacility->facility_name = $validated['name'];
+    }
+
+    private function addDefaultValues(HealthFacility $healthFacility){
         $healthFacility->group_id = 1;
         $healthFacility->lat = 0;
         $healthFacility->long = 0;
-        $healthFacility->hf_mode = "standalone";
-        $healthFacility->facility_name = $validated['name'];
         $healthFacility->local_data_ip = "127.0.0.1";
-        $healthFacility->save();
-        return $this->success();
+        $healthFacility->hf_mode = "standalone";
     }
 
     private function error(){
