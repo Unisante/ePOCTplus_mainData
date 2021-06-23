@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use App\MedicalCaseAnswer;
 use App\HealthFacility;
+use App\Jobs\ProcessUploadZip;
 use Illuminate\Support\Facades\Storage;
 use App\Jobs\SaveCase;
 use App\Jobs\SaveZipCasesJob;
@@ -73,6 +74,21 @@ Route::post('sync_medical_cases',function(Request $request){
     return response()->json(['data_received'=> true,'message'=>'Zip File received','status'=>200]);
   }
   return response()->json(['data_received'=> false,'message'=>'No Zip File received','status'=>400]);
+});
+
+Route::post('sync_medical_cases_refactor', function(Request $request) {
+  if (!$request->hasFile('file')) {
+    return response('Missing attached file', 400);
+  }
+
+  $path = $request->file('file')->store(env('CASES_ZIP_DIR'));
+
+  if ($path === false) {
+    return response('Unable to save file', 500);
+  }
+
+  ProcessUploadZip::dispatch($path);
+  return response('Zip file received');
 });
 
 Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
