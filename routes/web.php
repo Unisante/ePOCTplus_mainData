@@ -64,6 +64,10 @@ Route::group(['middleware' => ['auth']], function() {
   //for facilities
   Route::get('/facilities/index','FacilitiesController@index')->name('FacilitiesController.index');
 
+
+  //for health facilities
+  Route::resource('health-facilities','HealthFacilityController');
+
   //for downloading exports
   // Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('MedicalCasesController.medicalCaseIntoExcel');
   // Route::get('/export-medicalCase-csv','MedicalCasesController@medicalCaseIntoCsv')->name('MedicalCasesController.medicalCaseIntoCsv');

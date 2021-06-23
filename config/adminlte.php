@@ -234,6 +234,11 @@ return [
           'can' =>  'View_Patient'
         ],
         [
+            'text' => 'Health Facilities',
+            'url'  => '/health-facilities',
+            'icon' => 'fas fa-fw fa-cart-plus',
+        ],
+        [
             'text' => 'Patient list',
             'url'  => '/patients',
             'icon' => 'fas fa-fw fa-list',
