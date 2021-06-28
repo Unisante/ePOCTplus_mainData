@@ -20,9 +20,7 @@ class HealthFacility extends Model
         // ));
         $curl = curl_init();
         curl_setopt_array($curl, array(
-          // CURLOPT_URL => 'https://liwi-test.wavelab.top/api/v1/health_facilities/'.$group_id,
-          //CURLOPT_URL => 'https://medalc.unisante.ch/api/v1/health_facilities/'.$group_id,
-          CURLOPT_URL => 'https://liwi.wavelab.top/api/v1/versions/'.$version_id,
+          CURLOPT_URL => getenv("CREATOR_HEALTH_FACILITY_URL").$group_id,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
