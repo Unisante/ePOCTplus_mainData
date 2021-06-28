@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use Route;
+use App\Device;
+use App\Policies\DevicePolicy;
+use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Laravel\Passport\Passport;
-use Route;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -16,6 +18,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'App\Model' => 'App\Policies\ModelPolicy',
+        'App\Device' => 'App\Policies\DevicePolicy',
+        'App\HealthFacility' => 'App\Policies\HealthFacilityPolicy',
     ];
 
     /**

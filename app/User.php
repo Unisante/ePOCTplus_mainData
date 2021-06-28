@@ -2,13 +2,14 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;
-use OwenIt\Auditing\Contracts\Auditable;
-use Illuminate\Contracts\Auth\CanResetPassword;
+use App\HealthFacility;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
+use OwenIt\Auditing\Contracts\Auditable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements Auditable
 {
@@ -42,13 +43,23 @@ class User extends Authenticatable implements Auditable
   ];
 
   /**
- * Send the password reset notification.
- *
- * @param  string  $token
- * @return void
- */
-public function sendPasswordResetNotification($token)
-{
-    $this->notify(new ResetPasswordNotification($token));
-}
+  * Send the password reset notification.
+  *
+  * @param  string  $token
+  * @return void
+  */
+  public function sendPasswordResetNotification($token)
+  {
+      $this->notify(new ResetPasswordNotification($token));
+  }
+
+
+
+  public function devices(){
+    return $this->hasMany(Device::class);
+  }
+
+  public function healthFacilities(){
+    return $this->hasMany(HealthFacility::class);
+  }
 }

@@ -4,6 +4,7 @@
 
 @section('content')
 
+
 @component('layouts.components.details',['instance' => $facility,
                                       'name' => 'Health Facility',
                                       'url' => 'health-facilities',
@@ -11,9 +12,21 @@
                                       'inputs' => ['Name' => 'name',
                                                    'Country' => 'country',
                                                    'Area' => 'area',
-                                                   'Pin Code' => 'pin_code',],])
+                                                   'Pin Code' => 'pin_code',
+                                                   'Architecture' => 'hf_mode',
+                                                   'Latitude' => 'lat',
+                                                   'Longitude' => 'long',
+                                                   'medAl-hub IP' => 'local_data_ip'],])
 
 @endcomponent
 
-
 @stop
+
+
+
+@component('devices.index',[
+                            'devices' => $devices,
+                           ])
+    
+
+@endcomponent

@@ -15,7 +15,7 @@ class HealthFacilityController extends Controller
 
     public function __construct()
     {
-        $this->authorizeResource(HealthFacility::class);
+        $this->authorizeResource(HealthFacility::class, 'healthFacility');
     }
     /**
      * Display a listing of the resource.
@@ -58,22 +58,20 @@ class HealthFacilityController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\HealthFacility $healthFacility
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show(HealthFacility $healthFacility)
     {
-        $devices = $healthFacility->devices;
         return view("healthFacilities.details",[
             "facility" => $healthFacility,
-            "devices" => $devices,
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\HealthFacility $healthFacility
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit(HealthFacility $healthFacility)
@@ -87,7 +85,7 @@ class HealthFacilityController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request\HealthFacilityRequest  $request
-     * @param  \App\HealthFacility $healthFacility
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(HealthFacilityRequest $request, HealthFacility $healthFacility)
@@ -100,10 +98,10 @@ class HealthFacilityController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\HealthFacility $healthFacility
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(HealthFacility $healthFacility)
+    public function destroy(HealthFacility $healthFacilty)
     {
         $healthFacility->delete();
         return $this->success();

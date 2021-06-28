@@ -18,19 +18,35 @@
     <form method="post" action="{{route($url . '.update',$instance->id)}}">
         {{csrf_field()}}
         {{ method_field('PUT') }}
-        @foreach ($inputs as $key => $value)
-            <div class="form-group row">
-            <label for={{$value}} class="col-md-3 col-form-label text-md-right">{{$key}}<span class="required">*</span></label>
-            <div class="col-md-6">
-                <input id={{$value}} 
-                        type="text" 
-                        class="form-control"
-                        name={{$value}} 
-                        value={{$instance[$value]}}
-                        required autocomplete={{$value}} 
-                        autofocus >
-            </div>
-            </div>
+        @foreach ($inputs as $key => $input)
+        <div class="form-group row">
+        <label for={{$input['keyword']}} class="col-md-3 col-form-label text-md-right">{{$key}}</label>
+        <div class="col-md-6">
+            @if ($input['type'] == 'dropdown')
+            <select class="form-control" name={{$input['keyword']}} id={{$input['keyword']}}>
+            @foreach ($input['options'] as $option)
+            @if ($option == $instance[$input['keyword']])
+            <option value={{$option}} selected="selected">{{$option}}</option>
+            @else
+            <option value={{$option}}>{{$option}}</option>
+            @endif
+            @endforeach
+            </select> 
+            @endif
+
+            @if ($input['type'] == 'text') 
+            <input id={{$input['keyword']}} 
+                    type="text" 
+                    class="form-control"
+                    name={{$input['keyword']}} 
+                    value={{$instance[$input['keyword']]}}
+                    required autocomplete={{$input['keyword']}} 
+                    autofocus >    
+            @endif
+        </div>
+           
+            
+        </div>
         @endforeach
         <div class="form-group row mb-0">
         <div class="col-md-6 offset-md-4">

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Device;
 use Illuminate\Database\Eloquent\Model;
 
 class HealthFacility extends Model
@@ -85,5 +86,9 @@ class HealthFacility extends Model
   }
   public function patients(){
     return $this->hasMany('App\Patient','group_id','group_id');
+  }
+
+  public function devices(){
+    return $this->hasMany(Device::class);
   }
 }

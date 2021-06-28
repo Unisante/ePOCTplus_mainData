@@ -4,7 +4,7 @@
 <div class="container-fluid">
   <div class="row justify-content-center">
     <div class="col-md-12">
-    <a class="pull-left btn btn-outline-success" href="{{route('health-facilities.create')}}">Create New {{$singName}}</a>
+    <a class="pull-left btn btn-outline-success" href="{{route($url . '.create')}}">Create New {{$singName}}</a>
       <div class="card">
       
         <div class="card-header d-flex ">
@@ -42,10 +42,7 @@
                     <td>
                       <a class="pull-center btn btn-outline-info btn-sm" href="{{route($url . '.edit',$instance->id)}}" role="button">Edit</a>
                       <a class="pull-center btn btn-outline-info btn-sm" href="{{route($url . '.show',$instance->id)}}" role="button">View</a>
-
-                        {{-- delete functionality starts --}}
-                        <!-- Button trigger modal -->
-                      <button type="button" class="btn btn-outline-danger" onclick="callModalWithId({{$instance->id}})">Delete</button>   
+                      <button type="button" class="btn btn-outline-danger" onclick="callModalWithURL('{{$url . '/' . $instance->id}}')">Delete</button>   
                     </td>
                   </tr>
                   @endforeach
@@ -78,7 +75,7 @@
       <div class="modal-body">
         Are You sure ?
       </div>
-      <form id="deleteForm" action="/users" method="POST">
+      <form id="deleteForm" method="POST">
         <input name="_method" type="hidden" value="DELETE">
         {{ csrf_field() }}
         <div class="modal-footer">
@@ -92,8 +89,8 @@
 
 
 <script>
-function callModalWithId(id){
+function callModalWithURL(url){
   $("#deleteRole").modal()
-  $('#deleteForm').attr('action', `health-facilities/${id}`);
+  $('#deleteForm').attr('action',url);
 }
 </script>

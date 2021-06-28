@@ -32,7 +32,7 @@ Route::group(['middleware' => ['auth']], function() {
 
 
   //for devices
-  Route::get('/devices','DevicesController@index')->name('Devices.index');;
+ // Route::get('/devices','DevicesController@index')->name('Devices.index');;
 
 
   //for patient
@@ -67,6 +67,10 @@ Route::group(['middleware' => ['auth']], function() {
 
   //for health facilities
   Route::resource('health-facilities','HealthFacilityController');
+
+  //for Devices
+  Route::resource('devices','DeviceController');
+  Route::post('/devices/{id}/assign/{health_facility_id}','DeviceController@assignToHealthFacility');
 
   //for downloading exports
   // Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('MedicalCasesController.medicalCaseIntoExcel');

@@ -239,6 +239,11 @@ return [
             'icon' => 'fas fa-fw fa-cart-plus',
         ],
         [
+            'text' => 'Devices',
+            'url' => '/devices',
+            'icon' => 'fas fa-fw fa-tablet-alt',
+        ],
+        [
             'text' => 'Patient list',
             'url'  => '/patients',
             'icon' => 'fas fa-fw fa-list',

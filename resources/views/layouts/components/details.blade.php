@@ -20,7 +20,9 @@
   <div class="row col-sm-12 col-md-12 col-lg-12" pull-center style="background:white; margin: 10px">
       @foreach ($inputs as $key => $value)
       <div class="form-group row">
+      <div class="col-md-9">
         <label for={{$value}} class="col-md-3 col-form-label text-md-right">{{$key}}<span class="required"></span></label>
+      </div>
         <div class="col-md-9">
           <input id={{$value}} type="text" class="form-control" value="{{$instance[$value]}}" disabled >
         </div>

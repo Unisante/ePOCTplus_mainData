@@ -73,5 +73,17 @@ class RoleSeeder extends Seeder
           'password'=>Hash::make('DeviceManager')
         ]);
         $deviceManagerUser->assignRole($deviceManager);
+
+        $user1 = User::firstOrCreate([
+          'name' => 'user1',
+          'email' => 'user1@email.com',
+          'password' => Hash::make('1234')
+        ]);
+        $user2 = User::firstOrCreate([
+          'name' => 'user2',
+          'email' => 'user2@email.com',
+          'password' => Hash::make('1234')
+        ]);
+
     }
 }
