@@ -117,11 +117,16 @@ class SaveZipCasesJob implements ShouldQueue
                 $duplicateConditions=array_filter($duplicateConditions);
                 $duplicate_flag=false;
                 $senseDuplicate=Patient::where($duplicateConditions)->exists();
-                $existingPatient=(object)["label"=>'No'];
-                if(strpos(env("STUDY_ID"), "Dynamic")!== false){
-                $existingPatient=Answer::where('medal_c_id',$nodes[$algorithm_n_version['config_data']->parent_in_study_id]['answer'])->first();
-                }
-                if($patient_key['other_uid'] || $senseDuplicate || $existingPatient->label == 'Yes'){
+
+                // $existingPatient=(object)["label"=>'No'];
+                // if(array_key_exists($algorithm_n_version["config_data"]->parent_in_study_id,$nodes)){
+                // $existingPatient=Answer::where('medal_c_id',$nodes[$algorithm_n_version['config_data']->parent_in_study_id]['id'])->first();
+                // if($existingPatient == null){
+                //   $existingPatient=(object)["label"=>'No'];
+                // }
+                // }
+                // || $existingPatient->label == 'Yes'
+                if($patient_key['other_uid'] || $senseDuplicate ){
                   $duplicate_flag=true;
                 }
                 var_dump("checking and saving patient...");
@@ -171,7 +176,7 @@ class SaveZipCasesJob implements ShouldQueue
                 // dd(Storage::Exists($case_json));
                 Storage::Delete($case_json);
               }else{
-                
+
                 if(Storage::Exists($case_json) && !(Storage::Exists($this->failed_folder.'/'.basename($case_json)))){
                   Storage::move($case_json, $this->failed_folder.'/'.basename($case_json));
                 }

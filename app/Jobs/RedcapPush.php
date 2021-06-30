@@ -56,6 +56,19 @@ class RedcapPush implements ShouldQueue
             $caseFollowUpArray[]=$followUp;
         }
       });
+      $ids_in_redcap=$this->importRedcapFollowUpIds();
+      //check for each caseId if it is present in the redcap follow-ups
+      collect($caseFollowUpArray)->each(function($followup,$item)use (&$ids_in_redcap, &$caseFollowUpArray){
+        if(in_array($followup->getConsultationId(),$ids_in_redcap)){
+          MedicalCase::where("local_medical_case_id",$followup->getConsultationId())
+          ->update(
+            [
+              "redcap"=>true
+            ]
+          );
+          unset($caseFollowUpArray[$item]);
+        };
+      });
       $casefollowUpCollection=collect($caseFollowUpArray);
       $medicalcase_id_list=$this->exportRedcapFollowUps($casefollowUpCollection);
       if($medicalcase_id_list != null){
@@ -219,5 +232,39 @@ class RedcapPush implements ShouldQueue
         curl_close($ch);
         return json_decode($output);
       }
+    }
+    public function importRedcapFollowUpIds(){
+      $data = array(
+        'token' => Config::get('redcap.identifiers.api_token_followup'),
+        'content' => 'record',
+        'format' => 'json',
+        'type' => 'flat',
+        'csvDelimiter' => '',
+        'fields' => array(Config::get('redcap.identifiers.followup.dyn_fup_study_id_consultation')),
+        'rawOrLabel' => 'raw',
+        'rawOrLabelHeaders' => 'raw',
+        'exportCheckboxLabel' => 'false',
+        'exportSurveyFields' => 'false',
+        'exportDataAccessGroups' => 'false',
+        'returnFormat' => 'json'
+    );
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, Config::get('redcap.identifiers.api_url_followup'));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+    curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data, '', '&'));
+    $response = curl_exec($ch);
+    $ids_refactored=[];
+    collect(json_decode($response, true))->each(function($id_pair)use (&$ids_refactored){
+      $ids_refactored[]=$id_pair[Config::get('redcap.identifiers.followup.dyn_fup_study_id_consultation')];
+    });
+    curl_close($ch);
+      return $ids_refactored;
     }
 }
