@@ -66,7 +66,7 @@ This document lists instructions to setup a medAL-*data* server instance and is 
    # Configure the storage folder of the server
    mkdir -p /var/lib/dokku/data/storage/medal-data
    mkdir -p /var/lib/dokku/data/storage/medal-data/framework
-   mkdir -p /var/lib/dokku/data/storage/medal-data/framework/session
+   mkdir -p /var/lib/dokku/data/storage/medal-data/framework/sessions
    mkdir -p /var/lib/dokku/data/storage/medal-data/framework/cache
    mkdir -p /var/lib/dokku/data/storage/medal-data/framework/views
    # give rights to herokuish
@@ -84,15 +84,15 @@ This document lists instructions to setup a medAL-*data* server instance and is 
    If the push did not work, then make sure you have correctly set up the SSH key on the dokku server using the web interface. (more information on https://dokku.com/docs/deployment/user-management/)
 6. **[t_remote]**: Back on the remote server, run the following command to set the APP_KEY environment variable:
    ```bash
-   dokku config:set medal-data --no-restart  APP_KEY=$(dokku run medal-data php artisan key:generate --show)
+   dokku config:set medal-data APP_KEY=$(dokku run medal-data php artisan --no-ansi key:generate --show)
    ```
 7. **[t_remote]**: Finally, if needed migrate and seed the database using:
    ```bash
-   dokku run medal-data php artisan migrate:fresh --seed -f
+   dokku run medal-data php artisan migrate:fresh --seed --force
    ```
    If you wish to only migrate the database then run:
    ```bash
-   dokku run medal-data php artisan migrate -f
+   dokku run medal-data php artisan migrate --force
    ```
 
 
