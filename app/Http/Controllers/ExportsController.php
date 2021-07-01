@@ -149,7 +149,12 @@ class ExportsController extends Controller
         $d_f->local_medical_case_id=$case->local_medical_case_id;
         $d_f->patient_id=$case->patient->id;
         $d_f->local_patient_id=$case->patient->local_patient_id;
-        $d_f->facility_name=$case->facility->facility_name;
+        // $d_f->facility_name=$case->facility->facility_name;
+        if($case->facility && $case->facility->facility_name){
+          $d_f->facility_name=$case->facility->facility_name;
+        }else{
+          $case->facility_name='';
+        }
         $d_f->diagnosis_label=Diagnosis::find($d_f->diagnosis_id)->label;
         });
       return view('diagnoses.index')->with('diagnoses',$diagnoses_ref0);
