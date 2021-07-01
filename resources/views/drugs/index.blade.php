@@ -46,7 +46,11 @@
                     @else
                     <td></td>
                     @endif
+                    @if($drug->formulation && $drug->formulation->description)
                     <td>{{$drug->formulation->description}}</td>
+                    @else
+                    <td></td>
+                    @endif
                   </tr>
                   @endforeach
                 </tbody>
