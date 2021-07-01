@@ -45,7 +45,7 @@
                     <td>{{$medicalCase->local_medical_case_id}}</td>
                     <td>{{$medicalCase->patient->local_patient_id}}</td>
                     <td>{{$medicalCase->created_at}}</td>
-                    <td>{{$medicalCase->facility->facility_name}}</td>
+                    <td>{{$medicalCase->facility_name}}</td>
                     </td>
                   </tr>
                   @endforeach
