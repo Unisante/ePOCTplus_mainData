@@ -20,13 +20,17 @@
 
 @endcomponent
 
-@stop
 
 
-
-@component('devices.index',[
-                            'devices' => $devices,
-                           ])
-    
+@component('layouts.components.index',['instances' => $devices,
+                                       'columns' => ['Name','Client ID'],
+                                       'plurName' => 'Devices',
+                                       'singName' => 'Device',
+                                       'attributes' => ['name','oauth_client_id'],
+                                       'url' => 'devices',
+                                       'urlParam' => 'devices'])
 
 @endcomponent
+
+
+@stop

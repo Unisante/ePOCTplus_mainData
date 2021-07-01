@@ -1,12 +1,3 @@
-@extends('adminlte::page')
-
-@section('title', 'AdminLTE')
-
-@section('content_header')
-@stop
-
-@section('content')
-
 @include('partials.errors')
 @include('partials.success')
 
@@ -24,10 +15,9 @@
         <label for={{$value}} class="col-md-3 col-form-label text-md-right">{{$key}}<span class="required"></span></label>
       </div>
         <div class="col-md-9">
-          <input id={{$value}} type="text" class="form-control" value="{{$instance[$value]}}" disabled >
+          <input type="text" class="form-control" value="{{$instance[$value]}}" disabled >
         </div>
       </div>
       @endforeach
   </div>
 </div>
-@stop

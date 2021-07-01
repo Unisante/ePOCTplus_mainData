@@ -1,12 +1,3 @@
-@extends('adminlte::page')
-
-@section('title', 'AdminLTE')
-
-@section('content_header')
-@stop
-
-@section('content')
-
 @include('partials.errors')
 @include('partials.success')
 
