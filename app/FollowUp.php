@@ -229,7 +229,12 @@ class FollowUp{
     ];
     $child_relation_node_id=$config->relationship_to_child_id;
     $case_answer=$this->findCaseAnswer($child_relation_node_id);
-    $relation_label=$case_answer->answer->label;
+    if($case_answer->answer){
+      $relation_label=$case_answer->answer->label;
+    }
+    else{
+      $relation_label="Other";
+    }
     Log::debug("child relation".$case_answer);
     if($case_answer->answer){
       if(in_array($relation_label,$relation)){
