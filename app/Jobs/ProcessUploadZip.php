@@ -45,7 +45,7 @@ class ProcessUploadZip implements ShouldQueue
             $jsonName = Str::uuid() . '.json';
             $zip->renameIndex($i, $jsonName);
             $zip->extractTo(Storage::disk('local')->path($extractDir), $jsonName);
-            ProcessCaseJson::dispatch($jsonName);
+            ProcessCaseJson::dispatch($extractDir, $jsonName);
         }
 
         $zip->close();

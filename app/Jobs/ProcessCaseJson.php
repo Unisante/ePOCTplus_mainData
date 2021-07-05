@@ -2,11 +2,14 @@
 
 namespace App\Jobs;
 
+use App\Services\SaveCaseService;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
@@ -14,19 +17,18 @@ class ProcessCaseJson implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $dir;
     protected $filename;
-    protected $extractPath;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($filename)
+    public function __construct($dir, $filename)
     {
+        $this->dir = $dir;
         $this->filename = $filename;
-        $extractDir = env('JSON_EXTRACT_DIR');
-        $this->extractPath = "$extractDir/$this->filename";
     }
 
     /**
@@ -36,25 +38,33 @@ class ProcessCaseJson implements ShouldQueue
      */
     public function handle()
     {
-        $caseData = json_decode(Storage::get($this->extractPath), true);
+        $caseData = json_decode(Storage::get("$this->dir/$this->filename"), true);
         if ($caseData === null) {
             Log::error("Unable to parse JSON file: $this->filename");
             $this->moveToDir(env('JSON_FAILURE_DIR'));
         }
         
         try {
-            // TODO save the case
+            DB::beginTransaction();
+            $save = new SaveCaseService($caseData);
+            $save->saveCase();
+            DB::commit();
 
             Log::info("Successfully saved case from JSON file: $this->filename");
             $this->moveToDir(env('JSON_SUCCESS_DIR'));
         } catch (\Throwable $th) {
+            DB::rollBack();
             Log::error("Error while attempting to save case from JSON file: $this->filename");
+            Log::error($th->getMessage());
+            //Log::error($th->getTraceAsString());
             $this->moveToDir(env('JSON_FAILURE_DIR'));
         }
     }
 
     private function moveToDir($dir) {
-        Storage::makeDirectory($dir);
-        Storage::move($this->extractPath, "$dir/$this->filename");
+        if ($dir != $this->dir) {
+            Storage::makeDirectory($dir);
+            Storage::move("$this->dir/$this->filename", "$dir/$this->filename");
+        }
     }
 }
