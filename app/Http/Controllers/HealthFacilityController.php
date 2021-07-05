@@ -64,9 +64,11 @@ class HealthFacilityController extends Controller
     public function show(HealthFacility $healthFacility)
     {
         $devices = $healthFacility->devices;
+        $unassignedDevices = Auth::user()->unassignedDevices();
         return view("healthFacilities.details",[
             "facility" => $healthFacility,
             "devices" => $devices,
+            "unassignedDevices" => $unassignedDevices,
         ]);
     }
 

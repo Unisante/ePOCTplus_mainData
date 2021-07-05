@@ -59,7 +59,12 @@ class User extends Authenticatable implements Auditable
     return $this->hasMany(Device::class);
   }
 
+  public function unassignedDevices(){
+    return $this->devices->where('health_facility_id',null);
+  }
+
   public function healthFacilities(){
     return $this->hasMany(HealthFacility::class);
   }
+
 }

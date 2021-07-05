@@ -126,17 +126,12 @@ class DeviceController extends Controller
      */
     public function destroy(Device $device)
     {
+        error_log("deleting device");
         $device->delete();
         $clientRepository = app('Laravel\Passport\ClientRepository');
         $client = $clientRepository->findForUser($device->oauth_client_id,Auth::user()->id);
         $clientRepository->delete($client);
         return $this->success();
-    }
-
-
-    public function assignToHealthFacility(Device $device,HealthFacility $healthFacility){
-        $device->health_facility_id = $healthFacility->id;
-        $device->save();
     }
 
     private function success(){
