@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 
 class Management extends Model
 {
@@ -27,8 +28,8 @@ class Management extends Model
             ],
             [
               'type'=>$node['type'],
-              'label'=>$node['label'][env('LANGUAGE')],
-              'description'=>isset($node['description'][env('LANGUAGE')])?$node['description'][env('LANGUAGE')]:''
+              'label'=>$node['label'][Config::get('medal-data.global.language')],
+              'description'=>isset($node['description'][Config::get('medal-data.global.language')])?$node['description'][Config::get('medal-data.global.language')]:''
             ]
           );
         }

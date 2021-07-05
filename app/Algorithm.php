@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 use OwenIt\Auditing\Contracts\Auditable;
 use App\Version;
 use App\Node;
@@ -98,7 +99,7 @@ class Algorithm extends Model implements Auditable
     // ));
     $curl = curl_init();
     curl_setopt_array($curl, array(
-      CURLOPT_URL => getenv("CREATOR_ALGORITHM_URL").$version_id,
+      CURLOPT_URL => Config::get('medal-data.urls.creator_algorithm_url').$version_id,
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => "",
       CURLOPT_MAXREDIRS => 10,

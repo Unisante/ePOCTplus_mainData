@@ -4,6 +4,7 @@ namespace App;
 use App\AnswerType;
 use App\Answer;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 use OwenIt\Auditing\Contracts\Auditable;
 class Node extends Model implements Auditable
 {
@@ -39,12 +40,12 @@ class Node extends Model implements Auditable
           ],
           [
             'reference' => $reference,
-            'label' => $node['label'][env('LANGUAGE')],
+            'label' => $node['label'][Config::get('medal-data.global.language')],
             'type' => $node['type'],
             'category' => $node['category'],
             'priority' => $priority,
             'stage' => $stage,
-            'description' => isset($node['description'][env('LANGUAGE')])?$node['description'][env('LANGUAGE')]:'',
+            'description' => isset($node['description'][Config::get('medal-data.global.language')])?$node['description'][Config::get('medal-data.global.language')]:'',
             'formula' => $formula,
             'answer_type_id'=>$answerType->id,
             'algorithm_id'=>$algorithm->id,

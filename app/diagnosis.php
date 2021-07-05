@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Management;
 use App\Drug;
 use App\Formulation;
+use Illuminate\Support\Facades\Config;
 
 class Diagnosis extends Model
 {
@@ -26,7 +27,7 @@ class Diagnosis extends Model
             'diagnostic_id'=>$node['diagnostic_id']
           ],
           [
-            'label'=>$node['label'][env('LANGUAGE')],
+            'label'=>$node['label'][Config::get('medal-data.global.language')],
             'type'=>$node['type'],
             'version_id'=>$version_id
           ]
@@ -43,7 +44,7 @@ class Diagnosis extends Model
             'diagnostic_id'=>$diagnosis['diagnostic_id']
           ],
           [
-            'label'=>$diagnosis['label'][env('LANGUAGE')],
+            'label'=>$diagnosis['label'][Config::get('medal-data.global.language')],
             'type'=>$diagnosis['type'],
             'version_id'=>$version_id
           ]
@@ -63,7 +64,7 @@ class Diagnosis extends Model
               'diagnostic_id'=>$diagnosis['diagnostic_id']
             ],
             [
-              'label'=>$diagnosis['label'][env('LANGUAGE')],
+              'label'=>$diagnosis['label'][Config::get('medal-data.global.language')],
               'type'=>$diagnosis['type'],
               'version_id'=>$d_data['version_id']
             ]
@@ -83,8 +84,8 @@ class Diagnosis extends Model
           ],
           [
             'type'=>$h_care['type'],
-            'label'=>$h_care['label'][env('LANGUAGE')],
-            'description'=>isset($h_care['description'][env('LANGUAGE')])?$h_care['description'][env('LANGUAGE')]:'',
+            'label'=>$h_care['label'][Config::get('medal-data.global.language')],
+            'description'=>isset($h_care['description'][Config::get('medal-data.global.language')])?$h_care['description'][Config::get('medal-data.global.language')]:'',
             'is_antibiotic' => $is_antibiotic,
             'is_anti_malarial' => $is_anti_malarial
           ]

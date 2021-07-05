@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 
 class HealthFacility extends Model
 {
@@ -20,7 +21,7 @@ class HealthFacility extends Model
         // ));
         $curl = curl_init();
         curl_setopt_array($curl, array(
-          CURLOPT_URL => getenv("CREATOR_HEALTH_FACILITY_URL").$group_id,
+          CURLOPT_URL => Config::get('medal-data.urls.creator_health_facility_url').$group_id,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
