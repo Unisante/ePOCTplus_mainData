@@ -70,7 +70,7 @@ Route::post('sync_medical_cases',function(Request $request){
     error_log('we are in the route');
     dispatch(new SaveZipCasesJob($file));
     if(strpos(env("STUDY_ID"), "Dynamic")!== false){
-      // dispatch(new RedcapPush());
+      dispatch(new RedcapPush());
     }
     return response()->json(['data_received'=> true,'message'=>'Zip File received','status'=>200]);
   }
