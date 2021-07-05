@@ -193,7 +193,12 @@ class FollowUp{
   private function setCareGiverLastName($config){
     $caregiver_last_name_node_id=$config->last_name_caregiver_id;
     $case_answer=$this->findCaseAnswer($caregiver_last_name_node_id);
-    $this->caregiver_last_name=$case_answer->value;
+    if($case_answer == null){
+      $this->caregiver_last_name=null;
+    }else{
+      $this->caregiver_last_name=$case_answer->value;
+    }
+    // $this->caregiver_last_name=$case_answer->value;
   }
   private function setCareGiverGender($config){
     $relation=[
