@@ -4,6 +4,7 @@ namespace App;
 use DateTime;
 use App\PatientConfig;
 use App\Answer;
+use App\MedicalCaseAnswer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -108,7 +109,12 @@ class FollowUp{
   private function findCaseAnswer($medal_c_id){
     Log::debug("medal_c_id".$medal_c_id);
     $node=Node::where('medal_c_id',$medal_c_id)->first();
+    if($node == null){
+      return null;
+    }
     Log::debug("node".$node);
+    // error_log($node);
+    // var_dump($node);
     Log::debug("return".$this->case->medical_case_answers()->where('node_id',$node->id)->first());
     return $this->case->medical_case_answers()->where('node_id',$node->id)->first();
   }

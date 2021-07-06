@@ -4,6 +4,7 @@ namespace App;
 use App\AnswerType;
 use App\Answer;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 use OwenIt\Auditing\Contracts\Auditable;
 class Node extends Model implements Auditable
 {

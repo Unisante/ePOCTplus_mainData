@@ -57,3 +57,36 @@ Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
     "total_nb_of_json_log"=>$facility->log_cases->count(),
   ]);
 });
+
+
+
+
+//DEBUG Routes
+
+Route::post('add_storage_file',function(Request $request){
+  if($request->file){
+    $file=Storage::putFile('temporary_files', $request->file);
+    return Storage::disk('local')->listContents();
+    //return response()->json(['data_received'=> true,'status'=>200]);
+  }
+  return response()->json(['data_received'=> false,'status'=>400]);
+});
+
+
+Route::post('list_storage_files',function(Request $request){
+  return Storage::disk('local')->listContents("temporary_files");
+});
+
+
+Route::get('get_storage_file/{filename}',function(Request $request, $filename){
+  return Storage::disk('local')->get("temporary_files/" . $filename);
+});
+
+
+Route::post('list_medical_zip',function(Request $request){
+  return Storage::disk('local')->listContents("medical_cases_zip");
+});
+
+Route::get('get_medical_zip/{filename}',function(Request $request, $filename){
+  return Storage::disk('local')->get("medical_cases_zip/" . $filename);
+});

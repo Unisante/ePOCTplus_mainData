@@ -9,6 +9,7 @@ use App\DrugReference;
 use App\Custom_diagnosis;
 use App\Algorithm;
 use App\Version;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use App\Management;
 class DiagnosisReference extends Model

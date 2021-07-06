@@ -40,14 +40,14 @@ class MedicalCase extends Model implements Auditable
   * @return Void
   */
   public static function makeFollowUp($medical_case){
-    $configurations=json_decode($medical_case->version->configurations->config);
+    // $configurations=json_decode($medical_case->version->configurations->config);
     $date=new DateTime($medical_case->created_at);
     $date->format('Y-m-d H:i:s');
-    $first_name=self::fetchAttribute($medical_case,$configurations->first_name_question_id);
-    $middle_name=self::fetchAttribute($medical_case,$configurations->middle_name_patient_id);
-    $last_name=self::fetchAttribute($medical_case,$configurations->last_name_question_id);
-    $gender=self::fetchAttribute($medical_case,$configurations->gender_question_id);
-    $village_name=self::fetchAttribute($medical_case,$configurations->village_question_id);
+    // $first_name=self::fetchAttribute($medical_case,$configurations->first_name_question_id);
+    // $middle_name=self::fetchAttribute($medical_case,$configurations->middle_name_patient_id);
+    // $last_name=self::fetchAttribute($medical_case,$configurations->last_name_question_id);
+    // $gender=self::fetchAttribute($medical_case,$configurations->gender_question_id);
+    // $village_name=self::fetchAttribute($medical_case,$configurations->village_question_id);
     $follow_up=[
       'consultation_id'=>$medical_case->local_medical_case_id,
       'patient_id'=>$medical_case->patient->local_patient_id,

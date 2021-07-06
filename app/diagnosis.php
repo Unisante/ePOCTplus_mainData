@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Management;
 use App\Drug;
 use App\Formulation;
+use Illuminate\Support\Facades\Config;
 
 class Diagnosis extends Model
 {
