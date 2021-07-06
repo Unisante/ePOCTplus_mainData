@@ -10,6 +10,7 @@ use App\Management;
 use App\Node;
 use App\Patient;
 use Exception;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -32,15 +33,15 @@ class SaveCaseService
 
     $versionId = $this->caseData['version_id'];
 
-    $algorithmData = json_decode(Http::get(env('MEDALC_VERSION_URL') . $versionId), true);
-    $configData = json_decode(Http::get(env('MEDALC_CONFIG_URL'), ['version_id' => $versionId]), true);
+    $algorithmData = json_decode(Http::get(Config::get('medal-data.urls.creator_algorithm_url') . $versionId), true);
+    $configData = json_decode(Http::get(Config::get('medal-data.urls.creator_patient_url'), ['version_id' => $versionId]), true);
     
     $this->algorithm = (new AlgorithmLoader($algorithmData))->load();
     $this->version = (new VersionLoader($algorithmData, $this->algorithm))->load();
     $this->patientConfig = (new PatientConfigLoader($configData, $this->version))->load();
     
     if (HealthFacility::where('group_id', $caseData['patient']['group_id'])->doesntExist()) {
-      $hfData = json_decode(Http::get(env('MEDALC_HF_URL') . $caseData['patient']['group_id']), true);
+      $hfData = json_decode(Http::get(Config::get('medal-data.urls.creator_health_facility_url') . $caseData['patient']['group_id']), true);
       (new HealthFacilityLoader($hfData))->load();
     }
     
