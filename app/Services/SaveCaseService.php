@@ -23,40 +23,71 @@ class SaveCaseService
   protected $patientConfig;
 
   /**
-   * Undocumented function
+   * Save a medical case on the database
    *
    * @param object $caseData
+   * @return MedicalCase
    */
-  public function __construct($caseData)
-  {
-    $this->caseData = $caseData;
+  public function save($caseData) {
+    $versionId = $caseData['version_id'];
 
-    $versionId = $this->caseData['version_id'];
+    $version = $this->updateVersion($versionId);
+    $patientConfig = $this->updateConfig($version);
+    $this->udpateHf($caseData['patient']['group_id']);
 
-    $algorithmData = json_decode(Http::get(Config::get('medal-data.urls.creator_algorithm_url') . $versionId), true);
-    $configData = json_decode(Http::get(Config::get('medal-data.urls.creator_patient_url'), ['version_id' => $versionId]), true);
-    
-    $this->algorithm = (new AlgorithmLoader($algorithmData))->load();
-    $this->version = (new VersionLoader($algorithmData, $this->algorithm))->load();
-    $this->patientConfig = (new PatientConfigLoader($configData, $this->version))->load();
-    
-    if (HealthFacility::where('group_id', $caseData['patient']['group_id'])->doesntExist()) {
-      $hfData = json_decode(Http::get(Config::get('medal-data.urls.creator_health_facility_url') . $caseData['patient']['group_id']), true);
-      (new HealthFacilityLoader($hfData))->load();
-    }
-    
-    $this->updateAlgorithmElements($algorithmData);
+    $patient = $this->savePatient($caseData, $patientConfig);
+    $case = $this->saveCase($caseData, $version, $patient);
+
+    return $case;
+  } 
+
+  /**
+   * Update the patient config from medalc
+   *
+   * @param Version $version
+   * @return PatientConfig
+   */
+  public function updateConfig($version) {
+    $configData = json_decode(Http::get(Config::get('medal-data.urls.creator_patient_url'), ['version_id' => $version->medal_c_id]), true);
+    return (new PatientConfigLoader($configData, $version))->load();
   }
 
-  public function updateAlgorithmElements($algorithmData) {
+  /**
+   * Update the health facility from medalc if necessary
+   *
+   * @param int $groupId
+   * @return HealthFacility
+   */
+  public function udpateHf($groupId) {
+    $hf = HealthFacility::where('group_id', $groupId)->first();
+    if (!$hf) {
+      $hfData = json_decode(Http::get(Config::get('medal-data.urls.creator_health_facility_url') . $groupId), true);
+      $hf = (new HealthFacilityLoader($hfData))->load();
+    }
+    return $hf;
+  }
+
+  /**
+   * Update the algorithm and the version from medalc if necessary
+   *
+   * @param int $versionId
+   * @return Version
+   */
+  public function updateVersion($versionId) {
+    $algorithmData = json_decode(Http::get(Config::get('medal-data.urls.creator_algorithm_url') . $versionId), true);
+    
+    $algorithm = (new AlgorithmLoader($algorithmData))->load();
+    $version = (new VersionLoader($algorithmData, $algorithm))->load();
+    
     foreach ($algorithmData['nodes'] as $nodeData) {
       // TODO env variable?
       if ($nodeData['type'] == 'Question') {
         $answerType = (new AnswerTypeLoader($nodeData))->load();
-        $node = (new NodeLoader($nodeData, $this->algorithm, $answerType))->load();
+        $node = (new NodeLoader($nodeData, $algorithm, $answerType))->load();
 
-        foreach ($nodeData['answers'] as $answerData)
-        $answer = (new AnswerLoader($answerData, $node))->load();
+        foreach ($nodeData['answers'] as $answerData) {
+          $answer = (new AnswerLoader($answerData, $node))->load();
+        }
       }
     }
 
@@ -64,7 +95,7 @@ class SaveCaseService
       foreach ($diagnosisData['final_diagnostics'] as $finalDiagnosisData) {
         // TODO env variable?
         if (array_key_exists('diagnostic_id',$finalDiagnosisData) && $finalDiagnosisData['type'] == 'FinalDiagnostic') {
-          $diagnosis = (new DiagnosisLoader($finalDiagnosisData, $this->version))->load();
+          $diagnosis = (new DiagnosisLoader($finalDiagnosisData, $version))->load();
 
           foreach ($finalDiagnosisData['drugs'] as $drugRefData) {
             // TODO the key in 'drugs' associative array is the drug id
@@ -86,12 +117,19 @@ class SaveCaseService
       }
     }
 
-    // TODO health facility ?
+    return $version;
   }
 
-  public function saveCase() {
+  /**
+   * Save the patient and their config file from a medical case
+   *
+   * @param object $caseData
+   * @param PatientConfig $patientConfig
+   * @return Patient
+   */
+  public function savePatient($caseData, $patientConfig) {
     // Consent file
-    $patientData = $this->caseData['patient'];
+    $patientData = $caseData['patient'];
     $consentPath = env('CONSENT_IMG_DIR');
     $consentFileName = $patientData['uid'] . '_image.jpg';
     Storage::makeDirectory($consentPath);
@@ -99,18 +137,29 @@ class SaveCaseService
     $consentImg->save(Storage::disk('local')->path($consentPath . '/' . $consentFileName));
 
     // Patient
-    $patientLoader = new PatientLoader($patientData, $this->caseData['nodes'], $this->patientConfig, $consentFileName);
+    $patientLoader = new PatientLoader($patientData, $caseData['nodes'], $patientConfig, $consentFileName);
     $duplicateDataExists = Patient::where($patientLoader->getDuplicateConditions())->exists();
     // TODO if(strpos(env("STUDY_ID"), "Dynamic")!== false) -> see original code
     $existingPatientIsTrue = Answer::where($patientLoader->getExistingPatientAnswer())->first()->label == 'Yes';
     $patientLoader->flagAsDuplicate($duplicateDataExists, $existingPatientIsTrue);
-    $patient = $patientLoader->load();
 
+    return $patientLoader->load();
+  }
+
+  /**
+   * Save the case
+   *
+   * @param object $caseData
+   * @param Version $version
+   * @param Patient $patient
+   * @return MedicalCase
+   */
+  public function saveCase($caseData, $version, $patient) {
     // Medical case
-    $medicalCase = (new MedicalCaseLoader($this->caseData, $patient))->load();
+    $medicalCase = (new MedicalCaseLoader($caseData, $patient))->load();
 
     // Case answers
-    foreach ($this->caseData['nodes'] as $nodeData) {
+    foreach ($caseData['nodes'] as $nodeData) {
       $algoNode = Node::where('medal_c_id', $nodeData['id'])->first();
 
       // TODO this condition makes it hard to find out about missing questions in database
@@ -121,7 +170,7 @@ class SaveCaseService
     }
 
     // Diagnoses
-    $diagnosesData = $this->caseData['diagnoses'];
+    $diagnosesData = $caseData['diagnoses'];
     $this->saveDiagnoses($diagnosesData['proposed'], $medicalCase, true);
     $this->saveDiagnoses($diagnosesData['additional'], $medicalCase, false);
 
@@ -131,10 +180,20 @@ class SaveCaseService
 
     foreach ($diagnosesData['additionalDrugs'] as $additionalDrugData) {
       $drug = Drug::where('medal_c_id', $additionalDrugData['id'])->first();
-      $additionalDrug = (new AdditionalDrugLoader($additionalDrugData, $medicalCase, $drug, $this->version))->load();
+      $additionalDrug = (new AdditionalDrugLoader($additionalDrugData, $medicalCase, $drug, $version))->load();
     }
+
+    return $medicalCase;
   }
 
+  /**
+   * Save diagnostics from a case
+   *
+   * @param object $diagnosesData
+   * @param MedicalCase $medicalCase
+   * @param boolean $isProposed
+   * @return void
+   */
   protected function saveDiagnoses($diagnosesData, $medicalCase, $isProposed) {
     foreach ($diagnosesData as $diagnosisRefData) {
       $diagnosis = Diagnosis::where('medal_c_id', $diagnosisRefData['id'])->first();

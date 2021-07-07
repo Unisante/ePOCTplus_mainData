@@ -46,8 +46,8 @@ class ProcessCaseJson implements ShouldQueue
         
         try {
             DB::beginTransaction();
-            $save = new SaveCaseService($caseData);
-            $save->saveCase();
+            $save = new SaveCaseService;
+            $save->save($caseData);
             DB::commit();
 
             Log::info("Successfully saved case from JSON file: $this->filename");
@@ -56,7 +56,7 @@ class ProcessCaseJson implements ShouldQueue
             DB::rollBack();
             Log::error("Error while attempting to save case from JSON file: $this->filename");
             Log::error($th->getMessage());
-            //Log::error($th->getTraceAsString());
+            Log::error($th->getTraceAsString());
             $this->moveToDir(env('JSON_FAILURE_DIR'));
         }
     }
