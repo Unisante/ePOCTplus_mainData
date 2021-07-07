@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -35,7 +36,7 @@ class ProcessUploadZip implements ShouldQueue
      */
     public function handle()
     {
-        $extractDir = env('JSON_EXTRACT_DIR');
+        $extractDir = Config::get('medal-data.storage.json_extract_dir');
         Storage::makeDirectory($extractDir);
 
         $zip = new ZipArchive;

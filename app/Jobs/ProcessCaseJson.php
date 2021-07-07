@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
@@ -41,7 +42,7 @@ class ProcessCaseJson implements ShouldQueue
         $caseData = json_decode(Storage::get("$this->dir/$this->filename"), true);
         if ($caseData === null) {
             Log::error("Unable to parse JSON file: $this->filename");
-            $this->moveToDir(env('JSON_FAILURE_DIR'));
+            $this->moveToDir(Config::get('medal-data.storage.json_failure_dir'));
         }
         
         try {
@@ -51,13 +52,13 @@ class ProcessCaseJson implements ShouldQueue
             DB::commit();
 
             Log::info("Successfully saved case from JSON file: $this->filename");
-            $this->moveToDir(env('JSON_SUCCESS_DIR'));
+            $this->moveToDir(Config::get('medal-data.storage.json_success_dir'));
         } catch (\Throwable $th) {
             DB::rollBack();
             Log::error("Error while attempting to save case from JSON file: $this->filename");
             Log::error($th->getMessage());
             Log::error($th->getTraceAsString());
-            $this->moveToDir(env('JSON_FAILURE_DIR'));
+            $this->moveToDir(Config::get('medal-data.storage.json_failure_dir'));
         }
     }
 

@@ -12,4 +12,11 @@ return [
     'language' =>env('JSON_LANGUAGE'),
   ],
 
+  'storage' => [
+    'cases_zip_dir' => env('CASES_ZIP_DIR'),
+    'json_extract_dir' => env('JSON_EXTRACT_DIR'),
+    'json_success_dir' => env('JSON_SUCCESS_DIR'),
+    'json_failure_dir' => env('JSON_FAILURE_DIR'),
+    'consent_img_dir' => env('CONSENT_IMG_DIR'),
+  ]
 ];

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use App\MedicalCaseAnswer;
 use App\HealthFacility;
 use App\Jobs\ProcessUploadZip;
+use Illuminate\Support\Facades\Config;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +30,7 @@ Route::post('sync_medical_cases', function(Request $request) {
     return response('Missing attached file', 400);
   }
 
-  $path = $request->file('file')->store(env('CASES_ZIP_DIR'));
+  $path = $request->file('file')->store(Config::get('medal-data.storage.cases_zip_dir'));
 
   if ($path === false) {
     return response('Unable to save file', 500);

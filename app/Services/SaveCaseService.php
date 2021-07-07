@@ -130,7 +130,7 @@ class SaveCaseService
   public function savePatient($caseData, $patientConfig) {
     // Consent file
     $patientData = $caseData['patient'];
-    $consentPath = env('CONSENT_IMG_DIR');
+    $consentPath = Config::get('medal-data.storage.consent_img_dir');
     $consentFileName = $patientData['uid'] . '_image.jpg';
     Storage::makeDirectory($consentPath);
     $consentImg = Image::make($patientData['consent_file']);
