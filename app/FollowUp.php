@@ -231,12 +231,6 @@ class FollowUp{
     $case_answer=$this->findCaseAnswer($child_relation_node_id);
     if($case_answer != null){
       $relation_label=$case_answer->answer->label;
-    }
-    else{
-      $relation_label="Other";
-    }
-    Log::debug("child relation".$case_answer);
-    if($case_answer->answer){
       if(in_array($relation_label,$relation)){
         $this->child_relation=array_search(strval($case_answer->answer->label),$relation,true);
       }else{
@@ -244,8 +238,19 @@ class FollowUp{
       }
     }
     else{
-      $this->child_relation=7;
+      $relation_label="Other";
     }
+    // Log::debug("child relation".$case_answer);
+    // if($case_answer->answer){
+    //   if(in_array($relation_label,$relation)){
+    //     $this->child_relation=array_search(strval($case_answer->answer->label),$relation,true);
+    //   }else{
+    //     $this->child_relation=7;
+    //   }
+    // }
+    // else{
+    //   $this->child_relation=7;
+    // }
   }
   private function setPhoneNumber($config){
     $phone_number_node_id=$config->phone_number_caregiver_id;
