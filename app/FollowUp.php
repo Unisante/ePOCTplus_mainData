@@ -255,7 +255,12 @@ class FollowUp{
   private function setPhoneNumber($config){
     $phone_number_node_id=$config->phone_number_caregiver_id;
     $case_answer=$this->findCaseAnswer($phone_number_node_id);
-    $this->phone_number=$case_answer->value;
+    if($case_answer != null){
+      $this->phone_number=$case_answer->value;
+    }else{
+      $this->phone_number=null;
+    }
+
   }
   private function setPhoneOwner($config){
     $phone_owner_node_id=$config->phone_number_owner_id;
