@@ -273,7 +273,12 @@ class FollowUp{
   private function setOtherPhoneNumber($config){
     $other_phone_number_node_id=$config->other_number_id;
     $case_answer=$this->findCaseAnswer($other_phone_number_node_id);
-    $this->other_phone_number=$case_answer->value;
+    if($case_answer != null){
+      $this->other_phone_number=$case_answer->value;
+    }else{
+      $this->phone_number=null;
+    }
+
   }
 
   private function setOtherPhoneOwner($config){
