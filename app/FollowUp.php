@@ -238,7 +238,7 @@ class FollowUp{
       }
     }
     else{
-      $relation_label="Other";
+      $this->child_relation=7;
     }
     // Log::debug("child relation".$case_answer);
     // if($case_answer->answer){
