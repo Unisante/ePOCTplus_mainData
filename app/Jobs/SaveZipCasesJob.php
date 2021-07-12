@@ -48,6 +48,7 @@ class SaveZipCasesJob implements ShouldQueue
         $this->parsed_folder='parsed_medical_cases';
         $this->failed_folder='failed_medical_cases';
         $this->isEligible=true;
+        $this->consent=true;
     }
 
     /**
@@ -84,7 +85,7 @@ class SaveZipCasesJob implements ShouldQueue
               );
               $patient_key=$this->individualData['patient'];
               var_dump("checking if the patient is this study id and is eligible");
-              if($patient_key['study_id']== $this->study_id && $this->individualData['isEligible']==$this->isEligible){
+              if($patient_key['study_id']== $this->study_id && $this->individualData['isEligible']==$this->isEligible && $this->individualData['consent']==$this->consent){
                 $dataForAlgorithm=array("algorithm_id"=> $this->individualData['algorithm_id'],"version_id"=> $this->individualData['version_id']);
                 $algorithm_n_version=Algorithm::ifOrExists($dataForAlgorithm);
                 var_dump("in fetching the algorithm");
