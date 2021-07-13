@@ -5,6 +5,8 @@ use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use App\MedicalCase;
 use App\DuplicatePairs;
+use Schema;
+use Illuminate\Support\Arr;
 
 class Patient extends Model implements Auditable
 {
@@ -228,6 +230,23 @@ class Patient extends Model implements Auditable
     $consent = serialize($consent_array);
   }
 
+  public function patientData(){
+    $filename = 'patients.csv';
+    $patient_data=Patient::all();
+    $table_columns=Schema::getColumnListing("patients");
+    // for patient table
+    $patient_data->each(function($patient){
+      return $patient->related_ids=implode(",",$patient->related_ids);
+    });
+    $patient_data = Arr::prepend($patient_data->toArray(), $table_columns);
+    // file creation
+    $file = fopen($filename,"w");
+    foreach ($patient_data as $line){
+      fputcsv($file,$line);
+    }
+    fclose($file);
+    return $filename;
+  }
 
   /**
   * making a relationship to medicalCase

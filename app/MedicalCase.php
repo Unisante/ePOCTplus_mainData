@@ -22,6 +22,8 @@ use App\Answer;
 use App\FollowUp;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Schema;
+use Illuminate\Support\Arr;
 
 class MedicalCase extends Model implements Auditable
 {
@@ -137,6 +139,21 @@ class MedicalCase extends Model implements Auditable
     }
     return $caseFollowUpCollection;
   }
+
+  public function getDataCsv($table_name){
+    $filename = $table_name.'.csv';
+    $patient_data=MedicalCase::all();
+    $table_columns=Schema::getColumnListing($table_name);
+    $patient_data = Arr::prepend($patient_data->toArray(), $table_columns);
+    // file creation
+    $file = fopen($filename,"w");
+    foreach ($patient_data as $line){
+      fputcsv($file,$line);
+    }
+    fclose($file);
+    return $filename;
+  }
+
   /**
   * making a relationship to patient
   * @return one to one patient relationship

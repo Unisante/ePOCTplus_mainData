@@ -87,6 +87,7 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('/exports/diagnosis_list','ExportsController@diagnosesSummary')->name('ExportsController.diagnosesSummary');
   Route::get('/exports/drug_list','ExportsController@drugsSummary')->name('ExportsController.drugsSummary');
 
+  Route::get('/exports/exportZip','ExportsController@exportZip')->name('ExportsController.exportZip');
 
 });
 

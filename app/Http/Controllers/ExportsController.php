@@ -28,13 +28,48 @@ use App\Exports\NodeExport;
 use App\Exports\AnswerTypeExport;
 use App\Exports\VersionExport;
 use Excel;
+use App\Patient;
 use Illuminate\Support\Facades\DB;
 use App\MedicalCaseAnswer;
+use Illuminate\Support\Facades\Storage;
+use ZipArchive;
+use Schema;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\File;
 
 class ExportsController extends Controller
 {
     public function __construct(){
       $this->middleware('auth');
+    }
+    public function exportZip(){
+      $patients=new Patient();
+      $cases = new MedicalCase();
+      $thingsArray=[];
+      $things_to_add=["medical_cases","medical_case_answers","nodes","answers","algorithms","versions","answer_types","custom_diagnoses","diagnoses","diagnosis_references","drugs","drug_references","formulations","managements"];
+      foreach($things_to_add as $table){
+        array_push($thingsArray,$cases->getDataCsv($table));
+      }
+      $filename=$patients->patientData();
+      $thingsArray = Arr::prepend($thingsArray, $filename);
+      $zipper = new \Madnest\Madzipper\Madzipper;
+      $zipper->make("ibu.zip")->add($thingsArray);
+      $zipper->close();
+      $fileFromPublic=$path = base_path().'/public/ibu.zip';;
+      // download
+      header("Content-Description: File Transfer");
+      header("Content-Disposition: attachment; filename=".$fileFromPublic);
+      header("Content-Type: application/csv; ");
+      // dd(Storage::Exists($fileFromPublic));
+      readfile($fileFromPublic);
+      // deleting file
+      foreach($thingsArray as $csv){
+        unlink($csv);
+      }
+      unlink($fileFromPublic);
+      exit();
+      // this is for the patient export-dont delete until you are sure about it.
+      // return Excel::download(new PatientExport,'patients.csv');
     }
     public function Patients(){
       return Excel::download(new PatientExport,'patients.csv');

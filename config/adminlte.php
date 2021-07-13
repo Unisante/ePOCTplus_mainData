@@ -255,87 +255,88 @@ return [
           'text' => 'Exports',
           'icon' => 'fas fa-fw fa-clone',
           'can' =>  'Merge_Duplicates',
-          'submenu' => [
-            [
-                'text' => 'Patients',
-                'url'  => '/export/patients',
-            ],
-            [
-                'text' => 'Medical Cases',
-                'url'  => '/export/medicalcases',
-            ],
-            [
-              'text'=>'Case Answers',
-              'url'=>'/export/cases_answers'
-            ],
-            [
-              'text' => 'Answers',
-              'url'  => '/export/answers',
-            ],
-            [
-                'text' => 'Diagnosis References',
-                'url'  => '/export/diagnosis_references',
-            ],
-            [
-              'text' => 'Custom Diagnoses',
-              'url'  => '/export/custom_diagnoses',
-            ],
-            [
-                'text' => 'Drug references',
-                'url'  => '/export/drug_references',
-            ],
-            [
-              'text' => 'Additional Drugs',
-              'url'  => '/export/additional_drugs',
-            ],
-            [
-                'text' => 'Management References',
-                'url'  => '/export/management_references',
-            ],
-
-
-            [
-              'text' => 'Diagnoses',
-              'url'  => '/export/diagnoses',
-            ],
-            [
-                'text' => 'Drugs',
-                'url'  => '/export/drugs',
-            ],
-            [
-              'text' => 'Formulations',
-              'url'  => '/export/formulations',
-            ],
-            [
-                'text' => 'Managements',
-                'url'  => '/export/managements',
-            ],
-
-
-
-            [
-              'text' => 'Nodes',
-              'url'  => '/export/nodes',
-            ],
-            [
-                'text' => 'Answer Types',
-                'url'  => '/export/answer_types',
-            ],
-            [
-              'text' => 'Algorithms',
-              'url'  => '/export/algorithms',
-            ],
-            [
-                'text' => 'Algorithm Versions',
-                'url'  => '/export/algorithm_versions',
-            ],
+          'url'  => '/exports/exportZip',
+          // 'submenu' => [
+          //   [
+          //       'text' => 'Patients',
+          //       'url'  => '/export/patients',
+          //   ],
+          //   [
+          //       'text' => 'Medical Cases',
+          //       'url'  => '/export/medicalcases',
+          //   ],
+          //   [
+          //     'text'=>'Case Answers',
+          //     'url'=>'/export/cases_answers'
+          //   ],
+          //   [
+          //     'text' => 'Answers',
+          //     'url'  => '/export/answers',
+          //   ],
+          //   [
+          //       'text' => 'Diagnosis References',
+          //       'url'  => '/export/diagnosis_references',
+          //   ],
+          //   [
+          //     'text' => 'Custom Diagnoses',
+          //     'url'  => '/export/custom_diagnoses',
+          //   ],
+          //   [
+          //       'text' => 'Drug references',
+          //       'url'  => '/export/drug_references',
+          //   ],
+          //   [
+          //     'text' => 'Additional Drugs',
+          //     'url'  => '/export/additional_drugs',
+          //   ],
+          //   [
+          //       'text' => 'Management References',
+          //       'url'  => '/export/management_references',
+          //   ],
 
 
           //   [
-          //     'text' => 'Drug Results',
-          //     'url'  => '/export/drug_analysis',
+          //     'text' => 'Diagnoses',
+          //     'url'  => '/export/diagnoses',
+          //   ],
+          //   [
+          //       'text' => 'Drugs',
+          //       'url'  => '/export/drugs',
+          //   ],
+          //   [
+          //     'text' => 'Formulations',
+          //     'url'  => '/export/formulations',
+          //   ],
+          //   [
+          //       'text' => 'Managements',
+          //       'url'  => '/export/managements',
+          //   ],
+
+
+
+          //   [
+          //     'text' => 'Nodes',
+          //     'url'  => '/export/nodes',
+          //   ],
+          //   [
+          //       'text' => 'Answer Types',
+          //       'url'  => '/export/answer_types',
+          //   ],
+          //   [
+          //     'text' => 'Algorithms',
+          //     'url'  => '/export/algorithms',
+          //   ],
+          //   [
+          //       'text' => 'Algorithm Versions',
+          //       'url'  => '/export/algorithm_versions',
+          //   ],
+
+
+          // //   [
+          // //     'text' => 'Drug Results',
+          // //     'url'  => '/export/drug_analysis',
+          // // ],
           // ],
-          ],
         ],
 
         [
