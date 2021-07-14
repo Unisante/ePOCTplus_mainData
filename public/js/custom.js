@@ -47,3 +47,8 @@ function takeId(id){
   $("#setId1").html(id);
   $("#patient_id:text").val(id);
 }
+
+$('.datepicker').datepicker({
+  weekdaysShort: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+  showMonthsShort: true
+  })

@@ -36,20 +36,52 @@ use ZipArchive;
 use Schema;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
+use App\User;
+use Auth;
+use DateTime;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class ExportsController extends Controller
 {
     public function __construct(){
       $this->middleware('auth');
     }
-    public function exportZip(){
+    public function selectDate(){
+      $data=array(
+        'currentUser'=>Auth::user(),
+        'userCount'=>User::all()->count(),
+        'mdCases'=> MedicalCase::all()->count(),
+        'oldest_date'=>MedicalCase::oldest()->first()->created_at->format('Y-m-d'),
+        'newest_date'=>MedicalCase::latest()->first()->created_at->format('Y-m-d'),
+        'patientCount'=> Patient::all()->count(),
+
+      );
+      // return $data;
+      // choose this by default date of the first medical case
+
+      return view('exports.index')->with($data);;
+    }
+    public function exportZipByDate(Request $request){
+      ini_set('memory_limit', '4096M');
+      ini_set('max_execution_time', '3600');
+      $request->validate(array(
+        'fromDate' => 'required|date',
+        'toDate' => 'required|date',
+      ));
+      $fromDate= new DateTime($request->input('fromDate'));
+      $toDate= new DateTime($request->input('toDate'));
+      if($fromDate > Carbon::now() || $toDate > Carbon::now()){
+        return back()->withErrors("Please Insert the right Date");
+      }
       $patients=new Patient();
       $cases = new MedicalCase();
       $thingsArray=[];
       $things_to_add=["medical_cases","medical_case_answers","nodes","answers","algorithms","versions","answer_types","custom_diagnoses","diagnoses","diagnosis_references","drugs","drug_references","formulations","managements"];
       foreach($things_to_add as $table){
-        array_push($thingsArray,$cases->getDataCsv($table));
+        array_push($thingsArray,$cases->getDataCsv($table,$fromDate,$toDate));
       }
+
       $filename=$patients->patientData();
       $thingsArray = Arr::prepend($thingsArray, $filename);
       $zipper = new \Madnest\Madzipper\Madzipper;
@@ -68,9 +100,38 @@ class ExportsController extends Controller
       }
       unlink($fileFromPublic);
       exit();
-      // this is for the patient export-dont delete until you are sure about it.
-      // return Excel::download(new PatientExport,'patients.csv');
     }
+    // public function exportZip(){
+    //   ini_set('memory_limit', '4096M');
+    //   ini_set('max_execution_time', '3600');
+    //   $patients=new Patient();
+    //   $cases = new MedicalCase();
+    //   $thingsArray=[];
+    //   $things_to_add=["medical_cases","medical_case_answers","nodes","answers","algorithms","versions","answer_types","custom_diagnoses","diagnoses","diagnosis_references","drugs","drug_references","formulations","managements"];
+    //   foreach($things_to_add as $table){
+    //     array_push($thingsArray,$cases->getDataCsv($table));
+    //   }
+    //   $filename=$patients->patientData();
+    //   $thingsArray = Arr::prepend($thingsArray, $filename);
+    //   $zipper = new \Madnest\Madzipper\Madzipper;
+    //   $zipper->make("ibu.zip")->add($thingsArray);
+    //   $zipper->close();
+    //   $fileFromPublic=$path = base_path().'/public/ibu.zip';;
+    //   // download
+    //   header("Content-Description: File Transfer");
+    //   header("Content-Disposition: attachment; filename=".$fileFromPublic);
+    //   header("Content-Type: application/csv; ");
+    //   // dd(Storage::Exists($fileFromPublic));
+    //   readfile($fileFromPublic);
+    //   // deleting file
+    //   foreach($thingsArray as $csv){
+    //     unlink($csv);
+    //   }
+    //   unlink($fileFromPublic);
+    //   exit();
+    //   // this is for the patient export-dont delete until you are sure about it.
+    //   // return Excel::download(new PatientExport,'patients.csv');
+    // }
     public function Patients(){
       return Excel::download(new PatientExport,'patients.csv');
     }

@@ -24,6 +24,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Schema;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class MedicalCase extends Model implements Auditable
 {
@@ -140,15 +141,21 @@ class MedicalCase extends Model implements Auditable
     return $caseFollowUpCollection;
   }
 
-  public function getDataCsv($table_name){
+  public function getDataCsv($table_name,$fromDate,$toDate){
+    ini_set('memory_limit', '4096M');
+    ini_set('max_execution_time', '300');
     $filename = $table_name.'.csv';
-    $patient_data=MedicalCase::all();
+    // $model_name=Str::studly(Str::singular('medical_cases'));
+    $patient_data = collect(DB::table($table_name)->whereDate('created_at','>=',$fromDate)->whereDate('created_at','<=',$toDate)->get());
+    // $patient_data=MedicalCase::all();
+    // dd($patient_data);
+    // $fetchData= MedicalCase::whereDate('created_at','>=',$fromDate)->whereDate('created_at','<=',$toDate)->get();
     $table_columns=Schema::getColumnListing($table_name);
     $patient_data = Arr::prepend($patient_data->toArray(), $table_columns);
     // file creation
     $file = fopen($filename,"w");
     foreach ($patient_data as $line){
-      fputcsv($file,$line);
+      fputcsv($file,(array)$line);
     }
     fclose($file);
     return $filename;
