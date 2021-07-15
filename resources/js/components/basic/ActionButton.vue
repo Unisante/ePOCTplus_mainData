@@ -1,21 +1,16 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-center">
-            <button v-on:click="click">{{title}}</button>
-        </div>
-    </div>
+    <button type="button" :class="this.classTitle" v-on:click="click">{{title}}</button>
 </template>
 
 <script>
     export default {
         name: "ActionButton",
         mounted() {
-            console.log('button Component mounted.')
-            console.log(this.title)
         },
 
         props: {
             title: String,
+            classTitle: String,
         },
 
         methods: {
@@ -29,4 +24,5 @@
 </script>
 
 
-<style scoped></style>
+<style scoped>
+</style>

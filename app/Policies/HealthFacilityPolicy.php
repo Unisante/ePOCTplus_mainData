@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\User;
+use App\Device;
 use App\HealthFacility;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -68,6 +69,15 @@ class HealthFacilityPolicy
     public function delete(User $user, HealthFacility $healthFacility)
     {
         return $user->id == $healthFacility->user_id;
+    }
+
+
+    public function devices(User $user, HealthFacility $healthFacility){
+        return $user->id == $healthFacility->user_id;
+    }
+
+    public function assignDevice(User $user,HealthFacility $healthFacility, Device $device){
+        return $user->id == $device->user_id && $user->id == $healthFacility->user_id;
     }
 
     /**

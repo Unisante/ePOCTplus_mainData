@@ -1,39 +1,56 @@
 <template>
-<div v-if="data != null && data.length > 0">
-    <table class="table">
-        <thead>
-            <tr v-if="columns != null && columns.length > 0">
-                <th v-for="column in columns" v-bind:key="column">{{column}}</th>
-                <th v-if="actions != null && actions.length > 0">Actions</th>
+<div class="card" style="width: 18 rem;">
+    <dynamic-form></dynamic-form>
+        <button class="btn" @click="showModal">Show</button>
+        <basic-modal v-if="this.showBasicModal" @close="closeModal">
+            <template v-slot:header>
+                Modal Header
+            </template>
+            <template v-slot:body>
+                Modal Body
+            </template>
+        </basic-modal>
+    <div v-if="data != null && data.length > 0">
+        <table class="table">
+            <thead>
+                <tr v-if="columns != null && columns.length > 0">
+                    <th v-for="column in columns" :key="column">{{column}}</th>
+                    <th v-if="actions != null && actions.length > 0">Actions</th>
+                </tr>
+            </thead>
+            <tr v-for="object in data" :key="object.id">
+                <th v-for="keyword in keys" :key="keyword">{{object[keyword]}}</th>
+                    <td v-if="hasActions">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <action-button v-for="action in actions" :key="action"
+                            :title="buttons[action].title"
+                            :classTitle="buttons[action].classTitle" 
+                            @clicked="buttons[action].callback(object.id)"></action-button>
+                            <template v-if="custom_actions != null">
+                                    <action-button v-for="action in custom_actions" 
+                                       :key="action"
+                                       :title="action['title']"
+                                       classTitle="btn btn-outline-secondary"
+                                       @clicked="custom(object.id,action['method'],action['before_url'],action['after_url'])"></action-button>
+                            </template>
+                        </div> 
+                    </td>
             </tr>
-        </thead>
-        <tr v-for="object in data" :key="object.id">
-            <th v-for="keyword in keys" :key="keyword">{{object[keyword]}}</th>
-            <td v-if="hasActions">
-                <div v-if="actions != null">
-                     <action-button v-for="action in actions" :key="action"
-                    :title="buttons[action].title" 
-                    @clicked="buttons[action].callback(object.id)"></action-button>
-                </div>
-                <div v-if="custom_actions != null">
-                    <action-button v-for="action in custom_actions" 
-                                   :key="action"
-                                   :title="action['title']"
-                                   @clicked="custom(object.id,action['method'],action['before_url'],action['after_url'])"></action-button>
-                </div>
-               
-            </td>
-        </tr>
-    </table>
+        </table>
+    </div>
+    <div v-else>
+        There are no {{title}}
+    </div>
 </div>
-<div v-else>
-    There are no {{title}}
-</div>
+
     
 </template>
 
 <script>
     import ActionButton from "./ActionButton.vue"
+    import AddButton from "./AddButton.vue"
+    import DynamicForm from "./DynamicForm.vue"
+    import BasicModal from "./BasicModal.vue"
     export default {
         name: "IndexTable",
         mounted() {
@@ -45,26 +62,37 @@
 
         data(){
             return {
+                "showBasicModal": false,
                 "buttons": {
                     "view" : {
                         "title" : "View",
                         "callback": this.view,
+                        "classTitle": "btn btn-outline-primary",
                     },
                     "edit" : {
                         "title" : "Edit",
                         "callback": this.edit,
+                        "classTitle": "btn btn-outline-warning",
                     },
                     "delete": {
                         "title": "Delete",
                         "callback": this.delete,
+                        "classTitle": "btn btn-outline-danger",
                     },
                     
                 },
                 "hasActions" : false,
+                "items" : [
+                    { age: 40, first_name: "prosti"},
+                    { age: 96, first_name: "hello"}
+                ]
             }
         },
         components: {
             'ActionButton': ActionButton,
+            'AddButton': AddButton,
+            "DynamicForm": DynamicForm,
+            "BasicModal" : BasicModal,
         },
 
         props: {
@@ -109,12 +137,23 @@
                     default:
                         return
                 }
-            }
-
-            
+            },
+            showModal: function(){
+                this.showBasicModal = true
+                console.log(this.showBasicModal)
+            },
+            closeModal: function(){
+                this.showBasicModal = false
+                console.log(this.showBasicModal)
+            }       
         }
     }
 </script>
 
 
-<style scoped></style>
+<style scoped>
+.buttoncontainer{
+    display: flex;
+    flex-direction: row;
+}
+</style>

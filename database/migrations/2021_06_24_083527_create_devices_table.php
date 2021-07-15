@@ -27,7 +27,7 @@ class CreateDevicesTable extends Migration
             $table->bigInteger('health_facility_id')->nullable();
             $table->bigInteger('oauth_client_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('health_facility_id')->references('id')->on('health_facilities');
+            $table->foreign('health_facility_id')->references('id')->on('health_facilities')->onDelete('cascade');
             $table->foreign('oauth_client_id')->references('id')->on('oauth_clients');
         });
     }

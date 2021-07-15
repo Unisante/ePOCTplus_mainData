@@ -25,6 +25,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "@meforma/vue-toaster": "^1.2.2",
         "ngrok": "^3.3.0"
     }
 }

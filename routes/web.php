@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Request;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -100,7 +102,6 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('/exports/diagnosis_list','ExportsController@diagnosesSummary')->name('ExportsController.diagnosesSummary');
   Route::get('/exports/drug_list','ExportsController@drugsSummary')->name('ExportsController.drugsSummary');
 
-
 });
 
 
@@ -108,6 +109,15 @@ Route::get("/front-end-test",function(Request $request){
   return view("test.test");
 });
 
+
+Route::post("/post-data-test",function(Request $request){
+  return $request->all();
+});
+
+
+Route::patch("/post-data-test",function(Request $request){
+  return $request->all();
+});
 
 
 

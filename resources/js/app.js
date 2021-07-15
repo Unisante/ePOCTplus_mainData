@@ -21,20 +21,19 @@ window.Vue = require('vue');
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
-Vue.component(
-    'action-button',
-    require('./components/basic/ActionButton.vue').default
-);
+
 
 Vue.component(
-    'LinkButton',
-    require('./components/basic/LinkButton.vue').default
+    'TestingComponent',
+    require('./components/basic/TestingComponent.vue').default
 );
 
+
 Vue.component(
-    'IndexTable',
-    require('./components/basic/IndexTable.vue').default
+    'HealthFacilities',
+    require('./components/HealthFacilities.vue').default
 );
+
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -18,15 +18,15 @@ class HealthFacilityController extends Controller
         $this->authorizeResource(HealthFacility::class);
     }
     /**
-     * Display a listing of the resource.
+     * Return an index of the resources owned by the user
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $healthFacilities = Auth::user()->healthFacilities;
+        $healthFacilities =  Auth::user()->healthFacilities;
         return view("healthFacilities.index",[
-            "facilities" => $healthFacilities,
+            "healthFacilities" => $healthFacilities,
         ]);
     }
 
@@ -52,7 +52,7 @@ class HealthFacilityController extends Controller
         $healthFacility->user_id = Auth::user()->id;
         $this->addDefaultValues($healthFacility);
         $healthFacility->save();
-        return $this->success();
+        return $healthFacility;
     }
 
     /**
@@ -96,7 +96,7 @@ class HealthFacilityController extends Controller
     {
         $validated = $request->validated();
         $healthFacility->fill($validated)->save();
-        return $this->success();
+        return $healthFacility;
     }
 
     /**
@@ -107,16 +107,34 @@ class HealthFacilityController extends Controller
      */
     public function destroy(HealthFacility $healthFacility)
     {
+        $id = $healthFacility->id;
         $healthFacility->delete();
-        return $this->success();
+        return response([
+            "message" => "Deleted",
+            "id" =>  $id,
+        ]);
     }
+
+
+    public function devices(HealthFacility $healthFacility){
+        return $healthFacility->devices;
+    }
+
+    public function assignDevice(HealthFacility $healthFacility,Device $device){
+        $device->health_facility_id = $healthFacility->id;
+        return $device;
+    }
+
+    public function unassignDevice(HealthFacility $healthFacility,Device $device){
+        $device->health_facility_id = null;
+        return response([
+            "message" => "Unassigned",
+        ]);
+    }
+
 
     private function addDefaultValues(HealthFacility $healthFacility){
         $healthFacility->group_id = 1;
         $healthFacility->facility_name = "not used anymore";
-    }
-
-    private function success(){
-        return redirect()->route('health-facilities.index')->with('success',"successfully executed");
     }
 }

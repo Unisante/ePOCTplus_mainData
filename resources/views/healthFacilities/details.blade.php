@@ -42,8 +42,6 @@
 
 <body>
     <div id="app" class="colorGrey">
-    <example-component></example-component>
-    <Link-Button title="TestButton" url="{{route("health-facilities.index")}}"></Link-Button>
     <Index-Table v-bind:columns="['Name','Client ID','Created At']" 
                  v-bind:data='{{$devices}}'
                  v-bind:keys="['name','oauth_client_id','created_at']"
