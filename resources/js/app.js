@@ -8,6 +8,36 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import Vue from 'vue';
+import Toasted from 'vue-toasted';
+ 
+Vue.use(Toasted)
+
+Vue.toasted.register('error_notification','Oops.. Something Went Wrong..',{
+    type: 'error',
+    duration: 1500,
+    action: [
+        {
+            text: 'Close',
+            onClick: (e, toastObject) => {
+                toastObject.goAway(0);
+            }
+        }
+    ]
+})
+
+Vue.toasted.register('success_notification','Operation Successful',{
+    type: 'success',
+    duration: 1500,
+    action: [
+        {
+            text: 'Close',
+            onClick: (e, toastObject) => {
+                toastObject.goAway(0);
+            }
+        }
+    ]
+})
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

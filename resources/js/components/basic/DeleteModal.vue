@@ -17,9 +17,13 @@
 </template>
 
 <script>
+import BasicModal from "./BasicModal.vue"
 export default {
     name: "DeleteModal",
 
+    components: {
+        "BasicModal": BasicModal
+    },
     
     data() {
         return {

@@ -16,7 +16,9 @@
                 <index :columns="columns"
                        :actions="actions"
                        :data="healthFacilities"
-                       @delete="destroy"></index>
+                       @delete="destroy"
+                       @edit="edit"
+                       @view="view"></index>
             </div>
             
         </div>
@@ -211,7 +213,7 @@ export default {
 
         },
         view : function(id){
-
+            this.$toasted.global.error_notification().goAway(1500)
         },
         devices : function(id){
 

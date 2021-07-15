@@ -21,6 +21,8 @@
 
 <script>
 export default {
+
+    name: "BasicModal",
     props : {
         show: {
             type: Boolean,

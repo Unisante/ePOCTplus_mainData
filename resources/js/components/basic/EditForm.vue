@@ -1,7 +1,5 @@
 <template>
 <div class= "card">
-    <alert-message alert_color="green" ref="successAlert">Edited Successfully</alert-message>
-    <alert-message alert_color="red" ref="failureAlert">An error occured</alert-message>
     <h3>{{title}}</h3>
     <dynamic-form :inputs="inputs" :data="data"></dynamic-form>
     <update-button :data="data" :url="edit_url" :title="buttonTitle" @edit-success="feedbackSuccess" @edit-error="feedbackFailure"></update-button>
@@ -12,7 +10,6 @@
 <script>
 import DynamicForm from "./DynamicForm.vue"
 import UpdateButton from "./UpdateButton.vue"
-import AlertMessage from "./AlertMessage.vue"
 
 
 export default {
@@ -20,7 +17,6 @@ export default {
     components : {
         "DynamicForm": DynamicForm,
         "UpdateButton": UpdateButton,
-        "AlertMessage" : AlertMessage,
     },
 
     name: "EditForm",
@@ -29,8 +25,6 @@ export default {
         return {
             form : {
             },
-            successEdit : false,
-            failureEdit: false,
             title: "Edit Object"
         }
     },
@@ -99,12 +93,10 @@ export default {
     methods : {
 
         feedbackSuccess: function(createdObject){
-            this.$refs.successAlert.fire()
             console.log(createdObject)
-            this.$emit('created',createdObject)
+            this.$emit('edited',createdObject)
         },
         feedbackFailure: function(error){
-            this.$refs.failureAlert.fire()
             console.log(error)
             this.$emit('error',error)
         }
