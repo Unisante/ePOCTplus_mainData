@@ -77,7 +77,7 @@ class ExportsController extends Controller
       $patients=new Patient();
       $cases = new MedicalCase();
       $thingsArray=[];
-      $things_to_add=["medical_cases","medical_case_answers","nodes","answers","algorithms","versions","answer_types","custom_diagnoses","diagnoses","diagnosis_references","drugs","drug_references","formulations","managements"];
+      $things_to_add=["medical_cases","medical_case_answers","nodes","answers","algorithms","versions","answer_types","custom_diagnoses","diagnoses","diagnosis_references","drugs","drug_references","formulations","managements","management_references"];
       foreach($things_to_add as $table){
         array_push($thingsArray,$cases->getDataCsv($table,$fromDate,$toDate));
       }
