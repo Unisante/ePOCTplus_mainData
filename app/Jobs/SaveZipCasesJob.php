@@ -32,6 +32,7 @@ class SaveZipCasesJob implements ShouldQueue
     protected $parsed_folder;
     protected $failed_folder;
     protected $isEligible;
+    protected $consent;
     /**
      * Create a new job instance.
      *
