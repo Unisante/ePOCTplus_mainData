@@ -1,15 +1,14 @@
 <template>
 <div>
     <div v-for="input in inputs" :key="input.keyword">
-        <text-input v-if="input.type == 'text'" v-model="data[input.keyword]" :label="input.label"
-                    :value="data[input.keyword]"></text-input>
-        <select-input v-if="input.type == 'select'" v-model="data[input.keyword]" 
+        <text-input v-if="input.type == 'text'" :label="input.label"
+                    :value.sync="localData[input.keyword]"></text-input>
+        <select-input v-if="input.type == 'select'" 
                         :label="input.label" :options="input.options"
-                        :value="data[input.keyword]"></select-input>
+                        :value.sync="localData[input.keyword]"></select-input>
         <checkbox-input v-if="input.type == 'checkbox'" 
-                        v-model="data[input.keyword]" 
                         :label="input.label"
-                        :value="data[input.keyword]"></checkbox-input>
+                        :value.sync="localData[input.keyword]"></checkbox-input>
     </div>
 </div>
 </template>
@@ -82,6 +81,17 @@
         },
 
         methods: { 
-        }
+        },
+
+        computed : {
+            localData : {
+                get: function() {
+                    return this.data
+                },
+                set: function(newVal) {
+                    this.$emit("update:data",newVal)
+                }
+            },
+        },
     }
 </script>

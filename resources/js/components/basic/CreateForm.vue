@@ -1,6 +1,6 @@
 <template>
 <div class= "card">
-    <dynamic-form :inputs="inputs" :data="form"></dynamic-form>
+    <dynamic-form :inputs="inputs" :data.sync="form"></dynamic-form>
     <add-button :data="form" :url="create_url" :title="buttonTitle" @add-success="feedbackSuccess" @add-error="feedbackFailure"></add-button>
 </div>
 

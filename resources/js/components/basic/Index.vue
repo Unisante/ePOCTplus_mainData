@@ -1,5 +1,5 @@
 <template>
-    <table class="table">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th v-for="column in columns" :key="column.label">{{column.label}}</th>
@@ -7,15 +7,16 @@
             </tr>
         </thead>
         <tr v-for="object in data" :key="object.id">
-            <th v-for="column in columns" :key="column.keyword">{{object[column.keyword]}}</th>
-            <td v-if="actions.length > 0">
+            <th v-for="column in columns" style="word-wrap: break-word;min-width: 160px;max-width: 160px;"
+                                         :key="column.keyword">{{object[column.keyword]}}</th>
+            <th v-if="actions.length > 0">
                 <div class="btn-group btn-group-sm" role="group">
                 <action-button v-for="action in actions" :key="action.event"
                                :title="action.label" 
                                @clicked="fireAction(object.id,action.event)"
                                :classTitle="colorToClass(action.color)"></action-button>
                 </div>
-            </td>
+            </th>
         </tr>
     </table>
 </template>

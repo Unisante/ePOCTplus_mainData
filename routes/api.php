@@ -1,15 +1,17 @@
 <?php
 
-use Illuminate\Http\Request;
-use App\MedicalCaseAnswer;
-use App\HealthFacility;
-use Illuminate\Support\Facades\Storage;
 use App\Jobs\SaveCase;
-use App\Jobs\SaveZipCasesJob;
+use App\HealthFacility;
 use App\Jobs\RedcapPush;
-use Illuminate\Support\Facades\Log;
+use Lcobucci\JWT\Parser;
+use App\MedicalCaseAnswer;
+use Laravel\Passport\Token;
+use Illuminate\Http\Request;
+use App\Jobs\SaveZipCasesJob;
 use Spatie\TemporaryDirectory;
 use Madnest\Madzipper\Madzipper;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,6 +30,24 @@ use Madnest\Madzipper\Madzipper;
 
 Route::middleware('auth:api',"permission:Manage_Devices")->get('/protected-api', function (Request $request) {
     return $request->user();
+});
+
+
+Route::middleware('auth:api')->get('/get-client-id', function (Request $request) {
+  $bearerToken=$request->bearerToken();
+  $parsedJwt = (new Parser())->parse($bearerToken);
+
+
+  if ($parsedJwt->hasHeader('jti')) {
+      $tokenId = $parsedJwt->getHeader('jti');
+  } elseif ($parsedJwt->hasClaim('jti')) {
+      $tokenId = $parsedJwt->getClaim('jti');
+  } else {
+      Log::error('Invalid JWT token, Unable to find JTI header');
+      return null;
+  }
+  $client = Token::find($tokenId)->client;
+  return $client;
 });
 
 Route::get('medical_case_answers', function(Request $request){
@@ -133,3 +153,6 @@ Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
     "total_nb_of_json_log"=>$facility->log_cases->count(),
   ]);
 });
+
+
+//Route::apiResource('health-facilities','HealthFacilityController')->middleware(['web','auth']);

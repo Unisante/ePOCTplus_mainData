@@ -17,6 +17,7 @@ class CreateDevicesTable extends Migration
             $table->bigIncrements('id');
             $table->timestamps();
             $table->string('name');
+            $table->string('type');
             $table->string('mac_address')->nullable();
             $table->string('model')->nullable();
             $table->string('brand')->nullable();

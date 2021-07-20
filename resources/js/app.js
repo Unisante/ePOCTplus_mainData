@@ -9,13 +9,21 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 import Vue from 'vue';
+
+
+export const eventBus = new Vue()
+
 import Toasted from 'vue-toasted';
  
 Vue.use(Toasted)
 
-Vue.toasted.register('error_notification','Oops.. Something Went Wrong..',{
+Vue.toasted.register('error_notification',message => {
+    return message;
+},{
+    theme: 'bubble',
     type: 'error',
-    duration: 1500,
+    keepOnHover: true,
+    duration: 2000,
     action: [
         {
             text: 'Close',
@@ -26,9 +34,13 @@ Vue.toasted.register('error_notification','Oops.. Something Went Wrong..',{
     ]
 })
 
-Vue.toasted.register('success_notification','Operation Successful',{
+Vue.toasted.register('success_notification',message => {
+    return message;
+},{
     type: 'success',
-    duration: 1500,
+    theme: 'bubble',
+    keepOnHover: true,
+    duration: 2000,
     action: [
         {
             text: 'Close',
@@ -38,6 +50,7 @@ Vue.toasted.register('success_notification','Operation Successful',{
         }
     ]
 })
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -64,6 +77,10 @@ Vue.component(
     require('./components/HealthFacilities.vue').default
 );
 
+Vue.component(
+    'Devices',
+    require('./components/Devices.vue').default
+);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

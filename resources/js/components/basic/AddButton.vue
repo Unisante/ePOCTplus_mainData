@@ -38,9 +38,9 @@
         methods: {
             submit: function(){
                 axios.post(this.url,this.data).then(response=>{
-                    this.$emit("add-success",response.data)
+                    this.$emit("add-success",response.data[0])
                 }).catch(error=>{
-                    this.$emit("add-error",error)
+                    this.$emit("add-error",error.response.data)
                 })
             }         
         }

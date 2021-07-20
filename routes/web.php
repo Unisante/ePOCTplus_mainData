@@ -68,12 +68,18 @@ Route::group(['middleware' => ['auth']], function() {
 
 
   //for health facilities
-  Route::resource('health-facilities','HealthFacilityController');
+  Route::resource('health-facilities','HealthFacilityController')->only([
+    'index',
+    'store',
+    'update',
+    'destroy'
+  ]);
+  Route::get('health-facilities/{health_facility}/manage-devices',"HealthFacilityController@manageDevices");
+  Route::post('health-facilities/{health_facility}/assign-device/{device}',"HealthFacilityController@assignDevice");
+  Route::post('health-facilities/{health_facility}/unassign-device/{device}',"HealthFacilityController@unassignDevice");
 
   //for Devices
   Route::resource('devices','DeviceController');
-  Route::post('/devices/{id}/assign/{health_facility_id}','DeviceController@assignToHealthFacility');
-
   //for downloading exports
   // Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('MedicalCasesController.medicalCaseIntoExcel');
   // Route::get('/export-medicalCase-csv','MedicalCasesController@medicalCaseIntoCsv')->name('MedicalCasesController.medicalCaseIntoCsv');

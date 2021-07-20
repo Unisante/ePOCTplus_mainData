@@ -8,6 +8,7 @@ class Device extends Model
 {
     protected $fillable = [
         "name",
+        'type',
         "mac_address",
         "model",
         "brand",
@@ -16,5 +17,9 @@ class Device extends Model
         "status",
     ];
     protected $guarded = [];
+
+    public function healthFacility(){
+        return $this->belongsTo('App\HealthFacility');
+    }
 
 }

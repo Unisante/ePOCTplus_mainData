@@ -80,6 +80,14 @@ class HealthFacilityPolicy
         return $user->id == $device->user_id && $user->id == $healthFacility->user_id;
     }
 
+    public function manageDevices(User $user,HealthFacility $healthFacility){
+        return $user->id == $healthFacility->user_id;
+    }
+
+    public function unassignDevice(User $user,HealthFacility $healthFacility, Device $device){
+        return $user->id == $device->user_id && $user->id == $healthFacility->user_id;
+    }
+
     /**
      * Determine whether the user can restore the health facility.
      *

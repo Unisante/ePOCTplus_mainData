@@ -35,7 +35,6 @@
                 axios.delete(this.url).then(response=>{
                     this.$emit("delete-success",response.data)
                 }).catch(error=>{
-                    console.log(error)
                     this.$emit("delete-error",error)
                 })
             }         

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests\HealthFacilityRequest;
+use App\Device;
 use App\HealthFacility;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\HealthFacilityRequest;
+use App\Http\Resources\Device as DeviceResource;
 
 
 
@@ -26,18 +28,8 @@ class HealthFacilityController extends Controller
     {
         $healthFacilities =  Auth::user()->healthFacilities;
         return view("healthFacilities.index",[
-            "healthFacilities" => $healthFacilities,
+            "healthFacilities" => $healthFacilities
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view("healthFacilities.create");
     }
 
     /**
@@ -52,36 +44,8 @@ class HealthFacilityController extends Controller
         $healthFacility->user_id = Auth::user()->id;
         $this->addDefaultValues($healthFacility);
         $healthFacility->save();
-        return $healthFacility;
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\HealthFacility $healthFacility
-     * @return \Illuminate\Http\Response
-     */
-    public function show(HealthFacility $healthFacility)
-    {
-        $devices = $healthFacility->devices;
-        $unassignedDevices = Auth::user()->unassignedDevices();
-        return view("healthFacilities.details",[
-            "facility" => $healthFacility,
-            "devices" => $devices,
-            "unassignedDevices" => $unassignedDevices,
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\HealthFacility $healthFacility
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(HealthFacility $healthFacility)
-    {
-        return view('healthFacilities.edit',[
-            "facility" => $healthFacility,
+        return response()->json([
+            $healthFacility,
         ]);
     }
 
@@ -96,7 +60,9 @@ class HealthFacilityController extends Controller
     {
         $validated = $request->validated();
         $healthFacility->fill($validated)->save();
-        return $healthFacility;
+        return response()->json([
+            $healthFacility,
+        ]);
     }
 
     /**
@@ -109,26 +75,40 @@ class HealthFacilityController extends Controller
     {
         $id = $healthFacility->id;
         $healthFacility->delete();
-        return response([
+        return response()->json([
             "message" => "Deleted",
-            "id" =>  $id,
+            "id" => $id,
         ]);
     }
 
-
-    public function devices(HealthFacility $healthFacility){
-        return $healthFacility->devices;
+    public function manageDevices(HealthFacility $healthFacility){
+        error_log(Auth::user()->id);
+        error_log($healthFacility->user_id);
+        $this->authorize('manageDevices',$healthFacility);
+        $devices = DeviceResource::collection($healthFacility->devices);
+        $unassignedDevices = DeviceResource::collection(Auth::user()->unassignedDevices());
+        return response()->json([
+            "devices" => $devices->values(),
+            "unassignedDevices" => $unassignedDevices->values(),
+            "healthFacility" => $healthFacility,
+        ]);
     }
 
     public function assignDevice(HealthFacility $healthFacility,Device $device){
+        $this->authorize('assignDevice',[$healthFacility,$device]);
         $device->health_facility_id = $healthFacility->id;
-        return $device;
+        $device->save();
+        return response()->json([
+            new DeviceResource($device)
+        ]);
     }
 
     public function unassignDevice(HealthFacility $healthFacility,Device $device){
+        $this->authorize("unassignDevice",[$healthFacility,$device]);
         $device->health_facility_id = null;
-        return response([
-            "message" => "Unassigned",
+        $device->save();
+        return response()->json([
+            new DeviceResource($device)
         ]);
     }
 

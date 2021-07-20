@@ -1,6 +1,6 @@
 <template>
     <div v-if="show" class="modal" style="display: block;">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
                 <div class="modal-content">
                     <div class="modal-header"> 
                         <h4 class="modal-title">
@@ -38,3 +38,14 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    .modal-dialog{
+        position: relative;
+        display: table; /* This is important */ 
+        overflow-y: auto;    
+        overflow-x: auto;
+        width: auto;
+        min-width: 300px;   
+    }
+</style>

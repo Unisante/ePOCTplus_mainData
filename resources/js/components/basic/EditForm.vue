@@ -1,8 +1,7 @@
 <template>
 <div class= "card">
-    <h3>{{title}}</h3>
-    <dynamic-form :inputs="inputs" :data="data"></dynamic-form>
-    <update-button :data="data" :url="edit_url" :title="buttonTitle" @edit-success="feedbackSuccess" @edit-error="feedbackFailure"></update-button>
+    <dynamic-form :inputs="inputs" :data.sync="form"></dynamic-form>
+    <update-button :data="form" :url="edit_url" :title="buttonTitle" @edit-success="feedbackSuccess" @edit-error="feedbackFailure"></update-button>
 </div>
 
 </template>
@@ -23,9 +22,14 @@ export default {
 
     data() {
         return {
-            form : {
-            },
+            form : {},
             title: "Edit Object"
+        }
+    },
+
+    created() {
+        for(const [key,value] of Object.entries(this.data)){
+            this.form[key] = this.data[key]
         }
     },
 
@@ -93,13 +97,11 @@ export default {
     methods : {
 
         feedbackSuccess: function(createdObject){
-            console.log(createdObject)
-            this.$emit('edited',createdObject)
+            this.$emit('edit-success',createdObject)
         },
         feedbackFailure: function(error){
-            console.log(error)
-            this.$emit('error',error)
-        }
+            this.$emit('edit-failure',error)
+        },
     },
 
 }

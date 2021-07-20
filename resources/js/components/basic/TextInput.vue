@@ -8,7 +8,7 @@
                 </h5>
             </div>
             <div class="col">
-                <input type="text" class="form-control" :value="value" @input="$emit('input',$event.target.value)">
+                <input type="text" class="form-control" v-model="localValue">
             </div>
         </div>
         
@@ -43,6 +43,18 @@
         },
 
         methods: {     
+        },
+
+
+        computed : {
+            localValue : {
+                get : function() {
+                    return this.value
+                },
+                set: function(newVal) {
+                    this.$emit('update:value',newVal)
+                } 
+            }
         }
     }
 </script>

@@ -77,9 +77,6 @@ export default {
     },
 
     methods : {
-        showData: function(){
-            console.log(this.formData)
-        }
     }
 }
 </script>

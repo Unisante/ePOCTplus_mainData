@@ -6,9 +6,9 @@
                     <h5 class="card-title">{{this.label}}</h5>
                 </div>
                 <div class="col">
-                    <select class="form-select" :value="value" @input="$emit('input',$event.target.value)">
+                    <select class="form-select" v-model="localValue">
                         <option disabled value="">Please select one</option>
-                        <option v-for="option in this.options" :key="option.value" v-bind:value="option.value">
+                        <option v-for="option in this.options" :key="option.value" :value="option.value">
                           {{option.label}}
                         </option>
                     </select>
@@ -34,7 +34,6 @@
 
         props: {
             value : {
-                type: String,
                 default: "option_1",
             },
             label: {
@@ -59,6 +58,18 @@
         },
 
         methods: {     
+        },
+
+        computed : {
+            localValue : {
+                get: function() {
+                    return this.value
+                },
+                set: function(newVal) {
+                    this.$emit('update:value',newVal)
+                }
+            }
+            
         }
     }
 </script>

@@ -7,8 +7,7 @@
             </div>
             <div class="col">
                 <input type="checkbox" class="form-check-input" 
-                       :value="value" @input="$emit('input',$event.target.checked)" 
-                       style="margin-left: 0rem;">
+                       style="margin-left: 0rem;" v-model="localValue">
             </div>
         </div>
     </div>
@@ -43,6 +42,17 @@
         },
 
         methods: {     
+        },
+
+        computed: {
+            localValue: {
+                get: function(){
+                    return this.value
+                },
+                set: function(newVal){
+                    this.$emit('update:value',newVal)
+                }
+            }
         }
     }
 </script>

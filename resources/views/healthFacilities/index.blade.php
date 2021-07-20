@@ -42,7 +42,8 @@
 <body>
     <div id="app" class="colorGrey">
         <health-facilities :health_facilities="{{$healthFacilities}}"
-                           health_facilities_route="{{route("health-facilities.index")}}"></health-facilities>
+                           health_facilities_route="{{route("health-facilities.index")}}"
+                           devices_route="{{route("devices.index")}}"></health-facilities>
     </div>
 </body>
 

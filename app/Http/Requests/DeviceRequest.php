@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\MacAddress;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -27,12 +28,13 @@ class DeviceRequest extends FormRequest
     {
         return [
             'name' => 'required | string',
-            'mac_address' => ['string',new MacAddress],
-            'model' => 'string',
-            'brand' => 'string',
-            'os' => 'string',
-            'os_version' => 'string',
-            'status' => 'integer | between:0,1',
+            'type' => ['required','string',Rule::in(['reader','hub'])],
+            'mac_address' => ['nullable','string',new MacAddress],
+            'model' => 'nullable | string',
+            'brand' => 'nullable | string',
+            'os' => 'nullable | string',
+            'os_version' => 'nullable | string',
+            'status' => 'nullable | integer | between:0,1',
         ];
     }
 }

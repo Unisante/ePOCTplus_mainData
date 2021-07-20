@@ -11,16 +11,6 @@
 
         data(){
             return {
-                data: {
-                    name: "facility 000",
-                    country: "switzerland",
-                    area: "VD",
-                    pin_code: "1234",
-                    hf_mode: "standalone",
-                    lat: 0.0,
-                    long: 0.5,
-                    local_data_ip: "127.0.0.1",
-                },
             }
         },
         components: {
@@ -42,13 +32,10 @@
 
         methods: {
             submit: function(){
-                axios.post(this.url,{
-                    data: this.data,
-                    _method: 'patch'
-                }).then(response=>{
-                    this.$emit("update-success",response.data)
+                axios.put(this.url,this.data).then(response=>{
+                    this.$emit("edit-success",response.data)
                 }).catch(error=>{
-                    this.$emit("update-error",error)
+                    this.$emit("edit-error",error.response.data)
                 })
             }         
         }

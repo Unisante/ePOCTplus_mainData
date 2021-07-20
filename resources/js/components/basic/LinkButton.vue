@@ -10,7 +10,6 @@
             'ActionButton': ActionButton,
         },
         mounted() {
-            console.log('Link Button Component mounted.')
         },
 
         props: {
