@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Device;
 use Illuminate\Http\Request;
+use App\Services\DeviceService;
 use App\Http\Requests\DeviceRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Device as DeviceResource;
@@ -11,9 +12,12 @@ use App\Http\Resources\Device as DeviceResource;
 class DeviceController extends Controller
 {
 
-    public function __construct()
+    protected $deviceService;
+
+    public function __construct(DeviceService $deviceService)
     {
         $this->authorizeResource(Device::class);
+        $this->deviceService = $deviceService;
     }
     /**
      * Display a listing of the resource.
@@ -45,32 +49,7 @@ class DeviceController extends Controller
     public function store(DeviceRequest $request)
     {
         $validated = $request->validated();
-        $device = new Device($validated);
-        //Set Parameters for Passport Client Creation
-        $userID = Auth::user()->id;
-        $clientName = $device->name;
-        //Redirect URL is the callback set for the medal Reader devices
-        $redirectURL = getenv('HUB_CALLBACK_URL');
-        //The following parameters make sure the client can only use the secure PKCE authorization flow
-        $provider = null;
-        $personalAccess = false;
-        $password = false;
-        $confidential = false;
-        //Get Passport's client repository using the app parameters and create the client using the parameters
-        $clientRepository = app('Laravel\Passport\ClientRepository');
-        $client = $clientRepository->create(
-            $userID,
-            $clientName,
-            $redirectURL,
-            $provider,
-            $personalAccess,
-            $password,
-            $confidential
-        );
-        //Update the device information and link it to the client ID
-        $device->user_id = Auth::user()->id;
-        $device->oauth_client_id = $client->id;
-        $device->save();
+        $device = $this->deviceService->create($validated);
         return response()->json([
             new DeviceResource($device)
         ]);
@@ -114,10 +93,7 @@ class DeviceController extends Controller
     public function update(DeviceRequest $request, Device $device)
     {
         $validated = $request->validated();
-        $device->fill($validated)->save();
-        $clientRepository = app('Laravel\Passport\ClientRepository');
-        $client = $clientRepository->findForUser($device->oauth_client_id,Auth::user()->id);
-        $clientRepository->update($client,$validated['name'],$client->redirect);
+        $device = $this->deviceService->update($validated,$device);
         return response()->json([
             new DeviceResource($device)
         ]);
@@ -131,11 +107,7 @@ class DeviceController extends Controller
      */
     public function destroy(Device $device)
     {
-        $id = $device->id;
-        $device->delete();
-        $clientRepository = app('Laravel\Passport\ClientRepository');
-        $client = $clientRepository->findForUser($device->oauth_client_id,Auth::user()->id);
-        $clientRepository->delete($client);
+        $id = $this->deviceService->remove($device);
         return response()->json([
             "message" => "Deleted",
             "id" => $id,
