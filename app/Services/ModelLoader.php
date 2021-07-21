@@ -4,19 +4,22 @@ namespace App\Services;
 
 use DateTime;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
 abstract class ModelLoader {
     private $rawData;
 
-    // TODO default empty keys/values ?
     protected function getKeys() { return $this->keyValuesFromConfig('keys'); }
     protected function getValues() { return $this->keyValuesFromConfig('values'); }
 
     abstract protected function model();
     abstract protected function configName();
 
+    /**
+     * Constructor
+     *
+     * @param array $rawData data that contains keys specified in the configuration file
+     */
     public function __construct($rawData)
     {
         $this->rawData = $rawData;
@@ -26,8 +29,7 @@ abstract class ModelLoader {
                 $key = is_array($configValue) ? $configValue['key'] : $configValue;
 
                 if (!is_array($configValue) || array_search('optional', $configValue['modifiers']) === false) {
-                    //$modelTitle = $this->configName();
-                    $modelTitle = strval($this);
+                    $modelTitle = $this->configName();
                     if (!array_key_exists($key, $this->rawData)) {
                         throw new InvalidArgumentException("Missing key '$key' on data for '$modelTitle'");
                     }
@@ -75,7 +77,6 @@ abstract class ModelLoader {
                     $value = $this->rawData[$key] ?? null;
                 }
 
-
                 if ($value === null && is_array($config) && array_search('optional', $config['modifiers']) !== false) {
                     switch ($config['type']) {
                         case 'string':
@@ -96,6 +97,11 @@ abstract class ModelLoader {
         );
     }
 
+    /**
+     * Create a model instance based on the data that was provided
+     *
+     * @return Model
+     */
     public function load() {
         $record = $this->model()::firstOrCreate(
             $this->getKeys(),
@@ -103,10 +109,5 @@ abstract class ModelLoader {
         );
         $record->save();
         return $record;
-    }
-
-    public function __toString()
-    {
-        return "";
     }
 }

@@ -9,9 +9,9 @@ class CustomDrugLoader extends ModelLoader {
     protected $customDrugData;
     protected $customDiagnosis;
     /**
-     * Undocumented function
+     * Constructor
      *
-     * @param object $data
+     * @param array $data
      * @param Custom_diagnosis $customDiagnosis
      * 
      */

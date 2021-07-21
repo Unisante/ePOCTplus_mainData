@@ -10,11 +10,10 @@ class CustomDiagnosisLoader extends ModelLoader {
     protected $medicalCase;
 
     /**
-     * Undocumented function
+     * Constructor
      *
-     * @param object $data
+     * @param array $data
      * @param MedicalCase $medicalCase
-     * @param Drug $drug
      * 
      */
     public function __construct($customDiagnosisData, $medicalCase) {

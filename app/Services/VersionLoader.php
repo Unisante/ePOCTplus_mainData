@@ -11,9 +11,9 @@ class VersionLoader extends ModelLoader {
     protected $algorithm;
 
     /**
-     * Undocumented function
+     * Constructor
      *
-     * @param object $data
+     * @param array $data
      * @param Algorithm $algorithm
      */
     public function __construct($data, $algorithm) {

@@ -10,7 +10,7 @@ class ManagementLoader extends ModelLoader {
     protected $diagnosis;
 
     /**
-     * Undocumented function
+     * Constructor
      *
      * @param object $managementData
      * @param Diagnosis $diagnosis

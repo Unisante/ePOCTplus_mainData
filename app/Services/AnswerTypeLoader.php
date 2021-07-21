@@ -9,9 +9,9 @@ class AnswerTypeLoader extends ModelLoader {
     protected $nodeData;
 
     /**
-     * Undocumented function
+     * Constructor
      *
-     * @param object $nodeData
+     * @param array $nodeData
      * @param Algorithm $algorithm
      */
     public function __construct($nodeData) {

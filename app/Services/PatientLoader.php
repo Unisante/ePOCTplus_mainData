@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Patient;
 use App\Services\ModelLoader;
-use DateTime;
 
 class PatientLoader extends ModelLoader {
     protected $patientData;
@@ -14,10 +13,10 @@ class PatientLoader extends ModelLoader {
     protected $hasDuplicate = false;
 
     /**
-     * Undocumented function
+     * Constructor
      *
-     * @param object $drugData
-     * @param object $nodesData
+     * @param array $drugData
+     * @param array $nodesData
      * @param PatientConfig $version
      * @param string $consentFileName
      */
@@ -31,7 +30,6 @@ class PatientLoader extends ModelLoader {
 
     protected function getValues()
     {
-        // TODO how to validate nodes data?
         return array_merge(parent::getValues(), [
             //'related_ids' => [$this->valueFromConfig('values', 'related_ids')], // TODO this value makes no sense
             'middle_name' => $this->nodeValueOrDefault('middle_name_patient_id', ''),
@@ -73,7 +71,7 @@ class PatientLoader extends ModelLoader {
     }
 
     /**
-     * Undocumented function
+     * Flag the patient as duplicate if one or more conditions are true
      *
      * @param bool $duplicateDataExists
      * @param bool $existingPatientIsTrue

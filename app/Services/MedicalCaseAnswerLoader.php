@@ -12,7 +12,7 @@ class MedicalCaseAnswerLoader extends ModelLoader {
     protected $answer;
 
     /**
-     * Undocumented function
+     * Constructor
      *
      * @param object $answerData
      * @param MedicalCase $medicalCase

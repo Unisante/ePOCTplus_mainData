@@ -12,14 +12,16 @@ class DrugReferenceLoader extends ModelLoader {
     protected $formulation;
     protected $agreed;
     protected $additional;
+
     /**
-     * Undocumented function
+     * Constructor
      *
      * @param object $data
      * @param DiagnosisReference $diagnosisRef
      * @param Drug $drug
      * @param Formulation $formulation
-     * 
+     * @param bool agreed
+     * @param bool additional
      */
     public function __construct($drugRefData, $diagnosisRef, $drug, $formulation, $agreed, $additional) {
         parent::__construct($drugRefData);

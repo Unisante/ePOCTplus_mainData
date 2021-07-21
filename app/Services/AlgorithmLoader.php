@@ -10,9 +10,9 @@ class AlgorithmLoader extends ModelLoader {
     protected $data;
 
     /**
-     * Undocumented function
+     * Constructor
      *
-     * @param object $data
+     * @param array $data
      */
     public function __construct($data) {
         parent::__construct($data);

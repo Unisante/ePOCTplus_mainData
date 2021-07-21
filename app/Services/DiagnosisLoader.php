@@ -10,9 +10,9 @@ class DiagnosisLoader extends ModelLoader {
     protected $version;
 
     /**
-     * Undocumented function
+     * Constructor
      *
-     * @param object $drugData
+     * @param array $drugData
      * @param Version $version
      */
     public function __construct($diagnosisData, $version) {

@@ -4,15 +4,13 @@ namespace App\Services;
 
 use App\MedicalCase;
 use App\Services\ModelLoader;
-use DateTime;
-use Illuminate\Support\Facades\Config;
 
 class MedicalCaseLoader extends ModelLoader {
     protected $caseData;
     protected $patient;
 
     /**
-     * Undocumented function
+     * Constructor
      *
      * @param object $caseData
      * @param Patient $patient

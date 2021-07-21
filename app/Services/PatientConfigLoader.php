@@ -9,9 +9,9 @@ class PatientConfigLoader extends ModelLoader {
     protected $version;
     
     /**
-     * Undocumented function
+     * Constructor
      *
-     * @param object $data
+     * @param array $data
      * @param Version $version
      */
     public function __construct($data, $version) {
@@ -28,7 +28,6 @@ class PatientConfigLoader extends ModelLoader {
 
     protected function getValues()
     {
-        // TODO validate
         $filteredData = array_filter((array)$this->data, function($k){return $k != "study_id";}, ARRAY_FILTER_USE_KEY);
 
         // for some reason, some of the ids are passed as strings

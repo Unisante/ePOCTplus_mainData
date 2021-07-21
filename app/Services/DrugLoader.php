@@ -10,7 +10,7 @@ class DrugLoader extends ModelLoader {
     protected $diagnosis;
 
     /**
-     * Undocumented function
+     * Constructor
      *
      * @param object $drugData
      * @param Diagnosis $diagnosis

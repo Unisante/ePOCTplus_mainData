@@ -11,7 +11,7 @@ class ManagementReferenceLoader extends ModelLoader {
     protected $management;
 
     /**
-     * Undocumented function
+     * Constructor
      *
      * @param object $data
      * @param DiagnosisReference $diagnosisRef

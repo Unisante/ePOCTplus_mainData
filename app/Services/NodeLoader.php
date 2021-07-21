@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Algorithm;
 use App\Node;
 use App\Services\ModelLoader;
-use Illuminate\Support\Facades\Log;
 
 class NodeLoader extends ModelLoader {
     protected $nodeData;
@@ -13,7 +12,7 @@ class NodeLoader extends ModelLoader {
     protected $answerType;
 
     /**
-     * Undocumented function
+     * Constructor
      *
      * @param array $nodeData
      * @param Algorithm $algorithm
@@ -32,7 +31,7 @@ class NodeLoader extends ModelLoader {
         return array_merge(parent::getValues(), [
             'answer_type_id' => $this->answerType->id,
             'algorithm_id'=> $this->algorithm->id,
-            'reference'=>0, // TODO
+            'reference'=>0, // TODO probably unused
         ]);
     }
 
@@ -44,10 +43,5 @@ class NodeLoader extends ModelLoader {
     protected function configName()
     {
         return 'node';
-    }
-
-    public function __toString()
-    {
-        return 'node ' . $this->valueFromConfig('keys', 'medal_c_id');
     }
 }

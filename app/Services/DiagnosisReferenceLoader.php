@@ -15,12 +15,14 @@ class DiagnosisReferenceLoader extends ModelLoader {
     protected $isAgreed;
 
     /**
-     * Undocumented function
+     * Constructor
      *
-     * @param object $data
+     * @param array $data
      * @param MedicalCase $medicalCase
      * @param Diagnosis $diagnosis
-     * @param bool isProposed
+     * @param bool $isProposed
+     * @param bool $isExcluded
+     * @param bool $isAgreed
      */
     public function __construct($diagnosisRefData, $medicalCase, $diagnosis, $isProposed, $isExcluded, $isAgreed) {
         parent::__construct($diagnosisRefData);
