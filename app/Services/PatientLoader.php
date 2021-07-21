@@ -30,8 +30,9 @@ class PatientLoader extends ModelLoader {
 
     protected function getValues()
     {
-        return array_merge(parent::getValues(), [
-            //'related_ids' => [$this->valueFromConfig('values', 'related_ids')], // TODO this value makes no sense
+        $valuesFromConfig = parent::getValues();
+        return array_merge($valuesFromConfig, [
+            'related_ids' => $valuesFromConfig['other_uid'] === null ? [] : [$valuesFromConfig['other_uid']],
             'middle_name' => $this->nodeValueOrDefault('middle_name_patient_id', ''),
             'weight' => $this->nodeValue('weight_question_id'),
             'gender' => $this->nodeValue('gender_question_id'),
