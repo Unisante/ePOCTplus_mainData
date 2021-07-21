@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Algorithm;
 use App\Services\ModelLoader;
+use Illuminate\Support\Facades\Config;
 
 class AlgorithmLoader extends ModelLoader {
     protected $data;
@@ -14,24 +15,17 @@ class AlgorithmLoader extends ModelLoader {
      * @param object $data
      */
     public function __construct($data) {
+        parent::__construct($data);
         $this->data = $data;
     }
 
-    public function getKeys()
-    {
-        return [
-            'name' => $this->data['algorithm_name'],
-            'medal_c_id' => $this->data['algorithm_id']
-        ];
-    }
-
-    public function getValues()
-    {
-        return [];
-    }
-
-    public function model()
+    protected function model()
     {
         return Algorithm::class;
     }
+
+    protected function configName()
+    {
+        return 'algorithm';
+    } 
 }

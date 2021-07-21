@@ -16,31 +16,18 @@ class DrugLoader extends ModelLoader {
      * @param Diagnosis $diagnosis
      */
     public function __construct($drugData, $diagnosis) {
+        parent::__construct($drugData);
         $this->drugData = $drugData;
-        $this->diagnosis = $diagnosis;
+        $this->diagnosis = $diagnosis; // TODO remove
     }
 
-    public function getKeys()
-    {
-        return [
-            //'diagnosis_id' => $this->diagnosis->id,
-            'medal_c_id' => $this->drugData['id']
-        ];
-    }
-
-    public function getValues()
-    {
-        return [
-            'type' => $this->drugData['type'],
-            'label' => $this->drugData['label'][env('LANGUAGE')],
-            'description' => $this->drugData['description'][env('LANGUAGE')] ?? '',
-            'is_antibiotic' => $this->drugData['is_antibiotic'] ?? null,
-            'is_anti_malarial' => $this->drugData['is_anti_malarial'] ?? null
-        ];
-    }
-
-    public function model()
+    protected function model()
     {
         return Drug::class;
+    }
+
+    protected function configName()
+    {
+        return 'drug';
     }
 }

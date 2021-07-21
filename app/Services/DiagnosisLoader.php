@@ -16,29 +16,25 @@ class DiagnosisLoader extends ModelLoader {
      * @param Version $version
      */
     public function __construct($diagnosisData, $version) {
+        parent::__construct($diagnosisData);
         $this->diagnosisData = $diagnosisData;
         $this->version = $version;
     }
 
-    public function getKeys()
+    protected function getValues()
     {
-        return [
-            'medal_c_id' => $this->diagnosisData['id'],
-            'diagnostic_id' => $this->diagnosisData['diagnostic_id']
-        ];
-    }
-
-    public function getValues()
-    {
-        return [
-            'label' => $this->diagnosisData['label'][env('LANGUAGE')],
-            'type' => $this->diagnosisData['type'],
+        return array_merge(parent::getValues(), [
             'version_id' => $this->version->id,
-        ];
+        ]);
     }
 
-    public function model()
+    protected function model()
     {
         return Diagnosis::class;
+    }
+
+    protected function configName()
+    {
+        return 'diagnosis';
     }
 }

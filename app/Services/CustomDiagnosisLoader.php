@@ -18,27 +18,32 @@ class CustomDiagnosisLoader extends ModelLoader {
      * 
      */
     public function __construct($customDiagnosisData, $medicalCase) {
+        parent::__construct($customDiagnosisData);
         $this->customDiagnosisData = $customDiagnosisData;
         $this->medicalCase = $medicalCase;
     }
 
-    public function getKeys()
+    protected function getKeys()
     {
-        return [
+        return array_merge(parent::getKeys(), [
             'medical_case_id' => $this->medicalCase->id,
-            'label' => $this->customDiagnosisData['label']
-        ];
+        ]);
     }
 
-    public function getValues()
+    protected function getValues()
     {
         return [
-            'drugs' => implode(',', $this->customDiagnosisData['drugs'])
+            'drugs' => '',
         ];
     }
 
-    public function model()
+    protected function model()
     {
         return Custom_diagnosis::class;
+    }
+
+    protected function configName()
+    {
+        return "custom_diagnosis";
     }
 }

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Answer;
 use App\Diagnosis;
 use App\Drug;
+use App\Formulation;
 use App\HealthFacility;
 use App\Management;
 use App\Node;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
+use PhpOffice\PhpSpreadsheet\Writer\Ods\Formula;
 
 class SaveCaseService
 {
@@ -29,12 +31,12 @@ class SaveCaseService
    * @return MedicalCase
    */
   public function save($caseData) {
-    $versionId = $caseData['version_id'];
+    $hf = $this->udpateHf($caseData['patient']['group_id']);
 
+    //$versionId = $caseData['version_id'];
+    $versionId = 1; // TODO should be provided with the case
     $version = $this->updateVersion($versionId);
     $patientConfig = $this->updateConfig($version);
-    $this->udpateHf($caseData['patient']['group_id']);
-
     $patient = $this->savePatient($caseData, $patientConfig);
     $case = $this->saveCase($caseData, $version, $patient);
 
@@ -90,27 +92,24 @@ class SaveCaseService
         }
       }
     }
-
+   
     foreach ($algorithmData['diagnostics'] as $diagnosisData) {
       foreach ($diagnosisData['final_diagnostics'] as $finalDiagnosisData) {
         // TODO env variable?
         if (array_key_exists('diagnostic_id',$finalDiagnosisData) && $finalDiagnosisData['type'] == 'FinalDiagnostic') {
           $diagnosis = (new DiagnosisLoader($finalDiagnosisData, $version))->load();
 
-          foreach ($finalDiagnosisData['drugs'] as $drugRefData) {
-            // TODO the key in 'drugs' associative array is the drug id
-            $drugData = $algorithmData['health_cares'][$drugRefData['id']];
+          foreach ($finalDiagnosisData['drugs'] as $drugId => $drugRefData) {
+            $drugData = $algorithmData['health_cares'][$drugId];
             $drug = (new DrugLoader($drugData, $diagnosis))->load();
 
             foreach ($drugData['formulations'] as $formulationData) {
-              // TODO this wouldn't work since formulatiosn has no medal_c_id column...
-              //$formulation = (new FormulationLoader($formulationData, $drug));
+              $formulation = (new FormulationLoader($formulationData, $drug))->load();
             }
           }
 
-          foreach ($finalDiagnosisData['managements'] as $managementRefData) {
-            // TODO the key in 'managements' associative array is the key id
-            $managementData = $algorithmData['health_cares'][$managementRefData['id']];
+          foreach ($finalDiagnosisData['managements'] as $managementId => $managementRefData) {
+            $managementData = $algorithmData['health_cares'][$managementId];
             $management = (new ManagementLoader($managementData, $diagnosis))->load();
           }
         }
@@ -156,13 +155,12 @@ class SaveCaseService
    */
   public function saveCase($caseData, $version, $patient) {
     // Medical case
-    $medicalCase = (new MedicalCaseLoader($caseData, $patient))->load();
+    $medicalCase = (new MedicalCaseLoader($caseData, $patient, $version))->load();
 
     // Case answers
     foreach ($caseData['nodes'] as $nodeData) {
       $algoNode = Node::where('medal_c_id', $nodeData['id'])->first();
-
-      // TODO this condition makes it hard to find out about missing questions in database
+      
       if ($algoNode) { // Only responses to questions are stored (QS for example aren't)
         $algoNodeAnswer = Answer::where('medal_c_id', $nodeData['answer'])->first();
         $medicalCaseAnswer = (new MedicalCaseAnswerLoader($nodeData, $medicalCase, $algoNode, $algoNodeAnswer))->load();
@@ -170,17 +168,18 @@ class SaveCaseService
     }
 
     // Diagnoses
-    $diagnosesData = $caseData['diagnoses'];
-    $this->saveDiagnoses($diagnosesData['proposed'], $medicalCase, true);
-    $this->saveDiagnoses($diagnosesData['additional'], $medicalCase, false);
-
+    $diagnosesData = $caseData['diagnosis'];
+    $this->saveDiagnoses($diagnosesData['agreed'], $medicalCase, true, false, true);
+    $this->saveDiagnoses($diagnosesData['additional'], $medicalCase, false, false, true);
+    $this->saveDiagnoses($diagnosesData['excluded'], $medicalCase, false, true, false);
+    $this->saveDiagnoses($diagnosesData['refused'], $medicalCase, true, false, false);
+    
     foreach ($diagnosesData['custom'] as $customDiagnosisData) {
       $customDiagnosis = (new CustomDiagnosisLoader($customDiagnosisData, $medicalCase))->load();
-    }
 
-    foreach ($diagnosesData['additionalDrugs'] as $additionalDrugData) {
-      $drug = Drug::where('medal_c_id', $additionalDrugData['id'])->first();
-      $additionalDrug = (new AdditionalDrugLoader($additionalDrugData, $medicalCase, $drug, $version))->load();
+      foreach ($customDiagnosisData['drugs'] as $customDrugData) {
+        $customDrug = (new CustomDrugLoader($customDrugData, $customDiagnosis))->load();        
+      }
     }
 
     return $medicalCase;
@@ -194,20 +193,41 @@ class SaveCaseService
    * @param boolean $isProposed
    * @return void
    */
-  protected function saveDiagnoses($diagnosesData, $medicalCase, $isProposed) {
+  protected function saveDiagnoses($diagnosesData, $medicalCase, $isProposed, $isExcluded, $isAgreed) {
+    
     foreach ($diagnosesData as $diagnosisRefData) {
-      $diagnosis = Diagnosis::where('medal_c_id', $diagnosisRefData['id'])->first();
-      $diagnosisRef = (new DiagnosisReferenceLoader($diagnosisRefData, $medicalCase, $diagnosis, $isProposed))->load();
 
-      foreach ($diagnosisRefData['drugs'] as $drugRefData) {
-        $drug = Drug::where('medal_c_id', $drugRefData['id'])->first();
-        $drugRef = (new DrugReferenceLoader($drugRefData, $diagnosisRef, $drug))->load();
+      $diagnosisId = $diagnosisRefData['id'] ?? $diagnosisRefData;
+
+      $diagnosis = Diagnosis::where('medal_c_id', $diagnosisId)->first();
+      $diagnosisRef = (new DiagnosisReferenceLoader($diagnosisRefData, $medicalCase, $diagnosis, $isProposed, $isExcluded, $isAgreed))->load();
+      
+      if ($isAgreed && !$isExcluded) {
+        $drugRefsData = $diagnosisRefData['drugs'];
+        
+        foreach ($drugRefsData['agreed'] as $drugId => $drugRefData) {
+          $drug = Drug::where('medal_c_id', $drugId)->first();
+          $formulation = Formulation::where('medal_c_id', $drugRefData['formulation_id'])->first();
+          $drugRef = (new DrugReferenceLoader($drugRefData, $diagnosisRef, $drug, $formulation, true, false))->load();
+        }
+
+        foreach ($drugRefsData['additional'] as $drugId => $drugRefData) {
+          $drug = Drug::where('medal_c_id', $drugId)->first();
+          $formulation = Formulation::where('medal_c_id', $drugRefData['formulation_id'])->first();
+          $drugRef = (new DrugReferenceLoader($drugRefData, $diagnosisRef, $drug, $formulation, true, true))->load();
+        }
+
+        foreach ($drugRefsData['refused'] as $drugId) {
+          $drug = Drug::where('medal_c_id', $drugId)->first();
+          $drugRef = (new DrugReferenceLoader($drugRefData, $diagnosisRef, $drug, null, false, false))->load();
+        }
+  
+        foreach ($diagnosisRefData['managements'] as $managementId) {
+          $management = Management::where('medal_c_id', $managementId)->first();
+          $managementRef = (new ManagementReferenceLoader($managementId, $diagnosisRef, $management))->load();
+        }
       }
 
-      foreach ($diagnosisRefData['managements'] as $managementRefData) {
-        $management = Management::where('medal_c_id', $managementRefData['id'])->first();
-        $managementRef = (new ManagementReferenceLoader($managementRefData, $diagnosisRef, $management))->load();
-      }
     }
   }
 }

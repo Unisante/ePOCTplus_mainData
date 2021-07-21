@@ -4,12 +4,15 @@ namespace App\Services;
 
 use App\DiagnosisReference;
 use App\Services\ModelLoader;
+use Illuminate\Support\Facades\Log;
 
 class DiagnosisReferenceLoader extends ModelLoader {
     protected $diagnosisRefData;
     protected $medicalCase;
     protected $diagnosis;
     protected $isProposed;
+    protected $isExcluded;
+    protected $isAgreed;
 
     /**
      * Undocumented function
@@ -19,14 +22,17 @@ class DiagnosisReferenceLoader extends ModelLoader {
      * @param Diagnosis $diagnosis
      * @param bool isProposed
      */
-    public function __construct($diagnosisRefData, $medicalCase, $diagnosis, $isProposed) {
+    public function __construct($diagnosisRefData, $medicalCase, $diagnosis, $isProposed, $isExcluded, $isAgreed) {
+        parent::__construct($diagnosisRefData);
         $this->diagnosisRefData = $diagnosisRefData;
         $this->medicalCase = $medicalCase;
         $this->diagnosis = $diagnosis;
         $this->isProposed = $isProposed;
+        $this->isExcluded = $isExcluded;
+        $this->isAgreed = $isAgreed;
     }
 
-    public function getKeys()
+    protected function getKeys()
     {
         return [
             'medical_case_id' => $this->medicalCase->id,
@@ -34,16 +40,22 @@ class DiagnosisReferenceLoader extends ModelLoader {
         ];
     }
 
-    public function getValues()
+    protected function getValues()
     {
         return [
-            'agreed' => $this->diagnosisRefData['agreed'] ?? true,
+            'agreed' => $this->isAgreed,
+            'excluded' => $this->isExcluded,
             'proposed_additional' => $this->isProposed
         ];
     }
 
-    public function model()
+    protected function model()
     {
         return DiagnosisReference::class;
+    }
+
+    protected function configName()
+    {
+        return 'diagnosis_reference';
     }
 }

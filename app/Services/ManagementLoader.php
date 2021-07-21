@@ -16,29 +16,25 @@ class ManagementLoader extends ModelLoader {
      * @param Diagnosis $diagnosis
      */
     public function __construct($managementData, $diagnosis) {
+        parent::__construct($managementData);
         $this->managementData = $managementData;
         $this->diagnosis = $diagnosis;
     }
 
-    public function getKeys()
+    protected function getKeys()
     {
-        return [
+        return array_merge(parent::getKeys(), [
             'diagnosis_id'=>$this->diagnosis->id,
-            'medal_c_id'=>$this->managementData['id']
-        ];
+        ]);
     }
 
-    public function getValues()
-    {
-        return [
-            'type' => $this->managementData['type'],
-            'label' => $this->managementData['label'][env('LANGUAGE')],
-            'description' => $this->managementData['description'][env('LANGUAGE')] ?? ''
-        ];
-    }
-
-    public function model()
+    protected function model()
     {
         return Management::class;
+    }
+
+    protected function configName()
+    {
+        return 'management';
     }
 }

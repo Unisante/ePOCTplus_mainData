@@ -16,27 +16,25 @@ class AnswerLoader extends ModelLoader {
      * @param Node $node
      */
     public function __construct($nodeData, $node) {
+        parent::__construct($nodeData);
         $this->nodeData = $nodeData;
         $this->node = $node;
     }
 
-    public function getKeys()
+    protected function getKeys()
     {
-        return [
-            'medal_c_id' => $this->nodeData['id'],
+        return array_merge(parent::getKeys(), [
             'node_id' => $this->node->id
-        ];
+        ]);
     }
 
-    public function getValues()
-    {
-        return [
-            'label' => $this->nodeData['label'][env('LANGUAGE')]
-        ];
-    }
-
-    public function model()
+    protected function model()
     {
         return Answer::class;
+    }
+
+    protected function configName()
+    {
+        return 'answer';
     }
 }

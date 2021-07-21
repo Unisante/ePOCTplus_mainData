@@ -5,6 +5,7 @@ namespace App\Services;
 use App\MedicalCase;
 use App\Services\ModelLoader;
 use DateTime;
+use Illuminate\Support\Facades\Config;
 
 class MedicalCaseLoader extends ModelLoader {
     protected $caseData;
@@ -15,34 +16,30 @@ class MedicalCaseLoader extends ModelLoader {
      *
      * @param object $caseData
      * @param Patient $patient
+     * @param Version $version
      */
-    public function __construct($caseData, $patient) {
+    public function __construct($caseData, $patient, $version) {
+        parent::__construct($caseData);
         $this->caseData = $caseData;
         $this->patient = $patient;
+        $this->version = $version;
     }
 
-    public function getKeys()
+    protected function getValues()
     {
-        return [
-            'local_medical_case_id' => $this->caseData['id']
-        ];
+        return array_merge(parent::getValues(), [
+            'patient_id' => $this->patient->id,
+            'version_id' => $this->version->id,
+        ]);
     }
 
-    public function getValues()
-    {
-        return [
-            'patient_id'=> $this->patient->id,
-            'version_id'=> $this->caseData['version_id'],
-            'created_at'=> new DateTime($this->caseData['created_at']),
-            'updated_at'=> new DateTime($this->caseData['updated_at']),
-            'isEligible'=> $this->caseData['isEligible'],
-            'consent'=> $this->caseData['consent'],
-            'group_id'=> $this->patient->group_id, // TODO this seems redundant
-        ];
-    }
-
-    public function model()
+    protected function model()
     {
         return MedicalCase::class;
+    }
+
+    protected function configName()
+    {
+        return 'medical_case';
     }
 }

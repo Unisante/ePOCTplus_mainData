@@ -22,54 +22,46 @@ class PatientLoader extends ModelLoader {
      * @param string $consentFileName
      */
     public function __construct($patientData, $nodesData, $patientConfig, $consentFileName) {
+        parent::__construct($patientData);
         $this->patientData = $patientData;
         $this->nodesData = $nodesData;
         $this->patientConfig = $patientConfig;
         $this->consentFileName = $consentFileName;
     }
 
-    public function getKeys()
+    protected function getValues()
     {
-        return [
-            'local_patient_id' => $this->patientData['uid']
-        ];
-    }
-
-    public function getValues()
-    {
-        return [
-            'first_name' => $this->nodeValue('first_name_question_id'),
+        // TODO how to validate nodes data?
+        return array_merge(parent::getValues(), [
+            //'related_ids' => [$this->valueFromConfig('values', 'related_ids')], // TODO this value makes no sense
             'middle_name' => $this->nodeValueOrDefault('middle_name_patient_id', ''),
-            'last_name' => $this->nodeValue('last_name_question_id'),
-            'birthdate' => $this->nodeValue('birth_date_question_id'),
             'weight' => $this->nodeValue('weight_question_id'),
             'gender' => $this->nodeValue('gender_question_id'),
-            'group_id' => $this->patientData['group_id'],
-            'other_group_id' => $this->patientData['other_group_id'],
-            'other_study_id' => $this->patientData['other_study_id'],
-            'other_uid' => $this->patientData['other_uid'],
             'other_id' => $this->nodeValueOrDefault('other_id_patient_id', ''),
-            'consent' => $this->consentFileName, // TODO
+            'consent' => $this->consentFileName,
             'duplicate' => $this->hasDuplicate,
-            'related_ids' => [$this->patientData['other_uid']], // TODO this value makes no sense
-            'created_at' => new DateTime($this->patientData['created_at']),
-            'updated_at' => new DateTime($this->patientData['updated_at']),
-        ];
+        ]);
     }
 
-    public function model()
+    protected function model()
     {
         return Patient::class;
     }
 
+    protected function configName()
+    {
+        return 'patient';
+    }
+
     public function getDuplicateConditions()
     {
+        $values = $this->getValues();
         return array_filter([
-            'first_name' => $this->nodeValue('first_name_question_id'),
-            'middle_name' => $this->nodeValueOrDefault('middle_name_patient_id', ''),
-            'last_name' => $this->nodeValue('last_name_question_id'),
-            'birthdate' => $this->nodeValue('birth_date_question_id'),
-            'other_id' => $this->nodeValueOrDefault('other_id_patient_id', ''),
+            'first_name' => $values['first_name'],
+            'middle_name' => $values['middle_name'],
+            'last_name' => $values['last_name'],
+            'birthdate' => $values['birthdate'],
+            'other_id' => $values['other_id'],
         ]);
     }
 

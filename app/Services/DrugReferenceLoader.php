@@ -9,38 +9,53 @@ class DrugReferenceLoader extends ModelLoader {
     protected $drugRefData;
     protected $diagnosisRef;
     protected $drug;
+    protected $formulation;
+    protected $agreed;
+    protected $additional;
     /**
      * Undocumented function
      *
      * @param object $data
      * @param DiagnosisReference $diagnosisRef
      * @param Drug $drug
+     * @param Formulation $formulation
      * 
      */
-    public function __construct($drugRefData, $diagnosisRef, $drug) {
+    public function __construct($drugRefData, $diagnosisRef, $drug, $formulation, $agreed, $additional) {
+        parent::__construct($drugRefData);
         $this->drugRefData = $drugRefData;
         $this->diagnosisRef = $diagnosisRef;
         $this->drug = $drug;
+        $this->formulation = $formulation;
+        $this->agreed = $agreed;
+        $this->additional = $additional;
     }
 
-    public function getKeys()
+    protected function getKeys()
     {
         return [
             'diagnosis_id' => $this->diagnosisRef->id,
-            'drug_id' => $this->drug->id
+            'drug_id' => $this->drug->id,
+            'formulation_id' => $this->formulation->id ?? null,
         ];
     }
 
-    public function getValues()
+    protected function getValues()
     {
-        return [
-            'agreed' => $this->drugRefData['agreed'] ?? false,
-            'formulationSelected' => 0 // TODO wtf
-        ];
+        return array_merge(parent::getValues(), [
+            'formulationSelected' => 0, // TODO wtf
+            'agreed' => $this->agreed,
+            'additional' => $this->additional,
+        ]);
     }
 
-    public function model()
+    protected function model()
     {
         return DrugReference::class;
+    }
+
+    protected function configName()
+    {
+        return 'drug_reference';
     }
 }

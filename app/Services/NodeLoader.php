@@ -15,42 +15,39 @@ class NodeLoader extends ModelLoader {
     /**
      * Undocumented function
      *
-     * @param object $nodeData
+     * @param array $nodeData
      * @param Algorithm $algorithm
      * @param AnswerType  $answerType
      */
     public function __construct($nodeData, $algorithm, $answerType) {
+        parent::__construct($nodeData);
+
         $this->nodeData = $nodeData;
         $this->algorithm = $algorithm;
         $this->answerType = $answerType;
     }
 
-    public function getKeys()
+    protected function getValues()
     {
-        return [
-            'medal_c_id' => $this->nodeData['id']
-        ];
-    }
-
-    public function getValues()
-    {
-        return [
-            'reference' => $this->nodeData['reference'] ?? 0,
-            'label' => $this->nodeData['label'][env('LANGUAGE')],
-            'type' => $this->nodeData['type'],
-            'category' => $this->nodeData['category'],
-            'priority' => $this->nodeData['priority'] ?? 0,
-            'stage' => $this->nodeData['reference'] ?? '',
-            'description' => $this->nodeData['label'][env('LANGUAGE')] ?? '',
-            'formula' => $this->nodeData['formula'] ?? '',
+        return array_merge(parent::getValues(), [
             'answer_type_id' => $this->answerType->id,
             'algorithm_id'=> $this->algorithm->id,
-            'is_identifiable'=> $this->nodeData['is_identifiable']
-        ];
+            'reference'=>0, // TODO
+        ]);
     }
 
-    public function model()
+    protected function model()
     {
         return Node::class;
+    }
+
+    protected function configName()
+    {
+        return 'node';
+    }
+
+    public function __toString()
+    {
+        return 'node ' . $this->valueFromConfig('keys', 'medal_c_id');
     }
 }

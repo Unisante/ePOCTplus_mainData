@@ -19,14 +19,14 @@ class PatientConfigLoader extends ModelLoader {
         $this->version = $version;
     }
     
-    public function getKeys()
+    protected function getKeys()
     {
         return [
             'version_id' => $this->version->id,
         ];
     }
 
-    public function getValues()
+    protected function getValues()
     {
         // TODO validate
         $filteredData = array_filter((array)$this->data, function($k){return $k != "study_id";}, ARRAY_FILTER_USE_KEY);
@@ -38,8 +38,13 @@ class PatientConfigLoader extends ModelLoader {
         ];
     }
 
-    public function model()
+    protected function model()
     {
         return PatientConfig::class;
+    }
+
+    protected function configName()
+    {
+        return 'patient_config';
     }
 }

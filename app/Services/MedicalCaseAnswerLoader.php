@@ -26,7 +26,7 @@ class MedicalCaseAnswerLoader extends ModelLoader {
         $this->answer = $answer;
     }
 
-    public function getKeys()
+    protected function getKeys()
     {
         return [
             'medical_case_id' => $this->medicalCase->id,
@@ -35,15 +35,21 @@ class MedicalCaseAnswerLoader extends ModelLoader {
         ];
     }
 
-    public function getValues()
+    protected function getValues()
     {
+        // TODO is this actually used??
         return [
             'value' => $this->answerData['value']['label'][env('LANGUAGE')] ?? null
         ];
     }
 
-    public function model()
+    protected function model()
     {
         return MedicalCaseAnswer::class;
+    }
+
+    protected function configName()
+    {
+        return 'medal_case_answer';
     }
 }

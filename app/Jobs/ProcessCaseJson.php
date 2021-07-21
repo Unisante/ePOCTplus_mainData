@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 
 class ProcessCaseJson implements ShouldQueue
 {
@@ -53,11 +54,13 @@ class ProcessCaseJson implements ShouldQueue
 
             Log::info("Successfully saved case from JSON file: $this->filename");
             $this->moveToDir(Config::get('medal-data.storage.json_success_dir'));
-        } catch (\Throwable $th) {
+        }
+        catch (InvalidArgumentException $e) {
             DB::rollBack();
             Log::error("Error while attempting to save case from JSON file: $this->filename");
-            Log::error($th->getMessage());
-            Log::error($th->getTraceAsString());
+            Log::error("Run `php artisan cases:reload` to attempt to process failing cases");
+            Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
             $this->moveToDir(Config::get('medal-data.storage.json_failure_dir'));
         }
     }

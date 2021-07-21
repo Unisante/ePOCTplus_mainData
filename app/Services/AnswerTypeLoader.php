@@ -15,23 +15,17 @@ class AnswerTypeLoader extends ModelLoader {
      * @param Algorithm $algorithm
      */
     public function __construct($nodeData) {
+        parent::__construct($nodeData);
         $this->nodeData = $nodeData;
     }
 
-    public function getKeys()
-    {
-        return [
-            'value' => $this->nodeData['value_format']
-        ];
-    }
-
-    public function getValues()
-    {
-        return [];
-    }
-
-    public function model()
+    protected function model()
     {
         return AnswerType::class;
+    }
+
+    protected function configName()
+    {
+        return 'answer_type';
     }
 }

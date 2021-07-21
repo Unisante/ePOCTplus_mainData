@@ -24,7 +24,7 @@ class ManagementReferenceLoader extends ModelLoader {
         $this->management = $management;
     }
 
-    public function getKeys()
+    protected function getKeys()
     {
         return [
             'diagnosis_id' => $this->diagnosisRef->id,
@@ -32,15 +32,20 @@ class ManagementReferenceLoader extends ModelLoader {
         ];
     }
 
-    public function getValues()
+    protected function getValues()
     {
         return [
-            'agreed' => $this->diagnosisRef->agreed, // TODO this does not make sense
+            'agreed' => true, // TODO this does not make sense
         ];
     }
 
-    public function model()
+    protected function model()
     {
         return ManagementReference::class;
+    }
+
+    protected function configName()
+    {
+        return 'management_reference';
     }
 }
