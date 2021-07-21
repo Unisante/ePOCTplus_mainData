@@ -49,7 +49,7 @@ class DeviceController extends Controller
     public function store(DeviceRequest $request)
     {
         $validated = $request->validated();
-        $device = $this->deviceService->create($validated);
+        $device = $this->deviceService->add($validated);
         return response()->json([
             new DeviceResource($device)
         ]);
