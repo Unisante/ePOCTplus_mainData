@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
+use InvalidArgumentException;
 use PhpOffice\PhpSpreadsheet\Writer\Ods\Formula;
 
 class SaveCaseService
@@ -31,6 +32,8 @@ class SaveCaseService
    * @return MedicalCase
    */
   public function save($caseData) {
+    self::checkHasProperties($caseData, ['patient', 'nodes', 'diagnosis']);
+    self::checkHasProperties($caseData['patient'], ['group_id']);
     $hf = $this->udpateHf($caseData['patient']['group_id']);
 
     //$versionId = $caseData['version_id'];
@@ -77,11 +80,14 @@ class SaveCaseService
    */
   public function updateVersion($versionId) {
     $algorithmData = json_decode(Http::get(Config::get('medal-data.urls.creator_algorithm_url') . $versionId), true);
-    
+    self::checkHasProperties($algorithmData, ['nodes', 'diagnostics', 'health_cares']);
+
+
     $algorithm = (new AlgorithmLoader($algorithmData))->load();
     $version = (new VersionLoader($algorithmData, $algorithm))->load();
     
     foreach ($algorithmData['nodes'] as $nodeData) {
+      self::checkHasProperties($nodeData, ['type', 'answers']);
       // TODO env variable?
       if ($nodeData['type'] == 'Question') {
         $answerType = (new AnswerTypeLoader($nodeData))->load();
@@ -94,7 +100,10 @@ class SaveCaseService
     }
    
     foreach ($algorithmData['diagnostics'] as $diagnosisData) {
+      self::checkHasProperties($diagnosisData, ['final_diagnostics']);
       foreach ($diagnosisData['final_diagnostics'] as $finalDiagnosisData) {
+        self::checkHasProperties($finalDiagnosisData, ['type', 'drugs', 'managements']);
+
         // TODO env variable?
         if (array_key_exists('diagnostic_id',$finalDiagnosisData) && $finalDiagnosisData['type'] == 'FinalDiagnostic') {
           $diagnosis = (new DiagnosisLoader($finalDiagnosisData, $version))->load();
@@ -129,6 +138,7 @@ class SaveCaseService
   public function savePatient($caseData, $patientConfig) {
     // Consent file
     $patientData = $caseData['patient'];
+    self::checkHasProperties($patientData, ['uid', 'consent_file']);
     $consentPath = Config::get('medal-data.storage.consent_img_dir');
     $consentFileName = $patientData['uid'] . '_image.jpg';
     Storage::makeDirectory($consentPath);
@@ -159,6 +169,7 @@ class SaveCaseService
 
     // Case answers
     foreach ($caseData['nodes'] as $nodeData) {
+      self::checkHasProperties($nodeData, ['id', 'answer']);
       $algoNode = Node::where('medal_c_id', $nodeData['id'])->first();
       
       if ($algoNode) { // Only responses to questions are stored (QS for example aren't)
@@ -169,12 +180,14 @@ class SaveCaseService
 
     // Diagnoses
     $diagnosesData = $caseData['diagnosis'];
+    self::checkHasProperties($diagnosesData, ['agreed', 'additional', 'excluded', 'refused', 'custom']);
     $this->saveDiagnoses($diagnosesData['agreed'], $medicalCase, true, false, true);
     $this->saveDiagnoses($diagnosesData['additional'], $medicalCase, false, false, true);
     $this->saveDiagnoses($diagnosesData['excluded'], $medicalCase, false, true, false);
     $this->saveDiagnoses($diagnosesData['refused'], $medicalCase, true, false, false);
     
     foreach ($diagnosesData['custom'] as $customDiagnosisData) {
+      self::checkHasProperties($customDiagnosisData, ['drugs']);
       $customDiagnosis = (new CustomDiagnosisLoader($customDiagnosisData, $medicalCase))->load();
 
       foreach ($customDiagnosisData['drugs'] as $customDrugData) {
@@ -203,15 +216,18 @@ class SaveCaseService
       $diagnosisRef = (new DiagnosisReferenceLoader($diagnosisRefData, $medicalCase, $diagnosis, $isProposed, $isExcluded, $isAgreed))->load();
       
       if ($isAgreed && !$isExcluded) {
+        self::checkHasProperties($diagnosisRefData, ['drugs']);
         $drugRefsData = $diagnosisRefData['drugs'];
         
         foreach ($drugRefsData['agreed'] as $drugId => $drugRefData) {
+          self::checkHasProperties($drugRefData, ['formulation_id']);
           $drug = Drug::where('medal_c_id', $drugId)->first();
           $formulation = Formulation::where('medal_c_id', $drugRefData['formulation_id'])->first();
           $drugRef = (new DrugReferenceLoader($drugRefData, $diagnosisRef, $drug, $formulation, true, false))->load();
         }
 
         foreach ($drugRefsData['additional'] as $drugId => $drugRefData) {
+          self::checkHasProperties($drugRefData, ['formulation_id']);
           $drug = Drug::where('medal_c_id', $drugId)->first();
           $formulation = Formulation::where('medal_c_id', $drugRefData['formulation_id'])->first();
           $drugRef = (new DrugReferenceLoader($drugRefData, $diagnosisRef, $drug, $formulation, true, true))->load();
@@ -228,6 +244,14 @@ class SaveCaseService
         }
       }
 
+    }
+  }
+
+  private static function checkHasProperties($data, $properties) {
+    foreach ($properties as $property) {
+      if (!array_key_exists($property, $data)) {
+        throw new InvalidArgumentException();
+      }
     }
   }
 }
