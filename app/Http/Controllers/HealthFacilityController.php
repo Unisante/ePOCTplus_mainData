@@ -6,6 +6,7 @@ use App\Device;
 use App\HealthFacility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\HealthFacilityService;
 use App\Http\Requests\HealthFacilityRequest;
 use App\Http\Resources\Device as DeviceResource;
 
@@ -13,11 +14,12 @@ use App\Http\Resources\Device as DeviceResource;
 
 class HealthFacilityController extends Controller
 {
+    protected $healthFacilityService;
 
-
-    public function __construct()
+    public function __construct(HealthFacilityService $healthFacilityService)
     {
         $this->authorizeResource(HealthFacility::class);
+        $this->healthFacilityService = $healthFacilityService;
     }
     /**
      * Return an index of the resources owned by the user
@@ -82,8 +84,6 @@ class HealthFacilityController extends Controller
     }
 
     public function manageDevices(HealthFacility $healthFacility){
-        error_log(Auth::user()->id);
-        error_log($healthFacility->user_id);
         $this->authorize('manageDevices',$healthFacility);
         $devices = DeviceResource::collection($healthFacility->devices);
         $unassignedDevices = DeviceResource::collection(Auth::user()->unassignedDevices());
@@ -96,8 +96,7 @@ class HealthFacilityController extends Controller
 
     public function assignDevice(HealthFacility $healthFacility,Device $device){
         $this->authorize('assignDevice',[$healthFacility,$device]);
-        $device->health_facility_id = $healthFacility->id;
-        $device->save();
+        $device = $this->healthFacilityService->assignDevice($healthFacility,$device);
         return response()->json([
             new DeviceResource($device)
         ]);
@@ -105,8 +104,7 @@ class HealthFacilityController extends Controller
 
     public function unassignDevice(HealthFacility $healthFacility,Device $device){
         $this->authorize("unassignDevice",[$healthFacility,$device]);
-        $device->health_facility_id = null;
-        $device->save();
+        $device = $this->healthFacilityService->unassignDevice($healthFacility,$device);
         return response()->json([
             new DeviceResource($device)
         ]);
