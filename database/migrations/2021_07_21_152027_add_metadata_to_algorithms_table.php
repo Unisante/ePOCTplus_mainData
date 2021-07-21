@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddJsonToAlgorithmsTable extends Migration
+class AddMetadataToAlgorithmsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,8 @@ class AddJsonToAlgorithmsTable extends Migration
     public function up()
     {
         Schema::table('algorithms', function (Blueprint $table) {
-            $table->json('json')->nullable();
+            //
+            $table->boolean('archived')->nullable();
         });
     }
 
@@ -26,7 +27,7 @@ class AddJsonToAlgorithmsTable extends Migration
     public function down()
     {
         Schema::table('algorithms', function (Blueprint $table) {
-            $table->dropColumn('json');
+            $table->dropColumn('archived');
         });
     }
 }
