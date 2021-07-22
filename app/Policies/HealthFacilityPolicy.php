@@ -88,6 +88,14 @@ class HealthFacilityPolicy
         return $user->id == $device->user_id && $user->id == $healthFacility->user_id;
     }
 
+    public function manageAlgorithms(User $user,HealthFacility $healthFacility){
+        return $user->id == $healthFacility->user_id;
+    }
+
+    public function assignVersion(User $user,HealthFacility $healthFacility){
+        return $user->id == $healthFacility->user_id;
+    }
+
     /**
      * Determine whether the user can restore the health facility.
      *

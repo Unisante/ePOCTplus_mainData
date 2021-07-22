@@ -10,10 +10,11 @@
             <health-facility-index :resources_route="health_facilities_route"
             :resources_data.sync="health_facilities"
             :custom_actions="custom_actions"
-            @devices="manageDevices"></health-facility-index>
+            @devices="manageDevices"
+            @algorithms="manageAlgorithms"></health-facility-index>
         </div>
     </div>
-    <basic-modal :show.sync="showManageModal">
+    <basic-modal :show.sync="showDevices">
         <template v-slot:header>
             <h5>Devices from Health Facility {{selectedHealthFacility.name}}</h5>
         </template>
@@ -24,6 +25,16 @@
                             :unassignedDevices="unassignedDevices"></device-manager>
         </template>
     </basic-modal>
+    <basic-modal :show.sync="showAlgorithms">
+        <template v-slot:header>
+            <h5>Algorithms for Health Facility {{selectedHealthFacility.name}}</h5>
+        </template>
+        <template v-slot:body>
+            <algorithm-manager :algorithms="algorithms"
+                            :assign_base_url="actionURL + '/assign-version'"
+                            :versions_route="versionsRoute"></algorithm-manager>
+        </template>
+    </basic-modal>
 </div>
 </template>
 
@@ -31,6 +42,7 @@
 import BasicModal from "./basic/BasicModal.vue"
 import ActionButton from "./basic/ActionButton.vue"
 import DeviceManager from "./DeviceManager.vue"
+import AlgorithmManager from "./AlgorithmManager.vue"
 import HealthFacilityIndex from "./resources/HealthFacilityIndex.vue"
 
 export default {
@@ -40,6 +52,7 @@ export default {
         "BasicModal": BasicModal,
         "ActionButton": ActionButton,
         "DeviceManager": DeviceManager,
+        "AlgorithmManager": AlgorithmManager,
         "HealthFacilityIndex": HealthFacilityIndex,
     },
 
@@ -53,8 +66,11 @@ export default {
 
     data() {
         return {
-            showManageModal :false,
+            versionsRoute : this.health_facilities_route + "/versions",
+            showDevices :false,
+            showAlgorithms: false,
             devices: [],
+            algorithms: [],
             unassignedDevices: [],
             healthFacilities: [],
             selectedHealthFacility: {},
@@ -62,9 +78,14 @@ export default {
             unassignmentURL: "",
             custom_actions : [
                  {
-                    label: "Manage Devices",
+                    label: "Devices",
                     event: "devices",
                     color: "green",
+                },
+                {
+                    label: "Algorithms",
+                    event: 'algorithms',
+                    color: 'dark',
                 },
             ],
             default_actions : [
@@ -84,18 +105,33 @@ export default {
         
 
         manageDevices: function(id){
-            this.actionURL = this.health_facilities_route + "/" + id
+            
             var url = this.health_facilities_route + "/" + id + "/manage-devices"
             axios.get(url)
               .then((response) => {
+                this.actionURL = this.health_facilities_route + "/" + id
                 this.selectedHealthFacility = response.data.healthFacility
                 this.devices = response.data.devices
                 this.unassignedDevices = response.data.unassignedDevices
-                this.showManageModal = true
+                this.showDevices = true
               })
               .catch((error) => {
-                //this.$toasted.global.error_notification("Woops.. something went wrong")
-                console.log(error)
+                this.$toasted.global.error_notification("Error:" + error)
+              });
+        },
+
+        manageAlgorithms: function(id){
+            var url = this.health_facilities_route + "/" + id + "/manage-algorithms"
+            axios.get(url)
+              .then((response) => {
+                console.log(response)
+                this.actionURL = this.health_facilities_route + "/" + id
+                this.selectedHealthFacility = response.data.healthFacility
+                this.algorithms = response.data.algorithms
+                this.showAlgorithms = true
+              })
+              .catch((error) => {
+                this.$toasted.global.error_notification("Error:" + error)
               });
         }
     }

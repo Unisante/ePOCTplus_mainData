@@ -74,10 +74,14 @@ Route::group(['middleware' => ['auth']], function() {
     'update',
     'destroy'
   ]);
+  //Device Management in the context of Health Facilities
   Route::get('health-facilities/{health_facility}/manage-devices',"HealthFacilityController@manageDevices");
   Route::post('health-facilities/{health_facility}/assign-device/{device}',"HealthFacilityController@assignDevice");
   Route::post('health-facilities/{health_facility}/unassign-device/{device}',"HealthFacilityController@unassignDevice");
-
+  //Algorithms Management in the context of Health Facilities
+  Route::get('health-facilities/{health_facility}/manage-algorithms',"HealthFacilityController@manageAlgorithms");
+  Route::get('health-facilities/versions/{algorithm_id}',"HealthFacilityController@versions");
+  Route::post('health-facilities/{health_facility}/assign-version/{version_id}',"HealthFacilityController@assignVersion");
   //for Devices
   Route::resource('devices','DeviceController');
   //for downloading exports

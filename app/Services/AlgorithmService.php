@@ -3,32 +3,37 @@
 
 namespace App\Services;
 
-use App\Device;
+use App\Algorithm;
 use App\Services\Http;
 use App\HealthFacility;
-use Lcobucci\JWT\Parser;
-use Laravel\Passport\Token;
-use Illuminate\Support\Facades\Log;
-use App\Http\Requests\DeviceRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 
 
 class AlgorithmService {
 
-    public function getAndStoreCreatorAlgorithms(){
-        $response = Http::get(Config::get('medal.creator.algorithms_url'),[]);
+    /**
+     * Fetches the algorithms metadata from medal-creator and stores the data in the database for potential later use 
+     */
+    public function getAlgorithmsMetadata(){
+        $url = Config::get('medal.creator.url') . Config::get('medal.creator.algorithms_endpoint');
+        $response = Http::get($url,[]);
+        return json_decode($response);
     }
 
-
-    public function getAlgorithm($medal_c_id){
-        $response = Http::get(Config::get('medal.creator.algorithms_url') . $medal_c_id,[]);
-
+    public function getVersionsMetadata($algorithmCreatorID){
+        $url = Config::get('medal.creator.url') . Config::get('medal.creator.algorithms_endpoint') .  "/" .  $algorithmCreatorID . "/versions";
+        $response = Http::get($url,[]);
+        return json_decode($response);
     }
 
-
-    private function saveAlgorithmJSON($medal_c_id,$jsonData){
-        Algorithm::where('medal_c_id',$medal_c_id)->update(array('json' => $jsonData));
+    public function assignVersionToHealthFacility(HealthFacility $healthFacility,$versionID){
+        $url = Config::get('medal.creator.url') . Config::get('medal.creator.versions_endpoint') . "/" . $versionID;
+        $response = json_decode(Http::get($url,[]));
+        if ($response->medal_r_json == null){
+            throw new Exception('Invalid Response from Remote Server');
+        }
+        return json_decode($response);
     }
     
 }

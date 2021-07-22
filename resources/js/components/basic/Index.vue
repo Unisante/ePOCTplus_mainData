@@ -106,8 +106,10 @@
                         return "btn btn-outline-danger"
                     case "green":
                         return "btn btn-outline-success"
-                    default:
+                    case "dark":
                         return "btn btn-outline-dark"
+                    default:
+                        return "btn btn-outline-light"
 
                 }
             }

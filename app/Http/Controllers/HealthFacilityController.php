@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Device;
 use App\HealthFacility;
 use Illuminate\Http\Request;
+use App\Services\AlgorithmService;
 use Illuminate\Support\Facades\Auth;
 use App\Services\HealthFacilityService;
 use App\Http\Requests\HealthFacilityRequest;
@@ -15,11 +16,14 @@ use App\Http\Resources\Device as DeviceResource;
 class HealthFacilityController extends Controller
 {
     protected $healthFacilityService;
+    protected $algorithmService;
 
-    public function __construct(HealthFacilityService $healthFacilityService)
+    public function __construct(HealthFacilityService $healthFacilityService, 
+                                AlgorithmService $algorithmService)
     {
         $this->authorizeResource(HealthFacility::class);
         $this->healthFacilityService = $healthFacilityService;
+        $this->algorithmService = $algorithmService;
     }
     /**
      * Return an index of the resources owned by the user
@@ -108,6 +112,29 @@ class HealthFacilityController extends Controller
         return response()->json([
             new DeviceResource($device)
         ]);
+    }
+
+
+    public function manageAlgorithms(HealthFacility $healthFacility){
+        $this->authorize('manageAlgorithms',$healthFacility);
+        $algorithms = $this->algorithmService->getAlgorithmsMetadata();
+        return response()->json([
+            "algorithms" => $algorithms,
+            "healthFacility" => $healthFacility,
+        ]);
+    }
+
+    public function versions($algorithmCreatorID){
+        $versions = $this->algorithmService->getVersionsMetadata($algorithmCreatorID);
+        return response()->json($versions);
+    }
+
+    public function assignVersion(HealthFacility $healthFacility,$versionID){
+        $this->authorize('assignVersion',$healthFacility);
+        $versionJSON = $this->algorithmService->assignVersionToHealthFacility($healthFacility,$versionID);
+        foreach($versionJSON as $key=>$val){
+            error_log($key);
+        }
     }
 
 
