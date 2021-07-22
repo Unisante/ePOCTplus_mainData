@@ -70,19 +70,20 @@ return [
         //     'sslmode' => 'prefer',
         // ],
 
-        'postgres' => [
-          'driver' => 'pgsql',
-          'host' => 'localhost',
-          'port' => 5432,
-          'database' => 'medal-data',
-          'username' => 'medal-data-2',
-          'password' => 'yolohahahuhu',
-          'charset' => 'utf8',
-          'prefix' => '',
-          'prefix_indexes' => true,
-          'schema' => 'public',
-          'sslmode' => 'prefer',
-      ],
+        'pgsql' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'liwi-local-data'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', 'root'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'schema' => 'public',
+            'sslmode' => 'prefer',
+        ],
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
