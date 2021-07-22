@@ -10,6 +10,8 @@ use App\HealthFacility;
 use App\Management;
 use App\Node;
 use App\Patient;
+use App\PatientConfig;
+use App\Version;
 use Exception;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
@@ -53,6 +55,11 @@ class SaveCaseService
    * @return PatientConfig
    */
   public function updateConfig($version) {
+    $config = PatientConfig::where('version_id', $version->id)->first();
+    if ($config) {
+      return $config;
+    }
+
     $configData = json_decode(Http::get(Config::get('medal-data.urls.creator_patient_url'), ['version_id' => $version->medal_c_id]), true);
     return (new PatientConfigLoader($configData, $version))->load();
   }
@@ -65,10 +72,12 @@ class SaveCaseService
    */
   public function udpateHf($groupId) {
     $hf = HealthFacility::where('group_id', $groupId)->first();
-    if (!$hf) {
-      $hfData = json_decode(Http::get(Config::get('medal-data.urls.creator_health_facility_url') . $groupId), true);
-      $hf = (new HealthFacilityLoader($hfData))->load();
+    if ($hf) {
+      return $hf;
     }
+
+    $hfData = json_decode(Http::get(Config::get('medal-data.urls.creator_health_facility_url') . $groupId), true);
+    $hf = (new HealthFacilityLoader($hfData))->load();
     return $hf;
   }
 
@@ -79,6 +88,11 @@ class SaveCaseService
    * @return Version
    */
   public function updateVersion($versionId) {
+    $version = Version::where('medal_c_id', $versionId)->first();
+    if ($version) {
+      return $version;
+    }
+
     $algorithmData = json_decode(Http::get(Config::get('medal-data.urls.creator_algorithm_url') . $versionId), true);
     self::checkHasProperties($algorithmData, ['nodes', 'diagnostics', 'health_cares']);
 
