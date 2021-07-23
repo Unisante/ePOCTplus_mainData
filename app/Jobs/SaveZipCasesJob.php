@@ -86,6 +86,9 @@ class SaveZipCasesJob implements ShouldQueue
               );
               $patient_key=$this->individualData['patient'];
               var_dump("checking if the patient is this study id and is eligible");
+              if(strpos(env("STUDY_ID"), "TIMCI")!== false){
+                $this->individualData['consent']=$this->consent;
+              }
               if($patient_key['study_id']== $this->study_id && $this->individualData['isEligible']==$this->isEligible && $this->individualData['consent']==$this->consent){
                 $dataForAlgorithm=array("algorithm_id"=> $this->individualData['algorithm_id'],"version_id"=> $this->individualData['version_id']);
                 $algorithm_n_version=Algorithm::ifOrExists($dataForAlgorithm);
