@@ -35,8 +35,9 @@ class PatientConfig extends Model
 
   public static function fetchConfig($version_id){
     $curl = curl_init();
+    $url = Config::get('medal.creator.url') . Config::get('medal.creator.medal_data_config_endpoint') . "/" . $version_id;
     curl_setopt_array($curl, array(
-      CURLOPT_URL => Config::get('medal-data.urls.creator_patient_url').$version_id,
+      CURLOPT_URL => $url,
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => "",
       CURLOPT_MAXREDIRS => 10,

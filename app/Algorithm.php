@@ -97,11 +97,10 @@ class Algorithm extends Model implements Auditable
     //   'Header-Key: Header-Value',
     //   'Header-Key-2: Header-Value-2'
     // ));
+    $url =Config::get("medal.creator.url") . Config::get("medal.creator.versions_endpoint") . "/" . $version_id;
     $curl = curl_init();
     curl_setopt_array($curl, array(
-      CURLOPT_URL => 'https://liwi-test.wavelab.top/api/v1/versions/'.$version_id,
-      // CURLOPT_URL => 'https://medalc.unisante.ch/api/v1/versions/'.$version_id,
-      // CURLOPT_URL => 'https://liwi.wavelab.top/api/v1/versions/'.$version_id,
+      CURLOPT_URL => $url,
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => "",
       CURLOPT_MAXREDIRS => 10,
