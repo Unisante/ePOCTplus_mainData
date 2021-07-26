@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Request;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,6 +32,11 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('roles/removeRole/{id}','RolesController@removeRolePermissionShow');
   Route::post('role/removePerm/{id}','RolesController@removeRolePermission');
 
+
+  //for devices
+ // Route::get('/devices','DevicesController@index')->name('Devices.index');;
+
+
   //for patient
   Route::get('/patients','PatientsController@index')->name('Patients.index');;
   Route::get('/patient/{id}','PatientsController@show')->name('PatientsController.show');
@@ -59,6 +66,25 @@ Route::group(['middleware' => ['auth']], function() {
   //for facilities
   Route::get('/facilities/index','FacilitiesController@index')->name('FacilitiesController.index');
 
+
+  //for health facilities
+  Route::resource('health-facilities','HealthFacilityController')->only([
+    'index',
+    'store',
+    'update',
+    'destroy'
+  ]);
+  //Device Management in the context of Health Facilities
+  Route::get('health-facilities/{health_facility}/manage-devices',"HealthFacilityController@manageDevices");
+  Route::post('health-facilities/{health_facility}/assign-device/{device}',"HealthFacilityController@assignDevice");
+  Route::post('health-facilities/{health_facility}/unassign-device/{device}',"HealthFacilityController@unassignDevice");
+  //Algorithms Management in the context of Health Facilities
+  Route::get('health-facilities/{health_facility}/manage-algorithms',"HealthFacilityController@manageAlgorithms");
+  Route::get('health-facilities/{health_facility}/accesses',"HealthFacilityController@accesses");
+  Route::get('health-facilities/versions/{algorithm_id}',"HealthFacilityController@versions");
+  Route::post('health-facilities/{health_facility}/assign-version/{version_id}',"HealthFacilityController@assignVersion");
+  //for Devices
+  Route::resource('devices','DeviceController');
   //for downloading exports
   // Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('MedicalCasesController.medicalCaseIntoExcel');
   // Route::get('/export-medicalCase-csv','MedicalCasesController@medicalCaseIntoCsv')->name('MedicalCasesController.medicalCaseIntoCsv');
@@ -87,9 +113,22 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('/exports/diagnosis_list','ExportsController@diagnosesSummary')->name('ExportsController.diagnosesSummary');
   Route::get('/exports/drug_list','ExportsController@drugsSummary')->name('ExportsController.drugsSummary');
 
-
 });
 
+
+Route::get("/front-end-test",function(Request $request){
+  return view("test.test");
+});
+
+
+Route::post("/post-data-test",function(Request $request){
+  return $request->all();
+});
+
+
+Route::patch("/post-data-test",function(Request $request){
+  return $request->all();
+});
 
 
 

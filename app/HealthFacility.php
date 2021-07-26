@@ -2,14 +2,29 @@
 
 namespace App;
 
+use App\Device;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
 class HealthFacility extends Model
 {
+  protected $fillable = [
+    "name",
+    "user_id",
+    "local_data_ip",
+    "pin_code",
+    "lat",
+    "long",
+    "country",
+    "area",
+    "group_id",
+    "hf_mode",
+  ];
   protected $guarded = [];
-  // fetch the the facility information
 
+  
+  // fetch the the facility information
   public static function fetchHealthFacility($group_id = null){
     if($group_id != null ){
       $facility_doesnt_exist=HealthFacility::where('group_id',$group_id)->doesntExist();
@@ -72,5 +87,12 @@ class HealthFacility extends Model
   }
   public function patients(){
     return $this->hasMany('App\Patient','group_id','group_id');
+  }
+  public function versionJson(){
+    return $this->hasOne('App\VersionJson');
+  }
+
+  public function devices(){
+    return $this->hasMany(Device::class);
   }
 }

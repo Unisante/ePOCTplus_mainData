@@ -25,7 +25,8 @@ class PermissionTableSeeder extends Seeder
         'Merge_Duplicates',
         'Delete_Patient',
         'Delete_Case',
-        'View_Audit_Trail'
+        'View_Audit_Trail',
+        'Manage_Devices'
      ];
 
      foreach($permissions as $permission){

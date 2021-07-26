@@ -8,6 +8,49 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import Vue from 'vue';
+
+
+export const eventBus = new Vue()
+
+import Toasted from 'vue-toasted';
+ 
+Vue.use(Toasted)
+
+Vue.toasted.register('error_notification',message => {
+    return message;
+},{
+    theme: 'bubble',
+    type: 'error',
+    keepOnHover: true,
+    duration: 2000,
+    action: [
+        {
+            text: 'Close',
+            onClick: (e, toastObject) => {
+                toastObject.goAway(0);
+            }
+        }
+    ]
+})
+
+Vue.toasted.register('success_notification',message => {
+    return message;
+},{
+    type: 'success',
+    theme: 'bubble',
+    keepOnHover: true,
+    duration: 2000,
+    action: [
+        {
+            text: 'Close',
+            onClick: (e, toastObject) => {
+                toastObject.goAway(0);
+            }
+        }
+    ]
+})
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -19,7 +62,26 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
+Vue.component('pulse-loader', require('vue-spinner/src/PulseLoader.vue'));
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+
+
+
+Vue.component(
+    'TestingComponent',
+    require('./components/basic/TestingComponent.vue').default
+);
+
+
+Vue.component(
+    'HealthFacilities',
+    require('./components/HealthFacilities.vue').default
+);
+
+Vue.component(
+    'Devices',
+    require('./components/Devices.vue').default
+);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

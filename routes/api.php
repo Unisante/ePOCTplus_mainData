@@ -1,14 +1,17 @@
 <?php
 
-use Illuminate\Http\Request;
-use App\MedicalCaseAnswer;
-use App\HealthFacility;
-use Illuminate\Support\Facades\Storage;
 use App\Jobs\SaveCase;
-use App\Jobs\SaveZipCasesJob;
+use App\HealthFacility;
 use App\Jobs\RedcapPush;
-
+use Lcobucci\JWT\Parser;
+use App\MedicalCaseAnswer;
+use Laravel\Passport\Token;
+use Illuminate\Http\Request;
+use App\Jobs\SaveZipCasesJob;
+use Spatie\TemporaryDirectory;
 use Madnest\Madzipper\Madzipper;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,11 +27,75 @@ use Madnest\Madzipper\Madzipper;
 //    return $request->user();
 //});
 
+Route::middleware(['auth:api','device.resolve'])->prefix('/v1')->group(function(){
+  Route::get('/health-facility-info','Api\AuthDeviceController@healthFacilityInfo');
+  Route::get('/algorithm','Api\AuthDeviceController@algorithm');
+  Route::post('/device-info','Api\AuthDeviceController@storeDeviceInfo');
+  route::get('/test','Api\AuthDeviceController@test');
+});
+
+
+Route::middleware('auth:api')->get('/protected-api', function (Request $request) {
+    return $request->user();
+});
+
+
+Route::middleware('auth:api')->get('/get-client-id', function (Request $request) {
+  $bearerToken=$request->bearerToken();
+  $parsedJwt = (new Parser())->parse($bearerToken);
+
+
+  if ($parsedJwt->hasHeader('jti')) {
+      $tokenId = $parsedJwt->getHeader('jti');
+  } elseif ($parsedJwt->hasClaim('jti')) {
+      $tokenId = $parsedJwt->getClaim('jti');
+  } else {
+      Log::error('Invalid JWT token, Unable to find JTI header');
+      return null;
+  }
+  $client = Token::find($tokenId)->client;
+  return $client;
+});
+
 Route::get('medical_case_answers', function(Request $request){
     return MedicalCaseAnswer::all();
 });
 
 // Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
+
+
+//DEBUG Routes
+
+Route::post('add_storage_file',function(Request $request){
+  if($request->file){
+    $file=Storage::putFile('temporary_files', $request->file);
+    return Storage::disk('local')->listContents();
+    //return response()->json(['data_received'=> true,'status'=>200]);
+  }
+  return response()->json(['data_received'=> false,'status'=>400]);
+});
+
+
+Route::post('list_storage_files',function(Request $request){
+  return Storage::disk('local')->listContents("temporary_files");
+});
+
+
+Route::get('get_storage_file/{filename}',function(Request $request, $filename){
+  return Storage::disk('local')->get("temporary_files/" . $filename);
+});
+
+
+Route::post('list_medical_zip',function(Request $request){
+  return Storage::disk('local')->listContents("medical_cases_zip");
+});
+
+Route::get('get_medical_zip/{filename}',function(Request $request, $filename){
+  return Storage::disk('local')->get("medical_cases_zip/" . $filename);
+});
+
+
+//END OF DEBUG Routes
 
 Route::post('sync_medical_cases_trial',function(Request $request){
   if($request->file){
@@ -96,35 +163,3 @@ Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
   ]);
 });
 
-
-
-
-//DEBUG Routes
-
-Route::post('add_storage_file',function(Request $request){
-  if($request->file){
-    $file=Storage::putFile('temporary_files', $request->file);
-    return Storage::disk('local')->listContents();
-    //return response()->json(['data_received'=> true,'status'=>200]);
-  }
-  return response()->json(['data_received'=> false,'status'=>400]);
-});
-
-
-Route::post('list_storage_files',function(Request $request){
-  return Storage::disk('local')->listContents("temporary_files");
-});
-
-
-Route::get('get_storage_file/{filename}',function(Request $request, $filename){
-  return Storage::disk('local')->get("temporary_files/" . $filename);
-});
-
-
-Route::post('list_medical_zip',function(Request $request){
-  return Storage::disk('local')->listContents("medical_cases_zip");
-});
-
-Route::get('get_medical_zip/{filename}',function(Request $request, $filename){
-  return Storage::disk('local')->get("medical_cases_zip/" . $filename);
-});
