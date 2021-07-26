@@ -32,7 +32,8 @@
         <template v-slot:body>
             <algorithm-manager :algorithms="algorithms"
                             :assign_base_url="actionURL + '/assign-version'"
-                            :versions_route="versionsRoute"></algorithm-manager>
+                            :versions_route="versionsRoute"
+                            :algorithms_accesses_route="actionURL + '/accesses'"></algorithm-manager>
         </template>
     </basic-modal>
 </div>

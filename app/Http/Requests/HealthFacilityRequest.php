@@ -29,9 +29,9 @@ class HealthFacilityRequest extends FormRequest
             'name' => 'required|string',
             'country' => 'required|string',
             'area' => 'required|string',
-            'pin_code' => 'required|string',
+            'pin_code' => 'required|integer',
             'hf_mode' => [Rule::in(['standalone','client-server'])],
-            'local_data_ip' => 'ip',
+            'local_data_ip' => 'nullable|string|ip',
             'lat' => 'numeric | between:-90,90',
             'long' => 'numeric | between:-180,180',
         ];

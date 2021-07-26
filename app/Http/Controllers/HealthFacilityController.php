@@ -33,6 +33,13 @@ class HealthFacilityController extends Controller
     public function index()
     {
         $healthFacilities =  Auth::user()->healthFacilities;
+        foreach($healthFacilities as $hf){
+            if ($hf->version_json == null){
+                error_log("is null");
+            }else{
+                error_log("is not null");
+            }
+        }
         return view("healthFacilities.index",[
             "healthFacilities" => $healthFacilities
         ]);
@@ -50,9 +57,7 @@ class HealthFacilityController extends Controller
         $healthFacility->user_id = Auth::user()->id;
         $this->addDefaultValues($healthFacility);
         $healthFacility->save();
-        return response()->json([
-            $healthFacility,
-        ]);
+        return response()->json($healthFacility);
     }
 
     /**
@@ -66,9 +71,7 @@ class HealthFacilityController extends Controller
     {
         $validated = $request->validated();
         $healthFacility->fill($validated)->save();
-        return response()->json([
-            $healthFacility,
-        ]);
+        return response()->json($healthFacility);
     }
 
     /**
@@ -101,17 +104,13 @@ class HealthFacilityController extends Controller
     public function assignDevice(HealthFacility $healthFacility,Device $device){
         $this->authorize('assignDevice',[$healthFacility,$device]);
         $device = $this->healthFacilityService->assignDevice($healthFacility,$device);
-        return response()->json([
-            new DeviceResource($device)
-        ]);
+        return response()->json(new DeviceResource($device));
     }
 
     public function unassignDevice(HealthFacility $healthFacility,Device $device){
         $this->authorize("unassignDevice",[$healthFacility,$device]);
         $device = $this->healthFacilityService->unassignDevice($healthFacility,$device);
-        return response()->json([
-            new DeviceResource($device)
-        ]);
+        return response()->json(new DeviceResource($device));
     }
 
 
@@ -124,6 +123,16 @@ class HealthFacilityController extends Controller
         ]);
     }
 
+    public function accesses(HealthFacility $healthFacility){
+        $this->authorize('accesses',$healthFacility);
+        $currentAccess = $this->algorithmService->getCurrentAccess($healthFacility);
+        $archivedAccesses = $this->algorithmService->getArchivedAccesses($healthFacility);
+        return response()->json([
+            "currentAccess" => $currentAccess,
+            "archivedAccesses" => $archivedAccesses,
+        ]);
+    }
+
     public function versions($algorithmCreatorID){
         $versions = $this->algorithmService->getVersionsMetadata($algorithmCreatorID);
         return response()->json($versions);
@@ -132,9 +141,11 @@ class HealthFacilityController extends Controller
     public function assignVersion(HealthFacility $healthFacility,$versionID){
         $this->authorize('assignVersion',$healthFacility);
         $versionJSON = $this->algorithmService->assignVersionToHealthFacility($healthFacility,$versionID);
-        foreach($versionJSON as $key=>$val){
-            error_log($key);
-        }
+        return response()->json([
+            "message" => "Version Assigned",
+            "id" => $versionID,
+        ]);
+        
     }
 
 

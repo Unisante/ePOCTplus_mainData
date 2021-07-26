@@ -16,10 +16,10 @@ class AddManagementColumnsToHealthFacilitiesTable extends Migration
         Schema::table('health_facilities', function (Blueprint $table) {
             //
             $table->string('name');
-            $table->string('country');
-            $table->string("area");
-            $table->string('local_data_ip');
-            $table->string('pin_code');
+            $table->string('country')->nullable();
+            $table->string("area")->nullable();
+            $table->string('local_data_ip')->nullable();
+            $table->string('pin_code')->nullable();
             $table->bigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
         });

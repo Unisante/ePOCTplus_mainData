@@ -50,37 +50,7 @@ class DeviceController extends Controller
     {
         $validated = $request->validated();
         $device = $this->deviceService->add($validated);
-        return response()->json([
-            new DeviceResource($device)
-        ]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Device  $device
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Device $device)
-    {
-        //$this->authorize('view',$device);
-        return view('devices.details',[
-            'device' => new DeviceResource($device),
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Device  $device
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Device $device)
-    {
-        //$this->authorize('edit',$device);
-        return view('devices.edit',[
-            'device' => new DeviceResource($device),
-        ]);
+        return response()->json(new DeviceResource($device));
     }
 
     /**
@@ -94,9 +64,7 @@ class DeviceController extends Controller
     {
         $validated = $request->validated();
         $device = $this->deviceService->update($validated,$device);
-        return response()->json([
-            new DeviceResource($device)
-        ]);
+        return response()->json(new DeviceResource($device));
     }
 
     /**

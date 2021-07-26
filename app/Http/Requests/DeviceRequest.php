@@ -29,12 +29,6 @@ class DeviceRequest extends FormRequest
         return [
             'name' => 'required | string',
             'type' => ['required','string',Rule::in(['reader','hub'])],
-            'mac_address' => ['nullable','string',new MacAddress],
-            'model' => 'nullable | string',
-            'brand' => 'nullable | string',
-            'os' => 'nullable | string',
-            'os_version' => 'nullable | string',
-            'status' => 'nullable | integer | between:0,1',
         ];
     }
 }

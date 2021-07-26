@@ -1,7 +1,7 @@
 <template>
     <reactive-index :columns="columns"
     resource_name="Health Facility"
-    :details="inputs"
+    :details="details"
     :inputsCreate="inputs"
     :inputsEdit="inputs"
     v-on="$listeners"
@@ -106,6 +106,48 @@ export default {
                     keyword: "pin_code",
                     type: "text",
                     default: "",
+                },
+            ],
+            details: [
+                {
+                    label : "Name",
+                    keyword: "name",
+                    type: "text",
+                },
+                {
+                    label : "Country",
+                    keyword: "country",
+                    type: "text",
+                },
+                {
+                    label : "Area",
+                    keyword: "area",
+                    type: "text",
+                },
+                {
+                    label : "Longitude",
+                    keyword: "long",
+                    type: "code",
+                },
+                {
+                    label : "Latitude",
+                    keyword: "lat",
+                    type: "code",
+                },
+                {
+                    label : "Architecture",
+                    keyword: "hf_mode",
+                    type: "text",
+                },
+                {
+                    label : "medAL-hub IP (only for Client Server)",
+                    keyword: "local_data_ip",
+                    type: "code",
+                },
+                {
+                    label : "Pin Code",
+                    keyword: "pin_code",
+                    type: "code",
                 },
             ],
         }

@@ -18,7 +18,10 @@ class CreateHealthFacilityAccessesTable extends Migration
             $table->timestamps();
             $table->boolean('access');
             $table->dateTime('end_date')->nullable();
-            $table->bigInteger('version_id');
+            $table->bigInteger('creator_version_id');
+            $table->string('version_name');
+            $table->integer('medal_r_json_version');
+            $table->boolean('is_arm_control');
             $table->bigInteger('health_facility_id');
             $table->foreign('health_facility_id')->references('id')->on('health_facilities')->onDelete('cascade');
         });

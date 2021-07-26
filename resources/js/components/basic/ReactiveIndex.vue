@@ -166,7 +166,6 @@ export default {
     methods : {
         createSuccess : function(resource){
             this.showCreateModal = false
-            console.log(resource.data)
             this.resources.push(resource)
             this.$emit("create-success",resource)
         },

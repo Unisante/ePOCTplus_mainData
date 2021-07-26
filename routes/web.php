@@ -80,6 +80,7 @@ Route::group(['middleware' => ['auth']], function() {
   Route::post('health-facilities/{health_facility}/unassign-device/{device}',"HealthFacilityController@unassignDevice");
   //Algorithms Management in the context of Health Facilities
   Route::get('health-facilities/{health_facility}/manage-algorithms',"HealthFacilityController@manageAlgorithms");
+  Route::get('health-facilities/{health_facility}/accesses',"HealthFacilityController@accesses");
   Route::get('health-facilities/versions/{algorithm_id}',"HealthFacilityController@versions");
   Route::post('health-facilities/{health_facility}/assign-version/{version_id}',"HealthFacilityController@assignVersion");
   //for Devices

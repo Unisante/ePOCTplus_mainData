@@ -92,6 +92,10 @@ class HealthFacilityPolicy
         return $user->id == $healthFacility->user_id;
     }
 
+    public function accesses(User $user,HealthFacility $healthFacility){
+        return $user->id == $healthFacility->user_id;
+    }
+
     public function assignVersion(User $user,HealthFacility $healthFacility){
         return $user->id == $healthFacility->user_id;
     }

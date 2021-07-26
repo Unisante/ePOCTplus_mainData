@@ -110,7 +110,7 @@ export default {
                 {
                     label: "MAC Address",
                     keyword: "mac_address",
-                    type: "text",
+                    type: "code",
                 },
                 {
                     label: "Health Facility",
@@ -121,6 +121,11 @@ export default {
                     label: "Authentication ID",
                     keyword: "oauth_client_id",
                     type: "text",
+                },
+                {
+                    label: "Authentication Secret",
+                    keyword: "oauth_client_secret",
+                    type: "code",
                 },
 
             ],

@@ -27,8 +27,14 @@ use Illuminate\Support\Facades\Storage;
 //    return $request->user();
 //});
 
+Route::middleware('auth:api')->prefix('/v1')->group(function(){
+  Route::get('/health-facility-info','Api\AuthDeviceController@healthFacilityInfo');
+  Route::get('/algorithm','Api\AuthDeviceController@algorithm');
+  Route::post('/device-info','Api\AuthDeviceController@storeDeviceInfo');
+});
 
-Route::middleware('auth:api',"permission:Manage_Devices")->get('/protected-api', function (Request $request) {
+
+Route::middleware('auth:api')->get('/protected-api', function (Request $request) {
     return $request->user();
 });
 

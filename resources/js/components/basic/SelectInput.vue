@@ -6,7 +6,7 @@
                     <h5 class="card-title">{{this.label}}</h5>
                 </div>
                 <div class="col">
-                    <select class="form-select" v-model="localValue">
+                    <select wire:ignore class="form-control form-select-lg" v-model="localValue">
                         <option disabled value="">Please select one</option>
                         <option v-for="option in this.options" :key="option.value" :value="option.value">
                           {{option.label}}

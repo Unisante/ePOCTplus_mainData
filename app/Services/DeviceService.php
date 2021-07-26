@@ -3,7 +3,9 @@
 
 namespace App\Services;
 
+use Exception;
 use App\Device;
+use App\HealthFacility;
 use Lcobucci\JWT\Parser;
 use Laravel\Passport\Token;
 use Illuminate\Support\Facades\Log;
@@ -13,8 +15,6 @@ use Illuminate\Support\Facades\Config;
 
 
 class DeviceService {
-
-
 
     public function add($validatedRequest): Device{
         $device = new Device($validatedRequest);
@@ -27,7 +27,7 @@ class DeviceService {
         $provider = null;
         $personalAccess = false;
         $password = false;
-        $confidential = false;
+        $confidential = $this->getConfidentialFlag($device->type);
         //Get Passport's client repository using the app parameters and create the client using the parameters
         $clientRepository = app('Laravel\Passport\ClientRepository');
         //Create the client using all necessary parameters
@@ -43,6 +43,7 @@ class DeviceService {
         //Update the device information and link it to the client ID
         $device->user_id = Auth::user()->id;
         $device->oauth_client_id = $client->id;
+        $device->oauth_client_secret = $client->secret;
         $device->save();
         return $device;
     }
@@ -54,7 +55,7 @@ class DeviceService {
         $clientRepository = app('Laravel\Passport\ClientRepository');
         $client = $clientRepository->findForUser($device->oauth_client_id,Auth::user()->id);
         $redirectURL = $this->getRedirectURL($device->type);
-        $clientRepository->update($client,$validated['name'],$redirectURL);
+        $clientRepository->update($client,$validatedRequest['name'],$redirectURL);
         return $device;
     }
 
@@ -89,7 +90,34 @@ class DeviceService {
         //Fetch the client and then the corresponding device associated
         $client = Token::find($tokenId)->client;
         $device = Device::where('oauth_client_id',$client->id)->first();
-        return $client;
+        return $device;
+    }
+
+    /**
+     * Returns an array with the pin code and hub IP for the device (intended for reader devices)
+     */
+    public function getHealthFacilityInfo(Device $device){
+        $healthFacility = HealthFacility::where('id',$device->health_facility_id)->first();
+        if ($healthFacility == null) {
+            throw new Exception("Device is not associated with any Health Facilities");
+        }
+        $pinCode = $healthFacility->pin_code;
+        $hubIP = $healthFacility->local_data_ip;
+        return array(
+            "pin_code" => $pinCode,
+            "hub_ip" => $hubIP,
+        );
+    }
+
+    /**
+     * Updates the given device model with system information uploaded by the device itself
+     */
+    public function storeDeviceInfo(Device $device,$validatedDeviceInfoRequest){
+        $device->fill($validatedDeviceInfoRequest)->save();
+    }
+
+    public function updateDeviceStatus(Device $device,$validatedDeviceStatusRequest){
+        $device->fill($validatedDeviceStatusRequest)->save();
     }
 
     /**
@@ -107,4 +135,20 @@ class DeviceService {
         }
         return $redirectURL;
     }
+    /**
+     * Returns the type of Grant for the device (hub->confidential->client-credentials reader->non-confidential->pkce)
+     */
+    private function getConfidentialFlag($deviceType){
+        $confidential = false;
+        switch($deviceType){
+            case "hub":
+                $confidential = false;
+                break;
+            case "reader":
+                $confidential = false;
+                break;
+        }
+        return $confidential;
+    }
+
 }

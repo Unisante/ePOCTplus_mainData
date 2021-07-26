@@ -85,7 +85,7 @@ export default {
                 this.options = this.options.filter((opt) => {
                     return opt.value != this.deviceID
                 })
-                var device = response.data[0]
+                var device = response.data
                 this.assignedDevices.push(device)
                 this.$emit("assign-success",response)
                 this.$toasted.global.success_notification("Device Successfully Assigned to Health Facility")
@@ -98,7 +98,7 @@ export default {
 
         unassignDevice(id) {
             axios.post(this.assign_base_url + "/unassign-device/" + id.toString()).then((response) =>{
-                var dev = response.data[0]
+                var dev = response.data
                 this.options.push({
                     label: dev.name,
                     value: dev.id,
