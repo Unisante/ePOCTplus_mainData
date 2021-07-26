@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Version;
+use Illuminate\Support\Facades\Config;
+
 class PatientConfig extends Model
 {
   protected $table = 'patient_configs';
@@ -34,7 +36,7 @@ class PatientConfig extends Model
   public static function fetchConfig($version_id){
     $curl = curl_init();
     curl_setopt_array($curl, array(
-      CURLOPT_URL => 'https://medalc.unisante.ch/api/v1/versions/medal_data_config?version_id='.$version_id,
+      CURLOPT_URL => Config::get('medal-data.urls.creator_patient_url').$version_id,
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => "",
       CURLOPT_MAXREDIRS => 10,

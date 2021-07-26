@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\MedicalCase;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use File;
 use App\Algorithm;
@@ -49,7 +50,7 @@ class SaveCase implements ShouldQueue
       $consent_path = base_path().'/storage/app/consentFiles';
       $parsed_folder='parsed_medical_cases';
       $failed_folder='failed_medical_cases';
-      $study_id=env('STUDY_ID');
+      $study_id=Config::get('medal-data.global.study_id');
       $isEligible=true;
       $group_id=(int)$this->individualData['patient']['group_id'];
       // saving the json in in the jsonlogs

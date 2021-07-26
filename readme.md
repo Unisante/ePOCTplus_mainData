@@ -27,7 +27,7 @@ This document lists instructions to setup a medAL-*data* server instance and is 
 - Domain Name (In the installation we will use the name **example.com**) pointing to the server's IP address
 
 
-### Installation (Manual)
+## Manual Installation
 
 #### Environment setup
 
@@ -35,31 +35,17 @@ This document lists instructions to setup a medAL-*data* server instance and is 
 
 #### Dokku installation on remote server
 
-1. **[t_remote]** : run the following commands to install docker:
+1. **[t_remote]**: Install dokku with the following commands:
    ```bash
-   sudo apt update
-   sudo apt install apt-transport-https ca-certificates curl software-properties-common
-   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add
-   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
-   sudo apt update
-   apt-cache policy docker-ce
-   sudo apt install docker-ce
+   wget https://raw.githubusercontent.com/dokku/dokku/v0.24.10/bootstrap.sh
+   sudo DOKKU_TAG=v0.24.10 bash bootstrap.sh
    ```
-   To check if the installation was successfull run `sudo systemctl status docker`
-2. **[t_remote]**: run the following commands to install nginx and set the firewall rules:
-   ```bash
-   sudo apt install nginx
-   sudo ufw allow 'Nginx Full'
-   ```
-3. **[t_remote]**: Install dokku with the following commands:
-   ```bash
-   wget https://raw.githubusercontent.com/dokku/dokku/v0.21.4/bootstrap.sh
-   sudo DOKKU_TAG=v0.21.4 bash bootstrap.sh
-   ```
-4. **[t_local]**: On the local workstation open a browser and head to your servers domain **example.com** where you will be able to setup the public SSH key used when deploying the source code to the server and optionnaly enable virtual hosting on the server:
-   -  If you already have a ssh key configured for **git** on your local workstation, then copy the value of the public key and paste in the dialog on dokku's web interface. Otherwise, follow this guide to generate new keys: https://betterprogramming.pub/how-to-set-up-multiple-ssh-keys-ae6688f76570
-   -  If you plan to host other web services on the remote server, then enable virtual hosting.
+   (To get the latest verison goto https://dokku.com/docs/getting-started/installation/)
+
+2. **[t_local]**: On the local workstation open a browser and head to your servers domain **example.com** where you will be able to setup the public SSH key used when deploying the source code to the server and optionnaly enable virtual hosting on the server:
+   -  If you already have a ssh key configured for **git** on your local workstation, then copy the value of the public key and paste in the dialog on dokku's web interface. If you already have a public key then you can see copy the value output from the command `cat ~/.ssh/id_rsa.pub` or generate a new one using `ssh-keygen -t rsa`. 
    -  Enter your domain name **example.com** in the corresponding dialog box 
+
 
 #### Application Deployment
 
@@ -76,26 +62,41 @@ This document lists instructions to setup a medAL-*data* server instance and is 
    # Set Config variables for Laravel
    dokku config:set medal-data DB_CONNECTION=postgres
    # Add the PHP buildpack to the apps config
-   dokku config:set medal-data BUILDPACK_URL=https://github.com/heroku/heroku-buildpack-php
+   dokku config:set medal-data BUILDPACK_URL="https://github.com/heroku/heroku-buildpack-php"
+   # Configure the storage folder of the server
+   mkdir -p /var/lib/dokku/data/storage/medal-data
+   mkdir -p /var/lib/dokku/data/storage/medal-data/framework
+   mkdir -p /var/lib/dokku/data/storage/medal-data/framework/sessions
+   mkdir -p /var/lib/dokku/data/storage/medal-data/framework/cache
+   mkdir -p /var/lib/dokku/data/storage/medal-data/framework/views
+   # give rights to herokuish
+   chown -R 32767:32767 /var/lib/dokku/data/storage/medal-data
+   dokku storage:mount medal-data /var/lib/dokku/data/storage/medal-data:/app/storage
    ```
 2. **[t_local]**: On the local workstation, clone the source code of the medal-data server from the bitbucket repository by running the command `git clone https://informatique_unisante@bitbucket.org/wavemind_swiss/liwi-main-data.git` and navigate to the project folder `cd liwi-main-data`. 
-3. **[t_local]**: Link and deploy the server with the following **git** commands (replace **example.com** with your own domain name):
+3. **[t_local]**: copy the `dokku.env.example` file in this folder and fill out the values depending on your desired configuration. Then copy the file contents to your clipboard. 
+4. **[t_remote]**: On the remote server paste the contents at the end of the following file: `/home/dokku/medal-data/ENV`.
+5. **[t_local]**: Link and deploy the server with the following **git** commands (replace **example.com** with your own domain name):
    ```bash
    git remote add dokku dokku@example.com:medal-data
    git push dokku master
    ```
    If the push did not work, then make sure you have correctly set up the SSH key on the dokku server using the web interface. (more information on https://dokku.com/docs/deployment/user-management/)
-4. **[t_remote]**: Back on the remote server, run the following command to set the APP_KEY environment variable:
+6. **[t_remote]**: Back on the remote server, run the following command to set the APP_KEY environment variable:
    ```bash
-   dokku config:set medal-data APP_KEY=$(dokku run medal-data php artisan key:generate --show)
+   dokku config:set medal-data APP_KEY=$(dokku run medal-data php artisan --no-ansi key:generate --show)
    ```
-5. **[t_remote]**: Finally, migrate the database using:
+7. **[t_remote]**: Finally, if needed migrate and seed the database using:
    ```bash
-   dokku run medal-data php artisan migrate
+   dokku run medal-data php artisan migrate:fresh --seed --force
+   ```
+   If you wish to only migrate the database then run:
+   ```bash
+   dokku run medal-data php artisan migrate --force
    ```
 
 
-## Passport Integration
+## Passport Integration (Not yet in this branch but will be added)
 
 In this section, we summarize the changes made to the server when integrating the Laravel Passport functionality. The plan is to have a new type of stakeholders which are in charge of registering devices such as medal-*reader* and medal-*hub* to the system, which will then allow these devices to fetch an access token from this server which it can then use to access API routes which we will protect with laravel's passport `auth:api` middleware, verifying the validity of tokens. Below, we summarize the functionality and provide details on the steps taken to integrate this into the server. 
 

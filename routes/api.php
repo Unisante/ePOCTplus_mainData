@@ -124,12 +124,14 @@ Route::post('sync_medical_cases_trial',function(Request $request){
 Route::post('sync_medical_cases',function(Request $request){
   if($request->file){
     //save the zip file and find out the name of the saved zip file.
+    Storage::makeDirectory('medical_cases_zip');
     $file=Storage::putFile('medical_cases_zip', $request->file);
     // return $file;
     $parsed_folder='parsed_medical_cases';
     $failed_folder='failed_medical_cases';
     Storage::makeDirectory('failed_cases_zip');
     Storage::makeDirectory('extracted_cases_zip');
+    Storage::makeDirectory('unparsed_medical_cases');
     Storage::makeDirectory($parsed_folder);
     Storage::makeDirectory($failed_folder);
     error_log('we are in the route');
@@ -161,5 +163,3 @@ Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
   ]);
 });
 
-
-//Route::apiResource('health-facilities','HealthFacilityController')->middleware(['web','auth']);

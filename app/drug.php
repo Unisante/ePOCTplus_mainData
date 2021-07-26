@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Formulation;
+use Illuminate\Support\Facades\Config;
+
 class Drug extends Model
 {
   protected $guarded = [];
@@ -28,8 +30,8 @@ class Drug extends Model
             ],
             [
               'type'=>$node['type'],
-              'label'=>$node['label'][env('LANGUAGE')],
-              'description'=>isset($node['description'][env('LANGUAGE')])?$node['description'][env('LANGUAGE')]:'',
+              'label'=>$node['label'][Config::get('medal-data.global.language')],
+              'description'=>isset($node['description'][Config::get('medal-data.global.language')])?$node['description'][Config::get('medal-data.global.language')]:'',
               'is_antibiotic' => $is_antibiotic,
               'is_anti_malarial' => $is_anti_malarial
             ]

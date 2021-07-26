@@ -9,6 +9,7 @@ use App\DrugReference;
 use App\Custom_diagnosis;
 use App\Algorithm;
 use App\Version;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use App\Management;
 class DiagnosisReference extends Model
@@ -100,8 +101,8 @@ class DiagnosisReference extends Model
                     ],
                     [
                       'type'=>$medal_C_algorithm['health_cares'][$management_id]['type'],
-                      'label'=>$medal_C_algorithm['health_cares'][$management_id]['label'][env('LANGUAGE')],
-                      'description'=>isset($medal_C_algorithm['health_cares'][$management_id]['description'][env('LANGUAGE')])?$medal_C_algorithm['health_cares'][$management_id]['description'][env('LANGUAGE')]:''
+                      'label'=>$medal_C_algorithm['health_cares'][$management_id]['label'][Config::get('medal-data.global.language')],
+                      'description'=>isset($medal_C_algorithm['health_cares'][$management_id]['description'][Config::get('medal-data.global.language')])?$medal_C_algorithm['health_cares'][$management_id]['description'][Config::get('medal-data.global.language')]:''
                     ]
                   );
                   ManagementReference::firstOrCreate(
@@ -154,8 +155,8 @@ class DiagnosisReference extends Model
                       ],
                       [
                         'type'=>$medal_C_algorithm['health_cares'][$drug_id]['type'],
-                        'label'=>$medal_C_algorithm['health_cares'][$drug_id]['label'][env('LANGUAGE')],
-                        'description'=>isset($h_care['description'][env('LANGUAGE')])?$medal_C_algorithm['health_cares'][$drug_id]['description'][env('LANGUAGE')]:'',
+                        'label'=>$medal_C_algorithm['health_cares'][$drug_id]['label'][Config::get('medal-data.global.language')],
+                        'description'=>isset($h_care['description'][Config::get('medal-data.global.language')])?$medal_C_algorithm['health_cares'][$drug_id]['description'][Config::get('medal-data.global.language')]:'',
                         'is_antibiotic' => $is_antibiotic,
                         'is_anti_malarial' => $is_anti_malarial
                       ]
