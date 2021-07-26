@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Device;
 use Illuminate\Http\Request;
 use App\Services\DeviceService;
 use App\Services\AlgorithmService;
@@ -21,22 +22,18 @@ class AuthDeviceController extends Controller
         $this->algorithmService = $algorithmService;
     }
 
-
-    public function healthFacilityInfo(Request $request){
-        $validated = $device = $this->deviceService->getDeviceFromAuthRequest($request);
+    public function healthFacilityInfo(Request $request,Device $device){
         $info = $this->deviceService->getHealthFacilityInfo($device);
         return response()->json($info);
     }
 
-    public function storeDeviceInfo(DeviceInfoRequest $request){
+    public function storeDeviceInfo(DeviceInfoRequest $request, Device $device){
         $validated = $request->validated();
-        $device = $this->deviceService->getDeviceFromAuthRequest($request);
         $this->deviceService->storeDeviceInfo($device,$validated);
         return response()->json(new DeviceResource($device));
     }
 
-    public function algorithm(Request $request){
-        $device = $this->deviceService->getDeviceFromAuthRequest($request);
+    public function algorithm(Request $request,Device $device){
         $alg = $this->algorithmService->getAlgorithmJsonForDevice($device);
         return response()->json([
             "json" => $alg,

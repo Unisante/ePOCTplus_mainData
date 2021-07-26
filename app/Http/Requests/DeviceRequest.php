@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Redirect;
 use App\Rules\MacAddress;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,7 @@ class DeviceRequest extends FormRequest
         return [
             'name' => 'required | string',
             'type' => ['required','string',Rule::in(['reader','hub'])],
+            'redirect' => [new Redirect],
         ];
     }
 }

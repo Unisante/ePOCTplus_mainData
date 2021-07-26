@@ -23,11 +23,13 @@ class CreateDevicesTable extends Migration
             $table->string('brand')->nullable();
             $table->string('os')->nullable();
             $table->string('os_version')->nullable();
+            $table->string('redirect');
             $table->tinyInteger('status')->default('0');
             $table->bigInteger('user_id');
             $table->bigInteger('health_facility_id')->nullable();
             $table->bigInteger('oauth_client_id')->nullable();
             $table->string('oauth_client_secret')->nullable();
+            $table->datetime('last_seen')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('health_facility_id')->references('id')->on('health_facilities')->onDelete('cascade');
             $table->foreign('oauth_client_id')->references('id')->on('oauth_clients');

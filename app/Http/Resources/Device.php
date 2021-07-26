@@ -33,10 +33,11 @@ class Device extends JsonResource
             "health_facility_id" => $this->health_facility_id,
             "health_facility_name" => $hfName,
             "oauth_client_id" => $this->oauth_client_id,
-            "oauth_client_secret" => $this->oauth_client_secret,
             "mac_address" => $this->mac_address,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
+            "redirect" => $this->redirect,
+            "last_seen" => $this->last_seen,
         ];
     }
 }

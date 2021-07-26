@@ -15,6 +15,7 @@ class Device extends Model
         "os",
         "os_version",
         "status",
+        "redirect",
     ];
     protected $guarded = [];
 

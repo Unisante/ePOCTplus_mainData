@@ -17,13 +17,13 @@ use Illuminate\Support\Facades\Config;
 class DeviceService {
 
     public function add($validatedRequest): Device{
+        $validatedRequest = $this->updateRedirect($validatedRequest);
         $device = new Device($validatedRequest);
         //Set Parameters for Passport Client Creation
         $userID = Auth::user()->id;
         $clientName = $device->name;
          //Redirect URL is the callback set for either reader or hub devices
-        $redirectURL = $this->getRedirectURL($device->type);
-        //The following parameters make sure the client can only use the secure PKCE authorization flow
+        $redirectURL = $device->redirect;        //The following parameters make sure the client can only use the secure PKCE authorization flow
         $provider = null;
         $personalAccess = false;
         $password = false;
@@ -51,10 +51,11 @@ class DeviceService {
 
     public function update($validatedRequest,Device $device): Device{
         //Update the device and then update the OAuth client (only name and device type matter here)
+        $validatedRequest = $this->updateRedirect($validatedRequest);
         $device->fill($validatedRequest)->save();
         $clientRepository = app('Laravel\Passport\ClientRepository');
         $client = $clientRepository->findForUser($device->oauth_client_id,Auth::user()->id);
-        $redirectURL = $this->getRedirectURL($device->type);
+        $redirectURL = $device->redirect;
         $clientRepository->update($client,$validatedRequest['name'],$redirectURL);
         return $device;
     }
@@ -113,27 +114,22 @@ class DeviceService {
      * Updates the given device model with system information uploaded by the device itself
      */
     public function storeDeviceInfo(Device $device,$validatedDeviceInfoRequest){
+        error_log($device->name);
+        foreach($validatedDeviceInfoRequest as $key => $value){
+            error_log($key . $value);
+        }
         $device->fill($validatedDeviceInfoRequest)->save();
     }
 
-    public function updateDeviceStatus(Device $device,$validatedDeviceStatusRequest){
-        $device->fill($validatedDeviceStatusRequest)->save();
-    }
 
     /**
      * Returns the Redirect URL associated with a specific device
      */
-    private function getRedirectURL($deviceType){
-        $redirectURL = "";
-        switch ($deviceType){
-            case "hub":
-                $redirectURL = Config::get('medal.authentication.hub_callback_url');
-                break;
-            case "reader":
-                $redirectURL = Config::get('medal.authentication.reader_callback_url');
-                break;
+    private function updateRedirect($validatedRequest){
+        if($validatedRequest['type'] == "reader"){
+            $validatedRequest['redirect'] = Config::get('medal.authentication.reader_callback_url');
         }
-        return $redirectURL;
+        return $validatedRequest;
     }
     /**
      * Returns the type of Grant for the device (hub->confidential->client-credentials reader->non-confidential->pkce)

@@ -1,4 +1,5 @@
 <template>
+<table class="table-responsive">
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -7,7 +8,7 @@
             </tr>
         </thead>
         <tr v-for="object in data" :key="object.id">
-            <th v-for="column in columns" style="word-wrap: break-word;min-width: 160px;max-width: 160px;"
+            <th v-for="column in columns" 
                                          :key="column.keyword">{{object[column.keyword]}}</th>
             <th v-if="actions.length > 0">
                 <div class="btn-group btn-group-sm" role="group">
@@ -19,6 +20,8 @@
             </th>
         </tr>
     </table>
+</table>
+    
 </template>
 
 <script>

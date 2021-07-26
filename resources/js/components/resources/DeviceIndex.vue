@@ -51,6 +51,10 @@ export default {
                 {
                     label: "Health Facility",
                     keyword: "health_facility_name",
+                },
+                {
+                    label: "Last Seen",
+                    keyword: "last_seen",
                 }
             ],
             inputs : [
@@ -74,7 +78,13 @@ export default {
                             value: "reader",
                         }
                     ],
-                }
+                },
+                {
+                    label:"Redirect URL (mandatory for hub devices)",
+                    keyword: "redirect",
+                    type: "text",
+                    default: "",
+                },
             ],
             details: [
                 {
@@ -123,8 +133,8 @@ export default {
                     type: "text",
                 },
                 {
-                    label: "Authentication Secret",
-                    keyword: "oauth_client_secret",
+                    label: "Redirect URL",
+                    keyword: "redirect",
                     type: "code",
                 },
 
