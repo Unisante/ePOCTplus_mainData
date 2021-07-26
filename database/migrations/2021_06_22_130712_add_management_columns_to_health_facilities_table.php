@@ -14,7 +14,6 @@ class AddManagementColumnsToHealthFacilitiesTable extends Migration
     public function up()
     {
         Schema::table('health_facilities', function (Blueprint $table) {
-            //
             $table->string('name');
             $table->string('country')->nullable();
             $table->string("area")->nullable();

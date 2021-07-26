@@ -26,10 +26,10 @@ class HealthFacilityRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|string',
-            'country' => 'required|string',
-            'area' => 'required|string',
-            'pin_code' => 'required|integer',
+            'name' => 'required|string | unique:App\HealthFacility,name',
+            'country' => 'nullable|string',
+            'area' => 'nullable|string',
+            'pin_code' => 'nullable|integer',
             'hf_mode' => [Rule::in(['standalone','client-server'])],
             'local_data_ip' => 'nullable|string|ip',
             'lat' => 'numeric | between:-90,90',
