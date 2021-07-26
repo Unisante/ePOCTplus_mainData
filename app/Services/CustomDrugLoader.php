@@ -12,7 +12,7 @@ class CustomDrugLoader extends ModelLoader {
      * Constructor
      *
      * @param array $data
-     * @param Custom_diagnosis $customDiagnosis
+     * @param CustomDiagnosis $customDiagnosis
      * 
      */
     public function __construct($customDrugData, $customDiagnosis) {

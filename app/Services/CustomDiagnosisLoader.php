@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Custom_diagnosis;
+use App\CustomDiagnosis;
 use App\Services\ModelLoader;
 
 class CustomDiagnosisLoader extends ModelLoader {
@@ -38,7 +38,7 @@ class CustomDiagnosisLoader extends ModelLoader {
 
     protected function model()
     {
-        return Custom_diagnosis::class;
+        return CustomDiagnosis::class;
     }
 
     protected function configName()

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Diagnosis;
 use App\ManagementReference;
 use App\DrugReference;
-use App\Custom_diagnosis;
+use App\CustomDiagnosis;
 use App\Algorithm;
 use App\Version;
 use Illuminate\Support\Facades\Config;

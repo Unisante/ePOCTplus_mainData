@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Custom_diagnosis extends Model
+class CustomDiagnosis extends Model
 {
   protected $guarded = [];
 }
