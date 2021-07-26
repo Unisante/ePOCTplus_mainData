@@ -101,8 +101,8 @@ class DiagnosisReference extends Model
                     ],
                     [
                       'type'=>$medal_C_algorithm['health_cares'][$management_id]['type'],
-                      'label'=>$medal_C_algorithm['health_cares'][$management_id]['label'][Config::get('medal-data.global.language')],
-                      'description'=>isset($medal_C_algorithm['health_cares'][$management_id]['description'][Config::get('medal-data.global.language')])?$medal_C_algorithm['health_cares'][$management_id]['description'][Config::get('medal-data.global.language')]:''
+                      'label'=>$medal_C_algorithm['health_cares'][$management_id]['label'][Config::get('medal.creator.language')],
+                      'description'=>isset($medal_C_algorithm['health_cares'][$management_id]['description'][Config::get('medal.creator.language')])?$medal_C_algorithm['health_cares'][$management_id]['description'][Config::get('medal.creator.language')]:''
                     ]
                   );
                   ManagementReference::firstOrCreate(
@@ -155,8 +155,8 @@ class DiagnosisReference extends Model
                       ],
                       [
                         'type'=>$medal_C_algorithm['health_cares'][$drug_id]['type'],
-                        'label'=>$medal_C_algorithm['health_cares'][$drug_id]['label'][Config::get('medal-data.global.language')],
-                        'description'=>isset($h_care['description'][Config::get('medal-data.global.language')])?$medal_C_algorithm['health_cares'][$drug_id]['description'][Config::get('medal-data.global.language')]:'',
+                        'label'=>$medal_C_algorithm['health_cares'][$drug_id]['label'][Config::get('medal.creator.language')],
+                        'description'=>isset($h_care['description'][Config::get('medal.creator.language')])?$medal_C_algorithm['health_cares'][$drug_id]['description'][Config::get('medal.creator.language')]:'',
                         'is_antibiotic' => $is_antibiotic,
                         'is_anti_malarial' => $is_anti_malarial
                       ]

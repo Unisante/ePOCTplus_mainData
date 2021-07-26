@@ -30,7 +30,7 @@ class Formulation extends Model
       $formulationToSave->maximal_dose_per_kg = $formulation['maximal_dose_per_kg'];
       $formulationToSave->maximal_dose = $formulation['maximal_dose'];
       $formulationToSave->doses_per_day = $formulation['doses_per_day'];
-      $formulationToSave->description = isset($formulation['description'][Config::get('medal-data.global.language')])?$formulation['description'][Config::get('medal-data.global.language')]:'';
+      $formulationToSave->description = isset($formulation['description'][Config::get('medal.creator.language')])?$formulation['description'][Config::get('medal.creator.language')]:'';
       $formulationToSave->save();
     }
   }

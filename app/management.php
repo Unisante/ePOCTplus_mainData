@@ -28,8 +28,8 @@ class Management extends Model
             ],
             [
               'type'=>$node['type'],
-              'label'=>$node['label'][Config::get('medal-data.global.language')],
-              'description'=>isset($node['description'][Config::get('medal-data.global.language')])?$node['description'][Config::get('medal-data.global.language')]:''
+              'label'=>$node['label'][Config::get('medal.creator.language')],
+              'description'=>isset($node['description'][Config::get('medal.creator.language')])?$node['description'][Config::get('medal.creator.language')]:''
             ]
           );
         }

@@ -27,7 +27,7 @@ class Answer extends Model implements Auditable
             'node_id'=>$nodeSaved->id
           ],
           [
-            'label' => $answer['label'][Config::get('medal-data.global.language')]
+            'label' => $answer['label'][Config::get('medal.creator.language')]
           ]
         );
       }

@@ -27,7 +27,7 @@ class Diagnosis extends Model
             'diagnostic_id'=>$node['diagnostic_id']
           ],
           [
-            'label'=>$node['label'][Config::get('medal-data.global.language')],
+            'label'=>$node['label'][Config::get('medal.creator.language')],
             'type'=>$node['type'],
             'version_id'=>$version_id
           ]
@@ -44,7 +44,7 @@ class Diagnosis extends Model
             'diagnostic_id'=>$diagnosis['diagnostic_id']
           ],
           [
-            'label'=>$diagnosis['label'][Config::get('medal-data.global.language')],
+            'label'=>$diagnosis['label'][Config::get('medal.creator.language')],
             'type'=>$diagnosis['type'],
             'version_id'=>$version_id
           ]
@@ -64,7 +64,7 @@ class Diagnosis extends Model
               'diagnostic_id'=>$diagnosis['diagnostic_id']
             ],
             [
-              'label'=>$diagnosis['label'][Config::get('medal-data.global.language')],
+              'label'=>$diagnosis['label'][Config::get('medal.creator.language')],
               'type'=>$diagnosis['type'],
               'version_id'=>$d_data['version_id']
             ]
@@ -84,8 +84,8 @@ class Diagnosis extends Model
           ],
           [
             'type'=>$h_care['type'],
-            'label'=>$h_care['label'][Config::get('medal-data.global.language')],
-            'description'=>isset($h_care['description'][Config::get('medal-data.global.language')])?$h_care['description'][Config::get('medal-data.global.language')]:'',
+            'label'=>$h_care['label'][Config::get('medal.creator.language')],
+            'description'=>isset($h_care['description'][Config::get('medal.creator.language')])?$h_care['description'][Config::get('medal.creator.language')]:'',
             'is_antibiotic' => $is_antibiotic,
             'is_anti_malarial' => $is_anti_malarial
           ]

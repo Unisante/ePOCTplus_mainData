@@ -44,7 +44,7 @@ class SaveZipCasesJob implements ShouldQueue
         $this->unparsed_path = base_path().'/storage/app/unparsed_medical_cases';
         $this->app_storage_path = base_path().'/storage/app/';
         $this->failed_folder='failed_medical_cases';
-        $this->study_id=Config::get('medal-data.global.study_id');
+        $this->study_id=Config::get('medal.creator.study_id');
         $this->consent_path = base_path().'/storage/app/consentFiles';
         $this->parsed_folder='parsed_medical_cases';
         $this->failed_folder='failed_medical_cases';
