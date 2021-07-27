@@ -22,66 +22,6 @@ class HealthFacility extends Model
     "hf_mode",
   ];
   protected $guarded = [];
-<<<<<<< HEAD
-=======
-
-  
-  // fetch the the facility information
-  public static function fetchHealthFacility($group_id = null){
-    if($group_id != null ){
-      $facility_doesnt_exist=HealthFacility::where('group_id',$group_id)->doesntExist();
-      if($facility_doesnt_exist){
-        // setting headers for when we secure this part of quering from medal c
-        // curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        //   'Header-Key: Header-Value',
-        //   'Header-Key-2: Header-Value-2'
-        // ));
-        $url = Config::get("medal.creator.url") . Config::get("medal.creator.health_facility_endpoint") . "/" .$group_id;
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => $url,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "GET",
-          CURLOPT_HTTPHEADER => array(
-            "Cache-Control: no-cache",
-          ),
-        ));
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-        curl_close($curl);
-        if ($err) {
-          return response()->json([
-            "error"=>json_decode($err, true)
-          ]);
-        } else {
-          $health_facilty = json_decode($response, true);
-          if(array_key_exists('id',$health_facilty)){
-            self::store($health_facilty);
-          }
-        }
-      }
-    }
-  }
-  public static function store($healthFacilityInfo){
-      if($healthFacilityInfo['id'] != null && $healthFacilityInfo['name'] && $healthFacilityInfo['longitude'] != null && $healthFacilityInfo['latitude'] != null && $healthFacilityInfo['architecture'] != null){
-        $facility=HealthFacility::firstOrCreate(
-          [
-            'facility_name'=>$healthFacilityInfo['name']
-          ],
-          [
-            'group_id'=>$healthFacilityInfo['id'],
-            'long'=>$healthFacilityInfo['longitude'],
-            'lat'=>$healthFacilityInfo['latitude'],
-            'hf_mode'=>$healthFacilityInfo['architecture']
-          ]
-        );
-      }
-  }
->>>>>>> origin/testing
 
   public function medical_cases(){
     return $this->hasMany('App\MedicalCase','group_id','group_id');
