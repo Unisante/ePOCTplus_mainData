@@ -29,17 +29,6 @@ class DeviceController extends Controller
         $devices = DeviceResource::collection(Auth::user()->devices);
         return view('devices.index',['devices' => $devices->toJson(),]);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('devices.create');
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -81,6 +70,4 @@ class DeviceController extends Controller
             "id" => $id,
         ]);
     }
-
-
 }

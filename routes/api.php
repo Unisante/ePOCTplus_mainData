@@ -23,79 +23,33 @@ use Illuminate\Support\Facades\Storage;
 |
 */
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
+/**
+ * Authenticated Device API
+ * The first middleware checks the validity of the JWT Token provided in the request
+ * The second middleware resolves the device from the token received in the request and updates the
+ * last seen timestamp of the devices table
+ */
 Route::middleware(['auth:api','device.resolve'])->prefix('/v1')->group(function(){
+  //Returns the Hub IP and Pin Code of the health facility to which the device is assigned
   Route::get('/health-facility-info','Api\AuthDeviceController@healthFacilityInfo');
+  //Fetch the algorithm associated to the health facility associated to the device
   Route::get('/algorithm','Api\AuthDeviceController@algorithm');
+  //Upload device information such as Mac Address OS etc... see the DeviceInfoRequest for accepted parameters
   Route::post('/device-info','Api\AuthDeviceController@storeDeviceInfo');
-  route::get('/test','Api\AuthDeviceController@test');
+  //Upload medical cases: Work in progress, will have to be related to the appropriate controller
+  Route::post('/upload-medical-case',function(Request $request){
+    return response()->json(['status' => 200]);
+  });
 });
 
 
-Route::middleware('auth:api')->get('/protected-api', function (Request $request) {
-    return $request->user();
-});
 
-
-Route::middleware('auth:api')->get('/get-client-id', function (Request $request) {
-  $bearerToken=$request->bearerToken();
-  $parsedJwt = (new Parser())->parse($bearerToken);
-
-
-  if ($parsedJwt->hasHeader('jti')) {
-      $tokenId = $parsedJwt->getHeader('jti');
-  } elseif ($parsedJwt->hasClaim('jti')) {
-      $tokenId = $parsedJwt->getClaim('jti');
-  } else {
-      Log::error('Invalid JWT token, Unable to find JTI header');
-      return null;
-  }
-  $client = Token::find($tokenId)->client;
-  return $client;
-});
 
 Route::get('medical_case_answers', function(Request $request){
     return MedicalCaseAnswer::all();
 });
 
 // Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
-
-
-//DEBUG Routes
-
-Route::post('add_storage_file',function(Request $request){
-  if($request->file){
-    $file=Storage::putFile('temporary_files', $request->file);
-    return Storage::disk('local')->listContents();
-    //return response()->json(['data_received'=> true,'status'=>200]);
-  }
-  return response()->json(['data_received'=> false,'status'=>400]);
-});
-
-
-Route::post('list_storage_files',function(Request $request){
-  return Storage::disk('local')->listContents("temporary_files");
-});
-
-
-Route::get('get_storage_file/{filename}',function(Request $request, $filename){
-  return Storage::disk('local')->get("temporary_files/" . $filename);
-});
-
-
-Route::post('list_medical_zip',function(Request $request){
-  return Storage::disk('local')->listContents("medical_cases_zip");
-});
-
-Route::get('get_medical_zip/{filename}',function(Request $request, $filename){
-  return Storage::disk('local')->get("medical_cases_zip/" . $filename);
-});
-
-
-//END OF DEBUG Routes
 
 Route::post('sync_medical_cases_trial',function(Request $request){
   if($request->file){

@@ -84,7 +84,14 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('health-facilities/versions/{algorithm_id}',"HealthFacilityController@versions");
   Route::post('health-facilities/{health_facility}/assign-version/{version_id}',"HealthFacilityController@assignVersion");
   //for Devices
-  Route::resource('devices','DeviceController');
+  Route::resource('devices','DeviceController')->only([
+    'index',
+    'store',
+    'update',
+    'destroy'
+  ]);
+
+
   //for downloading exports
   // Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('MedicalCasesController.medicalCaseIntoExcel');
   // Route::get('/export-medicalCase-csv','MedicalCasesController@medicalCaseIntoCsv')->name('MedicalCasesController.medicalCaseIntoCsv');
@@ -114,23 +121,5 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('/exports/drug_list','ExportsController@drugsSummary')->name('ExportsController.drugsSummary');
 
 });
-
-
-Route::get("/front-end-test",function(Request $request){
-  return view("test.test");
-});
-
-
-Route::post("/post-data-test",function(Request $request){
-  return $request->all();
-});
-
-
-Route::patch("/post-data-test",function(Request $request){
-  return $request->all();
-});
-
-
-
 
 
