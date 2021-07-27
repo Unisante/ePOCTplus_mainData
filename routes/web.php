@@ -33,10 +33,6 @@ Route::group(['middleware' => ['auth']], function() {
   Route::post('role/removePerm/{id}','RolesController@removeRolePermission');
 
 
-  //for devices
- // Route::get('/devices','DevicesController@index')->name('Devices.index');;
-
-
   //for patient
   Route::get('/patients','PatientsController@index')->name('Patients.index');;
   Route::get('/patient/{id}','PatientsController@show')->name('PatientsController.show');
@@ -68,28 +64,33 @@ Route::group(['middleware' => ['auth']], function() {
 
 
   //for health facilities
-  Route::resource('health-facilities','HealthFacilityController')->only([
-    'index',
-    'store',
-    'update',
-    'destroy'
-  ]);
-  //Device Management in the context of Health Facilities
-  Route::get('health-facilities/{health_facility}/manage-devices',"HealthFacilityController@manageDevices");
-  Route::post('health-facilities/{health_facility}/assign-device/{device}',"HealthFacilityController@assignDevice");
-  Route::post('health-facilities/{health_facility}/unassign-device/{device}',"HealthFacilityController@unassignDevice");
-  //Algorithms Management in the context of Health Facilities
-  Route::get('health-facilities/{health_facility}/manage-algorithms',"HealthFacilityController@manageAlgorithms");
-  Route::get('health-facilities/{health_facility}/accesses',"HealthFacilityController@accesses");
-  Route::get('health-facilities/versions/{algorithm_id}',"HealthFacilityController@versions");
-  Route::post('health-facilities/{health_facility}/assign-version/{version_id}',"HealthFacilityController@assignVersion");
+  Route::group(['middleware' => ['permission:Manage_Health_Facilities'],],function(){
+    Route::resource('health-facilities','HealthFacilityController')->only([
+      'index',
+      'store',
+      'update',
+      'destroy'
+    ]);
+    //Device Management in the context of Health Facilities
+    Route::get('health-facilities/{health_facility}/manage-devices',"HealthFacilityController@manageDevices");
+    Route::post('health-facilities/{health_facility}/assign-device/{device}',"HealthFacilityController@assignDevice");
+    Route::post('health-facilities/{health_facility}/unassign-device/{device}',"HealthFacilityController@unassignDevice");
+    //Algorithms Management in the context of Health Facilities
+    Route::get('health-facilities/{health_facility}/manage-algorithms',"HealthFacilityController@manageAlgorithms");
+    Route::get('health-facilities/{health_facility}/accesses',"HealthFacilityController@accesses");
+    Route::get('health-facilities/versions/{algorithm_id}',"HealthFacilityController@versions");
+    Route::post('health-facilities/{health_facility}/assign-version/{version_id}',"HealthFacilityController@assignVersion");
+  });  
   //for Devices
-  Route::resource('devices','DeviceController')->only([
-    'index',
-    'store',
-    'update',
-    'destroy'
-  ]);
+  Route::group(['middleware' => ['permission:Manage_Health_Facilities'],],function(){
+    Route::resource('devices','DeviceController')->only([
+      'index',
+      'store',
+      'update',
+      'destroy'
+    ]);
+  });
+  
 
 
   //for downloading exports

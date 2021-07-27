@@ -34,22 +34,23 @@ class RoleSeeder extends Seeder
         $data_manager->givePermissionTo('Reset_User_Password');
         $data_manager->givePermissionTo('Reset_Own_Password');
         // create statictician
-        $statistician=Role::firstOrCreate(['name'=>'Statistician']);
+        $statistician = Role::firstOrCreate(['name'=>'Statistician']);
         $statistician->givePermissionTo('View_Patient');
         $statistician->givePermissionTo('View_Case');
         $statistician->givePermissionTo('Reset_User_Password');
         $statistician->givePermissionTo('Reset_Own_Password');
 
-        $deviceManager=Role::firstOrCreate(['name'=>'Device Manager']);
-        $deviceManager->givePermissionTo('Manage_Devices');
-        $deviceManager->givePermissionTo('Reset_User_Password');
-        $deviceManager->givePermissionTo('Reset_Own_Password');
+        $logistician = Role::firstOrCreate(['name'=>'Logistician']);
+        $logistician->givePermissionTo('Manage_Health_Facilities');
+        $logistician->givePermissionTo('Manage_Devices');
+        $logistician->givePermissionTo('Reset_User_Password');
+        $logistician->givePermissionTo('Reset_Own_Password');
 
         //create default user
         $user = User::firstOrCreate([
-          'name'=>'Main Data',
-          'email'=>'MainData@dynamic.com',
-          'password'=>Hash::make('DataAdmin')
+          'name'=>'admin',
+          'email'=>'admin@dynamic.com',
+          'password'=>Hash::make('1234')
         ]);
 
         $user->assignRole($admin);
@@ -57,49 +58,28 @@ class RoleSeeder extends Seeder
         $dataManagerUser = User::firstOrCreate([
           'name'=>'data manager',
           'email'=>'datamanager@dynamic.com',
-          'password'=>Hash::make('DataManager')
+          'password'=>Hash::make('1234')
         ]);
         $dataManagerUser->assignRole($data_manager);
 
         $statisticianUser = User::firstOrCreate([
           'name'=>'statistician',
           'email'=>'statistician@dynamic.com',
-          'password'=>Hash::make('statistician')
+          'password'=>Hash::make('1234')
         ]);
         $statisticianUser->assignRole($statistician);
 
-        $deviceManagerUser = User::firstOrCreate([
-          'name'=>'device manager',
-          'email'=>'devicemanager@dynamic.com',
-          'password'=>Hash::make('DeviceManager')
-        ]);
-        $deviceManagerUser->assignRole($deviceManager);
-
-        $user1 = User::firstOrCreate([
-          'name' => 'user1',
-          'email' => 'user1@email.com',
-          'password' => Hash::make('1234')
-        ]);
-        $user2 = User::firstOrCreate([
-          'name' => 'user2',
-          'email' => 'user2@email.com',
-          'password' => Hash::make('1234')
-        ]);
-
-        $user1 = User::firstOrCreate([
-          'name'=>'user1',
-          'email'=>'user1@dynamic.com',
+        $logisticianUser = User::firstOrCreate([
+          'name'=>'logistician',
+          'email'=>'logistician@dynamic.com',
           'password'=>Hash::make('1234')
         ]);
+        $logisticianUser->assignRole($logistician);
 
-        $user1->assignRole($statistician);
-
-        $user2 = User::firstOrCreate([
-          'name'=>'user2',
-          'email'=>'user2@dynamic.com',
-          'password'=>Hash::make('1234')
+        $user = User::firstOrCreate([
+          'name' => 'user',
+          'email' => 'user@dynamic.com',
+          'password' => Hash::make('1234')
         ]);
-  
-        $user2->assignRole($data_manager);
     }
 }
