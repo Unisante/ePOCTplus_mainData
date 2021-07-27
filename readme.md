@@ -88,7 +88,11 @@ This document lists instructions to setup a medAL-*data* server instance and is 
    ```bash
    dokku config:set medal-data APP_KEY=$(dokku run medal-data php artisan --no-ansi key:generate --show) --no-restart
    ```
-7. **[t_remote]**: Finally, if needed migrate and seed the database using:
+7. **[t_remote]**: Also run the following command to make sure that Laravel's passports encryption keys are properly generated:
+   ```bash
+   dokku run medal-data php artisan passport:keys
+   ``` 
+8. **[t_remote]**: Finally, if needed migrate and seed the database using:
    ```bash
    dokku run medal-data php artisan migrate:fresh --seed --force
    ```
