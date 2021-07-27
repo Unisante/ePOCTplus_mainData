@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Config;
 
 class DeviceService {
 
+    /**
+     * Creates new Device resource and returns it, doing so creates in parallel an Oauth Client with parameters
+     * that depend on the given $validatedRequest
+     */
     public function add($validatedRequest): Device{
         $validatedRequest = $this->updateRedirect($validatedRequest);
         $device = new Device($validatedRequest);
@@ -48,7 +52,10 @@ class DeviceService {
         return $device;
     }
 
-
+    /**
+     * Updates the given $device resource with the parameters given in the $validatedRequest,
+     * in parallel, updates the corresponding Oauth Client
+     */
     public function update($validatedRequest,Device $device): Device{
         //Update the device and then update the OAuth client (only name and device type matter here)
         $validatedRequest = $this->updateRedirect($validatedRequest);
@@ -60,7 +67,9 @@ class DeviceService {
         return $device;
     }
 
-
+    /**
+     * Removes the $device and revokes access from the corresponding Oauth client
+     */
     public function remove(Device $device){
         //Remove the device and Revoke the associated OAuth client
         $id = $device->id;

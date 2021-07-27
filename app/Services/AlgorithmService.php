@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Config;
 class AlgorithmService {
 
     /**
-     * Fetches the algorithms metadata from medal-creator and stores the data in the database for potential later use 
+     * Fetches the algorithms metadata from medal-creator 
      */
     public function getAlgorithmsMetadata(){
         $url = Config::get('medal.creator.url') . Config::get('medal.creator.algorithms_endpoint');
@@ -25,12 +25,20 @@ class AlgorithmService {
         return json_decode($response);
     }
 
+    /**
+     * Fetches the version metadata from medal-creator for a specific algorithm id
+     */
     public function getVersionsMetadata($algorithmCreatorID){
         $url = Config::get('medal.creator.url') . Config::get('medal.creator.algorithms_endpoint') .  "/" .  $algorithmCreatorID . "/versions";
         $response = Http::get($url,[]);
         return json_decode($response);
     }
 
+    /**
+     * Fetches the version indexed by versionID from the creator, checks the validity of all fields,
+     * assigns the version to the health facility and store the json in the appropriate table
+     * The accesses table is also updated
+     */
     public function assignVersionToHealthFacility(HealthFacility $healthFacility,$versionID){
         $url = Config::get('medal.creator.url') . Config::get('medal.creator.versions_endpoint') . "/" . $versionID;
         $version = json_decode(Http::get($url,[]),true);
@@ -44,6 +52,10 @@ class AlgorithmService {
         $this->updateAccesses($healthFacility,$version);
     }
 
+    /**
+     * Checks if the health facility already has a version assigned to it and if so updates the json with the new one
+     * present in the $version array, otherwise it creates a new row for it in the version_jsons table
+     */
     public function assignVersion(HealthFacility $healthFacility,$version){
         $versionJson = VersionJson::where('health_facility_id',$healthFacility->id)->first();
         if ($versionJson == null){
@@ -53,12 +65,17 @@ class AlgorithmService {
         }
     }
 
-
+    /**
+     * Updates the json of $versionJson with the one present in $version
+     */
     public function updateVersion(VersionJson $versionJson,$version){
         $versionJson->json = json_encode($version["medal_r_json"]);
         $versionJson->save();
     }
 
+    /**
+     * adds a new row in the version_jsons table with the json from $version assigned to the health facility $healthFacility
+     */
     public function addVersion(HealthFacility $healthFacility,$version){
         $versionJson = new VersionJson();
         $versionJson->health_facility_id = $healthFacility->id;
@@ -68,17 +85,24 @@ class AlgorithmService {
         $healthFacility->save();
     }
 
-
+    /**
+     * Returns the list of previously used versions for the given $healthFacility
+     */
     public function getArchivedAccesses(HealthFacility $healthFacility){
         return HealthFacilityAccess::where('health_facility_id',$healthFacility->id)->
                                      where('access',false)->get();
     }
 
+    /**
+     * Returns the version currently used by the health facility $healthFacility
+     */
     public function getCurrentAccess(HealthFacility $healthFacility){
         return HealthFacilityAccess::where('health_facility_id',$healthFacility->id)->
                                      where('access',true)->first();
     }
-
+    /**
+     * Updates the list of versions used for $healthFacility with the new version stored in $version
+     */
     private function updateAccesses(HealthFacility $healthFacility,$version){
         $access = HealthFacilityAccess::where('health_facility_id',$healthFacility->id)->
                                         where('access',true)->
@@ -89,6 +113,9 @@ class AlgorithmService {
         $this->newAccess($healthFacility,$version);
     }
 
+    /**
+     * Creates a new version entry in the accesses table for the $healthFacility
+     */
     private function newAccess(HealthFacility $healthFacility,$version){
         $access = new HealthFacilityAccess();
         $access->access = true;
@@ -100,12 +127,19 @@ class AlgorithmService {
         $access->save();
     }
 
+    /**
+     * Sets the version $access to archived by updating the access flag and setting 
+     * the timestamp for the end date to the current datetime
+     */
     private function archiveAccess(HealthFacilityAccess $access){
         $access->access= false;
         $access->end_date = now();
         $access->save();
     }
 
+    /**
+     * Returns the JSON of the algorithm version assigned to the given device $device
+     */
     public function getAlgorithmJsonForDevice(Device $device){
         $healthFacility = HealthFacility::where('id',$device->health_facility_id)->first();
         if ($healthFacility == null){
