@@ -7,6 +7,7 @@ use App\Device;
 use App\Policies\DevicePolicy;
 use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -30,8 +31,6 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        //
         //All other passport routes:
         //Only keep the necessary routes, uncomment other groups if needed in the future
         Passport::routes(function ($router) {
@@ -40,5 +39,7 @@ class AuthServiceProvider extends ServiceProvider
                     //$router->forTransientTokens();
                     //$router->forPersonalAccessTokens();
                 });
+        Passport::tokensExpireIn(now()->addDays(Config::get('medal.authentication.token_lifetime_days')));
+        Passport::refreshTokensExpireIn(now()->addDays(Config::get('medal.authentication.refresh_token_lifetime_days')));
     }
 }
