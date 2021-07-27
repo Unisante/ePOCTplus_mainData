@@ -32,13 +32,6 @@ class ManagementReferenceLoader extends ModelLoader {
         ];
     }
 
-    protected function getValues()
-    {
-        return [
-            'agreed' => true, // TODO this does not make sense
-        ];
-    }
-
     protected function model()
     {
         return ManagementReference::class;

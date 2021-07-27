@@ -48,7 +48,7 @@ return [
         'reference' => [
           'key' => 'reference',
           'modifiers' => ['optional'],
-          'type' => 'int',
+          'type' => 'string',
         ],
         'stage' => 'stage',
         'description' => [

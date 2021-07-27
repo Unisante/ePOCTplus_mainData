@@ -31,7 +31,6 @@ class NodeLoader extends ModelLoader {
         return array_merge(parent::getValues(), [
             'answer_type_id' => $this->answerType->id,
             'algorithm_id'=> $this->algorithm->id,
-            'reference'=>0, // TODO probably unused
         ]);
     }
 

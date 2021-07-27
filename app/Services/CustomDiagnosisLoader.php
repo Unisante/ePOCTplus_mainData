@@ -29,13 +29,6 @@ class CustomDiagnosisLoader extends ModelLoader {
         ]);
     }
 
-    protected function getValues()
-    {
-        return [
-            'drugs' => '',
-        ];
-    }
-
     protected function model()
     {
         return CustomDiagnosis::class;
