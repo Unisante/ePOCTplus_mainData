@@ -125,7 +125,6 @@ export default {
             var url = this.health_facilities_route + "/" + id + "/manage-algorithms"
             axios.get(url)
               .then((response) => {
-                console.log(response)
                 this.actionURL = this.health_facilities_route + "/" + id
                 this.selectedHealthFacility = response.data.healthFacility
                 this.algorithms = response.data.algorithms

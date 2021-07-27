@@ -33,13 +33,6 @@ class HealthFacilityController extends Controller
     public function index()
     {
         $healthFacilities =  Auth::user()->healthFacilities;
-        foreach($healthFacilities as $hf){
-            if ($hf->version_json == null){
-                error_log("is null");
-            }else{
-                error_log("is not null");
-            }
-        }
         return view("healthFacilities.index",[
             "healthFacilities" => $healthFacilities
         ]);

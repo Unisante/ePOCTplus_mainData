@@ -114,10 +114,6 @@ class DeviceService {
      * Updates the given device model with system information uploaded by the device itself
      */
     public function storeDeviceInfo(Device $device,$validatedDeviceInfoRequest){
-        error_log($device->name);
-        foreach($validatedDeviceInfoRequest as $key => $value){
-            error_log($key . $value);
-        }
         $device->fill($validatedDeviceInfoRequest)->save();
     }
 

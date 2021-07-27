@@ -173,7 +173,6 @@ export default {
         },
         destroy : function(id){
             this.actionURL= this.devices_route + "/" + id.toString()
-            console.log(this.actionURL)
             this.showDeleteModal = true
         },
         destroySuccess: function(response){
@@ -201,7 +200,6 @@ export default {
         },
 
         editFailure: function(error){
-            console.log(error)
             var errorMsg = error['message']
             var errors = error['errors']
             this.$toasted.global.error_notification("Device Editing Failed: " + errorMsg)

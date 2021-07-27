@@ -184,7 +184,6 @@ class SaveZipCasesJob implements ShouldQueue
                 Storage::Delete($case_json);
               }
             }catch(\Exception $e){
-              error_log($e);
               Log::info('savecase',  ['error_saving' => $e]);
               if(Storage::Exists($case_json) && !(Storage::Exists($this->failed_folder.'/'.basename($case_json)))){
                 Storage::move($case_json, $this->failed_folder.'/'.basename($case_json));
@@ -196,7 +195,6 @@ class SaveZipCasesJob implements ShouldQueue
           Storage::copy($this->zip_storage_path, 'extracted_cases_zip/'.basename($this->zip_storage_path));
           // Storage::Delete($this->zip_storage_path);
         }catch(\Exception $e){
-          error_log($e);
           Log::info('savecase',  ['error_saving' => $e]);
           Storage::copy($this->zip_storage_path, 'failed_cases_zip/'.basename($this->zip_storage_path));
         }
