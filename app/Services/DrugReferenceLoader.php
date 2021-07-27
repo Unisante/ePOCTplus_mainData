@@ -44,10 +44,11 @@ class DrugReferenceLoader extends ModelLoader {
 
     protected function getValues()
     {
-        return array_merge(parent::getValues(), [
-            'formulationSelected' => 0, // TODO wtf
-            'agreed' => $this->agreed,
-            'additional' => $this->additional,
+        $values = parent::getValues();
+        return array_merge($values, [
+            'agreed' => $this->additional ? null : $this->agreed,
+            'additional' => $this->agreed ? $this->additional : null,
+            'duration' => $values['duration'] ?? $this->drug->duration
         ]);
     }
 

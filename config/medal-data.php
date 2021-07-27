@@ -217,7 +217,6 @@ return [
         'duration' => [
           'key' => 'duration',
           'modifiers' => ['optional'],
-          'type' => 'string',
         ]
       ]
     ],

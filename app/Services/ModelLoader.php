@@ -78,7 +78,7 @@ abstract class ModelLoader {
                 }
 
                 if ($value === null && is_array($config) && array_search('optional', $config['modifiers']) !== false) {
-                    switch ($config['type']) {
+                    switch ($config['type'] ?? null) {
                         case 'string':
                             $value = '';
                             break;

@@ -18,6 +18,8 @@ class AddDetailsToDrugReferencesTable extends Migration
             $table->foreign('formulation_id')->references('id')->on('formulations');
             $table->boolean('additional')->nullable();
             $table->string('duration')->nullable();
+            $table->boolean('agreed')->nullable()->change();
+            $table->integer('formulationSelected')->nullable()->change();
         });
     }
 
@@ -32,6 +34,8 @@ class AddDetailsToDrugReferencesTable extends Migration
             $table->removeColumn('formulation_id');
             $table->removeColumn('additional');
             $table->removeColumn('duration');
+            $table->boolean('agreed')->nullable(false)->change();
+            $table->integer('formulationSelected')->nullable(false)->change();
         });
     }
 }

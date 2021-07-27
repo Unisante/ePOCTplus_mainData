@@ -123,8 +123,9 @@ class SaveCaseService
           $diagnosis = (new DiagnosisLoader($finalDiagnosisData, $version))->load();
 
           foreach ($finalDiagnosisData['drugs'] as $drugId => $drugRefData) {
+            self::checkHasProperties($drugRefData, ['duration']);
             $drugData = $algorithmData['health_cares'][$drugId];
-            $drug = (new DrugLoader($drugData, $diagnosis))->load();
+            $drug = (new DrugLoader($drugData, $diagnosis, $drugRefData['duration']))->load();
 
             foreach ($drugData['formulations'] as $formulationData) {
               $formulation = (new FormulationLoader($formulationData, $drug))->load();
@@ -135,6 +136,18 @@ class SaveCaseService
             $managementData = $algorithmData['health_cares'][$managementId];
             $management = (new ManagementLoader($managementData, $diagnosis))->load();
           }
+        }
+      }
+    }
+
+    foreach ($algorithmData['health_cares'] as $drugData) {
+      self::checkHasProperties($drugData, ['category']);
+      if ($drugData['category'] == 'drug') {
+        self::checkHasProperties($drugData, ['formulations']);
+        $drug = (new DrugLoader($drugData))->load();
+
+        foreach ($drugData['formulations'] as $formulationData) {
+          $formulation = (new FormulationLoader($formulationData, $drug))->load();
         }
       }
     }
