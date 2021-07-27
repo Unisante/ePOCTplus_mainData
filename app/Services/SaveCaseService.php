@@ -208,10 +208,10 @@ class SaveCaseService
     // Diagnoses
     $diagnosesData = $caseData['diagnosis'];
     self::checkHasProperties($diagnosesData, ['agreed', 'additional', 'excluded', 'refused', 'custom']);
-    $this->saveDiagnoses($diagnosesData['agreed'], $medicalCase, true, false, true);
-    $this->saveDiagnoses($diagnosesData['additional'], $medicalCase, false, false, true);
+    $this->saveDiagnoses($diagnosesData['agreed'], $medicalCase, false, false, true);
+    $this->saveDiagnoses($diagnosesData['additional'], $medicalCase, true, false, true);
     $this->saveDiagnoses($diagnosesData['excluded'], $medicalCase, false, true, false);
-    $this->saveDiagnoses($diagnosesData['refused'], $medicalCase, true, false, false);
+    $this->saveDiagnoses($diagnosesData['refused'], $medicalCase, false, false, false);
     
     foreach ($diagnosesData['custom'] as $customDiagnosisData) {
       self::checkHasProperties($customDiagnosisData, ['drugs']);
@@ -230,17 +230,17 @@ class SaveCaseService
    *
    * @param object $diagnosesData
    * @param MedicalCase $medicalCase
-   * @param boolean $isProposed
+   * @param boolean $additional
    * @return void
    */
-  protected function saveDiagnoses($diagnosesData, $medicalCase, $isProposed, $isExcluded, $isAgreed) {
+  protected function saveDiagnoses($diagnosesData, $medicalCase, $additional, $isExcluded, $isAgreed) {
     
     foreach ($diagnosesData as $diagnosisRefData) {
 
       $diagnosisId = $diagnosisRefData['id'] ?? $diagnosisRefData;
 
       $diagnosis = Diagnosis::where('medal_c_id', $diagnosisId)->first();
-      $diagnosisRef = (new DiagnosisReferenceLoader($diagnosisRefData, $medicalCase, $diagnosis, $isProposed, $isExcluded, $isAgreed))->load();
+      $diagnosisRef = (new DiagnosisReferenceLoader($diagnosisRefData, $medicalCase, $diagnosis, $additional, $isExcluded, $isAgreed))->load();
       
       if ($isAgreed && !$isExcluded) {
         self::checkHasProperties($diagnosisRefData, ['drugs']);

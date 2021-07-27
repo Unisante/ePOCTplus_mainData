@@ -19,7 +19,7 @@ class CreateCustomDrugsTable extends Migration
             $table->string('name');
             $table->string('duration');
             $table->integer('custom_diagnosis_id')->unsigned();
-            $table->foreign('custom_diagnosis_id')->references('id')->on('medical_cases');
+            $table->foreign('custom_diagnosis_id')->references('id')->on('custom_diagnoses');
         });
     }
 

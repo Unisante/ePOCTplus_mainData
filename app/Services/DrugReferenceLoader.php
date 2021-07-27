@@ -47,7 +47,7 @@ class DrugReferenceLoader extends ModelLoader {
         $values = parent::getValues();
         return array_merge($values, [
             'agreed' => $this->additional ? null : $this->agreed,
-            'additional' => $this->agreed ? $this->additional : null,
+            'additional' => $this->additional,
             'duration' => $values['duration'] ?? $this->drug->duration
         ]);
     }

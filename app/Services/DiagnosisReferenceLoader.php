@@ -10,7 +10,7 @@ class DiagnosisReferenceLoader extends ModelLoader {
     protected $diagnosisRefData;
     protected $medicalCase;
     protected $diagnosis;
-    protected $isProposed;
+    protected $additional;
     protected $isExcluded;
     protected $isAgreed;
 
@@ -20,16 +20,16 @@ class DiagnosisReferenceLoader extends ModelLoader {
      * @param array $data
      * @param MedicalCase $medicalCase
      * @param Diagnosis $diagnosis
-     * @param bool $isProposed
+     * @param bool $additional
      * @param bool $isExcluded
      * @param bool $isAgreed
      */
-    public function __construct($diagnosisRefData, $medicalCase, $diagnosis, $isProposed, $isExcluded, $isAgreed) {
+    public function __construct($diagnosisRefData, $medicalCase, $diagnosis, $additional, $isExcluded, $isAgreed) {
         parent::__construct($diagnosisRefData);
         $this->diagnosisRefData = $diagnosisRefData;
         $this->medicalCase = $medicalCase;
         $this->diagnosis = $diagnosis;
-        $this->isProposed = $isProposed;
+        $this->additional = $additional;
         $this->isExcluded = $isExcluded;
         $this->isAgreed = $isAgreed;
     }
@@ -45,9 +45,9 @@ class DiagnosisReferenceLoader extends ModelLoader {
     protected function getValues()
     {
         return [
-            'agreed' => $this->isAgreed,
+            'agreed' => ($this->additional && !$this->isExcluded) ? $this->isAgreed : null,
             'excluded' => $this->isExcluded,
-            'proposed_additional' => $this->isProposed
+            'additional' => $this->additional
         ];
     }
 

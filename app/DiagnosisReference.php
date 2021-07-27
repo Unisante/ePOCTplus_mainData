@@ -28,7 +28,7 @@ class DiagnosisReference extends Model
       $diagnosis=Diagnosis::find($reference->diagnosis_id);
       $med_diag=(object)array(
         "agreed"=>$reference->agreed,
-        "proposed"=>$reference->proposed_additional,
+        "proposed"=>!$reference->additional,
         "diagnosis_medal_c_id"=>$diagnosis->medal_c_id,
         "label"=>$diagnosis->label,
         "version"=>Version::find($diagnosis->versiod_id)

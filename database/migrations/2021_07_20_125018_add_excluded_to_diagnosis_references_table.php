@@ -14,7 +14,10 @@ class AddExcludedToDiagnosisReferencesTable extends Migration
     public function up()
     {
         Schema::table('diagnosis_references', function (Blueprint $table) {
-            $table->boolean('excluded')->default(false);
+            $table->boolean('excluded')->nullable()->default(false);
+            $table->boolean('agreed')->nullable()->change();
+            $table->boolean('proposed_additional')->nullable()->change();
+            $table->renameColumn('proposed_additional', 'additional');
         });
     }
 
@@ -27,6 +30,9 @@ class AddExcludedToDiagnosisReferencesTable extends Migration
     {
         Schema::table('diagnosis_references', function (Blueprint $table) {
             $table->removeColumn('excluded');
+            $table->boolean('agreed')->nullable(false)->change();
+            $table->renameColumn('additional', 'proposed_additional');
+            $table->boolean('proposed_additional')->nullable(false)->change();
         });
     }
 }
