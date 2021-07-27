@@ -7,14 +7,15 @@
         "watch-poll": "npm run watch -- --watch-poll",
         "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
         "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "heroku-postbuild": "npm run production"
     },
     "devDependencies": {
         "axios": "^0.18",
         "bootstrap": "^4.0.0",
         "cross-env": "^5.1",
         "jquery": "^3.2",
-        "laravel-mix": "^4.0.7",
+        "laravel-mix": "^5.0.1",
         "lodash": "^4.17.5",
         "popper.js": "^1.12",
         "resolve-url-loader": "^2.3.1",
@@ -24,6 +25,11 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "ngrok": "^3.3.0"
+        "@meforma/vue-toaster": "^1.2.2",
+        "ngrok": "^3.3.0",
+        "stylus": "^0.54.8",
+        "stylus-loader": "^3.0.2",
+        "vue-spinner": "^1.0.4",
+        "vue-toasted": "^1.1.28"
     }
 }

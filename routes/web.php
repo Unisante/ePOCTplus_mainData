@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Request;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,6 +32,7 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('roles/removeRole/{id}','RolesController@removeRolePermissionShow');
   Route::post('role/removePerm/{id}','RolesController@removeRolePermission');
 
+
   //for patient
   Route::get('/patients','PatientsController@index')->name('Patients.index');;
   Route::get('/patient/{id}','PatientsController@show')->name('PatientsController.show');
@@ -59,6 +62,37 @@ Route::group(['middleware' => ['auth']], function() {
   //for facilities
   Route::get('/facilities/index','FacilitiesController@index')->name('FacilitiesController.index');
 
+
+  //for health facilities
+  Route::group(['middleware' => ['permission:Manage_Health_Facilities'],],function(){
+    Route::resource('health-facilities','HealthFacilityController')->only([
+      'index',
+      'store',
+      'update',
+      'destroy'
+    ]);
+    //Device Management in the context of Health Facilities
+    Route::get('health-facilities/{health_facility}/manage-devices',"HealthFacilityController@manageDevices");
+    Route::post('health-facilities/{health_facility}/assign-device/{device}',"HealthFacilityController@assignDevice");
+    Route::post('health-facilities/{health_facility}/unassign-device/{device}',"HealthFacilityController@unassignDevice");
+    //Algorithms Management in the context of Health Facilities
+    Route::get('health-facilities/{health_facility}/manage-algorithms',"HealthFacilityController@manageAlgorithms");
+    Route::get('health-facilities/{health_facility}/accesses',"HealthFacilityController@accesses");
+    Route::get('health-facilities/versions/{algorithm_id}',"HealthFacilityController@versions");
+    Route::post('health-facilities/{health_facility}/assign-version/{version_id}',"HealthFacilityController@assignVersion");
+  });  
+  //for Devices
+  Route::group(['middleware' => ['permission:Manage_Health_Facilities'],],function(){
+    Route::resource('devices','DeviceController')->only([
+      'index',
+      'store',
+      'update',
+      'destroy'
+    ]);
+  });
+  
+
+
   //for downloading exports
   // Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('MedicalCasesController.medicalCaseIntoExcel');
   // Route::get('/export-medicalCase-csv','MedicalCasesController@medicalCaseIntoCsv')->name('MedicalCasesController.medicalCaseIntoCsv');
@@ -87,11 +121,6 @@ Route::group(['middleware' => ['auth']], function() {
   Route::get('/exports/diagnosis_list','ExportsController@diagnosesSummary')->name('ExportsController.diagnosesSummary');
   Route::get('/exports/drug_list','ExportsController@drugsSummary')->name('ExportsController.drugsSummary');
 
-
 });
-
-
-
-
 
 
