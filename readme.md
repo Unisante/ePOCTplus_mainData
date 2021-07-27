@@ -72,6 +72,8 @@ This document lists instructions to setup a medAL-*data* server instance and is 
    # give rights to herokuish
    chown -R 32767:32767 /var/lib/dokku/data/storage/medal-data
    dokku storage:mount medal-data /var/lib/dokku/data/storage/medal-data:/app/storage
+   # set the scale of the application
+   dokku ps:scale medal-data web=1 worker=1
    ```
 2. **[t_local]**: On the local workstation, clone the source code of the medal-data server from the bitbucket repository by running the command `git clone https://informatique_unisante@bitbucket.org/wavemind_swiss/liwi-main-data.git` and navigate to the project folder `cd liwi-main-data`. 
 3. **[t_local]**: copy the `dokku.env.example` file in this folder and fill out the values depending on your desired configuration. Then copy the file contents to your clipboard. 
@@ -84,7 +86,7 @@ This document lists instructions to setup a medAL-*data* server instance and is 
    If the push did not work, then make sure you have correctly set up the SSH key on the dokku server using the web interface. (more information on https://dokku.com/docs/deployment/user-management/)
 6. **[t_remote]**: Back on the remote server, run the following command to set the APP_KEY environment variable:
    ```bash
-   dokku config:set medal-data APP_KEY=$(dokku run medal-data php artisan --no-ansi key:generate --show)
+   dokku config:set medal-data APP_KEY=$(dokku run medal-data php artisan --no-ansi key:generate --show) --no-restart
    ```
 7. **[t_remote]**: Finally, if needed migrate and seed the database using:
    ```bash
