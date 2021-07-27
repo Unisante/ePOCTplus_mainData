@@ -277,7 +277,7 @@ class SaveCaseService
   private static function checkHasProperties($data, $properties) {
     foreach ($properties as $property) {
       if (!array_key_exists($property, $data)) {
-        throw new InvalidArgumentException();
+        throw new InvalidArgumentException("Missing property '$property'");
       }
     }
   }
