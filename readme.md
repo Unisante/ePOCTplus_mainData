@@ -7,7 +7,7 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
 
-# SOP: Setup of medAL-*data* system
+# medAL-*data* system
 
 ## Purpose and Scope
 
@@ -129,61 +129,37 @@ Similarly, medAL-*creator* algorithm versions can be assigned to health faciliti
 
 ### Device API
 
-When devices and an algorithm version is assigned to a health facility, devices can request access tokens from the medAL-*data* server in order to authenticate to medAL-*data*'s protected API. The full API is documented in the [Postman Collection]("device_api.json")
+When devices and an algorithm version is assigned to a health facility, devices can request access tokens from the medAL-*data* server in order to authenticate to medAL-*data*'s protected API. The full API is documented in the [Postman Collection]("./device_api.json")
+
+#### Getting a Token with PKCE in Postman
+
+In order to get a token and a refresh token, the PKCE OAuth flow must be used. For the example above, this can be tested using the postman collection's PKCE request. Head to the **Authorization** tab in the request and fill out the form such that the urls points to the medAL-*data* server, the Client ID field corresponds to the Auth ID of the device and the Redirect URL should be the same than the one set for the device. To check what redirect URL is assigned to the device, head to the devices tab and click on the `View` button of the corresponding device to show all the details. When the form is filled out in Postman, click on the `Get New Access Token` button to start the PKCE flow which will redirect you to the login page (where you have to login using the user credentials used to create the device). A prompt will ask you to grant access to the device, press `Ok` and then you should receive a token and refresh token. 
+
+#### Protected Routes
+
+The protected routes allow devices to:
+- Upload medical cases (to be integrated still)
+- Fetch information from the health facility such that the pin code and hub IP
+- Upload its own device information such as mac address, os etc..
+- Fetch the json of the algorithm version that is assigned to this health facility
+
+You can try out these routes using the Postman collection replacing the `token` variable with the one received using the PKCE flow. 
+
 
 ## Integration details
 
-## Passport Integration (Not yet in this branch but will be added)
-
-In this section, we summarize the changes made to the server when integrating the Laravel Passport functionality. The plan is to have a new type of stakeholders which are in charge of registering devices such as medal-*reader* and medal-*hub* to the system, which will then allow these devices to fetch an access token from this server which it can then use to access API routes which we will protect with laravel's passport `auth:api` middleware, verifying the validity of tokens. Below, we summarize the functionality and provide details on the steps taken to integrate this into the server. 
-
-### OAuth Functionality
-
-The server already uses Spaties permission package and therefore we will leverage this existing package to create a new permission `Manage_Devices` with an associated role `device-manager`, which, when held, gives access to a web page allowing to register new devices, such as *hubs* and *readers* into the system. Once registered, a device manager will then have to login to this server from the device, which under the hood uses the OAuth's PKCE authorization flow. (for more details about the protocol see: https://auth0.com/docs/flows/authorization-code-flow-with-proof-key-for-code-exchange-pkce). If the login is successful, the device will obtain a token which is tied to the users permission. This token will then be used automatically by the devices when hitting the `sync_medical_cases` API endpoint which will be guarded by both the `auth:api` and `permission:Manage_Devices` middlewares. 
-
-#### Testing the Functionality (Postman)
-
-Before following the instructions, make sure that your server has migrated all the tables and optionally has been seeded with users. Moreover, you should ensure that the OAuth keys are present in the `storage` folder, otherwise run `php artisan passport:install` to generate the keys. 
-
-1. Login to the server using an account with the `Device Manager` role (if the DB is seeded with `php artisan db:seed`, then you can use u:`devicemanager@dynamic.com` , pwd:`DeviceManager`)
-
-2. Head to the *Manage Devices* tab and click on *Create a New Client* 
-
-   1. Provide any name and for the callback add `http://localhost:5555` (it can be any valid URL)
-   2. uncheck the *confidential* check-box
-
-3. Once the client is created you should see it appear in the list below, along with an ID to remember
-
-4. Head to Postman and create a new request without entering any URL 
-
-   1. Go to the authorization tab and choose OAuth 2.0 as the Type in the drop-down list
-
-   2. In the form enter the following information
-
-      | Header Prefix         | Bearer                                |
-      | --------------------- | ------------------------------------- |
-      | Grant Type            | Authorization code with PKCE          |
-      | Auth URL              | <your server address>/oauth/authorize |
-      | Callback URL          | http://localhost:5555                 |
-      | Access Token URL      | <your server address>/oauth/token     |
-      | Client ID             | <the ID of the newly created client>  |
-      | Code Challenge Method | SHA-256                               |
-      | State                 | Any Value (ex 1234)                   |
-      | Client Authentication | Send as Basic Auth header             |
-
-   3. Press on the `Get New Access Token` button, this will prompt you to login on the server and then ask you to authorize the application which will in turn yield an access token: View the access token and copy it to your clipboard.
-
-5. Now lets test if the token can be used to access the `api/protected-api` endpoint.
-
-6. In postman create a new Get request to `<your server address>/api/protected-api` in the authorization tab, choose the `Bearer Token` type and copy the value of the token in the `Token` dialog on the right. 
-
-7. Now head to the the Headers tab and add the following key value pair `Accept -> application/json` 
-
-8. Send the request and if everything is setup correctly you should obtain information about the user in the response.
+In this section we summarize the components that have been integrated into medAL-*data*'s Laravel web server.
 
 ### Back-end Changes
 
-the back-end changes are mainly the newly added passport routes (we should remove the ones that are unused), a new API route, as well as a Device Controller. 
+the back-end changes consists of the following additions:
+- Model and Controller for Health Facilities and Devices
+- Laravel Passport plugin
+- New service classes to perform the business logic for:
+  - Algorithms 
+  - Devices
+  - Health Facilities
+- AuthDeviceController which is the controller used for most of the Passport-protected API routes for devices
 
 #### Passport Installation
 
@@ -207,74 +183,57 @@ Which we changed to:
     },
 ```
 
-for the passport installation to work properly. After changing the `composer.json` we run `composer update` followed by `composer require laravel/passport` which successfully installed passport's back-end routes.
+for the passport installation to work properly. After changing the `composer.json` we run `composer update` followed by `composer require laravel/passport` which successfully installed passport's back-end routes. The routes used for Passport are then registered in the `AuthServiceProvider.php` provider class where we only used the routes necessary for our desired functionality. 
 
-#### Passport Routes Registration
+#### Database Migrations
 
-The `boot` method from the `app/Providers/AuthServiceProvider.php` has been modified to include all of passport routes, which are all guarded by default with the middleware `web,auth` , with the only exception of routes that are used to access passport's `ClientController` (used to manage device clients) which are protected using additionally the `permission:Manage_Devices` middleware. 
+The new migrations are the following:
+- New nullable columns are added to the pre-existing `health_facilities` table that are used to manage health facilities. Moreover, a name column has been added (as the pre-existing was unconventionally called `facility_name`).
+- The `devices` table and `device_types` table have been created to store device information. 
+- The `health_facility_accesses` table has been created to store all the algorithm versions metadata that have been assigned to health facilities.
+- The `version_jsons` table has been created to store the version's json files that are then fetched by the devices.
 
-```php
-public function boot()
-    {
-        $this->registerPolicies();
-        Passport::routes(function ($router) {
-                    $router->forAuthorization();
-                    $router->forAccessTokens();
-                    $router->forTransientTokens();
-                    $router->forPersonalAccessTokens();
-                });
-            // Here the routes to manage clients are guarded with additionnal middleware
-        Route::group(['middleware'=>['web','auth','permission:Manage_Devices']], function(){ 
-            Passport::routes(function ($router) {
-                $router->forClients();
-            });
-        });
-    }
-```
 
-#### Device Controller
+#### Services
 
-The controller responsible for managing OAuth Clients (which are equivalent to devices such as *hubs* and *readers* in our case) is the `ClientController` from Laravel's passport package for which the front-end consist of Vue.js components generated automatically (see next section for more details). The components are included in a blade template which is served through the route `/devices` which is handled through the `app/Http/Controllers/DevicesController@index` method which simply returns the rendered template containing the vue components.  
+- The `DeviceService` class is used to make the link between a Device model and Passport's Client model, which represent OAuth clients. This service is also used to resolve a Device model from a token that is part of the request.
+- The `HealthFacilityService` class is used to assign and unassign devices.
+- The `AlgorithmService` class is used to fetch algorithms and versions from the medAL-*creator* server and assign versions to health facilities
 
-#### Protected API route for testing
+For more information, the service classes are properly commented in `App/Http/Services` 
 
-A new test route has been added to test the functionality of tokens: `api/protected-api` and simply returns the user information upon success. It is guarded by both the `auth:api` middleware which validates the token and resolves the user, followed by the `permission:Manage_Devices` middleware. 
+
+#### Controllers
+
+The newly controllers are the following:
+
+- The `DeviceController` handles requests for creating editing and deleting devices
+- The `HealthFacilityController` handles request for creating, editing and deleting health facilities. Additionally, it handles algorithm related-requests and assignment/unassignment of devices. 
+- The `Api\AuthDeviceController` handles requests coming from authenticated devices to fetch their health facility information, upload their device information and get their algorithm versions.
+
+#### Middlewares and Policies
+
+The `DeviceController` and `HealthFacilityController` are guarded by the `web` and `auth` and `permission:` middleware (only users with the `Logistician` role hold these permissions). Additionally, handles authorize slug requests depending on policies that only allow a user to modify its own resources. 
+The `Api\AuthDeviceController` handlers are guarded by the `auth:api` middleware which is followed by the `device.resolve` middleware which translates each request with a token to the corresponding device model and adds a timestamp to the `last_seen` column of the `devices` table. 
+
+
+#### Requests and Resources
+
+For creating and editing devices and health facilities, custom request classes have been created to validate the request. Moreover, when returning device models to the front-end it is first converted to a Device resource which omits some fields and translates others for the user.
+
+#### Roles
+
+The `Logistician` role has been added with has permissions to reset its own password, view its user information, manage health facilities and devices.
 
 ### Front-end Changes
 
-The front-end changes mainly consist of a newly added page containing vue components used to access the Clients resource from the passport package. 
+The existing front-end has been extended with two new dashboard accessible to logistician users, Devices and Health Facilities. Both dashboard are made of reactive vue components.
 
 #### Upgrade Laravel-Mix
 
 The version of Laravel mix previously declared in `package.json` was making the node compilation failed (on heroku) so it has been changed to : `"laravel-mix": "^5.0.1",` 
 
 after which the command `npm install` is run to update the dependencies. 
-
-#### Generate Passport Components
-
-Vue.js Passport components to manage devices were added using `php artisan vendor:publish --tag=passport-components` and then registered in `ressources/js/app.js` 
-
-#### Devices Management Page
-
-A new template has been created to manage devices using for now the Vue.js Passport components in `ressources/views/devices/index.blade.php`. This template extends from the `adminlte::page` template used for other pages and additionally includes the scripts and divs needed to use the Vue components. 
-
-The Device management page has also been registered to the Navigation Menu:
-
-```php
-[
-    'text' => 'Manage Devices',
-    'url'  => '/devices',
-    'icon' => 'fas fa-tablet-alt',
-    'can' =>  'Manage_Devices'
-],
-```
-
-from `config/adminlte.php` 
-
-## Procedure for deploying the server on Heroku
-
-
-
 
 
 ## About Laravel
