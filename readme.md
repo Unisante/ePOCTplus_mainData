@@ -109,7 +109,7 @@ In this section, we show how to use the new interface to create health facilitie
 
 To start login with a user which has the `Logistician` role. (if the database is seeded then there is a default role with u: `logistician@dynamic.com`, pwd: `1234`) The main logistician dashboard gives access to the management of health facilities and devices which can be created and edited freely. 
 
-<img src="./assets/logistician_panel.png" alt="log_panel" style="zoom:100%;" />
+<img src="./assets/logistician_panel.png" alt="log_panel" style="zoom:60%;" />
 
 When creating a medal-*hub* device, a redirection URL must be specified in order to enroll the device later on. This redirect URL should correspond to the address of the device (+ endpoint TBD) on the local network when registering it. 
 
@@ -117,11 +117,19 @@ When creating a medal-*hub* device, a redirection URL must be specified in order
 
 To assign a Device to a health facility, head to the health facility management panel and click on the `Devices` button on the row corresponding to the health facility. A window will open up allowing to assign free devices to this health facility. 
 
-
+<img src="./assets/assign_devices.png" alt="dev" style="zoom:60%;" />
 
 
 ### Algorithm Version assignment
 
+Similarly, medAL-*creator* algorithm versions can be assigned to health facilities by clicking the `Algorithms` button on the row corresponding to the health facility. The window will show two dropdown lists where an algorithm and corresponding version can be assigned. When a version is replaced, the older versions will appear in the table below. Note that choosing a version for which a *json* has not been properly generated on the *creator* server will result in an error.
+
+<img src="./assets/assign_versions.png" alt="ver" style="zoom:60%;" />
+
+
+### Device API
+
+When devices and an algorithm version is assigned to a health facility, devices can request access tokens from the medAL-*data* server in order to authenticate to medAL-*data*'s protected API. The full API is documented in the <a ref="./medal-data-device-api.postman_collection.json">Postman Collection</a>
 
 ## Integration details
 
