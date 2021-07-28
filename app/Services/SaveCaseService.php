@@ -34,12 +34,11 @@ class SaveCaseService
    * @return MedicalCase
    */
   public function save($caseData) {
-    //self::checkHasProperties($caseData, ['patient', 'nodes', 'diagnosis', 'version_id']);
+    self::checkHasProperties($caseData, ['patient', 'nodes', 'diagnosis', 'version_id']);
     self::checkHasProperties($caseData['patient'], ['group_id']);
     $hf = $this->udpateHf($caseData['patient']['group_id']);
 
-    //$versionId = $caseData['version_id'];
-    $versionId = 1;
+    $versionId = $caseData['version_id'];
     $version = $this->updateVersion($versionId);
     $patientConfig = $this->updateConfig($version);
     $patient = $this->savePatient($caseData, $patientConfig);
