@@ -101,6 +101,29 @@ This document lists instructions to setup a medAL-*data* server instance and is 
    dokku run medal-data php artisan migrate --force
    ```
 
+## Health Facility Setup & Device Registration
+
+In this section, we show how to use the new interface to create health facilities and assign to them devices such as medAL-*reader* and medAL-*hub* as well as specific algorithm versions that can fetched by authorized devices.
+
+### Health Facility Creation
+
+To start login with a user which has the `Logistician` role. (if the database is seeded then there is a default role with u: `logistician@dynamic.com`, pwd: `1234`) The main logistician dashboard gives access to the management of health facilities and devices which can be created and edited freely. 
+
+<img src="./assets/logistician_panel.png" alt="log_panel" style="zoom:100%;" />
+
+When creating a medal-*hub* device, a redirection URL must be specified in order to enroll the device later on. This redirect URL should correspond to the address of the device (+ endpoint TBD) on the local network when registering it. 
+
+### Device assignment
+
+To assign a Device to a health facility, head to the health facility management panel and click on the `Devices` button on the row corresponding to the health facility. A window will open up allowing to assign free devices to this health facility. 
+
+
+
+
+### Algorithm Version assignment
+
+
+## Integration details
 
 ## Passport Integration (Not yet in this branch but will be added)
 
