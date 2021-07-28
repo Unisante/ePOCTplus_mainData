@@ -34,11 +34,12 @@ class SaveCaseService
    * @return MedicalCase
    */
   public function save($caseData) {
-    self::checkHasProperties($caseData, ['patient', 'nodes', 'diagnosis', 'version_id']);
+    //self::checkHasProperties($caseData, ['patient', 'nodes', 'diagnosis', 'version_id']);
     self::checkHasProperties($caseData['patient'], ['group_id']);
     $hf = $this->udpateHf($caseData['patient']['group_id']);
 
-    $versionId = $caseData['version_id'];
+    //$versionId = $caseData['version_id'];
+    $versionId = 1;
     $version = $this->updateVersion($versionId);
     $patientConfig = $this->updateConfig($version);
     $patient = $this->savePatient($caseData, $patientConfig);
@@ -59,7 +60,7 @@ class SaveCaseService
       return $config;
     }
 
-    $configData = json_decode(Http::get(Config::get('medal-data.urls.creator_patient_url'), ['version_id' => $version->medal_c_id]), true);
+    $configData = json_decode(Http::get(Config::get('medal.urls.creator_patient_url'), ['version_id' => $version->medal_c_id]), true);
     return (new PatientConfigLoader($configData, $version))->load();
   }
 
@@ -75,7 +76,7 @@ class SaveCaseService
       return $hf;
     }
 
-    $hfData = json_decode(Http::get(Config::get('medal-data.urls.creator_health_facility_url') . $groupId), true);
+    $hfData = json_decode(Http::get(Config::get('medal.urls.creator_health_facility_url') . $groupId), true);
     $hf = (new HealthFacilityLoader($hfData))->load();
     return $hf;
   }
@@ -92,7 +93,7 @@ class SaveCaseService
       return $version;
     }
 
-    $algorithmData = json_decode(Http::get(Config::get('medal-data.urls.creator_algorithm_url') . $versionId), true);
+    $algorithmData = json_decode(Http::get(Config::get('medal.urls.creator_algorithm_url') . $versionId), true);
     self::checkHasProperties($algorithmData, ['nodes', 'diagnostics', 'health_cares']);
 
 
@@ -165,7 +166,7 @@ class SaveCaseService
     // Consent file
     $patientData = $caseData['patient'];
     self::checkHasProperties($patientData, ['uid', 'consent_file']);
-    $consentPath = Config::get('medal-data.storage.consent_img_dir');
+    $consentPath = Config::get('medal.storage.consent_img_dir');
     $consentFileName = $patientData['uid'] . '_image.jpg';
     Storage::makeDirectory($consentPath);
     $consentImg = Image::make($patientData['consent_file']);

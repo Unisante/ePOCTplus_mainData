@@ -35,7 +35,7 @@ abstract class ModelLoader {
                     }
         
                     if (is_array($configValue) && array_search('language', $configValue['modifiers']) !== false) {
-                        $language = Config::get('medal-data.global.language');
+                        $language = Config::get('medal.global.language');
                         if (!array_key_exists($language, $this->rawData[$key])) {
                             throw new InvalidArgumentException("Missing language dependent ('$language') value for key '$key' on data for '$modelTitle'");
                         }
@@ -47,7 +47,7 @@ abstract class ModelLoader {
     }
 
     private function config() {
-        return Config::get('medal-data.case_json_properties')[$this->configName()];
+        return Config::get('medal.case_json_properties')[$this->configName()];
     }
 
     protected function valueFromConfig($category, $property) {
@@ -55,7 +55,7 @@ abstract class ModelLoader {
     }
 
     protected function languageValueFromConfig($property) {
-        return $this->rawData[$property][Config::get('medal-data.global.language')] ?? null;
+        return $this->rawData[$property][Config::get('medal.global.language')] ?? null;
     }
 
     protected function keyValuesFromConfig($category) {

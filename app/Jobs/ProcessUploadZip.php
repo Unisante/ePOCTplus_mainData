@@ -36,7 +36,7 @@ class ProcessUploadZip implements ShouldQueue
      */
     public function handle()
     {
-        $extractDir = Config::get('medal-data.storage.json_extract_dir');
+        $extractDir = Config::get('medal.storage.json_extract_dir');
         Storage::makeDirectory($extractDir);
 
         $zip = new ZipArchive;

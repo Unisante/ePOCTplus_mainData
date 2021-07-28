@@ -43,7 +43,7 @@ class ProcessCaseJson implements ShouldQueue
         $caseData = json_decode(Storage::get("$this->dir/$this->filename"), true);
         if ($caseData === null) {
             Log::error("Unable to parse JSON file: $this->filename");
-            $this->moveToDir(Config::get('medal-data.storage.json_failure_dir'));
+            $this->moveToDir(Config::get('medal.storage.json_failure_dir'));
         }
         
         try {
@@ -53,7 +53,7 @@ class ProcessCaseJson implements ShouldQueue
             DB::commit();
 
             Log::info("Successfully saved case from JSON file: $this->filename");
-            $this->moveToDir(Config::get('medal-data.storage.json_success_dir'));
+            $this->moveToDir(Config::get('medal.storage.json_success_dir'));
         }
         catch (InvalidArgumentException $e) {
             DB::rollBack();
@@ -61,7 +61,7 @@ class ProcessCaseJson implements ShouldQueue
             Log::error("Run `php artisan cases:reload` to attempt to process failing cases");
             Log::error($e->getMessage());
             Log::error($e->getTraceAsString());
-            $this->moveToDir(Config::get('medal-data.storage.json_failure_dir'));
+            $this->moveToDir(Config::get('medal.storage.json_failure_dir'));
         }
     }
 

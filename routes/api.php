@@ -48,7 +48,7 @@ Route::post('sync_medical_cases', function(Request $request) {
     return response('Missing attached file', 400);
   }
 
-  $path = $request->file('file')->store(Config::get('medal-data.storage.cases_zip_dir'));
+  $path = $request->file('file')->store(Config::get('medal.storage.cases_zip_dir'));
 
   if ($path === false) {
     return response('Unable to save file', 500);
