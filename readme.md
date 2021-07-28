@@ -129,7 +129,7 @@ Similarly, medAL-*creator* algorithm versions can be assigned to health faciliti
 
 ### Device API
 
-When devices and an algorithm version is assigned to a health facility, devices can request access tokens from the medAL-*data* server in order to authenticate to medAL-*data*'s protected API. The full API is documented in the <a ref="./medal-data-device-api.postman_collection.json">Postman Collection</a>
+When devices and an algorithm version is assigned to a health facility, devices can request access tokens from the medAL-*data* server in order to authenticate to medAL-*data*'s protected API. The full API is documented in the [Postman Collection]("medal-data-device-api.postman_collection.json")
 
 ## Integration details
 
