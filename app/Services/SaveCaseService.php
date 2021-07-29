@@ -38,7 +38,6 @@ class SaveCaseService
     self::checkHasProperties($caseData, ['patient', 'nodes', 'diagnosis', 'version_id']);
     self::checkHasProperties($caseData['patient'], ['group_id']);
 
-    // TODO there should be no need to retrieve the HF on medalc
     $hf = $this->updateHf($caseData['patient']['group_id']);
 
     $versionId = $caseData['version_id'];
@@ -49,7 +48,13 @@ class SaveCaseService
     if ($version) {
       $config = PatientConfig::where('version_id', $version->id)->first();
     } else {
-      $data = json_decode(Http::get(Config::get('medal.urls.creator_algorithm_url') . $versionId), true);
+      $versionJson = $hf->versionJson;
+
+      if ($versionJson === null) {
+        throw new UnexpectedValueException("Health facility $hf->group_id has no associated version");
+      }
+
+      $data = json_decode($versionJson->json, true);
       $versionData = $data['medal_r_json'];
       $configData = $data['medal_data_config'];
       $version = $this->updateVersion($versionData);
