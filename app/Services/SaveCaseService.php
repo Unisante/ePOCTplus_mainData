@@ -38,7 +38,7 @@ class SaveCaseService
     self::checkHasProperties($caseData['patient'], ['group_id']);
 
     // TODO there should be no need to retrieve the HF on medalc
-    $hf = $this->udpateHf($caseData['patient']['group_id']);
+    $hf = $this->updateHf($caseData['patient']['group_id']);
 
     $versionId = $caseData['version_id'];
 
@@ -77,7 +77,7 @@ class SaveCaseService
    * @param int $groupId
    * @return HealthFacility
    */
-  public function udpateHf($groupId) {
+  public function updateHf($groupId) {
     $hf = HealthFacility::where('group_id', $groupId)->first();
     if ($hf) {
       return $hf;
@@ -179,7 +179,7 @@ class SaveCaseService
     if(strpos($version->study, "Dynamic") !== false) {
       $existingPatientIsTrue = Answer::where($patientLoader->getExistingPatientAnswer())->first()->label == 'Yes';
     }
-    
+
     $patientLoader->flagAsDuplicate($duplicateDataExists, $existingPatientIsTrue);
 
     return $patientLoader->load();
