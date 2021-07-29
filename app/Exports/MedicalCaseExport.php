@@ -60,14 +60,14 @@ WithTitle
       array_push($header,$label);
     }
     // get from diagnosis
-    foreach(Diagnosis::distinct(['medal_c_id','proposed_additional'])->get() as $diagnosis){
+    foreach(Diagnosis::distinct(['medal_c_id','additional'])->get() as $diagnosis){
       $diag='Diag_';
       $label = str_replace(' ', '_', $diagnosis->label);
       array_push($headerToFind,$diag .$label);
-      if($diagnosis->proposed_additional){
-        $label = 'Pro_' .$diag .$diagnosis->medal_c_id .'_' .$label;
-      }else{
+      if($diagnosis->additional){
         $label = 'Add_' .$diag .$diagnosis->medal_c_id .'_' .$label;
+      }else{
+        $label = 'Pro_' .$diag .$diagnosis->medal_c_id .'_' .$label;
       }
 
       array_push($header,$label);

@@ -3,9 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Drug;
+use Illuminate\Support\Facades\Config;
 
-class AdditionalDrug extends Model
+class Formulation extends Model
 {
   protected $guarded = [];
 }

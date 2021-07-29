@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class Http {
     public static function get($url, $params = []) {
@@ -24,7 +25,7 @@ class Http {
         curl_close($curl);
 
         if ($err) {
-            throw new Exception("Unable to complete HTTP GET request to $url");    
+            throw new Exception("Unable to complete HTTP GET request to $url: $err");    
         }
 
         return $response;

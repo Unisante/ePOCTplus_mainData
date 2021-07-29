@@ -34,41 +34,6 @@ class MedicalCase extends Model implements Auditable
   }
 
   /**
-  * Checks the medical_case.json for medical case creation
-  * @params $data_to_parse
-  * @return void
-  */
-  public static function parse_data($data_to_parse){
-    $medical_case = self::get_or_create($data_to_parse,$data_to_parse['version_id']);
-    MedicalCaseAnswer::getOrCreate($data_to_parse['nodes'], $medical_case);
-    DiagnosisReference::parse_data($medical_case->id,$data_to_parse['diagnoses'],$data_to_parse['version_id']);
-  }
-
-  /**
-  * Create or get medical case
-  * @params $data_to_save
-  * @params $version_id
-  * @return $medical_case
-  */
-  public static function get_or_create($data_to_save,$version_id){
-    $medical_case = MedicalCase::firstOrCreate(
-      [
-        'local_medical_case_id'=>$data_to_save['local_medical_case_id']
-      ],
-      [
-        'patient_id'=>$data_to_save['patient_id'],
-        'version_id'=>$version_id,
-        'created_at'=>new DateTime($data_to_save['created_at']),
-        'updated_at'=>new DateTime($data_to_save['updated_at']),
-        'isEligible'=>$data_to_save['isEligible'],
-        'consent'=>$data_to_save['consent'],
-        'group_id'=>$data_to_save['group_id'],
-      ]
-    );
-    return $medical_case;
-  }
-
-  /**
   * Make follow up
   * @params $medical_case
   * @params $data
