@@ -1,0 +1,376 @@
+{
+	"info": {
+		"_postman_id": "66c168ca-9443-422f-9d4d-01d16719e14b",
+		"name": "medal-data-device-api",
+		"description": "Contains the API requests for medal-data's Passport protected API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "PKCE Authrorization",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessTokenUrl",
+							"value": "{{medal-data-url}}/oauth/token",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "{{medal-data-url}}/oauth/authorize",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Example",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "{{redirect_url}}",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "{{client_id}}",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "state",
+							"value": "1234",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "authorization_code_with_pkce",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{medal-data-url}}/oauth/authorize",
+					"host": [
+						"{{medal-data-url}}"
+					],
+					"path": [
+						"oauth",
+						"authorize"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get algorithm",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{medal-data-url}}/api/v1/algorithm",
+					"host": [
+						"{{medal-data-url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"algorithm"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get health facility info",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{medal-data-url}}/api/v1/health-facility-info",
+					"host": [
+						"{{medal-data-url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"health-facility-info"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post device info",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Access-Control-Request-Method",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "mac_address",
+							"value": "02:42:8a:37:f8:fc",
+							"type": "text"
+						},
+						{
+							"key": "model",
+							"value": "Tab D",
+							"type": "text"
+						},
+						{
+							"key": "brand",
+							"value": "Samsung",
+							"type": "text"
+						},
+						{
+							"key": "os",
+							"value": "Android",
+							"type": "text"
+						},
+						{
+							"key": "os_version",
+							"value": "14",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{medal-data-url}}/api/v1/device-info",
+					"host": [
+						"{{medal-data-url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"device-info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post medical case",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Access-Control-Request-Method",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{medal-data-url}}/api/v1/upload-medical-case",
+					"host": [
+						"{{medal-data-url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"upload-medical-case"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh Token",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "refresh_token",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{client_id}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "",
+							"description": "Required for confidential clients.",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "refresh_token",
+							"value": "{{refresh_token}}",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "",
+							"description": "Optional. You can specify a scope that is equal or less than the one requested in the original authorize request.",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{medal-data-url}}/oauth/token",
+					"host": [
+						"{{medal-data-url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				},
+				"description": "This is the OAuth2 refresh token flow, used to obtain a refreshed access token (and id token if applicable) using the refresh token you got during authorization."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "medal-data-url",
+			"value": "http://127.0.0.1:8000"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "refresh_token",
+			"value": ""
+		},
+		{
+			"key": "client_id",
+			"value": "1"
+		},
+		{
+			"key": "redirect_url",
+			"value": "127.0.0.1:5555"
+		}
+	]
+}

@@ -2,10 +2,10 @@
 
 return [
     'authentication' => [
-        'hub_callback_url' => env('HUB_CALLBACK_URL', '127.0.0.1:5555'),
-        'reader_callback_url' => env('READER_CALLBACK_URL', 'aaa://callback'),
-        'token_lifetime_days' => env('OAUTH_TOKEN_LIFETIME_DAYS', 1),
-        'refresh_token_lifetime_days' => env('OAUTH_REFRESH_TOKEN_LIFETIME_DAYS', 30),
+        'hub_callback_url' => env('HUB_CALLBACK_URL','http://127.0.0.1:5555'),
+        'reader_callback_url' => env('READER_CALLBACK_URL','aaa://callback'),
+        'token_lifetime_days' => env('OAUTH_TOKEN_LIFETIME_DAYS',1),
+        'refresh_token_lifetime_days' => env('OAUTH_REFRESH_TOKEN_LIFETIME_DAYS',30),
     ],
     'creator' => [
         'url' => env('CREATOR_URL', 'https://liwi-test.wavelab.top'),
