@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Patient;
 use App\Services\ModelLoader;
+use Illuminate\Support\Facades\Log;
 
 class PatientLoader extends ModelLoader {
     protected $patientData;
@@ -34,8 +35,7 @@ class PatientLoader extends ModelLoader {
         return array_merge($valuesFromConfig, [
             'related_ids' => $valuesFromConfig['other_uid'] === null ? [] : [$valuesFromConfig['other_uid']],
             'middle_name' => $this->nodeValueOrDefault('middle_name_patient_id', ''),
-            'weight' => $this->nodeValue('weight_question_id'),
-            'gender' => $this->nodeValue('gender_question_id'),
+            'gender' => $this->nodeValue('gender_patient_id'),
             'other_id' => $this->nodeValueOrDefault('other_id_patient_id', ''),
             'consent' => $this->consentFileName,
             'duplicate' => $this->hasDuplicate,

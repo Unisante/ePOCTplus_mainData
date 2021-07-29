@@ -65,7 +65,11 @@ return [
                     'modifiers' => ['optional'],
                     'type' => 'string',
                 ],
-                'stage' => 'stage',
+                'stage' => [
+                    'key' => 'stage',
+                    'modifiers' => ['optional'],
+                    'type' => 'string',
+                ],
                 'description' => [
                     'key' => 'description',
                     'modifiers' => ['language', 'optional'],
@@ -136,7 +140,7 @@ return [
         'diagnosis' => [
             'keys' => [
                 'medal_c_id' => 'id',
-                'diagnostic_id' => 'diagnostic_id',
+                'diagnostic_id' => 'diagnosis_id',
             ],
             'values' => [
                 'label' => [
@@ -151,7 +155,11 @@ return [
                 'medal_c_id' => 'id',
             ],
             'values' => [
-                'type' => 'type',
+                'type' => [
+                    'key' => 'type',
+                    'modifiers' => ['optional'],
+                    'type' => 'string',
+                ],
                 'label' => [
                     'key' => 'label',
                     'modifiers' => ['language'],
@@ -178,7 +186,11 @@ return [
                 'medal_c_id' => 'id',
             ],
             'values' => [
-                'type' => 'type',
+                'type' => [
+                    'key' => 'type',
+                    'modifiers' => ['optional'],
+                    'type' => 'string',
+                ],
                 'label' => [
                     'key' => 'label',
                     'modifiers' => ['language'],

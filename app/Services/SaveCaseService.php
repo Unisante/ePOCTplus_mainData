@@ -36,12 +36,26 @@ class SaveCaseService
   public function save($caseData) {
     self::checkHasProperties($caseData, ['patient', 'nodes', 'diagnosis', 'version_id']);
     self::checkHasProperties($caseData['patient'], ['group_id']);
+
+    // TODO there should be no need to retrieve the HF on medalc
     $hf = $this->udpateHf($caseData['patient']['group_id']);
 
     $versionId = $caseData['version_id'];
-    $version = $this->updateVersion($versionId);
-    $patientConfig = $this->updateConfig($version);
-    $patient = $this->savePatient($caseData, $patientConfig);
+
+    $version = Version::where('medal_c_id', $versionId)->first();
+    $config = null;
+
+    if ($version) {
+      $config = PatientConfig::where('version_id', $version->id)->first();
+    } else {
+      $data = json_decode(Http::get(Config::get('medal.urls.creator_algorithm_url') . $versionId), true);
+      $versionData = $data['medal_r_json'];
+      $configData = $data['medal_data_config'];
+      $version = $this->updateVersion($versionData);
+      $config = $this->updateConfig($configData, $version);
+    }
+
+    $patient = $this->savePatient($caseData, $config);
     $case = $this->saveCase($caseData, $version, $patient);
 
     return $case;
@@ -53,13 +67,7 @@ class SaveCaseService
    * @param Version $version
    * @return PatientConfig
    */
-  public function updateConfig($version) {
-    $config = PatientConfig::where('version_id', $version->id)->first();
-    if ($config) {
-      return $config;
-    }
-
-    $configData = json_decode(Http::get(Config::get('medal.urls.creator_patient_url'), ['version_id' => $version->medal_c_id]), true);
+  public function updateConfig($configData, $version) {
     return (new PatientConfigLoader($configData, $version))->load();
   }
 
@@ -86,14 +94,8 @@ class SaveCaseService
    * @param int $versionId
    * @return Version
    */
-  public function updateVersion($versionId) {
-    $version = Version::where('medal_c_id', $versionId)->first();
-    if ($version) {
-      return $version;
-    }
-
-    $algorithmData = json_decode(Http::get(Config::get('medal.urls.creator_algorithm_url') . $versionId), true);
-    self::checkHasProperties($algorithmData, ['nodes', 'diagnostics', 'health_cares']);
+  public function updateVersion($algorithmData) {
+    self::checkHasProperties($algorithmData, ['nodes', 'final_diagnoses', 'health_cares']);
 
 
     $algorithm = (new AlgorithmLoader($algorithmData))->load();
@@ -112,32 +114,30 @@ class SaveCaseService
       }
     }
    
-    foreach ($algorithmData['diagnostics'] as $diagnosisData) {
-      self::checkHasProperties($diagnosisData, ['final_diagnostics']);
-      foreach ($diagnosisData['final_diagnostics'] as $finalDiagnosisData) {
-        self::checkHasProperties($finalDiagnosisData, ['type', 'drugs', 'managements']);
+    foreach ($algorithmData['final_diagnoses'] as $finalDiagnosisData) {
+      self::checkHasProperties($finalDiagnosisData, ['type', 'drugs', 'managements']);
 
-        // TODO env variable?
-        if (array_key_exists('diagnostic_id',$finalDiagnosisData) && $finalDiagnosisData['type'] == 'FinalDiagnostic') {
-          $diagnosis = (new DiagnosisLoader($finalDiagnosisData, $version))->load();
+      // TODO env variable?
+      if (array_key_exists('diagnosis_id',$finalDiagnosisData) && $finalDiagnosisData['type'] == 'FinalDiagnosis') {
+        $diagnosis = (new DiagnosisLoader($finalDiagnosisData, $version))->load();
 
-          foreach ($finalDiagnosisData['drugs'] as $drugId => $drugRefData) {
-            self::checkHasProperties($drugRefData, ['duration']);
-            $drugData = $algorithmData['health_cares'][$drugId];
-            $drug = (new DrugLoader($drugData, $diagnosis, $drugRefData['duration']))->load();
+        foreach ($finalDiagnosisData['drugs'] as $drugId => $drugRefData) {
+          self::checkHasProperties($drugRefData, ['duration']);
+          $drugData = $algorithmData['health_cares'][$drugId];
+          $drug = (new DrugLoader($drugData, $diagnosis, $drugRefData['duration']))->load();
 
-            foreach ($drugData['formulations'] as $formulationData) {
-              $formulation = (new FormulationLoader($formulationData, $drug))->load();
-            }
+          foreach ($drugData['formulations'] as $formulationData) {
+            $formulation = (new FormulationLoader($formulationData, $drug))->load();
           }
+        }
 
-          foreach ($finalDiagnosisData['managements'] as $managementId => $managementRefData) {
-            $managementData = $algorithmData['health_cares'][$managementId];
-            $management = (new ManagementLoader($managementData, $diagnosis))->load();
-          }
+        foreach ($finalDiagnosisData['managements'] as $managementId => $managementRefData) {
+          $managementData = $algorithmData['health_cares'][$managementId];
+          $management = (new ManagementLoader($managementData, $diagnosis))->load();
         }
       }
     }
+    
 
     foreach ($algorithmData['health_cares'] as $drugData) {
       self::checkHasProperties($drugData, ['category']);
