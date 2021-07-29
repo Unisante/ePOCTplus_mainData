@@ -29,6 +29,14 @@ class VersionLoader extends ModelLoader {
         ]);
     }
 
+    protected function getValues()
+    {
+        return array_merge(parent::getValues(), [
+            'consent_management' => $this->data['config']['consent_management'],
+            'study' => $this->data['study']['label'],
+        ]);
+    }
+
     protected function model()
     {
         return Version::class;

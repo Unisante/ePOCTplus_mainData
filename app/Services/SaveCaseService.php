@@ -55,7 +55,7 @@ class SaveCaseService
       $config = $this->updateConfig($configData, $version);
     }
 
-    $patient = $this->savePatient($caseData, $config);
+    $patient = $this->savePatient($caseData, $config, $version);
     $case = $this->saveCase($caseData, $version, $patient);
 
     return $case;
@@ -117,24 +117,21 @@ class SaveCaseService
     foreach ($algorithmData['final_diagnoses'] as $finalDiagnosisData) {
       self::checkHasProperties($finalDiagnosisData, ['type', 'drugs', 'managements']);
 
-      // TODO env variable?
-      if (array_key_exists('diagnosis_id',$finalDiagnosisData) && $finalDiagnosisData['type'] == 'FinalDiagnosis') {
-        $diagnosis = (new DiagnosisLoader($finalDiagnosisData, $version))->load();
+      $diagnosis = (new DiagnosisLoader($finalDiagnosisData, $version))->load();
 
-        foreach ($finalDiagnosisData['drugs'] as $drugId => $drugRefData) {
-          self::checkHasProperties($drugRefData, ['duration']);
-          $drugData = $algorithmData['health_cares'][$drugId];
-          $drug = (new DrugLoader($drugData, $diagnosis, $drugRefData['duration']))->load();
+      foreach ($finalDiagnosisData['drugs'] as $drugId => $drugRefData) {
+        self::checkHasProperties($drugRefData, ['duration']);
+        $drugData = $algorithmData['health_cares'][$drugId];
+        $drug = (new DrugLoader($drugData, $diagnosis, $drugRefData['duration']))->load();
 
-          foreach ($drugData['formulations'] as $formulationData) {
-            $formulation = (new FormulationLoader($formulationData, $drug))->load();
-          }
+        foreach ($drugData['formulations'] as $formulationData) {
+          $formulation = (new FormulationLoader($formulationData, $drug))->load();
         }
+      }
 
-        foreach ($finalDiagnosisData['managements'] as $managementId => $managementRefData) {
-          $managementData = $algorithmData['health_cares'][$managementId];
-          $management = (new ManagementLoader($managementData, $diagnosis))->load();
-        }
+      foreach ($finalDiagnosisData['managements'] as $managementId => $managementRefData) {
+        $managementData = $algorithmData['health_cares'][$managementId];
+        $management = (new ManagementLoader($managementData, $diagnosis))->load();
       }
     }
     
@@ -161,21 +158,28 @@ class SaveCaseService
    * @param PatientConfig $patientConfig
    * @return Patient
    */
-  public function savePatient($caseData, $patientConfig) {
-    // Consent file
+  public function savePatient($caseData, $patientConfig, $version) {
     $patientData = $caseData['patient'];
     self::checkHasProperties($patientData, ['uid', 'consent_file']);
-    $consentPath = Config::get('medal.storage.consent_img_dir');
-    $consentFileName = $patientData['uid'] . '_image.jpg';
-    Storage::makeDirectory($consentPath);
-    $consentImg = Image::make($patientData['consent_file']);
-    $consentImg->save(Storage::disk('local')->path($consentPath . '/' . $consentFileName));
+    
+    // Consent file
+    if ($version->consent_management) {
+      $consentPath = Config::get('medal.storage.consent_img_dir');
+      $consentFileName = $patientData['uid'] . '_image.jpg';
+      Storage::makeDirectory($consentPath);
+      $consentImg = Image::make($patientData['consent_file']);
+      $consentImg->save(Storage::disk('local')->path($consentPath . '/' . $consentFileName));
+    }
 
     // Patient
-    $patientLoader = new PatientLoader($patientData, $caseData['nodes'], $patientConfig, $consentFileName);
+    $patientLoader = new PatientLoader($patientData, $caseData['nodes'], $patientConfig, null);
     $duplicateDataExists = Patient::where($patientLoader->getDuplicateConditions())->exists();
-    // TODO if(strpos(env("STUDY_ID"), "Dynamic")!== false) -> see original code
-    $existingPatientIsTrue = Answer::where($patientLoader->getExistingPatientAnswer())->first()->label == 'Yes';
+
+    $existingPatientIsTrue = false;
+    if(strpos($version->study, "Dynamic") !== false) {
+      $existingPatientIsTrue = Answer::where($patientLoader->getExistingPatientAnswer())->first()->label == 'Yes';
+    }
+    
     $patientLoader->flagAsDuplicate($duplicateDataExists, $existingPatientIsTrue);
 
     return $patientLoader->load();
