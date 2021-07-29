@@ -100,17 +100,6 @@ return [
             ]
         ],
         'patient_config' => [],
-        'health_facility' => [
-            'keys' => [
-                'name' => 'name',
-            ],
-            'values' => [
-                'group_id' => 'id',
-                'long' => 'longitude',
-                'lat' => 'latitude',
-                'hf_mode' => 'architecture',
-            ]
-        ],
         'patient' => [
             'keys' => [
                 'local_patient_id' => 'uid',

@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
 use InvalidArgumentException;
 use PhpOffice\PhpSpreadsheet\Writer\Ods\Formula;
+use UnexpectedValueException;
 
 class SaveCaseService
 {
@@ -72,19 +73,18 @@ class SaveCaseService
   }
 
   /**
-   * Update the health facility from medalc if necessary
+   * Retrieve the health facility from the database
    *
    * @param int $groupId
    * @return HealthFacility
    */
   public function updateHf($groupId) {
     $hf = HealthFacility::where('group_id', $groupId)->first();
-    if ($hf) {
-      return $hf;
+
+    if ($hf === null) {
+      throw new UnexpectedValueException("Health facility with group_id $groupId not found in database");
     }
 
-    $hfData = json_decode(Http::get(Config::get('medal.urls.creator_health_facility_url') . $groupId), true);
-    $hf = (new HealthFacilityLoader($hfData))->load();
     return $hf;
   }
 
