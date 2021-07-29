@@ -48,13 +48,7 @@ class SaveCaseService
     if ($version) {
       $config = PatientConfig::where('version_id', $version->id)->first();
     } else {
-      $versionJson = $hf->versionJson;
-
-      if ($versionJson === null) {
-        throw new UnexpectedValueException("Health facility $hf->group_id has no associated version");
-      }
-
-      $data = json_decode($versionJson->json, true);
+      $data = $this->getVersionData($hf, $versionId);
       $versionData = $data['medal_r_json'];
       $configData = $data['medal_data_config'];
       $version = $this->updateVersion($versionData);
@@ -65,7 +59,21 @@ class SaveCaseService
     $case = $this->saveCase($caseData, $version, $patient);
 
     return $case;
-  } 
+  }
+
+  protected function getVersionData($hf, $versionId) {
+    if (Config::get('medal.global.local_health_facility_management')) {
+      $versionJson = $hf->versionJson;
+
+      if ($versionJson === null) {
+        throw new UnexpectedValueException("Health facility $hf->group_id has no associated version");
+      }
+
+      return json_decode($versionJson->json, true);
+    } else {
+      return json_decode(Http::get(Config::get('medal.urls.creator_algorithm_url') . $versionId), true);
+    }
+  }
 
   /**
    * Update the patient config from medalc
@@ -87,7 +95,12 @@ class SaveCaseService
     $hf = HealthFacility::where('group_id', $groupId)->first();
 
     if ($hf === null) {
-      throw new UnexpectedValueException("Health facility with group_id $groupId not found in database");
+      if (Config::get('medal.global.local_health_facility_management')) {
+        throw new UnexpectedValueException("Health facility with group_id $groupId not found in database");
+      } else {
+        $hfData = json_decode(Http::get(Config::get('medal.urls.creator_health_facility_url') . $groupId), true);
+        $hf = (new HealthFacilityLoader($hfData))->load();
+      }
     }
 
     return $hf;

@@ -25,6 +25,7 @@ return [
     'global' => [
         'study_id' => env('STUDY_ID'),
         'language' => env('JSON_LANGUAGE'),
+        'local_health_facility_management' => env('LOCAL_HEALTH_FACILITY_MANAGEMENT', true),
     ],
 
     'storage' => [
@@ -100,6 +101,17 @@ return [
             ]
         ],
         'patient_config' => [],
+        'health_facility' => [
+            'keys' => [
+                'name' => 'name',
+            ],
+            'values' => [
+                'group_id' => 'id',
+                'long' => 'longitude',
+                'lat' => 'latitude',
+                'hf_mode' => 'architecture',
+            ]
+        ],
         'patient' => [
             'keys' => [
                 'local_patient_id' => 'uid',
