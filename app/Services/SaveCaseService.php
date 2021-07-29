@@ -181,6 +181,7 @@ class SaveCaseService
     self::checkHasProperties($patientData, ['uid', 'consent_file']);
     
     // Consent file
+    $consentFileName = null;
     if ($version->consent_management) {
       $consentPath = Config::get('medal.storage.consent_img_dir');
       $consentFileName = $patientData['uid'] . '_image.jpg';
@@ -190,7 +191,7 @@ class SaveCaseService
     }
 
     // Patient
-    $patientLoader = new PatientLoader($patientData, $caseData['nodes'], $patientConfig, null);
+    $patientLoader = new PatientLoader($patientData, $caseData['nodes'], $patientConfig, $consentFileName);
     $duplicateDataExists = Patient::where($patientLoader->getDuplicateConditions())->exists();
 
     $existingPatientIsTrue = false;
