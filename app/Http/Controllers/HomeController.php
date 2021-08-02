@@ -33,6 +33,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+      
       $data=array(
         'currentUser'=>Auth::user(),
         'userCount'=>User::all()->count(),
