@@ -103,8 +103,6 @@ class SaveCaseService
         throw new UnexpectedValueException("Health facility with group_id $groupId not found in database");
       } else {
         $data = Http::get(Config::get('medal.urls.creator_health_facility_url') . $groupId);
-        Log::info(Config::get('medal.urls.creator_health_facility_url') . $groupId);
-        Log::info($data);
         $hfData = json_decode($data, true);
         $hf = (new HealthFacilityLoader($hfData))->load();
       }
