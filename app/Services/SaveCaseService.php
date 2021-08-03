@@ -34,7 +34,8 @@ class SaveCaseService
    * @param object $caseData
    * @return MedicalCase
    */
-  public function save($caseData) {
+  public function save($caseData)
+  {
     self::checkHasProperties($caseData, ['patient', 'nodes', 'diagnosis', 'version_id']);
     self::checkHasProperties($caseData['patient'], ['group_id']);
 
@@ -61,7 +62,8 @@ class SaveCaseService
     return $case;
   }
 
-  protected function getVersionData($hf, $versionId) {
+  protected function getVersionData($hf, $versionId)
+  {
     if (Config::get('medal.global.local_health_facility_management')) {
       $versionJson = $hf->versionJson;
 
@@ -81,7 +83,8 @@ class SaveCaseService
    * @param Version $version
    * @return PatientConfig
    */
-  public function updateConfig($configData, $version) {
+  public function updateConfig($configData, $version)
+  {
     return (new PatientConfigLoader($configData, $version))->load();
   }
 
@@ -91,14 +94,18 @@ class SaveCaseService
    * @param int $groupId
    * @return HealthFacility
    */
-  public function updateHf($groupId) {
+  public function updateHf($groupId)
+  {
     $hf = HealthFacility::where('group_id', $groupId)->first();
 
     if ($hf === null) {
       if (Config::get('medal.global.local_health_facility_management')) {
         throw new UnexpectedValueException("Health facility with group_id $groupId not found in database");
       } else {
-        $hfData = json_decode(Http::get(Config::get('medal.urls.creator_health_facility_url') . $groupId), true);
+        $data = Http::get(Config::get('medal.urls.creator_health_facility_url') . $groupId);
+        Log::info(Config::get('medal.urls.creator_health_facility_url') . $groupId);
+        Log::info($data);
+        $hfData = json_decode($data, true);
         $hf = (new HealthFacilityLoader($hfData))->load();
       }
     }
@@ -112,13 +119,14 @@ class SaveCaseService
    * @param int $versionId
    * @return Version
    */
-  public function updateVersion($algorithmData) {
+  public function updateVersion($algorithmData)
+  {
     self::checkHasProperties($algorithmData, ['nodes', 'final_diagnoses', 'health_cares']);
 
 
     $algorithm = (new AlgorithmLoader($algorithmData))->load();
     $version = (new VersionLoader($algorithmData, $algorithm))->load();
-    
+
     foreach ($algorithmData['nodes'] as $nodeData) {
       self::checkHasProperties($nodeData, ['type', 'answers']);
       // TODO env variable?
@@ -131,7 +139,7 @@ class SaveCaseService
         }
       }
     }
-   
+
     foreach ($algorithmData['final_diagnoses'] as $finalDiagnosisData) {
       self::checkHasProperties($finalDiagnosisData, ['type', 'drugs', 'managements']);
 
@@ -152,7 +160,7 @@ class SaveCaseService
         $management = (new ManagementLoader($managementData, $diagnosis))->load();
       }
     }
-    
+
 
     foreach ($algorithmData['health_cares'] as $drugData) {
       self::checkHasProperties($drugData, ['category']);
@@ -176,10 +184,11 @@ class SaveCaseService
    * @param PatientConfig $patientConfig
    * @return Patient
    */
-  public function savePatient($caseData, $patientConfig, $version) {
+  public function savePatient($caseData, $patientConfig, $version)
+  {
     $patientData = $caseData['patient'];
     self::checkHasProperties($patientData, ['uid', 'consent_file']);
-    
+
     // Consent file
     $consentFileName = null;
     if ($version->consent_management) {
@@ -195,7 +204,7 @@ class SaveCaseService
     $duplicateDataExists = Patient::where($patientLoader->getDuplicateConditions())->exists();
 
     $existingPatientIsTrue = false;
-    if(strpos($version->study, "Dynamic") !== false) {
+    if (strpos($version->study, "Dynamic") !== false) {
       $existingPatientIsTrue = Answer::where($patientLoader->getExistingPatientAnswer())->first()->label == 'Yes';
     }
 
@@ -212,7 +221,8 @@ class SaveCaseService
    * @param Patient $patient
    * @return MedicalCase
    */
-  public function saveCase($caseData, $version, $patient) {
+  public function saveCase($caseData, $version, $patient)
+  {
     // Medical case
     $medicalCase = (new MedicalCaseLoader($caseData, $patient, $version))->load();
 
@@ -220,7 +230,7 @@ class SaveCaseService
     foreach ($caseData['nodes'] as $nodeData) {
       self::checkHasProperties($nodeData, ['id', 'answer']);
       $algoNode = Node::where('medal_c_id', $nodeData['id'])->first();
-      
+
       if ($algoNode) { // Only responses to questions are stored (QS for example aren't)
         $algoNodeAnswer = Answer::where('medal_c_id', $nodeData['answer'])->first();
         $medicalCaseAnswer = (new MedicalCaseAnswerLoader($nodeData, $medicalCase, $algoNode, $algoNodeAnswer))->load();
@@ -234,13 +244,13 @@ class SaveCaseService
     $this->saveDiagnoses($diagnosesData['additional'], $medicalCase, true, false, true);
     $this->saveDiagnoses($diagnosesData['excluded'], $medicalCase, false, true, false);
     $this->saveDiagnoses($diagnosesData['refused'], $medicalCase, false, false, false);
-    
+
     foreach ($diagnosesData['custom'] as $customDiagnosisData) {
       self::checkHasProperties($customDiagnosisData, ['drugs']);
       $customDiagnosis = (new CustomDiagnosisLoader($customDiagnosisData, $medicalCase))->load();
 
       foreach ($customDiagnosisData['drugs'] as $customDrugData) {
-        $customDrug = (new CustomDrugLoader($customDrugData, $customDiagnosis))->load();        
+        $customDrug = (new CustomDrugLoader($customDrugData, $customDiagnosis))->load();
       }
     }
 
@@ -255,19 +265,20 @@ class SaveCaseService
    * @param boolean $additional
    * @return void
    */
-  protected function saveDiagnoses($diagnosesData, $medicalCase, $additional, $isExcluded, $isAgreed) {
-    
+  protected function saveDiagnoses($diagnosesData, $medicalCase, $additional, $isExcluded, $isAgreed)
+  {
+
     foreach ($diagnosesData as $diagnosisRefData) {
 
       $diagnosisId = $diagnosisRefData['id'] ?? $diagnosisRefData;
 
       $diagnosis = Diagnosis::where('medal_c_id', $diagnosisId)->first();
       $diagnosisRef = (new DiagnosisReferenceLoader($diagnosisRefData, $medicalCase, $diagnosis, $additional, $isExcluded, $isAgreed))->load();
-      
+
       if ($isAgreed && !$isExcluded) {
         self::checkHasProperties($diagnosisRefData, ['drugs']);
         $drugRefsData = $diagnosisRefData['drugs'];
-        
+
         foreach ($drugRefsData['agreed'] as $drugId => $drugRefData) {
           self::checkHasProperties($drugRefData, ['formulation_id']);
           $drug = Drug::where('medal_c_id', $drugId)->first();
@@ -286,17 +297,17 @@ class SaveCaseService
           $drug = Drug::where('medal_c_id', $drugId)->first();
           $drugRef = (new DrugReferenceLoader($drugRefData, $diagnosisRef, $drug, null, false, false))->load();
         }
-  
+
         foreach ($diagnosisRefData['managements'] as $managementId) {
           $management = Management::where('medal_c_id', $managementId)->first();
           $managementRef = (new ManagementReferenceLoader($managementId, $diagnosisRef, $management))->load();
         }
       }
-
     }
   }
 
-  private static function checkHasProperties($data, $properties) {
+  private static function checkHasProperties($data, $properties)
+  {
     foreach ($properties as $property) {
       if (!array_key_exists($property, $data)) {
         throw new InvalidArgumentException("Missing property '$property'");
