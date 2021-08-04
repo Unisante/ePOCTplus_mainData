@@ -69,6 +69,9 @@ class ExportsController extends Controller
         'fromDate' => 'required|date',
         'toDate' => 'required|date',
       ));
+      if(Patient::all()->count() == 0){
+        return back()->withErrors("We Currently Do not have records in the database");
+      }
       $fromDate= new DateTime($request->input('fromDate'));
       $toDate= new DateTime($request->input('toDate'));
       if($fromDate > Carbon::now() || $toDate > Carbon::now()){
