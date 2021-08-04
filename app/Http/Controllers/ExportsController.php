@@ -48,6 +48,9 @@ class ExportsController extends Controller
       $this->middleware('auth');
     }
     public function selectDate(){
+      if(Patient::all()->count() == 0){
+        return back()->withErrors("We Currently Do not have records in the database");
+      }
       $data=array(
         'currentUser'=>Auth::user(),
         'userCount'=>User::all()->count(),
