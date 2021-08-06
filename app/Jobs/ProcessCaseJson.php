@@ -45,7 +45,7 @@ class ProcessCaseJson implements ShouldQueue
             Log::error("Unable to parse JSON file: $this->filename");
             $this->moveToDir(Config::get('medal.storage.json_failure_dir'));
         }
-        
+
         try {
             DB::beginTransaction();
             $save = new SaveCaseService;
@@ -55,7 +55,7 @@ class ProcessCaseJson implements ShouldQueue
             Log::info("Successfully saved case from JSON file: $this->filename");
             $this->moveToDir(Config::get('medal.storage.json_success_dir'));
         }
-        catch (InvalidArgumentException $e) {
+        catch (Exception $e) {
             DB::rollBack();
             Log::error("Error while attempting to save case from JSON file: $this->filename");
             Log::error("Run `php artisan cases:reload` to attempt to process failing cases");
