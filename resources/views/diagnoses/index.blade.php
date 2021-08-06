@@ -41,10 +41,10 @@
                     <td>{{$diagnosis->local_medical_case_id}}</td>
                     <td>{{$diagnosis->local_patient_id}}</td>
                     <td>{{$diagnosis->diagnosis_label}}</td>
-                    @if($diagnosis->proposed_additional)
-                    <td>Proposed</td>
-                    @else
+                    @if($diagnosis->additional)
                     <td>Additional</td>
+                    @else
+                    <td>Proposed</td>
                     @endif
                     <td>{{$diagnosis->facility_name}}</td>
                     </td>

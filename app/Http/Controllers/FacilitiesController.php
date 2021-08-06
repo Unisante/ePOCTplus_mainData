@@ -24,9 +24,7 @@ class FacilitiesController extends Controller
         //find all medical cases related to that health facility
         if(! $facility->medical_cases->isEmpty()){
           $latest_case=$facility->medical_cases->sortByDesc('updated_at')->first()->toArray();
-          // error_log($latest_case);
           $facility->last_case_time=null;
-          // dd($latest_case['updated_at']);
           $number_cases=$facility->medical_cases->count();
           $number_patients=$facility->patients->count();
           $facility->number_patients=$number_patients;

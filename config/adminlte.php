@@ -228,6 +228,18 @@ return [
           'can' =>  'View_Patient'
         ],
         [
+            'text' => 'Health Facilities',
+            'url'  => '/health-facilities',
+            'icon' => 'fas fa-fw fa-hospital',
+            'can' => 'Manage_Health_Facilities',
+        ],
+        [
+            'text' => 'Devices',
+            'url' => '/devices',
+            'icon' => 'fas fa-fw fa-tablet',
+            'can' => 'Manage_Devices'
+        ],
+        [
             'text' => 'Patient list',
             'url'  => '/patients',
             'icon' => 'fas fa-fw fa-list',

@@ -113,8 +113,6 @@ class FollowUp{
       return null;
     }
     Log::debug("node".$node);
-    // error_log($node);
-    // var_dump($node);
     Log::debug("return".$this->case->medical_case_answers()->where('node_id',$node->id)->first());
     return $this->case->medical_case_answers()->where('node_id',$node->id)->first();
   }

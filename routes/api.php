@@ -3,12 +3,9 @@
 use Illuminate\Http\Request;
 use App\MedicalCaseAnswer;
 use App\HealthFacility;
-use Illuminate\Support\Facades\Storage;
-use App\Jobs\SaveCase;
-use App\Jobs\SaveZipCasesJob;
-use App\Jobs\RedcapPush;
+use App\Jobs\ProcessUploadZip;
+use Illuminate\Support\Facades\Config;
 
-use Madnest\Madzipper\Madzipper;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,61 +17,45 @@ use Madnest\Madzipper\Madzipper;
 |
 */
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
+/**
+ * Authenticated Device API
+ * The first middleware checks the validity of the JWT Token provided in the request
+ * The second middleware resolves the device from the token received in the request and updates the
+ * last seen timestamp of the devices table
+ */
+Route::middleware(['auth:api','device.resolve'])->prefix('/v1')->group(function(){
+  //Returns the Hub IP and Pin Code of the health facility to which the device is assigned
+  Route::get('/health-facility-info','Api\AuthDeviceController@healthFacilityInfo');
+  //Fetch the algorithm associated to the health facility associated to the device
+  Route::get('/algorithm','Api\AuthDeviceController@algorithm');
+  //Upload device information such as Mac Address OS etc... see the DeviceInfoRequest for accepted parameters
+  Route::post('/device-info','Api\AuthDeviceController@storeDeviceInfo');
+  //Upload medical cases: Work in progress, will have to be related to the appropriate controller
+  Route::post('/upload-medical-case',function(Request $request){
+    return response()->json(['status' => 200]);
+  });
+});
+
+
+
 
 Route::get('medical_case_answers', function(Request $request){
     return MedicalCaseAnswer::all();
 });
 
-// Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
-
-Route::post('sync_medical_cases_trial',function(Request $request){
-  if($request->file){
-    $file=Storage::putFile('medical_cases_zip', $request->file);
-    $unparsed_path = base_path().'/storage/app/unparsed_medical_cases';
-    $parsed_folder='parsed_medical_cases';
-    $failed_folder='failed_medical_cases';
-    $zipper=new Madzipper();
-    $zipper->make($request->file('file'))->extractTo($unparsed_path);
-    $filename=basename($file);
-    Storage::makeDirectory($parsed_folder);
-    Storage::makeDirectory($failed_folder);
-    foreach(Storage::allFiles('unparsed_medical_cases') as $filename){
-      $individualData = json_decode(Storage::get($filename), true);
-      ini_set('maximum_execution_time',300);
-        dispatch(new SaveCase($individualData,$filename));
-    }
-    if(strpos(env("STUDY_ID"), "Dynamic")!== false){
-      dispatch(new RedcapPush());
-    }
-    return response()->json(['data_received'=> true,'status'=>200]);
+Route::post('sync_medical_cases', function(Request $request) {
+  if (!$request->hasFile('file')) {
+    return response('Missing attached file', 400);
   }
-  return response()->json(['data_received'=> false,'status'=>400]);
-});
 
-Route::post('sync_medical_cases',function(Request $request){
-  if($request->file){
-    //save the zip file and find out the name of the saved zip file.
-    Storage::makeDirectory('medical_cases_zip');
-    $file=Storage::putFile('medical_cases_zip', $request->file);
-    // return $file;
-    $parsed_folder='parsed_medical_cases';
-    $failed_folder='failed_medical_cases';
-    Storage::makeDirectory('failed_cases_zip');
-    Storage::makeDirectory('extracted_cases_zip');
-    Storage::makeDirectory('unparsed_medical_cases');
-    Storage::makeDirectory($parsed_folder);
-    Storage::makeDirectory($failed_folder);
-    error_log('we are in the route');
-    dispatch(new SaveZipCasesJob($file));
-    if(strpos(env("STUDY_ID"), "Dynamic")!== false){
-      dispatch(new RedcapPush());
-    }
-    return response()->json(['data_received'=> true,'message'=>'Zip File received','status'=>200]);
+  $path = $request->file('file')->store(Config::get('medal.storage.cases_zip_dir'));
+
+  if ($path === false) {
+    return response('Unable to save file', 500);
   }
-  return response()->json(['data_received'=> false,'message'=>'No Zip File received','status'=>400]);
+
+  ProcessUploadZip::dispatch($path);
+  return response('Zip file received');
 });
 
 Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
@@ -95,3 +76,4 @@ Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
     "total_nb_of_json_log"=>$facility->log_cases->count(),
   ]);
 });
+

@@ -3,7 +3,7 @@
 namespace App\Exports;
 
 
-use App\Custom_diagnosis;
+use App\CustomDiagnosis;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -50,7 +50,7 @@ WithEvents
   */
   public function collection()
   {
-    return Custom_diagnosis::all();
+    return CustomDiagnosis::all();
   }
   public function title():string
   {

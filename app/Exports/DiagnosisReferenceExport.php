@@ -20,7 +20,7 @@ WithEvents
       return [
         'diagnosis_reference_id',
         'diagnosis_reference_agreed',
-        'diagnosis_reference_proposed_additional',
+        'diagnosis_reference_additional',
         'diagnosis_reference_diagnosis_id',
         'diagnosis_reference_medical_case_id',
         'diagnosis_reference_created_at',

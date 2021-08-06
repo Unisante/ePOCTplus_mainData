@@ -9,15 +9,7 @@ class Version extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable;
   protected $guarded = [];
-  public static function store($name,$medal_c_id,$algorithm_id){
-      $version = new Version;
-      $version->name = $name;
-      $version->medal_c_id = $medal_c_id;
-      $version->algorithm_id = $algorithm_id;
-      $version->save();
-      return $version;
-  }
-
+  
   /**
   * making a relationship to medicalCase
   * @return Many medical cases
