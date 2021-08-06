@@ -292,6 +292,7 @@ class SaveCaseService
         }
 
         foreach ($drugRefsData['refused'] as $drugId) {
+          $drugRefData = null;
           $drug = Drug::where('medal_c_id', $drugId)->first();
           $drugRef = (new DrugReferenceLoader($drugRefData, $diagnosisRef, $drug, null, false, false))->load();
         }
