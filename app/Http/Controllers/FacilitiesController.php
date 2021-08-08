@@ -25,17 +25,15 @@ class FacilitiesController extends Controller
         if(! $facility->patients->isEmpty()){
           $case_count=0;
           $time_array=[];
-          foreach($facility->patients() as $patient){
+          foreach($facility->patients as $patient){
             $patient_case_count=$patient->medicalCases->count();
-            $latest_case=$patient->medical_cases->sortByDesc('updated_at')->first()->toArray();
+            $latest_case=$patient->medicalCases->sortByDesc('updated_at')->first()->toArray();
             if($latest_case != null){
             array_push($time_array,$latest_case['updated_at']);
             }
             $case_count=$case_count+$patient_case_count;
           }
-          $latest_case=$facility->medical_cases->sortByDesc('updated_at')->first()->toArray();
           $facility->last_case_time=null;
-          // $number_cases=$case_count;
           $number_patients=$facility->patients->count();
           $facility->number_patients=$number_patients;
           $facility->number_cases=$case_count;
@@ -47,9 +45,6 @@ class FacilitiesController extends Controller
             }
           }
           $facility->last_case_time=$mostRecent;
-          // if($latest_case != null){
-          //   $facility->last_case_time=$latest_case['updated_at'];
-          // }
         }
       }
       return view('facilities.index')->with('facilities',$facilities);
