@@ -234,7 +234,9 @@ return [
                 //'version_id' => 'version_id',
                 //'created_at' => 'created_at',
                 //'updated_at' => 'updated_at',
-                'group_id'=>'group_id',
+                'group_id'=>[
+                  'key'=>'group_id'
+                ],
                 // 'isEligible' => 'isEligible',
                 'consent' => 'consent',
             ]
