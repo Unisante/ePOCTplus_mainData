@@ -18,20 +18,38 @@ class FacilitiesController extends Controller
       //   $output= json_decode($geocode);
       //   dd($output);
       //   dd($output->results[0]->formatted_address);
-      
+
       $facilities=HealthFacility::all();
       foreach($facilities as $facility){
         //find all medical cases related to that health facility
-        if(! $facility->medical_cases->isEmpty()){
+        if(! $facility->patients->isEmpty()){
+          $case_count=0;
+          $time_array=[];
+          foreach($facility->patients() as $patient){
+            $patient_case_count=$patient->medicalCases->count();
+            $latest_case=$patient->medical_cases->sortByDesc('updated_at')->first()->toArray();
+            if($latest_case != null){
+            array_push($time_array,$latest_case['updated_at']);
+            }
+            $case_count=$case_count+$patient_case_count;
+          }
           $latest_case=$facility->medical_cases->sortByDesc('updated_at')->first()->toArray();
           $facility->last_case_time=null;
-          $number_cases=$facility->medical_cases->count();
+          // $number_cases=$case_count;
           $number_patients=$facility->patients->count();
           $facility->number_patients=$number_patients;
-          $facility->number_cases=$number_cases;
-          if($latest_case != null){
-            $facility->last_case_time=$latest_case['updated_at'];
+          $facility->number_cases=$case_count;
+          $mostRecent= 0;
+          foreach($time_array as $date){
+            $curDate = strtotime($date);
+            if ($curDate > $mostRecent) {
+              $mostRecent = $curDate;
+            }
           }
+          $facility->last_case_time=$mostRecent;
+          // if($latest_case != null){
+          //   $facility->last_case_time=$latest_case['updated_at'];
+          // }
         }
       }
       return view('facilities.index')->with('facilities',$facilities);
