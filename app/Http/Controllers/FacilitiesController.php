@@ -44,7 +44,7 @@ class FacilitiesController extends Controller
               $mostRecent = $curDate;
             }
           }
-          $facility->last_case_time=$mostRecent;
+          $facility->last_case_time=date('Y-m-d H:i:s',$mostRecent);
         }
       }
       return view('facilities.index')->with('facilities',$facilities);
