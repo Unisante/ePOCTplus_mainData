@@ -223,7 +223,7 @@ class SaveCaseService
   {
     // Medical case
     $medicalCase = (new MedicalCaseLoader($caseData, $patient, $version))->load();
-
+    $medicalCase->group_id=$patient->group_id;
     // Case answers
     foreach ($caseData['nodes'] as $nodeData) {
       self::checkHasProperties($nodeData, ['id', 'answer']);
