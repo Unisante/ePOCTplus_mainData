@@ -15,7 +15,7 @@
         "iu-redcap/phpcap": "^1.1",
         "jeroennoten/laravel-adminlte": "^3.5",
         "laravel/framework": "^6.20.26",
-        "laravel/passport": "^9.4",
+        "laravel/passport": "^10.1",
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^6.1",
         "maatwebsite/excel": "^3.1",
