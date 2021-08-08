@@ -235,7 +235,7 @@ return [
                 //'created_at' => 'created_at',
                 //'updated_at' => 'updated_at',
                 'group_id'=>'group_id',
-                'isEligible' => 'isEligible',
+                // 'isEligible' => 'isEligible',
                 'consent' => 'consent',
             ]
         ],

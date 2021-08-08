@@ -28,6 +28,7 @@ class MedicalCaseLoader extends ModelLoader {
         return array_merge(parent::getValues(), [
             'patient_id' => $this->patient->id,
             'version_id' => $this->version->id,
+            'group_id'=>$this->patient->group_id
         ]);
     }
 
