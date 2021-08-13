@@ -284,10 +284,13 @@ class SaveCaseService
         }
 
         foreach ($drugRefsData['additional'] as $drugId => $drugRefData) {
-          self::checkHasProperties($drugRefData, ['formulation_id']);
-          $drug = Drug::where('medal_c_id', $drugId)->first();
-          $formulation = Formulation::where('medal_c_id', $drugRefData['formulation_id'])->first();
-          $drugRef = (new DrugReferenceLoader($drugRefData, $diagnosisRef, $drug, $formulation, true, true))->load();
+          // self::checkHasProperties($drugRefData, ['formulation_id']);
+          $check = self::checkHasProperties($drugRefData, ['formulation_id']) ? self::checkHasProperties($drugRefData, ['formulation_id']) : null;
+          if ($check != null) {
+            $drug = Drug::where('medal_c_id', $drugId)->first();
+            $formulation = Formulation::where('medal_c_id', $drugRefData['formulation_id'])->first();
+            $drugRef = (new DrugReferenceLoader($drugRefData, $diagnosisRef, $drug, $formulation, true, true))->load();
+          }
         }
 
         foreach ($drugRefsData['refused'] as $drugId) {
