@@ -277,23 +277,21 @@ class SaveCaseService
         $drugRefsData = $diagnosisRefData['drugs'];
 
         foreach ($drugRefsData['agreed'] as $drugId => $drugRefData) {
-          if(!array_key_exists('formulation_id', $drugRefData)){ # Not present if control arm.
-            $formulation = null;
-          }
 
           $drug = Drug::where('medal_c_id', $drugId)->first();
-          $formulation = Formulation::where('medal_c_id', $drugRefData['formulation_id'])->first();
+          $formulation = array_key_exists('formulation_id', $drugRefData) ?
+            Formulation::where('medal_c_id', $drugRefData['formulation_id'])->first()
+            : null;
           $drugRef = (new DrugReferenceLoader($drugRefData, $diagnosisRef, $drug, $formulation, true, false))->load();
         }
 
         foreach ($drugRefsData['additional'] as $drugId => $drugRefData) {
-          if(!array_key_exists('formulation_id', $drugRefData)){ # Not present if control arm.
-            $formulation = null;
-          }
-
           $drug = Drug::where('medal_c_id', $drugId)->first();
-          $formulation = Formulation::where('medal_c_id', $drugRefData['formulation_id'])->first();
+          $formulation = array_key_exists('formulation_id', $drugRefData) ?
+            Formulation::where('medal_c_id', $drugRefData['formulation_id'])->first()
+            : null;
           $drugRef = (new DrugReferenceLoader($drugRefData, $diagnosisRef, $drug, $formulation, true, true))->load();
+
         }
 
         foreach ($drugRefsData['refused'] as $drugId) {
