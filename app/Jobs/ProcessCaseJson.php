@@ -41,6 +41,16 @@ class ProcessCaseJson implements ShouldQueue
     public function handle()
     {
         $caseData = json_decode(Storage::get("$this->dir/$this->filename"), true);
+
+        //Add offset to timestamps to avoid time zone offsets
+        $timeZone = timezone_open(date_default_timezone_get());
+        $UTCDateTime = date_create("now", timezone_open("Europe/London"));
+        $timeShift = timezone_offset_get($timeZone, $UTCDateTime);
+        
+        if(isset($caseData['patient']['birth_date'])){
+            $caseData['patient']['birth_date'] += $timeShift;
+        }
+
         if ($caseData === null) {
             Log::error("Unable to parse JSON file: $this->filename");
             $this->moveToDir(Config::get('medal.storage.json_failure_dir'));
