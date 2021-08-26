@@ -124,12 +124,13 @@ class PatientsController extends Controller
   public function mergeShow($firstId,$secondId){
     $first_patient =  Patient::find($firstId);
     $second_patient = Patient::find($secondId);
-    if($first_patient->related_ids != null){
-      $first_patient->related_ids=implode(',',$first_patient->related_ids);
-    }
-    if($second_patient->related_ids != null){
-      $second_patient->related_ids=implode(',',$second_patient->related_ids);
-    }
+    // dd($first_patient->related_ids);
+    // if(count($first_patient->related_ids) != 0){
+    //   $first_patient->related_ids=implode(',',$first_patient->related_ids);
+    // }
+    // if(count($second_patient->related_ids) != 0){
+    //   $second_patient->related_ids=implode(',',$second_patient->related_ids);
+    // }
     $data=array(
       'first_patient'=>$first_patient,
       'second_patient'=>$second_patient,
