@@ -35,7 +35,6 @@ class FollowUp{
 
   public function __construct($medical_case){
     $this->case=$medical_case;
-    $this->getConfig();
     $date=new DateTime($medical_case->updated_at);
     $date->format('Y-m-d H:i:s');
     $this->consultation_id=$medical_case->local_medical_case_id;
@@ -43,6 +42,7 @@ class FollowUp{
     $this->hf_id=isset($medical_case->group_id)?$medical_case->group_id:null;
     $this->consultation_date_time=$date->format('Y-m-d H:i:s');
     $this->group_id=1;
+    $this->getConfig();
 
   }
 
@@ -90,9 +90,7 @@ class FollowUp{
     //   );
     // }
     $config = PatientConfig::where('version_id',$this->case->version_id)->first();
-    Log::info($config);
     $config=json_decode(json_encode($config->config), FALSE);
-    Log::info($config);
     $this->setPatientFirstName($config);
     $this->setPatientMiddleName($config);
     $this->setPatientLastName($config);
@@ -119,31 +117,13 @@ class FollowUp{
     return $this->case->medical_case_answers()->where('node_id',$node->id)->first();
   }
   private function setPatientFirstName($config){
-    $first_name_node_id=$config->first_name_patient_id;
-    $case_answer=$this->findCaseAnswer($first_name_node_id);
-    if($case_answer == null){
-      $this->first_name=null;
-    }else{
-      $this->first_name=$case_answer->value;
-    }
+    $this->first_name = Patient::find($this->patient_id)->first()->first_name;
   }
   private function setPatientMiddleName($config){
-    $middle_name_node_id=$config->middle_name_patient_id;
-    $case_answer=$this->findCaseAnswer($middle_name_node_id);
-    if($case_answer == null){
-      $this->middle_name=null;
-    }else{
-      $this->middle_name=$case_answer->value;
-    }
+    $this->middle_name = Patient::find($this->patient_id)->first()->middle_name;
   }
   private function setPatientLastName($config){
-    $last_name_node_id=$config->last_name_patient_id;
-    $case_answer=$this->findCaseAnswer($last_name_node_id);
-    if($case_answer == null){
-      $this->last_name=null;
-    }else{
-      $this->last_name=$case_answer->value;
-    }
+    $this->last_name = Patient::find($this->patient_id)->first()->last_name;
   }
   public function setPatientGender($config){
     $relation=[
