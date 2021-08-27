@@ -56,6 +56,7 @@ class RedcapPush implements ShouldQueue
             $caseFollowUpArray[]=$followUp;
         }
       });
+      Log::info(count($caseFollowUpArray));
       $ids_in_redcap=$this->importRedcapFollowUpIds();
       //check for each caseId if it is present in the redcap follow-ups
       collect($caseFollowUpArray)->each(function($followup,$item)use (&$ids_in_redcap, &$caseFollowUpArray){
@@ -80,6 +81,7 @@ class RedcapPush implements ShouldQueue
           );
         });
       }
+      Log::info(count($medicalcase_id_list));
       Log::info("followup exported");
       // $patientFollowUpCollection=collect($patientFollowUpArray);
       // $casefollowUpCollection=collect($caseFollowUpArray);
