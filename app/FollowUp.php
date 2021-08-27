@@ -96,7 +96,7 @@ class FollowUp{
     $this->setPatientLastName($config);
     $this->setPatientGender($config);
     $this->setBirthdate($config);
-    $this->setVillage($config);
+    //$this->setVillage($config);
     $this->setCareGiverFirstName($config);
     $this->setCareGiverLastName($config);
     $this->setCareGiverGender($config);
