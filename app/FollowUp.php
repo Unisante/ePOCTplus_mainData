@@ -90,8 +90,7 @@ class FollowUp{
     //   );
     // }
     $config = PatientConfig::where('version_id',$this->case->version_id)->first();
-    Log::info($config);
-    $config=json_decode($config->config);
+    $config=$config->config;
     $this->setPatientFirstName($config);
     $this->setPatientMiddleName($config);
     $this->setPatientLastName($config);
