@@ -40,7 +40,6 @@ class MedicalCase extends Model implements Auditable
   * Make follow up
   * @params $medical_case
   * @params $data
-  * @return Void
   */
   public static function makeFollowUp($medical_case){
     // $configurations=json_decode($medical_case->version->configurations->config);
@@ -58,11 +57,11 @@ class MedicalCase extends Model implements Auditable
       'consultation_date_time'=>$date->format('Y-m-d H:i:s'),
       'group_id'=>1
     ];
-    if(! in_array(null,$follow_up) ){
-      $follow_up=new FollowUp($medical_case);
-      return $follow_up;
-    }
-    return null;
+
+    $follow_up=new FollowUp($medical_case);
+    return $follow_up;
+    
+    //return null;
     // check if the the things in the business rules apply
     // check if the data is already sent to redcap
   }
