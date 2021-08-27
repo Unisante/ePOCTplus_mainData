@@ -80,6 +80,7 @@ class RedcapPush implements ShouldQueue
           );
         });
       }
+      Log::info("followup exported");
       // $patientFollowUpCollection=collect($patientFollowUpArray);
       // $casefollowUpCollection=collect($caseFollowUpArray);
       // $redCapApiService = new RedCapApiService();
