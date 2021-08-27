@@ -144,13 +144,8 @@ class FollowUp{
     // dd($this->child_gender);
   }
   public function setBirthdate($config){
-    $birthdate_node_id=$config->birth_date_patient_id;
-    $case_answer=$this->findCaseAnswer($birthdate_node_id);
-    $this->birthdate=date("Y-m-d");
-    if($case_answer){
-      $date=new DateTime($case_answer->value);
-      $this->birthdate=$date->format('Y-m-d');
-    }
+    $this->birthdate = Patient::where('local_patient_id', $this->patient_id)->first()->birthdate;
+
   }
   private function setVillage($config){
     $village_node_id=$config->village_question_id;
