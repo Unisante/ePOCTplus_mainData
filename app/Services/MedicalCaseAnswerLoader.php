@@ -39,7 +39,8 @@ class MedicalCaseAnswerLoader extends ModelLoader {
     {
         // TODO is this actually used??
         return [
-            'value' => $this->answerData['value']['label'][env('LANGUAGE')] ?? null
+            // 'value' => $this->answerData['value']['label'][env('LANGUAGE')] ?? null
+            'value' => $this->answerData['value']
         ];
     }
 
