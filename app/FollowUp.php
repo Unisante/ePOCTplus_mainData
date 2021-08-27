@@ -117,13 +117,13 @@ class FollowUp{
     return $this->case->medical_case_answers()->where('node_id',$node->id)->first();
   }
   private function setPatientFirstName($config){
-    $this->first_name = Patient::find($this->patient_id)->first()->first_name;
+    $this->first_name = Patient::where('local_patient_id', $this->patient_id)->first()->first_name;
   }
   private function setPatientMiddleName($config){
-    $this->middle_name = Patient::find($this->patient_id)->first()->middle_name;
+    $this->middle_name = Patient::where('local_patient_id', $this->patient_id)->first()->middle_name;
   }
   private function setPatientLastName($config){
-    $this->last_name = Patient::find($this->patient_id)->first()->last_name;
+    $this->last_name = Patient::where('local_patient_id', $this->patient_id)->first()->last_name;
   }
   public function setPatientGender($config){
     $relation=[
