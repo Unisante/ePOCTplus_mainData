@@ -39,9 +39,9 @@ class FollowUp{
     $date->format('Y-m-d H:i:s');
     $this->consultation_id=$medical_case->local_medical_case_id;
     $this->patient_id=$medical_case->patient->local_patient_id;
-    $this->hf_id=isset($medical_case->group_id)?$medical_case->group_id:null;
+    $this->hf_id= Patient::where('local_patient_id', $this->patient_id)->first()->group_id;
     $this->consultation_date_time=$date->format('Y-m-d H:i:s');
-    $this->group_id=1;
+    $this->group_id= Patient::where('local_patient_id', $this->patient_id)->first()->group_id;
     $this->getConfig();
 
   }
