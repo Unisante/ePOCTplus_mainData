@@ -197,11 +197,15 @@ class RedcapPush implements ShouldQueue
             Config::get('redcap.identifiers.followup.dyn_fup_phone_owner') => $followup->getPhoneOwner(),
             Config::get('redcap.identifiers.followup.dyn_fup_phone_caregiver_2') => $followup->getOtherPhoneNumber(),
             Config::get('redcap.identifiers.followup.dyn_fup_phone_owner2') => $followup->getOtherOwner(),
+
+            Config::get('redcap.identifiers.followup.dyn_fup_subvillage') => $followup->getSubVillage(),
+            Config::get('redcap.identifiers.followup.dyn_fup_address') => $followup->getlandmarkSubVillage(),
+            Config::get('redcap.identifiers.followup.dyn_fup_landmark_inst') => $followup->getInstructionForSubVillage(),
             // Config::get('redcap.identifiers.followup.dyn_fup_consultation_id') => $followup->getConsultationId(),
             Config::get('redcap.identifiers.followup.dyn_fup_followup_status') => 1
             // Config::get('redcap.identifiers.followup.identification_complete') => 2,
           ];
-          Log::info('output',  ['data' => $datas]);
+          // Log::info('output',  ['data' => $datas]);
           // if(in_array('', $datas[$followup->getConsultationId()], true) || in_array(null , $datas[$followup->getConsultationId()], true)){
           //   $datas[$followup->getConsultationId()][Config::get('redcap.identifiers.followup.identification_complete')]=0;
           // }
@@ -229,7 +233,7 @@ class RedcapPush implements ShouldQueue
         curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data, '', '&'));
         $output = curl_exec($ch);
-        Log::info('output',  ['output' => $output]);
+        // Log::info('output',  ['output' => $output]);
         curl_close($ch);
         return json_decode($output);
       }

@@ -3,6 +3,7 @@
 return [
 
     'identifiers' => [
+
       'api_url_followup' => env('REDCAP_IDENTIFIERS_API_URL_FOLLOWUP', ''),
       'api_token_followup' => env('REDCAP_IDENTIFIERS_API_TOKEN_FOLLOWUP', ''),
 
@@ -25,8 +26,9 @@ return [
         'dyn_pat_phone_owner'=>'dyn_pat_phone_owner',
         'dyn_pat_phone_caregiver_2' => 'dyn_pat_phone_caregiver_2',
         'dyn_pat_phone_owner2'=>'dyn_pat_phone_owner2',
-        'complete'=>'patient_information_complete'
+        'complete'=>'patient_information_complete',
         ],
+
       'followup' => [
         'redcap_event_name' => 'consultation_arm_1',
         'dyn_fup_study_id_consultation' => 'dyn_fup_study_id_consultation',
@@ -50,7 +52,29 @@ return [
         'dyn_fup_sex_caregiver'=>'dyn_fup_sex_caregiver',
         'dyn_fup_consultation_id'=>'dyn_fup_consultation_id',
         'identification_complete'=>'identification_information_complete',
-        'dyn_fup_followup_status'=>'dyn_fup_followup_status'
+        'dyn_fup_followup_status'=>'dyn_fup_followup_status',
+        'dyn_fup_landmark_inst' => 'dyn_fup_landmark_inst',
+        'dyn_fup_subvillage' => 'dyn_fup_subvillage',
+        'dyn_fup_address' => 'dyn_fup_address',
+
+        'dyn_fup_relationship_child_other' => 'dyn_fup_relationship_child_other',
+        'dyn_fup_nb_days_since_consult' => 'dyn_fup_nb_days_since_consult',
+        'dyn_fup_cured' => 'dyn_fup_cured',
+        'dyn_fup_improved' => 'dyn_fup_improved',
+        'dyn_fup_improved_specify' => 'dyn_fup_improved_specify',
+        'dyn_fup_fever' => 'dyn_fup_fever',
+        'dyn_fup_warning' => 'dyn_fup_warning',
+        'dyn_fup_other_medics' => 'dyn_fup_other_medics',
+        'dyn_fup_other_medics_where' => 'dyn_fup_other_medics_where',
+        'dyn_fup_other_medics_where_specify' => 'dyn_fup_other_medics_where_specify',
+        'dyn_fup_hosp' => 'dyn_fup_hosp',
+        'dyn_fup_hosp_date' => 'dyn_fup_hosp_date',
+        'dyn_fup_hosp_bn_nights' => 'dyn_fup_hosp_bn_nights',
+        'dyn_fup_list_fup_reason' => 'dyn_fup_list_fup_reason',
+        'dyn_fup_followup_type' => 'dyn_fup_followup_type',
+        'dyn_fup_followup_bn_attempts' => 'dyn_fup_followup_bn_attempts',
+        'dyn_fup_remarks' => 'dyn_fup_remarks',
       ]
+
     ],
 ];

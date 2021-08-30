@@ -32,18 +32,33 @@ class FollowUp{
   protected $case;
   protected $phone_owner;
   protected $other_owner;
+  protected $subVillage;
+  protected $instructionSubVillage;
+  protected $landmarkSubVillage;
 
   public function __construct($medical_case){
-    $this->case=$medical_case;
+    $this->case = $medical_case;
     $date=new DateTime($medical_case->updated_at);
     $date->format('Y-m-d H:i:s');
-    $this->consultation_id=$medical_case->local_medical_case_id;
-    $this->patient_id=$medical_case->patient->local_patient_id;
-    $this->hf_id= Patient::where('local_patient_id', $this->patient_id)->first()->group_id;
-    $this->consultation_date_time=$date->format('Y-m-d H:i:s');
-    $this->group_id= Patient::where('local_patient_id', $this->patient_id)->first()->group_id;
+    $this->consultation_id = $medical_case->local_medical_case_id;
+    $this->patient_id = $medical_case->patient->local_patient_id;
+    $this->hf_id = Patient::where('local_patient_id', $this->patient_id)->first()->group_id;
+    $this->consultation_date_time = $date->format('Y-m-d H:i:s');
+    $this->group_id = Patient::where('local_patient_id', $this->patient_id)->first()->group_id;
     $this->getConfig();
 
+  }
+
+  public function getlandmarkSubVillage() {
+    return $this->landmarkSubVillage;
+  }
+
+  public function getSubVillage() {
+    return $this->subVillage;
+  }
+
+  public function getInstructionForSubVillage() {
+    return $this->instructionSubVillage;
   }
 
   public function getConsultationId():string
@@ -105,7 +120,41 @@ class FollowUp{
     $this->setOtherPhoneNumber($config);
     $this->setPhoneOwner($config);
     $this->setOtherPhoneOwner($config);
+//  $this->setSubVillage($config);
+//  $this->setInstructionSubVillage($config);
+//  $this->setLandmarkSubVillage($config);
   }
+
+  private function setLandmarkSubVillage($config) {
+    $landmarkSubVillageId = $config->landmark_sub_villag_Id;
+    $case_answer = $this->findCaseAnswer($landmarkSubVillageId);
+    if($case_answer == null){
+      $this->landmarkSubVillage = null;
+    }else{
+      $this->landmarkSubVillage = $case_answer->value;
+    }
+  }
+
+  private function setInstructionSubVillage($config) {
+    $instructionSubVillageId = $config->instruction_sub_village_id;
+    $case_answer = $this->findCaseAnswer($instructionSubVillageId);
+    if($case_answer == null){
+      $this->instructionSubVillage = null;
+    }else{
+      $this->instructionSubVillage = $case_answer->value;
+    }
+  }
+
+  private function setSubVillage($config) {
+    $subVillageId = $config->sub_village_id;
+    $case_answer = $this->findCaseAnswer($subVillageId);
+    if($case_answer == null){
+      $this->subVillage = null;
+    }else{
+      $this->subVillage = $case_answer->value;
+    }
+  }
+
   private function findCaseAnswer($medal_c_id){
     Log::debug("medal_c_id".$medal_c_id);
     $node=Node::where('medal_c_id',$medal_c_id)->first();
@@ -194,20 +243,20 @@ class FollowUp{
   }
   private function setChildRelation($config){
     $relation=[
-      1=>'Mother/Father',
-      2=>'Sister/Brother',
-      3=>'Aunt/Uncle',
-      4=>'Grandparent',
-      5=>'Cousin',
-      6=>'Neighbour/Friend',
-      7=>'Other',
+      1 =>'Mother/Father',
+      2 =>'Sister/Brother',
+      3 =>'Aunt/Uncle',
+      4 =>'Grandparent',
+      5 =>'Cousin',
+      6 =>'Neighbour/Friend',
+      7 =>'Other',
     ];
-    $child_relation_node_id=$config->relationship_to_child_id;
-    $case_answer=$this->findCaseAnswer($child_relation_node_id);
+    $child_relation_node_id = $config->relationship_to_child_id;
+    $case_answer = $this->findCaseAnswer($child_relation_node_id);
     if($case_answer != null){
       $relation_label=$case_answer->answer->label;
       if(in_array($relation_label,$relation)){
-        $this->child_relation=array_search(strval($case_answer->answer->label),$relation,true);
+        $this->child_relation = array_search(strval($case_answer->answer->label),$relation,true);
       }else{
         $this->child_relation=7;
       }
