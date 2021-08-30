@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\FollowUp;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -175,8 +176,9 @@ class RedcapPush implements ShouldQueue
     }
     public function exportRedcapFollowUps(Collection $followups){
       if (count($followups) !== 0) {
-        /** @var Followup $followup*/
+
         foreach ($followups as $followup) {
+          /** @var FollowUp $followup*/
           Log::info('push : ' . $followup->getPhoneNumber());
           $datas[$followup->getConsultationId()] = [
             // 'redcap_event_name' => Config::get('redcap.identifiers.followup.redcap_event_name'),

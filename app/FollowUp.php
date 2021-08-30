@@ -279,13 +279,11 @@ class FollowUp{
   }
   private function setPhoneNumber($config){
     $phone_number_node_id = $config->phone_number_caregiver_id;
-    Log::info('phone id : ' . $phone_number_node_id);
     $case_answer = $this->findCaseAnswer($phone_number_node_id);
     if($case_answer != null){
-      Log::info('not null' . $case_answer->value);
       $this->phone_number = $case_answer->value;
     }else{
-      $this->phone_number=null;
+      $this->phone_number = null;
     }
 
   }
@@ -303,7 +301,7 @@ class FollowUp{
     if($case_answer != null){
       $this->other_phone_number=$case_answer->value;
     }else{
-      $this->phone_number=null;
+      $this->other_phone_number=null;
     }
 
   }
