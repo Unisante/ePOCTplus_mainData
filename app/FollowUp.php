@@ -32,18 +32,33 @@ class FollowUp{
   protected $case;
   protected $phone_owner;
   protected $other_owner;
+  protected $subVillage;
+  protected $instructionSubVillage;
+  protected $landmarkSubVillage;
 
   public function __construct($medical_case){
-    $this->case=$medical_case;
-    $this->getConfig();
+    $this->case = $medical_case;
     $date=new DateTime($medical_case->updated_at);
     $date->format('Y-m-d H:i:s');
-    $this->consultation_id=$medical_case->local_medical_case_id;
-    $this->patient_id=$medical_case->patient->local_patient_id;
-    $this->hf_id=isset($medical_case->group_id)?$medical_case->group_id:null;
-    $this->consultation_date_time=$date->format('Y-m-d H:i:s');
-    $this->group_id=1;
+    $this->consultation_id = $medical_case->local_medical_case_id;
+    $this->patient_id = $medical_case->patient->local_patient_id;
+    $this->hf_id = Patient::where('local_patient_id', $this->patient_id)->first()->group_id;
+    $this->consultation_date_time = $date->format('Y-m-d H:i:s');
+    $this->group_id = Patient::where('local_patient_id', $this->patient_id)->first()->group_id;
+    $this->getConfig();
 
+  }
+
+  public function getlandmarkSubVillage() {
+    return $this->landmarkSubVillage;
+  }
+
+  public function getSubVillage() {
+    return $this->subVillage;
+  }
+
+  public function getInstructionForSubVillage() {
+    return $this->instructionSubVillage;
   }
 
   public function getConsultationId():string
@@ -90,13 +105,13 @@ class FollowUp{
     //   );
     // }
     $config = PatientConfig::where('version_id',$this->case->version_id)->first();
-    $config=json_decode($config->config);
+    $config=json_decode(json_encode($config->config), FALSE);
     $this->setPatientFirstName($config);
     $this->setPatientMiddleName($config);
     $this->setPatientLastName($config);
     $this->setPatientGender($config);
     $this->setBirthdate($config);
-    $this->setVillage($config);
+    //$this->setVillage($config);
     $this->setCareGiverFirstName($config);
     $this->setCareGiverLastName($config);
     $this->setCareGiverGender($config);
@@ -105,7 +120,41 @@ class FollowUp{
     $this->setOtherPhoneNumber($config);
     $this->setPhoneOwner($config);
     $this->setOtherPhoneOwner($config);
+//  $this->setSubVillage($config);
+//  $this->setInstructionSubVillage($config);
+//  $this->setLandmarkSubVillage($config);
   }
+
+  private function setLandmarkSubVillage($config) {
+    $landmarkSubVillageId = $config->landmark_sub_villag_Id;
+    $case_answer = $this->findCaseAnswer($landmarkSubVillageId);
+    if($case_answer == null){
+      $this->landmarkSubVillage = null;
+    }else{
+      $this->landmarkSubVillage = $case_answer->value;
+    }
+  }
+
+  private function setInstructionSubVillage($config) {
+    $instructionSubVillageId = $config->instruction_sub_village_id;
+    $case_answer = $this->findCaseAnswer($instructionSubVillageId);
+    if($case_answer == null){
+      $this->instructionSubVillage = null;
+    }else{
+      $this->instructionSubVillage = $case_answer->value;
+    }
+  }
+
+  private function setSubVillage($config) {
+    $subVillageId = $config->sub_village_id;
+    $case_answer = $this->findCaseAnswer($subVillageId);
+    if($case_answer == null){
+      $this->subVillage = null;
+    }else{
+      $this->subVillage = $case_answer->value;
+    }
+  }
+
   private function findCaseAnswer($medal_c_id){
     Log::debug("medal_c_id".$medal_c_id);
     $node=Node::where('medal_c_id',$medal_c_id)->first();
@@ -117,31 +166,13 @@ class FollowUp{
     return $this->case->medical_case_answers()->where('node_id',$node->id)->first();
   }
   private function setPatientFirstName($config){
-    $first_name_node_id=$config->first_name_patient_id;
-    $case_answer=$this->findCaseAnswer($first_name_node_id);
-    if($case_answer == null){
-      $this->first_name=null;
-    }else{
-      $this->first_name=$case_answer->value;
-    }
+    $this->first_name = Patient::where('local_patient_id', $this->patient_id)->first()->first_name;
   }
   private function setPatientMiddleName($config){
-    $middle_name_node_id=$config->middle_name_patient_id;
-    $case_answer=$this->findCaseAnswer($middle_name_node_id);
-    if($case_answer == null){
-      $this->middle_name=null;
-    }else{
-      $this->middle_name=$case_answer->value;
-    }
+    $this->middle_name = Patient::where('local_patient_id', $this->patient_id)->first()->middle_name;
   }
   private function setPatientLastName($config){
-    $last_name_node_id=$config->last_name_patient_id;
-    $case_answer=$this->findCaseAnswer($last_name_node_id);
-    if($case_answer == null){
-      $this->last_name=null;
-    }else{
-      $this->last_name=$case_answer->value;
-    }
+    $this->last_name = Patient::where('local_patient_id', $this->patient_id)->first()->last_name;
   }
   public function setPatientGender($config){
     $relation=[
@@ -162,13 +193,8 @@ class FollowUp{
     // dd($this->child_gender);
   }
   public function setBirthdate($config){
-    $birthdate_node_id=$config->birth_date_patient_id;
-    $case_answer=$this->findCaseAnswer($birthdate_node_id);
-    $this->birthdate=date("Y-m-d");
-    if($case_answer){
-      $date=new DateTime($case_answer->value);
-      $this->birthdate=$date->format('Y-m-d');
-    }
+    $this->birthdate = Patient::where('local_patient_id', $this->patient_id)->first()->birthdate;
+
   }
   private function setVillage($config){
     $village_node_id=$config->village_question_id;
@@ -217,20 +243,20 @@ class FollowUp{
   }
   private function setChildRelation($config){
     $relation=[
-      1=>'Mother/Father',
-      2=>'Sister/Brother',
-      3=>'Aunt/Uncle',
-      4=>'Grandparent',
-      5=>'Cousin',
-      6=>'Neighbour/Friend',
-      7=>'Other',
+      1 =>'Mother/Father',
+      2 =>'Sister/Brother',
+      3 =>'Aunt/Uncle',
+      4 =>'Grandparent',
+      5 =>'Cousin',
+      6 =>'Neighbour/Friend',
+      7 =>'Other',
     ];
-    $child_relation_node_id=$config->relationship_to_child_id;
-    $case_answer=$this->findCaseAnswer($child_relation_node_id);
+    $child_relation_node_id = $config->relationship_to_child_id;
+    $case_answer = $this->findCaseAnswer($child_relation_node_id);
     if($case_answer != null){
       $relation_label=$case_answer->answer->label;
       if(in_array($relation_label,$relation)){
-        $this->child_relation=array_search(strval($case_answer->answer->label),$relation,true);
+        $this->child_relation = array_search(strval($case_answer->answer->label),$relation,true);
       }else{
         $this->child_relation=7;
       }
@@ -251,12 +277,12 @@ class FollowUp{
     // }
   }
   private function setPhoneNumber($config){
-    $phone_number_node_id=$config->phone_number_caregiver_id;
-    $case_answer=$this->findCaseAnswer($phone_number_node_id);
+    $phone_number_node_id = $config->phone_number_caregiver_id;
+    $case_answer = $this->findCaseAnswer($phone_number_node_id);
     if($case_answer != null){
-      $this->phone_number=$case_answer->value;
+      $this->phone_number = $case_answer->value;
     }else{
-      $this->phone_number=null;
+      $this->phone_number = null;
     }
 
   }
@@ -274,7 +300,7 @@ class FollowUp{
     if($case_answer != null){
       $this->other_phone_number=$case_answer->value;
     }else{
-      $this->phone_number=null;
+      $this->other_phone_number=null;
     }
 
   }

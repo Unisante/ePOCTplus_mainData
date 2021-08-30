@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\FollowUp;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -52,10 +53,11 @@ class RedcapPush implements ShouldQueue
 
       MedicalCase::where('redcap',false)->get()->each(function($medicalcase) use (&$caseFollowUpArray){
         $followUp=MedicalCase::makeFollowUp($medicalcase);
-        if($followUp != null){
+        //if($followUp != null){
             $caseFollowUpArray[]=$followUp;
-        }
+        //}
       });
+      Log::info(count($caseFollowUpArray));
       $ids_in_redcap=$this->importRedcapFollowUpIds();
       //check for each caseId if it is present in the redcap follow-ups
       collect($caseFollowUpArray)->each(function($followup,$item)use (&$ids_in_redcap, &$caseFollowUpArray){
@@ -80,6 +82,7 @@ class RedcapPush implements ShouldQueue
           );
         });
       }
+      Log::info("followup exported");
       // $patientFollowUpCollection=collect($patientFollowUpArray);
       // $casefollowUpCollection=collect($caseFollowUpArray);
       // $redCapApiService = new RedCapApiService();
@@ -173,8 +176,9 @@ class RedcapPush implements ShouldQueue
     }
     public function exportRedcapFollowUps(Collection $followups){
       if (count($followups) !== 0) {
-        /** @var Followup $followup*/
+
         foreach ($followups as $followup) {
+          /** @var FollowUp $followup*/
           $datas[$followup->getConsultationId()] = [
             // 'redcap_event_name' => Config::get('redcap.identifiers.followup.redcap_event_name'),
             Config::get('redcap.identifiers.followup.dyn_fup_study_id_consultation') => $followup->getConsultationId(),
@@ -195,11 +199,15 @@ class RedcapPush implements ShouldQueue
             Config::get('redcap.identifiers.followup.dyn_fup_phone_owner') => $followup->getPhoneOwner(),
             Config::get('redcap.identifiers.followup.dyn_fup_phone_caregiver_2') => $followup->getOtherPhoneNumber(),
             Config::get('redcap.identifiers.followup.dyn_fup_phone_owner2') => $followup->getOtherOwner(),
+
+            Config::get('redcap.identifiers.followup.dyn_fup_subvillage') => $followup->getSubVillage(),
+            Config::get('redcap.identifiers.followup.dyn_fup_address') => $followup->getlandmarkSubVillage(),
+            Config::get('redcap.identifiers.followup.dyn_fup_landmark_inst') => $followup->getInstructionForSubVillage(),
             // Config::get('redcap.identifiers.followup.dyn_fup_consultation_id') => $followup->getConsultationId(),
             Config::get('redcap.identifiers.followup.dyn_fup_followup_status') => 1
             // Config::get('redcap.identifiers.followup.identification_complete') => 2,
           ];
-          Log::info('output',  ['data' => $datas]);
+          // Log::info('output',  ['data' => $datas]);
           // if(in_array('', $datas[$followup->getConsultationId()], true) || in_array(null , $datas[$followup->getConsultationId()], true)){
           //   $datas[$followup->getConsultationId()][Config::get('redcap.identifiers.followup.identification_complete')]=0;
           // }
@@ -227,7 +235,7 @@ class RedcapPush implements ShouldQueue
         curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data, '', '&'));
         $output = curl_exec($ch);
-        Log::info('output',  ['output' => $output]);
+        // Log::info('output',  ['output' => $output]);
         curl_close($ch);
         return json_decode($output);
       }
