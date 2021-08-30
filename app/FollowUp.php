@@ -282,7 +282,7 @@ class FollowUp{
     Log::info('phone id : ' . $phone_number_node_id);
     $case_answer = $this->findCaseAnswer($phone_number_node_id);
     if($case_answer != null){
-      Log::info($case_answer->value);
+      Log::info('not null' . $case_answer->value);
       $this->phone_number = $case_answer->value;
     }else{
       $this->phone_number=null;
