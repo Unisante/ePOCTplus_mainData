@@ -177,6 +177,7 @@ class RedcapPush implements ShouldQueue
       if (count($followups) !== 0) {
         /** @var Followup $followup*/
         foreach ($followups as $followup) {
+          Log::info('push : ' . $followup->getPhoneNumber());
           $datas[$followup->getConsultationId()] = [
             // 'redcap_event_name' => Config::get('redcap.identifiers.followup.redcap_event_name'),
             Config::get('redcap.identifiers.followup.dyn_fup_study_id_consultation') => $followup->getConsultationId(),
