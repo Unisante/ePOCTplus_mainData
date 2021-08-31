@@ -111,7 +111,7 @@ class FollowUp{
     $this->setPatientLastName($config);
     $this->setPatientGender($config);
     $this->setBirthdate($config);
-    //$this->setVillage($config);
+    $this->setVillage($config);
     $this->setCareGiverFirstName($config);
     $this->setCareGiverLastName($config);
     $this->setCareGiverGender($config);
@@ -120,13 +120,13 @@ class FollowUp{
     $this->setOtherPhoneNumber($config);
     $this->setPhoneOwner($config);
     $this->setOtherPhoneOwner($config);
-//  $this->setSubVillage($config);
-//  $this->setInstructionSubVillage($config);
-//  $this->setLandmarkSubVillage($config);
+    $this->setSubVillage($config);
+    $this->setInstructionSubVillage($config);
+    $this->setLandmarkSubVillage($config);
   }
 
   private function setLandmarkSubVillage($config) {
-    $landmarkSubVillageId = $config->landmark_sub_villag_Id;
+    $landmarkSubVillageId = $config->landmark_in_subvillage_id;
     $case_answer = $this->findCaseAnswer($landmarkSubVillageId);
     if($case_answer == null){
       $this->landmarkSubVillage = null;
@@ -136,7 +136,7 @@ class FollowUp{
   }
 
   private function setInstructionSubVillage($config) {
-    $instructionSubVillageId = $config->instruction_sub_village_id;
+    $instructionSubVillageId = $config->instructions_from_landmark_id;
     $case_answer = $this->findCaseAnswer($instructionSubVillageId);
     if($case_answer == null){
       $this->instructionSubVillage = null;
@@ -146,7 +146,7 @@ class FollowUp{
   }
 
   private function setSubVillage($config) {
-    $subVillageId = $config->sub_village_id;
+    $subVillageId = $config->subvillage_id;
     $case_answer = $this->findCaseAnswer($subVillageId);
     if($case_answer == null){
       $this->subVillage = null;
@@ -197,7 +197,7 @@ class FollowUp{
 
   }
   private function setVillage($config){
-    $village_node_id=$config->village_question_id;
+    $village_node_id=$config->village_id;
     $case_answer=$this->findCaseAnswer($village_node_id);
     if($case_answer == null){
       $this->village=null;
