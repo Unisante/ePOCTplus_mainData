@@ -36,6 +36,20 @@ class FollowUp{
   protected $instructionSubVillage;
   protected $landmarkSubVillage;
 
+  public function getCareGiverFirstName(){return $this->caregiver_first_name;}
+  public function getCareGiverLastName(){return $this->caregiver_last_name;}
+  public function getCareGiverGender(){return $this->caregiver_gender;}
+  public function getChildrelation():int{return $this->child_relation;}
+  public function getPhoneNumber(){return $this->phone_number;}
+  public function getOtherPhoneNumber(){return $this->other_phone_number;}
+  public function getPhoneOwner(){return $this->phone_owner;}
+  public function getOtherOwner(){return $this->other_owner;}
+  public function getFirstName(){return $this->first_name;}
+  public function getMiddleName(){return $this->middle_name;}
+  public function getLastName(){return $this->last_name;}
+  public function getGender(){return $this->child_gender;}
+  public function getBirthdate(){return $this->birthdate;}
+
   public function __construct($medical_case){
     $this->case = $medical_case;
     $date=new DateTime($medical_case->updated_at);
@@ -65,45 +79,33 @@ class FollowUp{
   {
     return $this->consultation_id;
   }
+
   public function getPatientId():string
   {
     return $this->patient_id;
   }
+
   public function getFacilityId():int
   {
     return $this->hf_id;
   }
+
   public function getConsultationDate():string
   {
     return $this->consultation_date_time;
   }
+
   public function getGroupId():int
   {
     return $this->group_id;
   }
+
   public function getVillage()
   {
     return $this->village;
   }
 
   private function getConfig(){
-    // $configurations_preset=json_encode([
-    //   "village"=> 3436,
-    //   "caregiver_first_name"=> 3822,
-    //   "caregiver_last_name"=> 2176,
-    //   "child_relation"=> 2178,
-    //   "phone_number"=> 2179,
-    //   "other_phone_number"=> 2180,
-    //   "caregiver_gender"=>2177
-    // ]);
-    // if(ConsultationConfig::all()->isEmpty()){
-    //   $configurations= ConsultationConfig::create(
-    //     [
-    //       "version_id"=>$this->case->version_id,
-    //       "config"=>$configurations_preset
-    //     ]
-    //   );
-    // }
     $config = PatientConfig::where('version_id',$this->case->version_id)->first();
     $config=json_decode(json_encode($config->config), FALSE);
     $this->setPatientFirstName($config);
@@ -111,7 +113,7 @@ class FollowUp{
     $this->setPatientLastName($config);
     $this->setPatientGender($config);
     $this->setBirthdate($config);
-    //$this->setVillage($config);
+    $this->setVillage($config);
     $this->setCareGiverFirstName($config);
     $this->setCareGiverLastName($config);
     $this->setCareGiverGender($config);
@@ -120,13 +122,18 @@ class FollowUp{
     $this->setOtherPhoneNumber($config);
     $this->setPhoneOwner($config);
     $this->setOtherPhoneOwner($config);
-//  $this->setSubVillage($config);
-//  $this->setInstructionSubVillage($config);
-//  $this->setLandmarkSubVillage($config);
+    $this->setSubVillage($config);
+    $this->setInstructionSubVillage($config);
+    $this->setLandmarkSubVillage($config);
   }
 
   private function setLandmarkSubVillage($config) {
-    $landmarkSubVillageId = $config->landmark_sub_villag_Id;
+    if (!isset($config->landmark_in_subvillage_id)) {
+      $this->landmarkSubVillage = null;
+      return;
+    }
+
+    $landmarkSubVillageId = $config->landmark_in_subvillage_id;
     $case_answer = $this->findCaseAnswer($landmarkSubVillageId);
     if($case_answer == null){
       $this->landmarkSubVillage = null;
@@ -136,7 +143,12 @@ class FollowUp{
   }
 
   private function setInstructionSubVillage($config) {
-    $instructionSubVillageId = $config->instruction_sub_village_id;
+    if (!isset($config->instructions_from_landmark_id)) {
+      $this->instructionSubVillage = null;
+      return;
+    }
+
+    $instructionSubVillageId = $config->instructions_from_landmark_id;
     $case_answer = $this->findCaseAnswer($instructionSubVillageId);
     if($case_answer == null){
       $this->instructionSubVillage = null;
@@ -146,7 +158,12 @@ class FollowUp{
   }
 
   private function setSubVillage($config) {
-    $subVillageId = $config->sub_village_id;
+    if (!isset($config->subvillage_id)) {
+      $this->subVillage = null;
+      return;
+    }
+
+    $subVillageId = $config->subvillage_id;
     $case_answer = $this->findCaseAnswer($subVillageId);
     if($case_answer == null){
       $this->subVillage = null;
@@ -165,23 +182,32 @@ class FollowUp{
     Log::debug("return".$this->case->medical_case_answers()->where('node_id',$node->id)->first());
     return $this->case->medical_case_answers()->where('node_id',$node->id)->first();
   }
+
   private function setPatientFirstName($config){
     $this->first_name = Patient::where('local_patient_id', $this->patient_id)->first()->first_name;
   }
+
   private function setPatientMiddleName($config){
     $this->middle_name = Patient::where('local_patient_id', $this->patient_id)->first()->middle_name;
   }
+
   private function setPatientLastName($config){
     $this->last_name = Patient::where('local_patient_id', $this->patient_id)->first()->last_name;
   }
+
   public function setPatientGender($config){
     $relation=[
       1=>'Female',
       2=>'Male',
     ];
-    $gender_node_id=$config->gender_patient_id;
+    if (!isset($config->gender_patient_id)) {
+      $this->subVillage = 1;
+      return;
+    }
+
+    $gender_node_id = $config->gender_patient_id;
     $case_answer=$this->findCaseAnswer($gender_node_id);
-    $this->child_gender=1;
+    $this->child_gender = 1;
     if($case_answer != null){
       $gender_label=$case_answer->answer->label;
       if(in_array($gender_label,$relation)){
@@ -190,14 +216,20 @@ class FollowUp{
         $this->child_gender=1;
       }
     }
-    // dd($this->child_gender);
   }
+
   public function setBirthdate($config){
     $this->birthdate = Patient::where('local_patient_id', $this->patient_id)->first()->birthdate;
 
   }
+
   private function setVillage($config){
-    $village_node_id=$config->village_question_id;
+    if (!isset($config->village_id)) {
+      $this->village = null;
+      return;
+    }
+
+    $village_node_id=$config->village_id;
     $case_answer=$this->findCaseAnswer($village_node_id);
     if($case_answer == null){
       $this->village=null;
@@ -205,7 +237,13 @@ class FollowUp{
       $this->village=$case_answer->value;
     }
   }
+
   private function setCareGiverFirstName($config){
+    if (!isset($config->first_name_caregiver_id)) {
+      $this->caregiver_first_name = null;
+      return;
+    }
+
     $caregiver_first_name_node_id=$config->first_name_caregiver_id;
     $case_answer=$this->findCaseAnswer($caregiver_first_name_node_id);
     if($case_answer == null){
@@ -214,7 +252,13 @@ class FollowUp{
       $this->caregiver_first_name=$case_answer->value;
     }
   }
+
   private function setCareGiverLastName($config){
+    if (!isset($config->last_name_caregiver_id)) {
+      $this->caregiver_last_name = null;
+      return;
+    }
+
     $caregiver_last_name_node_id=$config->last_name_caregiver_id;
     $case_answer=$this->findCaseAnswer($caregiver_last_name_node_id);
     if($case_answer == null){
@@ -222,13 +266,18 @@ class FollowUp{
     }else{
       $this->caregiver_last_name=$case_answer->value;
     }
-    // $this->caregiver_last_name=$case_answer->value;
   }
+
   private function setCareGiverGender($config){
     $relation=[
       1=>'Female',
       2=>'Male',
     ];
+    if (!isset($config->gender_caregiver_id)) {
+      $this->caregiver_gender = null;
+      return;
+    }
+
     $caregiver_gender_node_id=$config->gender_caregiver_id;
     $case_answer=$this->findCaseAnswer($caregiver_gender_node_id);
     $this->caregiver_gender=1;
@@ -241,7 +290,13 @@ class FollowUp{
       }
     }
   }
+
   private function setChildRelation($config){
+    if (!isset($config->relationship_to_child_id)) {
+      $this->caregiver_gender = 7;
+      return;
+    }
+
     $relation=[
       1 =>'Mother/Father',
       2 =>'Sister/Brother',
@@ -264,19 +319,14 @@ class FollowUp{
     else{
       $this->child_relation=7;
     }
-    // Log::debug("child relation".$case_answer);
-    // if($case_answer->answer){
-    //   if(in_array($relation_label,$relation)){
-    //     $this->child_relation=array_search(strval($case_answer->answer->label),$relation,true);
-    //   }else{
-    //     $this->child_relation=7;
-    //   }
-    // }
-    // else{
-    //   $this->child_relation=7;
-    // }
   }
+
   private function setPhoneNumber($config){
+    if (!isset($config->phone_number_caregiver_id)) {
+      $this->phone_number = null;
+      return;
+    }
+
     $phone_number_node_id = $config->phone_number_caregiver_id;
     $case_answer = $this->findCaseAnswer($phone_number_node_id);
     if($case_answer != null){
@@ -286,7 +336,13 @@ class FollowUp{
     }
 
   }
+
   private function setPhoneOwner($config){
+    if (!isset($config->phone_number_owner_id)) {
+      $this->phone_owner = null;
+      return;
+    }
+
     $phone_owner_node_id=$config->phone_number_owner_id;
     $case_answer=$this->findCaseAnswer($phone_owner_node_id);
     $this->phone_owner='';
@@ -294,7 +350,13 @@ class FollowUp{
       $this->phone_owner=$case_answer->answer->label;
     }
   }
+
   private function setOtherPhoneNumber($config){
+    if (!isset($config->other_number_id)) {
+      $this->other_phone_number = null;
+      return;
+    }
+
     $other_phone_number_node_id=$config->other_number_id;
     $case_answer=$this->findCaseAnswer($other_phone_number_node_id);
     if($case_answer != null){
@@ -306,6 +368,11 @@ class FollowUp{
   }
 
   private function setOtherPhoneOwner($config){
+    if (!isset($config->other_number_owner_id)) {
+      $this->other_owner = null;
+      return;
+    }
+
     $other_phone_owner_node_id=$config->other_number_owner_id;
     $case_answer=$this->findCaseAnswer($other_phone_owner_node_id);
     $this->other_owner='';
@@ -315,57 +382,5 @@ class FollowUp{
         $this->other_owner=$case_answer->answer->label;
       }
     }
-  }
-
-  public function getCareGiverFirstName()
-  {
-    return $this->caregiver_first_name;
-  }
-  public function getCareGiverLastName()
-  {
-    return $this->caregiver_last_name;
-  }
-  public function getCareGiverGender()
-  {
-    return $this->caregiver_gender;
-  }
-  public function getChildrelation():int
-  {
-    return $this->child_relation;
-  }
-  public function getPhoneNumber()
-  {
-    return $this->phone_number;
-  }
-  public function getOtherPhoneNumber()
-  {
-    return $this->other_phone_number;
-  }
-  public function getPhoneOwner()
-  {
-    return $this->phone_owner;
-  }
-  public function getOtherOwner()
-  {
-    return $this->other_owner;
-  }
-  public function getFirstName()
-  {
-    return $this->first_name;
-  }
-  public function getMiddleName()
-  {
-    return $this->middle_name;
-  }
-  public function getLastName()
-  {
-    return $this->last_name;
-  }
-  public function getGender()
-  {
-    return $this->child_gender;
-  }
-  public function getBirthdate(){
-    return $this->birthdate;
   }
 }
