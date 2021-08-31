@@ -226,7 +226,6 @@ class FollowUp{
   private function setVillage($config){
     if (!isset($config->village_id)) {
       $this->village = null;
-      Log::info('village not set');
       return;
     }
 
