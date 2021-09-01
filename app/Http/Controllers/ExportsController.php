@@ -60,7 +60,6 @@ class ExportsController extends Controller
         'patientCount'=> Patient::all()->count(),
 
       );
-      // return $data;
       // choose this by default date of the first medical case
 
       return view('exports.index')->with($data);;
