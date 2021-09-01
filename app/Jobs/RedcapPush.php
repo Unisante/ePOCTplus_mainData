@@ -83,37 +83,6 @@ class RedcapPush implements ShouldQueue
         });
       }
       Log::info("followup exported");
-      // $patientFollowUpCollection=collect($patientFollowUpArray);
-      // $casefollowUpCollection=collect($caseFollowUpArray);
-      // $redCapApiService = new RedCapApiService();
-      // // dd(Config::get('redcap.identifiers.api_url_patient'));
-      // $patient_id_list=$this->exportRedCapPatients($patientFollowUpCollection);
-      // // $patient_id_list=$redCapApiService->exportPatient($patientFollowUpCollection);
-      // if($patient_id_list != null && is_array($patient_id_list)){
-      //   if(sizeof($patient_id_list)>0){
-      //     foreach($patient_id_list as $local_patient_id){
-      //       Patient::where('local_patient_id',$local_patient_id)->update(
-      //         [
-      //           'redcap'=>True
-      //         ]
-      //       );
-      //     }
-      //   }
-      // }
-
-      // $medicalcase_id_list=$this->exportRedcapFollowUps($casefollowUpCollection);
-      // $medicalcase_id_list=$redCapApiService->exportFollowup($casefollowUpCollection);
-      // if($medicalcase_id_list != null && is_array($patient_id_list)){
-      //   if(sizeof($medicalcase_id_list) > 0 ){
-      //     foreach($medicalcase_id_list as $medicalcase_id){
-      //       MedicalCase::where('local_medical_case_id',$medicalcase_id)->update(
-      //         [
-      //           'redcap'=>True
-      //         ]
-      //       );
-      //     }
-      //   }
-      // }
     }
 
     /**

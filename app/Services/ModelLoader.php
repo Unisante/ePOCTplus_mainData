@@ -23,7 +23,7 @@ abstract class ModelLoader {
     public function __construct($rawData)
     {
         $this->rawData = $rawData;
-        
+
         foreach ($this->config() as $category => $pairs) {
             foreach ($pairs as $configValue) {
                 $key = is_array($configValue) ? $configValue['key'] : $configValue;
@@ -33,7 +33,7 @@ abstract class ModelLoader {
                     if (!array_key_exists($key, $this->rawData)) {
                         throw new InvalidArgumentException("Missing key '$key' on data for '$modelTitle'");
                     }
-        
+
                     if (is_array($configValue) && array_search('language', $configValue['modifiers']) !== false) {
                         $language = Config::get('medal.global.language');
                         if (!array_key_exists($language, $this->rawData[$key])) {
@@ -41,7 +41,7 @@ abstract class ModelLoader {
                         }
                     }
                 }
-                
+
             }
         }
     }
@@ -65,7 +65,7 @@ abstract class ModelLoader {
             array_map(function($p) use ($category) {
                 $config = $this->config()[$category][$p];
                 $key = is_array($config) ? $config['key'] : $config;
-                
+
                 $value = null;
                 if (is_array($config) && array_search('language', $config['modifiers']) !== false) {
                     $value = $this->languageValueFromConfig($key);
@@ -105,7 +105,7 @@ abstract class ModelLoader {
     public function load() {
         $record = $this->model()::firstOrCreate(
             $this->getKeys(),
-            $this->getValues(),
+            $this->getValues()
         );
         $record->save();
         return $record;

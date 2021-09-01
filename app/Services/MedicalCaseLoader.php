@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\MedicalCase;
 use App\Services\ModelLoader;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class MedicalCaseLoader extends ModelLoader {
     protected $caseData;
@@ -28,6 +30,7 @@ class MedicalCaseLoader extends ModelLoader {
         return array_merge(parent::getValues(), [
             'patient_id' => $this->patient->id,
             'version_id' => $this->version->id,
+            'consultation_date' => Carbon::createFromTimestampMs($this->caseData['createdAt'])
         ]);
     }
 

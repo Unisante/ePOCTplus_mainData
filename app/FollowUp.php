@@ -52,15 +52,12 @@ class FollowUp{
 
   public function __construct($medical_case){
     $this->case = $medical_case;
-    $date=new DateTime($medical_case->updated_at);
-    $date->format('Y-m-d H:i:s');
     $this->consultation_id = $medical_case->local_medical_case_id;
     $this->patient_id = $medical_case->patient->local_patient_id;
     $this->hf_id = Patient::where('local_patient_id', $this->patient_id)->first()->group_id;
-    $this->consultation_date_time = $date->format('Y-m-d H:i:s');
+    $this->consultation_date_time = $medical_case->consultation_date;
     $this->group_id = Patient::where('local_patient_id', $this->patient_id)->first()->group_id;
     $this->getConfig();
-
   }
 
   public function getlandmarkSubVillage() {
