@@ -89,7 +89,11 @@ class PatientLoader extends ModelLoader {
 
     protected function nodeValueOrDefault($configKey, $default)
     {
-        $nodeKey = $this->patientConfig->config[$configKey];
+        if (isset($this->patientConfig->config[$configKey])) {
+          $nodeKey = $this->patientConfig->config[$configKey];
+        } else {
+          $nodeKey = null;
+        }
         return isset($this->nodesData[$nodeKey]) ? $this->nodesData[$nodeKey]['value'] : $default;
     }
 }
