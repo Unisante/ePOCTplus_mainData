@@ -4,14 +4,17 @@
 namespace App\Services;
 
 
+use App\DiagnosisReference;
 use App\Exceptions\RedCapApiServiceException;
 use App\Followup;
+use App\MedicalCaseAnswer;
 use App\PatientFollowUp;
 use App\MedicalCase;
 use App\Patient;
 use App\RedCapProject;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use IU\PHPCap\PhpCapException;
 
 class RedCapApiService
@@ -52,15 +55,10 @@ class RedCapApiService
       Config::get('redcap.identifiers.api_token_followup')
     );
 
-    $this->projectPatient = $this->getRedCapProject(
-
-      Config::get('redcap.identifiers.api_url_patient'),
-      Config::get('redcap.identifiers.api_token_patient')
-    );
-    // $this->projectPersonalData = $this->getRedCapProject(
-    //   Config::get('redcap.identifiers.api_url_personal_data'),
-    //   Config::get('redcap.identifiers.api_token_personal_data')
-    // );
+     $this->projectMedicalCase = $this->getRedCapProject(
+       Config::get('redcap.identifiers.api_url_medical_case'),
+       Config::get('redcap.identifiers.api_token_medical_case')
+     );
 
   }
 
@@ -96,11 +94,10 @@ class RedCapApiService
     return "{$url}_{$token}";
   }
 
-
   /**
    * @param Collection<Patient> $patients
    * @throws RedCapApiServiceException
-  */
+   */
   public function exportPatient(Collection $patients): array
   {
     // check if we still have patient to push
@@ -140,6 +137,106 @@ class RedCapApiService
     } else {
       return [];
     }
+  }
+
+
+  /**
+   * @param MedicalCase $medicalCases
+   * @throws RedCapApiServiceException
+  */
+  public function exportMedicalCase(MedicalCase $medicalCase)
+  {
+    $data = [];
+    // TODO : use .env variable;
+    $medalDataID = 'MDTZ-';
+
+    try {
+      $this->projectMedicalCase->importRecords([
+        $medicalCase->id => [
+          "record_id" => $medicalCase->local_medical_case_id,
+          Config::get('redcap.identifiers.medical_case.dyn_mc_patient_id') => $medicalCase->patient->local_patient_id,
+          Config::get('redcap.identifiers.medical_case.dyn_mc_datetime_consultation') => $medicalCase->consultation_date,
+        ]
+      ]);
+      Log::info('Baseline processed');
+
+
+      // Variables
+      /** @var MedicalCaseAnswer $medicalCaseAnswer */
+      foreach ($medicalCase->medical_case_answers as $medicalCaseAnswer) {
+        if($medicalCaseAnswer->value == null) {continue;}
+
+        $records[] = [
+          'record_id' => $medicalCase->local_medical_case_id,
+          'redcap_repeat_instrument' => 'variables',
+          'redcap_repeat_instance' => $medicalCaseAnswer->id,
+          'dyn_mc_medalc_question_id' => $medicalCaseAnswer->node->medal_c_id,
+          'dyn_mc_medalc_question_label' => $medicalCaseAnswer->node->label,
+          'dyn_mc_medalc_answer_id' => $medicalCaseAnswer->answer_id,
+          'dyn_mc_medalc_answer_value' => $medicalCaseAnswer->value,
+        ];
+        $this->projectMedicalCase->importRecords($records);
+      }
+      Log::info('Variables processed');
+
+
+      // Diagnoses
+      /** @var DiagnosisReference $diagnose */
+      foreach ($medicalCase->diagnosesReferences as $diagnose) {
+        if ($diagnose->excluded) {continue;};
+
+        if ($diagnose->agreed) {
+          $records[] = [
+            'record_id' => $medicalCase->local_medical_case_id,
+            'redcap_repeat_instrument' => 'diagnoses',
+            'redcap_repeat_instance' => $diagnose->id,
+            'dyn_mc_medalc_diag_id' => $diagnose->diagnoses->medal_c_id,
+            'dyn_mc_medal_data_diag_id' => $medalDataID . 'diagnoses' .$diagnose->id,
+            'dyn_mc_medal_data_diag_additional' => ($diagnose->additional) ? 'true' : 'false',
+            'dyn_mc_medalc_diag_label' => $diagnose->diagnoses->label,
+          ];
+        } else {
+          $records[] = [
+            'record_id' => $medicalCase->local_medical_case_id,
+            'redcap_repeat_instrument' => 'diagnoses_refused',
+            'redcap_repeat_instance' => $diagnose->id,
+            'dyn_mc_medalc_diag_refused_id' => $diagnose->diagnoses->medal_c_id,
+            'dyn_mc_medalc_diag_refused_label' => $diagnose->diagnoses->label,
+          ];
+        }
+
+        $this->projectMedicalCase->importRecords($records);
+      }
+      Log::info('Diagnoses processed');
+
+
+      // Custom Diagnoses
+      foreach ($medicalCase->customDiagnoses as $customDiagnose) {
+        $records[] = [
+          'record_id' => $medicalCase->local_medical_case_id,
+          'redcap_repeat_instrument' => 'custom_diagnoses',
+          'redcap_repeat_instance' => $customDiagnose->id,
+          'dyn_mc_medal_data_custom_diag_label' => $customDiagnose->label,
+          'dyn_mc_medal_data_custom_diag_drugs' => $customDiagnose->drugs,
+          'dyn_mc_medal_data_custom_diag_id' => $medalDataID . 'custom_diagnoses' . $customDiagnose->id,
+
+        ];
+        $this->projectMedicalCase->importRecords($records);
+      }
+      Log::info('Custom Diagnoses processed');
+
+
+      // Drugs
+      // Custom Drugs
+      // Managements
+
+    } catch (PhpCapException $e) {
+      if ($e->getCode() === 7) {
+        throw new RedCapApiServiceException("unique field error", 7, $e);
+      }
+      throw new RedCapApiServiceException("Failed to export Medical case " . $medicalCase->local_medical_case_id , 0, $e);
+    }
+
   }
 
 

@@ -10,6 +10,10 @@ return [
       'api_url_patient' => env('REDCAP_IDENTIFIERS_API_URL_PATIENT', ''),
       'api_token_patient' => env('REDCAP_IDENTIFIERS_API_TOKEN_PATIENT', ''),
 
+      'api_url_medical_case' => env('REDCAP_IDENTIFIERS_API_URL_MEDICAL_CASE', ''),
+      'api_token_medical_case' => env('REDCAP_IDENTIFIERS_API_TOKEN_MEDICAL_CASE', ''),
+
+
       'patient' => [
         'dyn_pat_study_id_patient' => 'dyn_pat_study_id_patient',
         'dyn_pat_first_name' => 'dyn_pat_first_name',
@@ -74,6 +78,11 @@ return [
         'dyn_fup_followup_type' => 'dyn_fup_followup_type',
         'dyn_fup_followup_bn_attempts' => 'dyn_fup_followup_bn_attempts',
         'dyn_fup_remarks' => 'dyn_fup_remarks',
+      ],
+
+      'medical_case' => [
+        'dyn_mc_patient_id' => 'dyn_mc_patient_id',
+        'dyn_mc_datetime_consultation' => 'dyn_mc_datetime_consultation',
       ]
 
     ],

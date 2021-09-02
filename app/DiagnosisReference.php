@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Diagnosis;
+use Illuminate\Database\Eloquent\Model;
 use App\ManagementReference;
 use App\DrugReference;
 use App\CustomDiagnosis;
@@ -44,6 +44,14 @@ class DiagnosisReference extends Model
   */
   public function drugReferences(){
     return $this->hasMany('App\DrugReference','id','diagnosis_id');
+  }
+
+  /**
+   * Make diagnoses relation
+   * @return one to one drub Diagnosis
+   */
+  public function diagnoses() {
+    return $this->hasOne('App\Diagnosis','id','diagnosis_id');
   }
 
   /**
