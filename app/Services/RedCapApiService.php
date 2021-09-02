@@ -4,9 +4,12 @@
 namespace App\Services;
 
 
+use App\CustomDiagnosis;
+use App\CustomDrug;
 use App\DiagnosisReference;
 use App\Exceptions\RedCapApiServiceException;
 use App\Followup;
+use App\ManagementReference;
 use App\MedicalCaseAnswer;
 use App\PatientFollowUp;
 use App\MedicalCase;
@@ -160,7 +163,6 @@ class RedCapApiService
       ]);
       Log::info('Baseline processed');
 
-
       // Variables
       /** @var MedicalCaseAnswer $medicalCaseAnswer */
       foreach ($medicalCase->medical_case_answers as $medicalCaseAnswer) {
@@ -179,7 +181,6 @@ class RedCapApiService
       }
       Log::info('Variables processed');
 
-
       // Diagnoses
       /** @var DiagnosisReference $diagnose */
       foreach ($medicalCase->diagnosesReferences as $diagnose) {
@@ -191,7 +192,7 @@ class RedCapApiService
             'redcap_repeat_instrument' => 'diagnoses',
             'redcap_repeat_instance' => $diagnose->id,
             'dyn_mc_medalc_diag_id' => $diagnose->diagnoses->medal_c_id,
-            'dyn_mc_medal_data_diag_id' => $medalDataID . 'diagnoses' .$diagnose->id,
+            'dyn_mc_medal_data_diag_id' => $medalDataID . $diagnose->id,
             'dyn_mc_medal_data_diag_additional' => ($diagnose->additional) ? 'true' : 'false',
             'dyn_mc_medalc_diag_label' => $diagnose->diagnoses->label,
           ];
@@ -209,8 +210,8 @@ class RedCapApiService
       }
       Log::info('Diagnoses processed');
 
-
       // Custom Diagnoses
+      /** @var CustomDiagnosis $diagnose */
       foreach ($medicalCase->customDiagnoses as $customDiagnose) {
         $records[] = [
           'record_id' => $medicalCase->local_medical_case_id,
@@ -218,17 +219,79 @@ class RedCapApiService
           'redcap_repeat_instance' => $customDiagnose->id,
           'dyn_mc_medal_data_custom_diag_label' => $customDiagnose->label,
           'dyn_mc_medal_data_custom_diag_drugs' => $customDiagnose->drugs,
-          'dyn_mc_medal_data_custom_diag_id' => $medalDataID . 'custom_diagnoses' . $customDiagnose->id,
+          'dyn_mc_medal_data_custom_diag_id' => $medalDataID . $customDiagnose->id,
 
         ];
         $this->projectMedicalCase->importRecords($records);
       }
       Log::info('Custom Diagnoses processed');
 
-
       // Drugs
+      /** @var DiagnosisReference $diagnose */
+      foreach ($medicalCase->diagnosesReferences as $diagnose) {
+        if ($diagnose->excluded) {continue;};
+
+        if ($diagnose->agreed) {
+          foreach ($diagnose->drugReferences as $drug) {
+            $records[] = [
+              'record_id' => $medicalCase->local_medical_case_id,
+              'redcap_repeat_instrument' => 'drugs',
+              'redcap_repeat_instance' => $drug->id,
+              'dyn_mc_medalc_drug_id' => $drug->drugs->medal_c_id,
+              'dyn_mc_medalc_drug_type' => $drug->type,
+              'dyn_mc_medalc_drug_label' => $drug->drugs->label,
+              'dyn_mc_medalc_drug_description' => $drug->drugs->description,
+
+              'dyn_mc_medal_data_drug_diag_id' => $medalDataID.$diagnose->id,
+            ];
+          }
+          $this->projectMedicalCase->importRecords($records);
+        };
+      }
+      Log::info('drugs processed');
+
       // Custom Drugs
+      /** @var CustomDiagnosis $customDiagnose */
+      foreach ($medicalCase->customDiagnoses as $customDiagnose) {
+        /** @var CustomDrug $customDrug */
+        foreach ($customDiagnose->customDrugs as $customDrug) {
+          $records[] = [
+            'record_id' => $medicalCase->local_medical_case_id,
+            'redcap_repeat_instrument' => 'custom_drugs',
+            'redcap_repeat_instance' => $customDrug->id,
+            'dyn_mc_medal_data_custom_drugs_name' => $customDrug->name,
+            'dyn_mc_medal_data_custom_drugs_duration' => $customDrug->duration,
+            'dyn_mc_medal_data_custom_drugs_custom_diag_id' => $medalDataID . $customDiagnose->id,
+
+          ];
+          $this->projectMedicalCase->importRecords($records);
+        }
+      }
+      Log::info('Custom Drugs processed');
+
       // Managements
+      /** @var DiagnosisReference $diagnose */
+      foreach ($medicalCase->diagnosesReferences as $diagnose) {
+        if ($diagnose->excluded) {continue;};
+
+        if ($diagnose->agreed) {
+          /** @var ManagementReference $management */
+          foreach ($diagnose->managementReferences as $management) {
+              $records[] = [
+                'record_id' => $medicalCase->local_medical_case_id,
+                'redcap_repeat_instrument' => 'managements',
+                'redcap_repeat_instance' => $management->id,
+                'dyn_mc_medalc_management_id' => $management->managements->medal_c_id,
+                'dyn_mc_medalc_management_type' => $management->managements->type,
+                'dyn_mc_medalc_management_label' => $management->managements->label,
+                'dyn_mc_medalc_management_description' => $management->managements->description,
+                'dyn_mc_medal_data_management_diag_id' => $medalDataID.$diagnose->id,
+              ];
+            $this->projectMedicalCase->importRecords($records);
+          }
+        }
+      }
+      Log::info('Management processed');
 
     } catch (PhpCapException $e) {
       if ($e->getCode() === 7) {
