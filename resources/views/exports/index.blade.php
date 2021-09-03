@@ -84,6 +84,19 @@
                       </div>
                     </div>
                   </form>
+                  <form method="POST" action="{{ route('exports.exportFlatZip') }}" accept-charset="UTF-8">
+                    {{ csrf_field() }}
+                    <div class="row">
+                      <div class="col border-right">
+                            <label for="fromDate">Download medAL-Data Flat File:</label>
+                      </div>
+                      <div class="col border-right pt-10">
+                        <div>
+                          <input type="submit" name="Download" value="Extract Flat File">
+                        </div>
+                      </div>
+                    </div>
+                  </form>
               </div>
           </div>
         </div>
