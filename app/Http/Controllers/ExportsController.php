@@ -64,6 +64,30 @@ class ExportsController extends Controller
 
       return view('exports.index')->with($data);;
     }
+    public function exportFlatZip(Request $request){
+      $caseAnswers=new MedicalCaseAnswer();
+      $caseObject = new MedicalCase();
+      $thingsArray=[$caseAnswers->makeFlatCsv()];
+      $things_to_add=["nodes","medical_cases"];
+      foreach($things_to_add as $table){
+        array_push($thingsArray,$caseObject->getDataCsv($table,null,null));
+      }
+      $zipper = new \Madnest\Madzipper\Madzipper;
+      $zipper->make("ibu.zip")->add($thingsArray);
+      $zipper->close();
+      $zipfileFromPublic= base_path().'/public/ibu.zip';
+      // download
+      header("Content-Description: File Transfer");
+      header("Content-Disposition: attachment; filename=".$zipfileFromPublic);
+      header("Content-Type: application/csv; ");
+      readfile($zipfileFromPublic);
+      // deleting file
+      foreach($thingsArray as $csv){
+       unlink($csv);
+      }
+      unlink($zipfileFromPublic);
+      exit();
+    }
     public function exportZipByDate(Request $request){
       ini_set('memory_limit', '4096M');
       ini_set('max_execution_time', '3600');
@@ -92,7 +116,7 @@ class ExportsController extends Controller
       $zipper = new \Madnest\Madzipper\Madzipper;
       $zipper->make("ibu.zip")->add($thingsArray);
       $zipper->close();
-      $fileFromPublic=$path = base_path().'/public/ibu.zip';;
+      $fileFromPublic=base_path().'/public/ibu.zip';;
       // download
       header("Content-Description: File Transfer");
       header("Content-Disposition: attachment; filename=".$fileFromPublic);
