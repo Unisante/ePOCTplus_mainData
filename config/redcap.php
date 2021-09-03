@@ -81,8 +81,22 @@ return [
       ],
 
       'medical_case' => [
+        // baseline
         'dyn_mc_patient_id' => 'dyn_mc_patient_id',
         'dyn_mc_datetime_consultation' => 'dyn_mc_datetime_consultation',
+
+        // variable
+        'dyn_mc_medalc_question_id' => 'dyn_mc_medalc_question_id',
+        'dyn_mc_medalc_question_label' => 'dyn_mc_medalc_question_label',
+        'dyn_mc_medalc_answer_id' => 'dyn_mc_medalc_answer_id',
+        'dyn_mc_medalc_answer_value' => 'dyn_mc_medalc_answer_value',
+
+
+        // Diagnose
+        'dyn_mc_medalc_diag_id' => 'dyn_mc_medalc_diag_id',
+        'dyn_mc_medal_data_diag_id' => 'dyn_mc_medal_data_diag_id',
+        'dyn_mc_medal_data_diag_additional' => 'dyn_mc_medal_data_diag_additional',
+        'dyn_mc_medalc_diag_label' => 'dyn_mc_medalc_diag_label',
       ]
 
     ],

@@ -171,11 +171,11 @@ class RedCapApiService
         $records[] = [
           'record_id' => $medicalCase->local_medical_case_id,
           'redcap_repeat_instrument' => 'variables',
-          'redcap_repeat_instance' => $medicalCaseAnswer->id,
-          'dyn_mc_medalc_question_id' => $medicalCaseAnswer->node->medal_c_id,
-          'dyn_mc_medalc_question_label' => $medicalCaseAnswer->node->label,
-          'dyn_mc_medalc_answer_id' => $medicalCaseAnswer->answer_id,
-          'dyn_mc_medalc_answer_value' => $medicalCaseAnswer->value,
+          //'redcap_repeat_instance' => $medicalCaseAnswer->id,
+          Config::get('redcap.identifiers.medical_case.dyn_mc_medalc_question_id') => $medicalCaseAnswer->node->medal_c_id,
+          Config::get('redcap.identifiers.medical_case.dyn_mc_medalc_question_label') => $medicalCaseAnswer->node->label,
+          Config::get('redcap.identifiers.medical_case.dyn_mc_medalc_answer_id') => $medicalCaseAnswer->answer_id,
+          Config::get('redcap.identifiers.medical_case.dyn_mc_medalc_answer_value') => $medicalCaseAnswer->value,
         ];
         $this->projectMedicalCase->importRecords($records);
       }
