@@ -5,6 +5,7 @@ use App\MedicalCaseAnswer;
 use App\HealthFacility;
 use App\Jobs\ProcessUploadZip;
 use Illuminate\Support\Facades\Config;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,12 +69,30 @@ Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
     );
   }
   $facility=HealthFacility::where('group_id',$health_facility_id)->first();
+  $nb_of_cases_synced=0;
+  $latest_sync_time=Carbon::createFromFormat('Y-m-d H:i:s', '1970-01-01 00:00:00');
+  $cases_today=0;
+  $facility->patients->each(function($patient) use (&$nb_of_cases_synced,&$latest_sync_time, &$cases_today){
+    $nb_of_cases_synced=$nb_of_cases_synced + $patient->medicalCases->count();
+    if($patient->medicalCases->last()->created_at->toDateString() > $latest_sync_time ){
+      $latest_sync_time=$patient->medicalCases->last()->created_at;
+    }
+    $patient->medicalCases->each(function($case) use (&$cases_today){
+      if($case->created_at->format('d-m-y') == Carbon::now()->format('d-m-y')){
+        $cases_today = $cases_today + 1;
+      }
+    });
+  });
+  // json_log is not yet used.So its commented
   return response()->json([
-    "health_facility_id"=>$facility->group_id,
-    "facility_name"=>$facility->facility_name,
-    "nb_of_cases_synced"=>$facility->medical_cases->count(),
-    "timestamp_json_log"=>$facility->log_cases->sortByDesc('created_at')->pluck('created_at')->first(),
-    "total_nb_of_json_log"=>$facility->log_cases->count(),
+    "Health_facility_id"=>$facility->group_id,
+    "Facility_name"=>$facility->name,
+    "cases_synced_today"=>$cases_today,
+    "Total_cases_synced"=>$nb_of_cases_synced,
+    "Latest_sync_date"=>$latest_sync_time->format('d-m-y'),
+    "Latest_sync_time"=>$latest_sync_time->format('H:i:s'),
+    // "timestamp_json_log"=>$facility->log_cases->sortByDesc('created_at')->pluck('created_at')->first(),
+    // "total_nb_of_json_log"=>$facility->log_cases->count(),
   ]);
 });
 

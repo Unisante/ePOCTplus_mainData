@@ -18,7 +18,7 @@ class HealthFacilityController extends Controller
     protected $healthFacilityService;
     protected $algorithmService;
 
-    public function __construct(HealthFacilityService $healthFacilityService, 
+    public function __construct(HealthFacilityService $healthFacilityService,
                                 AlgorithmService $algorithmService)
     {
         $this->authorizeResource(HealthFacility::class);
@@ -97,7 +97,7 @@ class HealthFacilityController extends Controller
         ]);
     }
 
-    //Assigns a device to the health facility 
+    //Assigns a device to the health facility
     public function assignDevice(HealthFacility $healthFacility,Device $device){
         $this->authorize('assignDevice',[$healthFacility,$device]);
         $device = $this->healthFacilityService->assignDevice($healthFacility,$device);
@@ -146,7 +146,7 @@ class HealthFacilityController extends Controller
             "message" => "Version Assigned",
             "id" => $versionID,
         ]);
-        
+
     }
 
     //Since the original health_facilities table was created with bad non-null column, this assigns default values to them

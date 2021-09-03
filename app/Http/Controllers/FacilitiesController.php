@@ -18,8 +18,9 @@ class FacilitiesController extends Controller
       //   $output= json_decode($geocode);
       //   dd($output);
       //   dd($output->results[0]->formatted_address);
-
-      $facilities=HealthFacility::all();
+      $facilities = HealthFacility::all()->filter(function($facility) {
+        return ! $facility->patients->isEmpty();
+      });
       foreach($facilities as $facility){
         //find all medical cases related to that health facility
         if(! $facility->patients->isEmpty()){

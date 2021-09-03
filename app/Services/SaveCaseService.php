@@ -51,7 +51,7 @@ class SaveCaseService
     } else {
       $data = $this->getVersionData($hf, $versionId);
       $versionData = $data['medal_r_json'];
-      $configData = $data['medal_data_config'];
+      $configData = $this->getPatientConfigData($hf, $versionId);
       $version = $this->updateVersion($versionData);
       $config = $this->updateConfig($configData, $version);
     }
@@ -60,6 +60,11 @@ class SaveCaseService
     $case = $this->saveCase($caseData, $version, $patient);
 
     return $case;
+  }
+
+  protected function getPatientConfigData($hf, $versionId)
+  {
+      return json_decode(Http::get(Config::get('medal.creator.url') . Config::get('medal.creator.medal_data_config_endpoint') . $versionId), true);
   }
 
   protected function getVersionData($hf, $versionId)
