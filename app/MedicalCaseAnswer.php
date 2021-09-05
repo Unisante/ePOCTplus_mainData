@@ -21,26 +21,46 @@ class MedicalCaseAnswer extends Model implements Auditable
     $medicalCaseAnswer=MedicalCaseAnswer::find($id);
     return $medicalCaseAnswer->audits;
   }
-  public function makeFlatCsv(){
+  public function makeFlatCsv($filename,$fromDate,$toDate){
     ini_set('memory_limit', '4096M');
     ini_set('max_execution_time', '3600');
-    $filename='caseAnswers.csv';
-    $caseAnswers=self::all();
+    $filename=$filename?$filename:'ibuFlat.csv';
+    $case_drug_id_list=[];$case_answers_array=[];
+    $column_tofetch='consultation_date';
+    $cases = MedicalCase::whereDate($column_tofetch,'>=',$fromDate)->whereDate($column_tofetch,'<=',$toDate)->get();
+    foreach($cases as $case){
+      array_push($case_answers_array,$case->medical_case_answers);
+      foreach($case->diagnosesReferences as $df){
+        if(count($df->drugReferences) > 0){
+          array_push($case_drug_id_list,$case->id);
+          break;
+        }
+      }
+    }
+    if(count($case_drug_id_list) > 0){
+      $new_drug_instance=new DrugReference();
+      $drug_csv=$new_drug_instance->makeFlatCsv($case_drug_id_list);
+    }else{
+      $drug_csv=null;
+    }
+    $ChunkedcaseAnswers=$case_answers_array;
     $cols = []; $pivot = [];
-    foreach($caseAnswers as $record){
-      if($record->answer_id != null){
-        list($mdcaid, $node_id, $value) = array($record->id,$record->node->label,$record->answer->label) ;
-      }else if($record->answer_id == null && $record->value == null){
-        continue;
+    foreach($ChunkedcaseAnswers as $caseAnswers){
+      foreach($caseAnswers as $record){
+        if($record->answer_id != null){
+          $mdcaid=$record->id;$node_id=$record->node->label;$value =$record->answer->label;
+        }else if($record->answer_id == null && $record->value == null){
+          continue;
+        }
+        else{
+          $mdcaid=$record->id;$node_id=$record->node->label;$value =$record->value;
+        }
+        if (!array_key_exists($mdcaid,$pivot)) {
+          $pivot[$mdcaid] = array();
+        }
+        array_push($cols, $node_id);
+        array_push($pivot[$mdcaid], array('node_id' => $node_id, 'value' => $value));
       }
-      else{
-        list($mdcaid, $node_id, $value) = array($record->id,$record->node->label,$record->value) ;
-      }
-      if (!array_key_exists($mdcaid,$pivot)) {
-        $pivot[$mdcaid] = array();
-      }
-      array_push($cols, $node_id);
-      array_push($pivot[$mdcaid], array('node_id' => $node_id, 'value' => $value));
     }
     $cols = array_unique($cols);
     array_unshift($cols , 'case_answer_id');
@@ -48,29 +68,30 @@ class MedicalCaseAnswer extends Model implements Auditable
     array_unshift($cols, 'patient');
     $file = fopen($filename,"w");
     fputcsv($file, $cols);
-    foreach($caseAnswers as $record){
-      $node_index=array_search($record['node_id'], $cols);
-        $tempArr=[];
-        $tempArr[0]=$record->medical_case->patient->local_patient_id;
-        $tempArr[1]=$record->medical_case->local_medical_case_id;
-        $tempArr[2]=$record->id;
-        foreach($cols as $index=>$col){
-          if($index == $node_index-1){
-            array_push($tempArr,$record['value']);
-          }else{
-            array_push($tempArr,0);
+    foreach($ChunkedcaseAnswers as $caseAnswers){
+      foreach($caseAnswers as $record){
+          $tempArr=[];
+          $node_index=array_search($record->node->label, $cols);
+          foreach($cols as $index=>$col){
+            if($index == 0){
+              array_push($tempArr,$record->medical_case->patient->local_patient_id);
+            }else if($index == 1){
+              array_push($tempArr,$record->medical_case->local_medical_case_id);
+            }else if($index == 2){
+              array_push($tempArr,$record->id);
+            }else if($index == $node_index){
+              array_push($tempArr,$record->answer_id?$record->answer->label:$record->value);
+            }else{
+              array_push($tempArr,0);
+            }
           }
-        }
-        array_pop($tempArr);
-        fputcsv($file, $tempArr);
+          fputcsv($file, $tempArr);
+      }
     }
     fclose($file);
-    return $filename;
+    // return $filename;
+    return array_filter([$filename,$drug_csv]);
   }
-
-
-
-
 
   public function medical_case(){
     return $this->belongsTo('App\MedicalCase');

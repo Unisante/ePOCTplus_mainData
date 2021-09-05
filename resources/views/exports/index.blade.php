@@ -3,7 +3,6 @@
 <link href="{{ asset('css/datatable.css') }}" rel="stylesheet">
 <link href="{{ asset('css/background.css') }}" rel="stylesheet">
 <div class="container-fluid">
-
         <div class="col-md-10">
               @if ($errors->any())
                   <div class="alert alert-danger">
@@ -78,13 +77,30 @@
                           <input type="date" id="toDate" name="toDate" value="{{$newest_date}}">
                       </div>
                       <div class="col border-right">
-                        <div>
-                          <input type="submit" name="Download" value="Extract">
+                        <div class="row">
+                          {{-- <div>
+                            <input type="submit" name="DownloadSeparate" value="Extract">
+                          </div>
+                          <div class="ml-2">
+                            <input type="submit" name="DownloadFlat" value="ExtractFlat">
+                          </div> --}}
+                          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                            <div class="btn-group" role="group">
+                              <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Extract
+                              </button>
+                              <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                <input type="submit" class="dropdown-item" name="DownloadSeparate" value="Extract">
+                                <input type="submit" class="dropdown-item" name="DownloadFlat" value="ExtractFlat">
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </form>
-                  <form method="POST" action="{{ route('exports.exportFlatZip') }}" accept-charset="UTF-8">
+
+                  {{-- <form method="POST" action="{{ route('exports.exportFlatZip') }}" accept-charset="UTF-8">
                     {{ csrf_field() }}
                     <div class="row">
                       <div class="col border-right">
@@ -96,7 +112,7 @@
                         </div>
                       </div>
                     </div>
-                  </form>
+                  </form> --}}
               </div>
           </div>
         </div>
