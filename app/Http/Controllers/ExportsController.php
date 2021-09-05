@@ -115,10 +115,19 @@ class ExportsController extends Controller
       $thingsArray=[];
       $extract='';
       if(Arr::exists($request->input(),'DownloadFlat')){
-        $thingsArray= $this->exportFlatZip($fromDate,$toDate);
-        $extract='ibuFlat';
-      }
-      if(Arr::exists($request->input(),'DownloadSeparate')){
+        $today=Carbon::now()->format('Y_m_d');
+        $zipname=$today.'.zip';
+        $fileurl=storage_path().'/app/flat_Zip/'.$zipname;
+        if (file_exists($fileurl)) {
+          return response()->download($fileurl, $zipname,
+          array('Content-Type: application/octet-stream',
+          'Content-Length: '. filesize($fileurl))
+          )
+          ->deleteFileAfterSend(false);
+        } else {
+            return ['status'=>'zip file does not exist'];
+        }
+      }else if(Arr::exists($request->input(),'DownloadSeparate')){
         $patients=new Patient();
         $cases = new MedicalCase();
         $things_to_add=["medical_cases","medical_case_answers","nodes","answers","algorithms","versions","answer_types","additional_drugs","custom_diagnoses","diagnoses","diagnosis_references","drugs","drug_references","formulations","managements","management_references"];
@@ -128,22 +137,26 @@ class ExportsController extends Controller
         $filename=$patients->patientData();
         $thingsArray = Arr::prepend($thingsArray, $filename);
         $extract='ibu';
+        $zipper = new \Madnest\Madzipper\Madzipper;
+        $zipper->make($extract.".zip")->add($thingsArray);
+        $zipper->close();
+        $fileFromPublic=base_path().'/public/'.$extract.'.zip';;
+        // download
+        header("Content-Description: File Transfer");
+        header("Content-Disposition: attachment; filename=".$fileFromPublic);
+        header("Content-Type: application/csv; ");
+        readfile($fileFromPublic);
+        // deleting file
+        foreach($thingsArray as $csv){
+          unlink($csv);
+        }
+        unlink($fileFromPublic);
+        exit();
+      }else{
+        return back()->withErrors("Something Went Wrong");
       }
-      $zipper = new \Madnest\Madzipper\Madzipper;
-      $zipper->make($extract.".zip")->add($thingsArray);
-      $zipper->close();
-      $fileFromPublic=base_path().'/public/'.$extract.'.zip';;
-      // download
-      header("Content-Description: File Transfer");
-      header("Content-Disposition: attachment; filename=".$fileFromPublic);
-      header("Content-Type: application/csv; ");
-      readfile($fileFromPublic);
-      // deleting file
-      foreach($thingsArray as $csv){
-        unlink($csv);
-      }
-      unlink($fileFromPublic);
-      exit();
+
+
     }
     public function Patients(){
       return Excel::download(new PatientExport,'patients.csv');

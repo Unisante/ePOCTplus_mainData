@@ -9,6 +9,9 @@ use App\Node;
 use App\Answer;
 use App\DiagnosisReference;
 use App\DrugReference;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+
 class MedicalCaseAnswer extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable;
@@ -23,13 +26,14 @@ class MedicalCaseAnswer extends Model implements Auditable
     $medicalCaseAnswer=MedicalCaseAnswer::find($id);
     return $medicalCaseAnswer->audits;
   }
-  public function makeFlatCsv($filename,$fromDate,$toDate){
+  public function makeFlatCsv(){
     ini_set('memory_limit', '4096M');
     ini_set('max_execution_time', '3600');
-    $filename=$filename?$filename:'ibuFlat.csv';
+    $filename='caseAnswers.csv';
     $case_drug_id_list=[];$case_answers_array=[];
     $column_tofetch='consultation_date';
-    $cases = MedicalCase::whereDate($column_tofetch,'>=',$fromDate)->whereDate($column_tofetch,'<=',$toDate)->get();
+    // $cases = MedicalCase::whereDate($column_tofetch,'>=',$fromDate)->whereDate($column_tofetch,'<=',$toDate)->get();
+    $cases=MedicalCase::all();
     foreach($cases as $case){
       foreach($case->medical_case_answers as $cas){
         array_push($case_answers_array,$cas);
@@ -44,11 +48,20 @@ class MedicalCaseAnswer extends Model implements Auditable
 
     //for drugs
     // dd($case_drug_id_list);
+    // dd(storage_path());
+    $folder_name='flat_files';
+    if(! Storage::has($folder_name)){
+      Storage::makeDirectory($folder_name);
+      // Storage::putFile($folder_name.'/'.'drugFlat.csv');
+    }
+    // dd(Storage::makeDirectory('ibu'));
+    // dd(Storage::has('ibu'));
     $drug_csv=null;
     if(count($case_drug_id_list) > 0){
       $new_drug_instance=new DrugReference();
-      $drug_csv=$new_drug_instance->makeFlatCsv($case_drug_id_list);
+      $drug_csv=$new_drug_instance->makeFlatCsv($case_drug_id_list,$folder_name);
     }
+    // dd('am done');
     $caseAnswers=$case_answers_array;
     $cols = []; $pivot = [];
       foreach($caseAnswers as $record){
@@ -72,7 +85,8 @@ class MedicalCaseAnswer extends Model implements Auditable
     array_unshift($cols , 'case_answer_id');
     array_unshift($cols , 'case_id');
     array_unshift($cols, 'patient');
-    $file = fopen($filename,"w");
+    $path=Storage::path($folder_name).'\\'.$filename;
+    $file = fopen($path,"w");
     fputcsv($file, $cols);
     foreach(collect($caseAnswers)->chunk(5000) as $index=>$cs){
       $this->flatPieces($cols,$cs,$file);
@@ -80,6 +94,7 @@ class MedicalCaseAnswer extends Model implements Auditable
     fclose($file);
     array_push($filenames,$drug_csv);
     array_push($filenames,$filename);
+    // dd('am done');
     return array_filter($filenames);
   }
 

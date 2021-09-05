@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use App\Drug;
 use App\DiagnosisReference;
 use App\MedicalCase;
+use Illuminate\Support\Facades\Storage;
 
 class DrugReference extends Model
 {
   protected $guarded = [];
 
-  function makeFlatCsv($case_drug_id_list){
+  function makeFlatCsv($case_drug_id_list,$folder_name){
     ini_set('memory_limit', '4096M');
     ini_set('max_execution_time', '3600');
     $drugs_needed=[];
@@ -23,7 +24,6 @@ class DrugReference extends Model
         }
       }
     }
-    // dd($drugs_needed);
     ksort($drugs_needed);
     $filename='drugFlat.csv';
     $cols = []; $pivot = [];
@@ -41,7 +41,8 @@ class DrugReference extends Model
     array_unshift($cols , 'diagnoses');
     array_unshift($cols , 'case_id');
     array_unshift($cols , 'drug_reference_id');
-    $file = fopen($filename,"w");
+    $path=Storage::path($folder_name).'\\'.$filename;
+    $file = fopen($path,"w");
     fputcsv($file, $cols);
     foreach($drugs_needed as $record){
       $column_index=array_search($record->drug->label, $cols);
