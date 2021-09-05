@@ -43,7 +43,7 @@ class DiagnosisReference extends Model
   * @return one to many drub references retionship
   */
   public function drugReferences(){
-    return $this->hasMany('App\DrugReference','id','diagnosis_id');
+    return $this->hasMany('App\DrugReference','diagnosis_id');
   }
 
   /**

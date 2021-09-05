@@ -19,11 +19,11 @@ class DrugReference extends Model
     foreach($cases as $indexcase=>$case){
       foreach($case->diagnosesReferences as $indexdf=>$df){
         foreach($df->drugReferences as $drf){
-
           $drugs_needed[$drf->id]=$drf;
         }
       }
     }
+    // dd($drugs_needed);
     ksort($drugs_needed);
     $filename='drugFlat.csv';
     $cols = []; $pivot = [];
@@ -36,7 +36,8 @@ class DrugReference extends Model
       array_push($pivot[$drug_row], array('drug_column' => $drug_column, 'value' => $drug_value));
     }
     $cols = array_unique($cols);
-    array_unshift($cols , 'diagnoses_proposed');
+    // array_unshift($cols , 'diagnosis_agreed');
+    array_unshift($cols , 'diagnosis_proposed');
     array_unshift($cols , 'diagnoses');
     array_unshift($cols , 'case_id');
     array_unshift($cols , 'drug_reference_id');
@@ -54,8 +55,11 @@ class DrugReference extends Model
             array_push($tempArr,$record->diagnosisReference->diagnosis->label);
           }
           else if($index == 3){
-            $record->diagnosisReference->diagnosis->additional?array_push($tempArr,'Additional'): array_push($tempArr,'Proposed');
+            $record->diagnosisReference->diagnosis->additional?array_push($tempArr,0): array_push($tempArr,1);
           }
+          // else if($index == 4){
+          //   $record->diagnosisReference->diagnosis->agreed?array_push($tempArr,1): array_push($tempArr,0);
+          // }
           else if($index == $column_index){
             array_push($tempArr,$record->agreed);
           }else{
