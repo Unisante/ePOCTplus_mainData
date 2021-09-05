@@ -125,7 +125,7 @@ class ExportsController extends Controller
           )
           ->deleteFileAfterSend(false);
         } else {
-            return ['status'=>'zip file does not exist'];
+          return back()->withErrors("Something Went Wrong");
         }
       }else if(Arr::exists($request->input(),'DownloadSeparate')){
         $patients=new Patient();
