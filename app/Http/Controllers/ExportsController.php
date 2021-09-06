@@ -115,8 +115,6 @@ class ExportsController extends Controller
       $thingsArray=[];
       $extract='';
       if(Arr::exists($request->input(),'DownloadFlat')){
-        $cases= new MedicalCaseAnswer();
-        return $cases->makeFlatCsv();
         $today=Carbon::now()->format('Y_m_d');
         $extract='ibu_flat';
         $zipper = new \Madnest\Madzipper\Madzipper;
