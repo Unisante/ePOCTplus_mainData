@@ -50,8 +50,9 @@ class MedicalCaseAnswer extends Model implements Auditable
     $folder_name='flat_files';
     if(! Storage::has($folder_name)){
       Storage::makeDirectory($folder_name);
-      Storage::putFile($folder_name.'/'.'drugFlat.csv');
-      Storage::putFile($folder_name.'/'.'caseAnswersFlat.csv');
+      $path=storage_path().'/app/flat_files';
+      Storage::putFile($path.'/'.'drugFlat.csv');
+      Storage::putFile($path.'/'.'caseAnswersFlat.csv');
     }
     // dd(Storage::makeDirectory('ibu'));
     // dd(Storage::has('ibu'));
