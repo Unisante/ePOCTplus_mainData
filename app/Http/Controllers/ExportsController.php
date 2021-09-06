@@ -116,17 +116,20 @@ class ExportsController extends Controller
       $extract='';
       if(Arr::exists($request->input(),'DownloadFlat')){
         $today=Carbon::now()->format('Y_m_d');
-        $zipname=$today.'.zip';
-        $fileurl=storage_path().'/app/flat_Zip/'.$zipname;
-        if (file_exists($fileurl)) {
-          return response()->download($fileurl, $zipname,
-          array('Content-Type: application/octet-stream',
-          'Content-Length: '. filesize($fileurl))
-          )
-          ->deleteFileAfterSend(false);
-        } else {
-          return back()->withErrors("Something Went Wrong");
-        }
+        $extract='ibu_flat';
+        $zipper = new \Madnest\Madzipper\Madzipper;
+        $path=storage_path().'/app/flat_files';
+        $d=File::allFiles($path);
+        $zipper->make($extract.".zip")->add($d);
+        $zipper->close();
+        $fileFromPublic=base_path().'/public/'.$extract.'.zip';
+        // download
+        header("Content-Description: File Transfer");
+        header("Content-Disposition: attachment; filename=".$fileFromPublic);
+        header("Content-Type: application/csv; ");
+        readfile($fileFromPublic);
+        unlink($fileFromPublic);
+        exit();
       }else if(Arr::exists($request->input(),'DownloadSeparate')){
         $patients=new Patient();
         $cases = new MedicalCase();

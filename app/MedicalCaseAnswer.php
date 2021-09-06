@@ -47,12 +47,11 @@ class MedicalCaseAnswer extends Model implements Auditable
     }
 
     //for drugs
-    // dd($case_drug_id_list);
-    // dd(storage_path());
     $folder_name='flat_files';
     if(! Storage::has($folder_name)){
       Storage::makeDirectory($folder_name);
-      // Storage::putFile($folder_name.'/'.'drugFlat.csv');
+      Storage::putFile($folder_name.'/'.'drugFlat.csv');
+      Storage::putFile($folder_name.'/'.'caseAnswersFlat.csv');
     }
     // dd(Storage::makeDirectory('ibu'));
     // dd(Storage::has('ibu'));
