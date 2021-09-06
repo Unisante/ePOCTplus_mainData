@@ -41,7 +41,7 @@ class DrugReference extends Model
     array_unshift($cols , 'diagnoses');
     array_unshift($cols , 'case_id');
     array_unshift($cols , 'drug_reference_id');
-    $path=Storage::path($folder_name).'\\'.$filename;
+    $path=Storage::path("$folder_name/$filename");
     $file = fopen($path,"w");
     fputcsv($file, $cols);
     foreach($drugs_needed as $record){

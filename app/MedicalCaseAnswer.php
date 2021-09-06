@@ -11,6 +11,7 @@ use App\DiagnosisReference;
 use App\DrugReference;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+Use File;
 
 class MedicalCaseAnswer extends Model implements Auditable
 {
@@ -48,20 +49,18 @@ class MedicalCaseAnswer extends Model implements Auditable
 
     //for drugs
     $folder_name='flat_files';
+    $drugFile_name='drugFlat.csv';
+    $case_file_name='caseAnswersFlat.csv';
     if(! Storage::has($folder_name)){
       Storage::makeDirectory($folder_name);
-      $path=storage_path().'/app/flat_files';
-      Storage::putFile($path.'/'.'drugFlat.csv');
-      Storage::putFile($path.'/'.'caseAnswersFlat.csv');
     }
-    // dd(Storage::makeDirectory('ibu'));
-    // dd(Storage::has('ibu'));
+    Storage::put("$folder_name/$drugFile_name","");
+    Storage::put("$folder_name/$case_file_name","");
     $drug_csv=null;
     if(count($case_drug_id_list) > 0){
       $new_drug_instance=new DrugReference();
       $drug_csv=$new_drug_instance->makeFlatCsv($case_drug_id_list,$folder_name);
     }
-    // dd('am done');
     $caseAnswers=$case_answers_array;
     $cols = []; $pivot = [];
       foreach($caseAnswers as $record){
@@ -81,11 +80,11 @@ class MedicalCaseAnswer extends Model implements Auditable
       }
     $cols = array_unique($cols);
     $filenames=[];
-    $filename='caseAnswersFlat.csv';
+    // $filename='caseAnswersFlat.csv';
     array_unshift($cols , 'case_answer_id');
     array_unshift($cols , 'case_id');
     array_unshift($cols, 'patient');
-    $path=Storage::path($folder_name).'\\'.$filename;
+    $path=Storage::path("$folder_name/$case_file_name");
     $file = fopen($path,"w");
     fputcsv($file, $cols);
     foreach(collect($caseAnswers)->chunk(5000) as $index=>$cs){
@@ -93,8 +92,7 @@ class MedicalCaseAnswer extends Model implements Auditable
     }
     fclose($file);
     array_push($filenames,$drug_csv);
-    array_push($filenames,$filename);
-    // dd('am done');
+    array_push($filenames,$case_file_name);
     return array_filter($filenames);
   }
 
