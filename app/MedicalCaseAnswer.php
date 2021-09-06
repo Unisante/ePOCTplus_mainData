@@ -46,7 +46,6 @@ class MedicalCaseAnswer extends Model implements Auditable
         }
       }
     }
-
     //for drugs
     $folder_name='flat_files';
     $drugFile_name='drugFlat.csv';
@@ -62,28 +61,30 @@ class MedicalCaseAnswer extends Model implements Auditable
       $drug_csv=$new_drug_instance->makeFlatCsv($case_drug_id_list,$folder_name);
     }
     $caseAnswers=$case_answers_array;
-    $cols = []; $pivot = [];
+    $cols = []; $pivot = []; $cols_to_rotate=[];
       foreach($caseAnswers as $record){
         if($record->answer_id != null){
-          $mdcaid=$record->id;$node_id=$record->node->label;$value =$record->answer->label;
+          $mdcaid=$record->id;$node_id=$record->node->label;$value =$record->answer->label;$col_to_rotate=$record->node_id;
         }else if($record->answer_id == null && $record->value == null){
           continue;
         }
         else{
-          $mdcaid=$record->id;$node_id=$record->node->label;$value =$record->value;
+          $mdcaid=$record->id;$node_id=$record->node->label;$value =$record->value;$col_to_rotate=$record->node_id;
         }
         if (!array_key_exists($mdcaid,$pivot)) {
           $pivot[$mdcaid] = array();
         }
         array_push($cols, $node_id);
+        array_push($cols_to_rotate,$col_to_rotate);
         array_push($pivot[$mdcaid], array('node_id' => $node_id, 'value' => $value));
       }
     $cols = array_unique($cols);
+    $cols_to_rotate = array_unique($cols_to_rotate);
     $filenames=[];
-    // $filename='caseAnswersFlat.csv';
-    array_unshift($cols , 'case_answer_id');
     array_unshift($cols , 'case_id');
     array_unshift($cols, 'patient');
+    array_unshift($cols_to_rotate , 'case_id');
+    array_unshift($cols_to_rotate, 'patient');
     $path=Storage::path("$folder_name/$case_file_name");
     $file = fopen($path,"w");
     fputcsv($file, $cols);
@@ -97,22 +98,25 @@ class MedicalCaseAnswer extends Model implements Auditable
   }
 
   public function flatPieces($cols,$caseAnswers,$file){
-    foreach($caseAnswers as $record){
+    foreach($caseAnswers->groupBy('medical_case_id') as $record_group){
       $tempArr=[];
-      $node_index=array_search($record->node->label, $cols);
-      foreach($cols as $index=>$col){
-        if($index == 0){
-          array_push($tempArr,$record->medical_case->patient->local_patient_id);
-        }else if($index == 1){
-          array_push($tempArr,$record->medical_case->local_medical_case_id);
-        }else if($index == 2){
-          array_push($tempArr,$record->id);
-        }else if($index == $node_index){
-          array_push($tempArr,$record->answer_id?$record->answer->label:$record->value);
-        }else{
-          array_push($tempArr,0);
-        }
+      $key_value_arr=[];
+      foreach($record_group as $caseAnswer){
+        $key_value_arr[$caseAnswer->node->label]=$caseAnswer;
       }
+      foreach($cols as $index=>$col){
+          if($index == 0){
+            $tempArr[$index]=$record_group[0]->medical_case->patient->local_patient_id;
+          }else if($index == 1){
+            $tempArr[$index]=$record_group[0]->medical_case->local_medical_case_id;
+          }else if (array_key_exists($col,$key_value_arr)){
+            $value_needed=$key_value_arr[$col]->answer_id?$key_value_arr[$col]->answer->label:$key_value_arr[$col]->value;
+            $tempArr[$index]=$value_needed;
+          }else{
+            $tempArr[$index]=0;
+          }
+        }
+
       fputcsv($file, $tempArr);
     }
   }

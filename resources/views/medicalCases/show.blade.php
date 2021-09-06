@@ -32,13 +32,13 @@
                 <div class="card-header">
                   <div class="d-flex justify-content-between">
                     <span class="font-weight-bold">Created At: </span>
-                  <span>{{$medicalCase->created_at}}</span>
+                  <span>{{$medicalCase->consultation_date?$medicalCase->consultation_date:$medicalCase->created_at}}</span>
                   </div>
                 </div>
                 <div class="card-header">
                   <div class="d-flex justify-content-between">
                     <span class="font-weight-bold">Updated At: </span>
-                  <span>{{$medicalCase->created_at}}</span> </div>
+                  <span>{{$medicalCase->consultation_date?$medicalCase->consultation_date:$medicalCase->created_at}}</span> </div>
                   </div>
                   <div class="card-header">
                     <div class="d-flex justify-content-between">
