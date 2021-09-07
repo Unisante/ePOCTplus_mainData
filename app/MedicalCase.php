@@ -139,4 +139,12 @@ class MedicalCase extends Model implements Auditable
     return $this->hasMany('App\CustomDiagnosis');
   }
 
+  /**
+   * Make activity relation
+   * @return one to many medical cases retionship
+   */
+  public function activities(){
+    return $this->hasMany('App\Activity', 'medical_case_id', 'id');
+  }
+
 }

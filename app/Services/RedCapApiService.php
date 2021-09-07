@@ -194,6 +194,23 @@ class RedCapApiService
       }
       Log::info('----> Variables processed');
 
+      // Activities
+      /** @var MedicalCaseAnswer $medicalCaseAnswer */
+      $instanceNumber = 1;
+      foreach ($medicalCase->activities as $activity) {
+        $records[] = [
+          'record_id' => $medicalCase->local_medical_case_id,
+          'redcap_repeat_instrument' => 'activities',
+          'redcap_repeat_instance' => $instanceNumber++,
+          'dyn_mc_medal_data_step' => $activity->step,
+          'dyn_mc_medal_data_clinician' => $activity->clinician,
+          'dyn_mc_medal_data_mac_add' => $activity->mac_address,
+          'activities_complete' => 2,
+        ];
+        $this->projectMedicalCase->importRecords($records);
+      }
+      Log::info('----> Activities processed');
+
       // Diagnoses
       /** @var DiagnosisReference $diagnose */
       $instanceNumber = 1;
