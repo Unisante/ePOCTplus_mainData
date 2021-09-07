@@ -85,6 +85,7 @@ return [
         'patient_id' => 'dyn_mc_patient_id',
         'datetime_consultation' => 'dyn_mc_datetime_consultation',
         'datetime_closedAt' => 'dyn_mc_datetime_closed_at',
+        'complete' => 'medical_case_complete',
 
         // variable
         'dyn_mc_medalc_question_id' => 'dyn_mc_medalc_question_id',

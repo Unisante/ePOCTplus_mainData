@@ -160,6 +160,7 @@ class RedCapApiService
           Config::get('redcap.identifiers.medical_case.patient_id') => $medicalCase->patient->local_patient_id,
           Config::get('redcap.identifiers.medical_case.datetime_consultation') => $medicalCase->consultation_date,
           Config::get('redcap.identifiers.medical_case.datetime_closedAt') => $medicalCase->closedAt,
+          Config::get('redcap.identifiers.medical_case.complete') => ($medicalCase->force_close) ? 0 : 2,
         ]
       ]);
       Log::info('--> Start export MC : '. $medicalCase->local_medical_case_id);
