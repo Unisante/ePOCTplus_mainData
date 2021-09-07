@@ -8,6 +8,7 @@ use App\Drug;
 use App\Formulation;
 use App\HealthFacility;
 use App\Management;
+use App\MedicalCase;
 use App\Node;
 use App\Patient;
 use App\PatientConfig;
@@ -227,6 +228,7 @@ class SaveCaseService
   public function saveCase($caseData, $version, $patient)
   {
     // Medical case
+    /** @var MedicalCase $medicalCase */
     $medicalCase = (new MedicalCaseLoader($caseData, $patient, $version))->load();
     // Case answers
     foreach ($caseData['nodes'] as $nodeData) {
@@ -237,6 +239,12 @@ class SaveCaseService
         $algoNodeAnswer = Answer::where('medal_c_id', $nodeData['answer'])->first();
         $medicalCaseAnswer = (new MedicalCaseAnswerLoader($nodeData, $medicalCase, $algoNode, $algoNodeAnswer))->load();
       }
+    }
+
+    // Activities
+    foreach ($caseData['activities'] as $activityData) {
+      self::checkHasProperties($activityData, ['step', 'clinician', 'mac_address']);
+      (new ActivityLoader($activityData, $medicalCase))->load();
     }
 
     // Diagnoses

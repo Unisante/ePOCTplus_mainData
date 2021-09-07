@@ -44,6 +44,16 @@ return [
                 'is_arm_control' => 'is_arm_control'
             ]
         ],
+        'activities' => [
+          'keys' => [
+            'medal_c_id' => 'id',
+          ],
+          'values' => [
+            'step' => 'step',
+            'clinician' => 'clinician',
+            'mac_address' => 'mac_address'
+          ],
+        ],
         'version' => [
             'keys' => [
                 'name' => 'version_name',
