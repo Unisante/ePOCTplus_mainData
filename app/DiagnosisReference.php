@@ -61,10 +61,5 @@ class DiagnosisReference extends Model
   public function managementReferences(){
     return $this->hasMany('App\ManagementReference','diagnosis_id','id');
   }
-  public function diagnosis(){
-    return $this->belongsTo('App\Diagnosis','diagnosis_id',);
-  }
-  public function medicalCase(){
-    return $this->belongsTo('App\MedicalCase','medical_case_id',);
-  }
+  
 }

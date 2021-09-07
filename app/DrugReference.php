@@ -81,10 +81,4 @@ class DrugReference extends Model
     fclose($file);
     return $filename;
   }
-  public function diagnosisReference(){
-    return $this->belongsTo('App\DiagnosisReference','diagnosis_id',);
-  }
-  public function drug(){
-    return $this->belongsTo('App\Drug','drug_id',);
-  }
 }
