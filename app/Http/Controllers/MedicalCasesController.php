@@ -34,12 +34,13 @@ class MedicalCasesController extends Controller
   public function index(){
     $medicalCases=MedicalCase::orderBy('created_at')->get();
     $medicalCases->each(function($case){
-      if($case->facility && $case->facility->facility_name){
-        $case->facility_name=$case->facility->facility_name;
+      if($case->patient->facility && $case->patient->facility->name){
+        $case->facility_name=$case->patient->facility->name;
       }else{
         $case->facility_name='';
       }
     });
+    // return $medicalCases;
     return view('medicalCases.index')->with('medicalCases',$medicalCases);
   }
 

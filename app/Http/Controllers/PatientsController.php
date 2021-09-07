@@ -64,8 +64,8 @@ class PatientsController extends Controller
   public function index(){
     $patients=Patient::orderBy('created_at')->get();
     $patients->each(function($patient){
-      if($patient->facility && $patient->facility->facility_name){
-        $patient->facility_name=$patient->facility->facility_name;
+      if($patient->facility && $patient->facility->name){
+        $patient->facility_name=$patient->facility->name;
       }else{
         $patient->facility_name='';
       }

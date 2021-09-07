@@ -82,7 +82,12 @@ class MedicalCase extends Model implements Auditable
     ini_set('max_execution_time', '300');
     $filename = $table_name.'.csv';
     // $model_name=Str::studly(Str::singular('medical_cases'));
-    $patient_data = collect(DB::table($table_name)->whereDate('created_at','>=',$fromDate)->whereDate('created_at','<=',$toDate)->get());
+    if($fromDate != null && $toDate != null){
+      $patient_data = collect(DB::table($table_name)->whereDate('created_at','>=',$fromDate)->whereDate('created_at','<=',$toDate)->get());
+    }else{
+      $patient_data = collect(DB::table($table_name)->get());
+    }
+
     // $patient_data=MedicalCase::all();
     // dd($patient_data);
     // $fetchData= MedicalCase::whereDate('created_at','>=',$fromDate)->whereDate('created_at','<=',$toDate)->get();
