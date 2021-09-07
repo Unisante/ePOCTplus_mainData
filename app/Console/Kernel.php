@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
       $schedule->job(new RedcapPush())->everyMinute();
+      $schedule->command('flatzip:make')->everyMinute();
     }
 
     /**
