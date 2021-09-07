@@ -41,6 +41,6 @@ class PushMedicalCase implements ShouldQueue
       } catch (Exception $ex) {
         Log::error($ex->getMessage());
       }
-      Log::info('medical case exported');
+      Log::info('--> medical case exported');
     }
 }

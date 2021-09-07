@@ -161,13 +161,15 @@ class RedCapApiService
           Config::get('redcap.identifiers.medical_case.dyn_mc_datetime_consultation') => $medicalCase->consultation_date,
         ]
       ]);
-      Log::info('Baseline processed');
+      Log::info('--> Start export MC : '. $medicalCase->local_medical_case_id);
+      Log::info('----> Baseline processed');
 
       // Variables
       /** @var MedicalCaseAnswer $medicalCaseAnswer */
       $instanceNumber = 1;
       foreach ($medicalCase->medical_case_answers as $medicalCaseAnswer) {
-        if($medicalCaseAnswer->value == null) {continue;}
+        // Questions that were not asked
+        if($medicalCaseAnswer->value == '' and $medicalCaseAnswer->answer_id === null) {continue;}
 
         $records[] = [
           'record_id' => $medicalCase->local_medical_case_id,
@@ -175,12 +177,12 @@ class RedCapApiService
           'redcap_repeat_instance' => ++$instanceNumber,
           Config::get('redcap.identifiers.medical_case.dyn_mc_medalc_question_id') => $medicalCaseAnswer->node->medal_c_id,
           Config::get('redcap.identifiers.medical_case.dyn_mc_medalc_question_label') => $medicalCaseAnswer->node->label,
-          Config::get('redcap.identifiers.medical_case.dyn_mc_medalc_answer_id') => $medicalCaseAnswer->answer_id,
-          Config::get('redcap.identifiers.medical_case.dyn_mc_medalc_answer_value') => $medicalCaseAnswer->value,
+          Config::get('redcap.identifiers.medical_case.dyn_mc_medalc_answer_id') => ($medicalCaseAnswer->answer) ? $medicalCaseAnswer->answer->medal_c_id : null,
+          Config::get('redcap.identifiers.medical_case.dyn_mc_medalc_answer_value') => ($medicalCaseAnswer->value == null) ? $medicalCaseAnswer->answer->label : $medicalCaseAnswer->value,
         ];
         $this->projectMedicalCase->importRecords($records);
       }
-      Log::info('Variables processed');
+      Log::info('----> Variables processed');
 
       // Diagnoses
       /** @var DiagnosisReference $diagnose */
@@ -210,7 +212,7 @@ class RedCapApiService
 
         $this->projectMedicalCase->importRecords($records);
       }
-      Log::info('Diagnoses processed');
+      Log::info('----> Diagnoses processed');
 
       // Custom Diagnoses
       /** @var CustomDiagnosis $diagnose */
@@ -227,7 +229,7 @@ class RedCapApiService
         ];
         $this->projectMedicalCase->importRecords($records);
       }
-      Log::info('Custom Diagnoses processed');
+      Log::info('----> Custom Diagnoses processed');
 
       // Drugs
       /** @var DiagnosisReference $diagnose */
@@ -245,6 +247,11 @@ class RedCapApiService
               'dyn_mc_medalc_drug_type' => $drug->type,
               'dyn_mc_medalc_drug_label' => $drug->drugs->label,
               'dyn_mc_medalc_drug_description' => $drug->drugs->description,
+              'dyn_mc_medalc_drug_is_anti_malarial' => ($drug->drugs->is_anti_malarial) ? "true" : "false",
+              'dyn_mc_medalc_drug_is_anti_biotic' => ($drug->drugs->is_antibiotic) ? "true" : "false",
+              'dyn_mc_medalc_drug_duration' => $drug->drugs->duration,
+              'dyn_mc_medal_data_drug_effective_duration' => $drug->duration,
+              'dyn_mc_medal_data_drug_additional' => ($drug->addtional) ? "true" : "false",
 
               'dyn_mc_medal_data_drug_diag_id' => $medalDataID.$diagnose->id,
             ];
@@ -252,7 +259,7 @@ class RedCapApiService
           $this->projectMedicalCase->importRecords($records);
         };
       }
-      Log::info('drugs processed');
+      Log::info('----> drugs processed');
 
       // Custom Drugs
       /** @var CustomDiagnosis $customDiagnose */
@@ -272,7 +279,7 @@ class RedCapApiService
           $this->projectMedicalCase->importRecords($records);
         }
       }
-      Log::info('Custom Drugs processed');
+      Log::info('----> Custom Drugs processed');
 
       // Managements
       /** @var DiagnosisReference $diagnose */
@@ -297,7 +304,7 @@ class RedCapApiService
           }
         }
       }
-      Log::info('Management processed');
+      Log::info('----> Management processed');
 
     } catch (PhpCapException $e) {
       if ($e->getCode() === 7) {
