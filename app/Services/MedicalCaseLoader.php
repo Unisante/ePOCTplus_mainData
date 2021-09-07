@@ -30,7 +30,8 @@ class MedicalCaseLoader extends ModelLoader {
         return array_merge(parent::getValues(), [
             'patient_id' => $this->patient->id,
             'version_id' => $this->version->id,
-            'consultation_date' => Carbon::createFromTimestampMs($this->caseData['createdAt'])
+            'consultation_date' => Carbon::createFromTimestampMs($this->caseData['createdAt']),
+            'closedAt' => Carbon::createFromTimestampMs($this->caseData['closedAt'])
         ]);
     }
 

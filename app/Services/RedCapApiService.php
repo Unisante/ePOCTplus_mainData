@@ -157,8 +157,9 @@ class RedCapApiService
       $this->projectMedicalCase->importRecords([
         $medicalCase->id => [
           "record_id" => $medicalCase->local_medical_case_id,
-          Config::get('redcap.identifiers.medical_case.dyn_mc_patient_id') => $medicalCase->patient->local_patient_id,
-          Config::get('redcap.identifiers.medical_case.dyn_mc_datetime_consultation') => $medicalCase->consultation_date,
+          Config::get('redcap.identifiers.medical_case.patient_id') => $medicalCase->patient->local_patient_id,
+          Config::get('redcap.identifiers.medical_case.datetime_consultation') => $medicalCase->consultation_date,
+          Config::get('redcap.identifiers.medical_case.datetime_closedAt') => $medicalCase->closedAt,
         ]
       ]);
       Log::info('--> Start export MC : '. $medicalCase->local_medical_case_id);
