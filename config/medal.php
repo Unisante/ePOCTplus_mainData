@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'uuid' => env('APP_UUID'),
     'authentication' => [
         'hub_callback_url' => env('HUB_CALLBACK_URL','http://127.0.0.1:5555'),
         'reader_callback_url' => env('READER_CALLBACK_URL','aaa://callback'),

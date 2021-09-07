@@ -41,7 +41,7 @@ class MedicalCasesExport extends Command
     public function handle()
     {
       $nbMedicalCase = 0;
-      MedicalCase::where('redcap',false)->get()->each(function ($medicalCase) use (&$nbMedicalCase) {
+      MedicalCase::where('mc_redcap_flag',false)->limit(1)->get()->each(function ($medicalCase) use (&$nbMedicalCase) {
         dispatch(new PushMedicalCase($medicalCase));
         ++$nbMedicalCase;
       });

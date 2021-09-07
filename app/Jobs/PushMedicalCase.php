@@ -38,6 +38,8 @@ class PushMedicalCase implements ShouldQueue
     {
       try {
         $redcapApiService->exportMedicalCase($this->medicalCase);
+        $this->medicalCase->mc_redcap_flag = true;
+        $this->medicalCase->save();
       } catch (Exception $ex) {
         Log::error($ex->getMessage());
       }

@@ -149,9 +149,7 @@ class RedCapApiService
   */
   public function exportMedicalCase(MedicalCase $medicalCase)
   {
-    $data = [];
-    // TODO : use .env variable;
-    $medalDataID = 'MDTZ-';
+    $medalDataID = Config::get('medal.uuid') . '-';
 
     try {
       $this->projectMedicalCase->importRecords([
@@ -282,7 +280,7 @@ class RedCapApiService
               'dyn_mc_medal_data_drug_effective_duration' => $drug->duration,
               'dyn_mc_medal_data_drug_additional' => ($drug->addtional) ? "true" : "false",
 
-              'dyn_mc_medal_data_drug_diag_id' => $medalDataID.$diagnose->id,
+              'dyn_mc_medal_data_drug_diag_id' => $medalDataID . $diagnose->id,
               'drugs_complete' => 2,
             ];
           }
