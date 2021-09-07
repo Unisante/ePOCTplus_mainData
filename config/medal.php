@@ -41,6 +41,7 @@ return [
             'keys' => [
                 'name' => 'algorithm_name',
                 'medal_c_id' => 'algorithm_id',
+                'is_arm_control' => 'is_arm_control'
             ]
         ],
         'version' => [
@@ -65,6 +66,11 @@ return [
                     'key' => 'reference',
                     'modifiers' => ['optional'],
                     'type' => 'string',
+                ],
+                'display_format' => [
+                  'key' => 'display_format',
+                  'modifiers' => ['optional'],
+                  'type' => 'string',
                 ],
                 'stage' => [
                     'key' => 'stage',
@@ -234,7 +240,7 @@ return [
                 //'version_id' => 'version_id',
                 //'created_at' => 'created_at',
                 //'updated_at' => 'updated_at',
-                // 'group_id'=>'group_id',
+                //'group_id'=>'group_id',
                 // 'isEligible' => 'isEligible',
                 'consent' => 'consent',
             ]

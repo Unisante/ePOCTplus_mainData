@@ -85,13 +85,16 @@ return [
         'patient_id' => 'dyn_mc_patient_id',
         'datetime_consultation' => 'dyn_mc_datetime_consultation',
         'datetime_closedAt' => 'dyn_mc_datetime_closed_at',
+        'arm' => 'dyn_mc_algorithm_arm',
         'complete' => 'medical_case_complete',
+        'hf_id' => 'dyn_mc_id_health_facility',
 
         // variable
         'dyn_mc_medalc_question_id' => 'dyn_mc_medalc_question_id',
         'dyn_mc_medalc_question_label' => 'dyn_mc_medalc_question_label',
         'dyn_mc_medalc_answer_id' => 'dyn_mc_medalc_answer_id',
         'dyn_mc_medalc_answer_value' => 'dyn_mc_medalc_answer_value',
+        'variables_complete' => 'variables_complete',
 
 
         // Diagnose

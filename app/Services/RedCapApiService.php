@@ -161,6 +161,8 @@ class RedCapApiService
           Config::get('redcap.identifiers.medical_case.datetime_consultation') => $medicalCase->consultation_date,
           Config::get('redcap.identifiers.medical_case.datetime_closedAt') => $medicalCase->closedAt,
           Config::get('redcap.identifiers.medical_case.complete') => ($medicalCase->force_close) ? 0 : 2,
+          Config::get('redcap.identifiers.medical_case.arm') => ($medicalCase->version->algorithm->is_arm_control) ? "0" : "1",
+          Config::get('redcap.identifiers.medical_case.hf_id') => $medicalCase->patient->group_id,
         ]
       ]);
       Log::info('--> Start export MC : '. $medicalCase->local_medical_case_id);
@@ -170,17 +172,23 @@ class RedCapApiService
       /** @var MedicalCaseAnswer $medicalCaseAnswer */
       $instanceNumber = 1;
       foreach ($medicalCase->medical_case_answers as $medicalCaseAnswer) {
+        // We don't push specifique type of variable
+        if ($medicalCaseAnswer->node->category == "background_calculation" && $medicalCaseAnswer->node->display_format != 'Reference') {
+          continue;
+        }
+
         // Questions that were not asked
         if($medicalCaseAnswer->value == '' and $medicalCaseAnswer->answer_id === null) {continue;}
 
         $records[] = [
           'record_id' => $medicalCase->local_medical_case_id,
           'redcap_repeat_instrument' => 'variables',
-          'redcap_repeat_instance' => ++$instanceNumber,
+          'redcap_repeat_instance' => $instanceNumber++,
           Config::get('redcap.identifiers.medical_case.dyn_mc_medalc_question_id') => $medicalCaseAnswer->node->medal_c_id,
           Config::get('redcap.identifiers.medical_case.dyn_mc_medalc_question_label') => $medicalCaseAnswer->node->label,
           Config::get('redcap.identifiers.medical_case.dyn_mc_medalc_answer_id') => ($medicalCaseAnswer->answer) ? $medicalCaseAnswer->answer->medal_c_id : null,
           Config::get('redcap.identifiers.medical_case.dyn_mc_medalc_answer_value') => ($medicalCaseAnswer->value == null) ? $medicalCaseAnswer->answer->label : $medicalCaseAnswer->value,
+          Config::get('redcap.identifiers.medical_case.variables_complete') => 2,
         ];
         $this->projectMedicalCase->importRecords($records);
       }
@@ -196,11 +204,12 @@ class RedCapApiService
           $records[] = [
             'record_id' => $medicalCase->local_medical_case_id,
             'redcap_repeat_instrument' => 'diagnoses',
-            'redcap_repeat_instance' => ++$instanceNumber,
+            'redcap_repeat_instance' => $instanceNumber++,
             'dyn_mc_medalc_diag_id' => $diagnose->diagnoses->medal_c_id,
             'dyn_mc_medal_data_diag_id' => $medalDataID . $diagnose->id,
             'dyn_mc_medal_data_diag_additional' => ($diagnose->additional) ? 'true' : 'false',
             'dyn_mc_medalc_diag_label' => $diagnose->diagnoses->label,
+            'diagnoses_complete' => 2,
           ];
         } else {
           $records[] = [
@@ -208,7 +217,7 @@ class RedCapApiService
             'redcap_repeat_instrument' => 'diagnoses_refused',
             'redcap_repeat_instance' => $diagnose->id,
             'dyn_mc_medalc_diag_refused_id' => $diagnose->diagnoses->medal_c_id,
-            'dyn_mc_medalc_diag_refused_label' => $diagnose->diagnoses->label,
+            'diagnoses_refused_complete' => 2,
           ];
         }
 
@@ -223,10 +232,11 @@ class RedCapApiService
         $records[] = [
           'record_id' => $medicalCase->local_medical_case_id,
           'redcap_repeat_instrument' => 'custom_diagnoses',
-          'redcap_repeat_instance' => ++$instanceNumber,
+          'redcap_repeat_instance' => $instanceNumber++,
           'dyn_mc_medal_data_custom_diag_label' => $customDiagnose->label,
           'dyn_mc_medal_data_custom_diag_drugs' => $customDiagnose->drugs,
           'dyn_mc_medal_data_custom_diag_id' => $medalDataID . $customDiagnose->id,
+          'custom_diagnoses_complete' => 2,
 
         ];
         $this->projectMedicalCase->importRecords($records);
@@ -235,16 +245,16 @@ class RedCapApiService
 
       // Drugs
       /** @var DiagnosisReference $diagnose */
+      $instanceNumber = 1;
       foreach ($medicalCase->diagnosesReferences as $diagnose) {
         if ($diagnose->excluded) {continue;};
 
         if ($diagnose->agreed) {
-          $instanceNumber = 1;
           foreach ($diagnose->drugReferences as $drug) {
             $records[] = [
               'record_id' => $medicalCase->local_medical_case_id,
               'redcap_repeat_instrument' => 'drugs',
-              'redcap_repeat_instance' => ++$instanceNumber,
+              'redcap_repeat_instance' => $instanceNumber++,
               'dyn_mc_medalc_drug_id' => $drug->drugs->medal_c_id,
               'dyn_mc_medalc_drug_type' => $drug->type,
               'dyn_mc_medalc_drug_label' => $drug->drugs->label,
@@ -256,6 +266,7 @@ class RedCapApiService
               'dyn_mc_medal_data_drug_additional' => ($drug->addtional) ? "true" : "false",
 
               'dyn_mc_medal_data_drug_diag_id' => $medalDataID.$diagnose->id,
+              'drugs_complete' => 2,
             ];
           }
           $this->projectMedicalCase->importRecords($records);
@@ -265,17 +276,18 @@ class RedCapApiService
 
       // Custom Drugs
       /** @var CustomDiagnosis $customDiagnose */
+      $instanceNumber = 1;
       foreach ($medicalCase->customDiagnoses as $customDiagnose) {
         /** @var CustomDrug $customDrug */
-        $instanceNumber = 1;
         foreach ($customDiagnose->customDrugs as $customDrug) {
           $records[] = [
             'record_id' => $medicalCase->local_medical_case_id,
             'redcap_repeat_instrument' => 'custom_drugs',
-            'redcap_repeat_instance' => ++$instanceNumber,
+            'redcap_repeat_instance' => $instanceNumber++,
             'dyn_mc_medal_data_custom_drugs_name' => $customDrug->name,
             'dyn_mc_medal_data_custom_drugs_duration' => $customDrug->duration,
             'dyn_mc_medal_data_custom_drugs_custom_diag_id' => $medalDataID . $customDiagnose->id,
+            'custom_drugs_complete' => 2,
 
           ];
           $this->projectMedicalCase->importRecords($records);
@@ -285,22 +297,23 @@ class RedCapApiService
 
       // Managements
       /** @var DiagnosisReference $diagnose */
+      $instanceNumber = 1;
       foreach ($medicalCase->diagnosesReferences as $diagnose) {
         if ($diagnose->excluded) {continue;};
 
         if ($diagnose->agreed) {
           /** @var ManagementReference $management */
-          $instanceNumber = 1;
           foreach ($diagnose->managementReferences as $management) {
               $records[] = [
                 'record_id' => $medicalCase->local_medical_case_id,
                 'redcap_repeat_instrument' => 'managements',
-                'redcap_repeat_instance' => ++$instanceNumber,
+                'redcap_repeat_instance' => $instanceNumber++,
                 'dyn_mc_medalc_management_id' => $management->managements->medal_c_id,
                 'dyn_mc_medalc_management_type' => $management->managements->type,
                 'dyn_mc_medalc_management_label' => $management->managements->label,
                 'dyn_mc_medalc_management_description' => $management->managements->description,
                 'dyn_mc_medal_data_management_diag_id' => $medalDataID.$diagnose->id,
+                'managements_complete' => 2,
               ];
             $this->projectMedicalCase->importRecords($records);
           }
