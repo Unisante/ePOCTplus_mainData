@@ -14,7 +14,7 @@ class MedicalCasesExport extends Command
      *
      * @var string
      */
-    protected $signature = 'medicalCases:export';
+    protected $signature = 'medicalCases:export {--limited=}';
 
     /**
      * The console command description.
@@ -40,11 +40,19 @@ class MedicalCasesExport extends Command
      */
     public function handle()
     {
+      $limited = $this->option('limited');
       $nbMedicalCase = 0;
-      MedicalCase::where('mc_redcap_flag',false)->limit(1)->get()->each(function ($medicalCase) use (&$nbMedicalCase) {
-        dispatch(new PushMedicalCase($medicalCase));
-        ++$nbMedicalCase;
-      });
+      if ($limited) {
+        MedicalCase::where('mc_redcap_flag',false)->limit($limited)->get()->each(function ($medicalCase) use (&$nbMedicalCase) {
+          dispatch(new PushMedicalCase($medicalCase));
+          ++$nbMedicalCase;
+        });
+      } else {
+        MedicalCase::where('mc_redcap_flag',false)->get()->each(function ($medicalCase) use (&$nbMedicalCase) {
+          dispatch(new PushMedicalCase($medicalCase));
+          ++$nbMedicalCase;
+        });
+      }
       Log::info($nbMedicalCase . " medical case(s) dispatch for export");
     }
 }
