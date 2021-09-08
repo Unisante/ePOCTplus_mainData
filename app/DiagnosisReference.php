@@ -61,5 +61,5 @@ class DiagnosisReference extends Model
   public function managementReferences(){
     return $this->hasMany('App\ManagementReference','diagnosis_id','id');
   }
-  
+
 }
