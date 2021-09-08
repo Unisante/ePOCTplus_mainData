@@ -10,6 +10,10 @@ return [
       'api_url_patient' => env('REDCAP_IDENTIFIERS_API_URL_PATIENT', ''),
       'api_token_patient' => env('REDCAP_IDENTIFIERS_API_TOKEN_PATIENT', ''),
 
+      'api_url_medical_case' => env('REDCAP_IDENTIFIERS_API_URL_MEDICAL_CASE', ''),
+      'api_token_medical_case' => env('REDCAP_IDENTIFIERS_API_TOKEN_MEDICAL_CASE', ''),
+
+
       'patient' => [
         'dyn_pat_study_id_patient' => 'dyn_pat_study_id_patient',
         'dyn_pat_first_name' => 'dyn_pat_first_name',
@@ -74,6 +78,30 @@ return [
         'dyn_fup_followup_type' => 'dyn_fup_followup_type',
         'dyn_fup_followup_bn_attempts' => 'dyn_fup_followup_bn_attempts',
         'dyn_fup_remarks' => 'dyn_fup_remarks',
+      ],
+
+      'medical_case' => [
+        // baseline
+        'patient_id' => 'dyn_mc_patient_id',
+        'datetime_consultation' => 'dyn_mc_datetime_consultation',
+        'datetime_closedAt' => 'dyn_mc_datetime_closed_at',
+        'arm' => 'dyn_mc_algorithm_arm',
+        'complete' => 'medical_case_complete',
+        'hf_id' => 'dyn_mc_id_health_facility',
+
+        // variable
+        'dyn_mc_medalc_question_id' => 'dyn_mc_medalc_question_id',
+        'dyn_mc_medalc_question_label' => 'dyn_mc_medalc_question_label',
+        'dyn_mc_medalc_answer_id' => 'dyn_mc_medalc_answer_id',
+        'dyn_mc_medalc_answer_value' => 'dyn_mc_medalc_answer_value',
+        'variables_complete' => 'variables_complete',
+
+
+        // Diagnose
+        'dyn_mc_medalc_diag_id' => 'dyn_mc_medalc_diag_id',
+        'dyn_mc_medal_data_diag_id' => 'dyn_mc_medal_data_diag_id',
+        'dyn_mc_medal_data_diag_additional' => 'dyn_mc_medal_data_diag_additional',
+        'dyn_mc_medalc_diag_label' => 'dyn_mc_medalc_diag_label',
       ]
 
     ],

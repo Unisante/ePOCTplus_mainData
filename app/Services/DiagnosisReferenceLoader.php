@@ -45,7 +45,7 @@ class DiagnosisReferenceLoader extends ModelLoader {
     protected function getValues()
     {
         return [
-            'agreed' => ($this->additional && !$this->isExcluded) ? $this->isAgreed : null,
+            'agreed' => $this->isAgreed,
             'excluded' => $this->isExcluded,
             'additional' => $this->additional
         ];

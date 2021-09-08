@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'uuid' => env('APP_UUID'),
     'authentication' => [
         'hub_callback_url' => env('HUB_CALLBACK_URL','http://127.0.0.1:5555'),
         'reader_callback_url' => env('READER_CALLBACK_URL','aaa://callback'),
@@ -41,7 +42,18 @@ return [
             'keys' => [
                 'name' => 'algorithm_name',
                 'medal_c_id' => 'algorithm_id',
+                'is_arm_control' => 'is_arm_control'
             ]
+        ],
+        'activities' => [
+          'keys' => [
+            'medal_c_id' => 'id',
+          ],
+          'values' => [
+            'step' => 'step',
+            'clinician' => 'clinician',
+            'mac_address' => 'mac_address'
+          ],
         ],
         'version' => [
             'keys' => [
@@ -65,6 +77,11 @@ return [
                     'key' => 'reference',
                     'modifiers' => ['optional'],
                     'type' => 'string',
+                ],
+                'display_format' => [
+                  'key' => 'display_format',
+                  'modifiers' => ['optional'],
+                  'type' => 'string',
                 ],
                 'stage' => [
                     'key' => 'stage',
@@ -234,7 +251,7 @@ return [
                 //'version_id' => 'version_id',
                 //'created_at' => 'created_at',
                 //'updated_at' => 'updated_at',
-                // 'group_id'=>'group_id',
+                //'group_id'=>'group_id',
                 // 'isEligible' => 'isEligible',
                 'consent' => 'consent',
             ]

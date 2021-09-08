@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\MedicalCase;
 use App\MedicalCaseAnswer;
 use App\Services\ModelLoader;
 

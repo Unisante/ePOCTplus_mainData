@@ -2,30 +2,21 @@
 
 namespace App;
 
-use Illuminate\Http\Request;
-use Carbon\Carbon;
-use DateTime;
+use Illuminate\Database\Eloquent\Builder;
 use Madzipper;
 use File;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use OwenIt\Auditing\Contracts\Auditable;
-use Intervention\Image\ImageManagerStatic as Image;
-use App\DiagnosisReference;
-use App\Diagnosis;
-use App\Patient;
-use App\MedicalCaseAnswer;
-use App\Node;
-use App\Algorithm;
-use App\PatientConfig;
-use App\Answer;
-use App\FollowUp;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 use Schema;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
+/**
+ * Class MedicalCase
+ * @package App
+ * @mixin Builder
+ */
 class MedicalCase extends Model implements Auditable
 {
   use \OwenIt\Auditing\Auditable;
@@ -143,6 +134,22 @@ class MedicalCase extends Model implements Auditable
   */
   public function diagnosesReferences(){
     return $this->hasMany('App\DiagnosisReference');
+  }
+
+  /**
+   * Make diagnosis relation
+   * @return one to many medical cases retionship
+   */
+  public function customDiagnoses(){
+    return $this->hasMany('App\CustomDiagnosis');
+  }
+
+  /**
+   * Make activity relation
+   * @return one to many medical cases retionship
+   */
+  public function activities(){
+    return $this->hasMany('App\Activity', 'medical_case_id', 'id');
   }
 
 }

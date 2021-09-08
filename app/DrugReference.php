@@ -12,6 +12,15 @@ class DrugReference extends Model
 {
   protected $guarded = [];
 
+  /**
+   * Make diagnoses relation
+   * @return one to one drub Diagnosis
+   */
+  public function drugs() {
+    return $this->hasOne('App\Drug','id','drug_id');
+  }
+
+
   function makeFlatCsv($case_drug_id_list,$folder_name){
     ini_set('memory_limit', '4096M');
     ini_set('max_execution_time', '3600');
@@ -71,11 +80,5 @@ class DrugReference extends Model
     }
     fclose($file);
     return $filename;
-  }
-  public function diagnosisReference(){
-    return $this->belongsTo('App\DiagnosisReference','diagnosis_id',);
-  }
-  public function drug(){
-    return $this->belongsTo('App\Drug','drug_id',);
   }
 }

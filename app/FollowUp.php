@@ -278,12 +278,10 @@ class FollowUp{
     $caregiver_gender_node_id=$config->gender_caregiver_id;
     $case_answer=$this->findCaseAnswer($caregiver_gender_node_id);
     $this->caregiver_gender=1;
-    if($case_answer != null){
+    if($case_answer != null && $case_answer->answer != null) {
       $gender_label=$case_answer->answer->label;
       if(in_array($gender_label,$relation)){
         $this->caregiver_gender=array_search(strval($case_answer->answer->label),$relation,true);
-      }else{
-        $this->caregiver_gender=1;
       }
     }
   }
@@ -303,18 +301,14 @@ class FollowUp{
       6 =>'Neighbour/Friend',
       7 =>'Other',
     ];
+    $this->child_relation=7;
     $child_relation_node_id = $config->relationship_to_child_id;
     $case_answer = $this->findCaseAnswer($child_relation_node_id);
-    if($case_answer != null){
-      $relation_label=$case_answer->answer->label;
-      if(in_array($relation_label,$relation)){
-        $this->child_relation = array_search(strval($case_answer->answer->label),$relation,true);
-      }else{
-        $this->child_relation=7;
+    if ($case_answer != null && $case_answer->answer != null) {
+      $relation_label = $case_answer->answer->label;
+      if (in_array($relation_label, $relation)) {
+        $this->child_relation = array_search(strval($case_answer->answer->label), $relation, true);
       }
-    }
-    else{
-      $this->child_relation=7;
     }
   }
 
