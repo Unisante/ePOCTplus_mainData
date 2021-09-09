@@ -43,12 +43,19 @@ class MedicalCasesExport extends Command
       $limited = $this->option('limited');
       $nbMedicalCase = 0;
       if ($limited) {
-        MedicalCase::where('mc_redcap_flag',false)->limit($limited)->get()->each(function ($medicalCase) use (&$nbMedicalCase) {
-          dispatch(new PushMedicalCase($medicalCase));
-          ++$nbMedicalCase;
+        MedicalCase::where('mc_redcap_flag',false)
+          ->orderBy('consultation_date', 'desc')
+          ->limit($limited)
+          ->get()
+          ->each(function ($medicalCase) use (&$nbMedicalCase) {
+            dispatch(new PushMedicalCase($medicalCase));
+            ++$nbMedicalCase;
         });
       } else {
-        MedicalCase::where('mc_redcap_flag',false)->get()->each(function ($medicalCase) use (&$nbMedicalCase) {
+        MedicalCase::where('mc_redcap_flag',false)
+          ->orderBy('consultation_date', 'desc')
+          ->get()
+          ->each(function ($medicalCase) use (&$nbMedicalCase) {
           dispatch(new PushMedicalCase($medicalCase));
           ++$nbMedicalCase;
         });
