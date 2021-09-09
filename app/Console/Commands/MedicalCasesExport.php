@@ -44,7 +44,7 @@ class MedicalCasesExport extends Command
       $nbMedicalCase = 0;
       if ($limited) {
         MedicalCase::where('mc_redcap_flag',false)
-          ->orderBy('consultation_date', 'desc')
+          ->orderBy('closedAt', 'desc')
           ->limit($limited)
           ->get()
           ->each(function ($medicalCase) use (&$nbMedicalCase) {
@@ -53,7 +53,7 @@ class MedicalCasesExport extends Command
         });
       } else {
         MedicalCase::where('mc_redcap_flag',false)
-          ->orderBy('consultation_date', 'desc')
+          ->orderBy('closedAt', 'desc')
           ->get()
           ->each(function ($medicalCase) use (&$nbMedicalCase) {
           dispatch(new PushMedicalCase($medicalCase));
