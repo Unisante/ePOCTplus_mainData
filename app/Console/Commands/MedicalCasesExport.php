@@ -44,6 +44,7 @@ class MedicalCasesExport extends Command
       $nbMedicalCase = 0;
       if ($limited) {
         MedicalCase::where('mc_redcap_flag',false)
+          ->whereNotNull('closedAt')
           ->orderBy('closedAt', 'desc')
           ->limit($limited)
           ->get()
