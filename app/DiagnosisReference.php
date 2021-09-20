@@ -53,6 +53,9 @@ class DiagnosisReference extends Model
   public function diagnoses() {
     return $this->hasOne('App\Diagnosis','id','diagnosis_id');
   }
+  public function diagnosis() {
+    return $this->belongsTo('App\Diagnosis','diagnosis_id');
+  }
 
   /**
   * Make diagnosis relation
@@ -62,4 +65,7 @@ class DiagnosisReference extends Model
     return $this->hasMany('App\ManagementReference','diagnosis_id','id');
   }
 
+  public function medicalCase(){
+    return $this->belongsTo('App\MedicalCase','medical_case_id');
+  }
 }

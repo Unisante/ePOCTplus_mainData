@@ -17,9 +17,14 @@ class DrugReference extends Model
    * @return one to one drub Diagnosis
    */
   public function drugs() {
-    return $this->hasOne('App\Drug','id','drug_id');
+    return $this->belongsTo('App\Drug','id','drug_id');
   }
-
+  public function drug() {
+    return $this->belongsTo('App\Drug','drug_id');
+  }
+  public function diagnosisReference(){
+    return $this->belongsTo('App\DiagnosisReference','diagnosis_id');
+  }
 
   function makeFlatCsv($case_drug_id_list,$folder_name){
     ini_set('memory_limit', '4096M');
@@ -45,7 +50,6 @@ class DrugReference extends Model
       array_push($pivot[$drug_row], array('drug_column' => $drug_column, 'value' => $drug_value));
     }
     $cols = array_unique($cols);
-    // array_unshift($cols , 'diagnosis_agreed');
     array_unshift($cols , 'diagnosis_proposed');
     array_unshift($cols , 'diagnoses');
     array_unshift($cols , 'case_id');
