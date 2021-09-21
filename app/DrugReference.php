@@ -17,7 +17,7 @@ class DrugReference extends Model
    * @return one to one drub Diagnosis
    */
   public function drugs() {
-    return $this->belongsTo('App\Drug','id','drug_id');
+    return $this->hasOne('App\Drug','id','drug_id');
   }
   public function drug() {
     return $this->belongsTo('App\Drug','drug_id');
