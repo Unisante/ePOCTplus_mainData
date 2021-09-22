@@ -60,6 +60,6 @@ class PatientExport implements
   }
   public function title():string
   {
-    return 'patients';
+    return 'patientssss';
   }
 }
