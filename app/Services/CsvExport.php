@@ -29,7 +29,25 @@ class CsvExport
             $data[] = [
                 Config::get('csv.identifiers.patient.dyn_pat_study_id_patient') => $patient->id,
                 Config::get('csv.identifiers.patient.dyn_pat_first_name') => $patient->first_name,
-                Config::get('csv.identifiers.patient.dyn_pat_last_name') => $patient->last_name
+                Config::get('csv.identifiers.patient.dyn_pat_last_name') => $patient->last_name,
+                Config::get('csv.identifiers.patient.dyn_pat_created_at') => $patient->created_at,
+                Config::get('csv.identifiers.patient.dyn_pat_updated_at') => $patient->updated_at,
+                Config::get('csv.identifiers.patient.dyn_pat_birth_date') => $patient->birthdate,
+                Config::get('csv.identifiers.patient.dyn_pat_gender') => $patient->gender,
+                Config::get('csv.identifiers.patient.dyn_pat_local_patient_id') => $patient->local_patient_id,
+                Config::get('csv.identifiers.patient.dyn_pat_group_id') => $patient->group_id,
+                Config::get('csv.identifiers.patient.dyn_pat_consent') => $patient->consent,
+                Config::get('csv.identifiers.patient.dyn_pat_redcap') => $patient->redcap,
+                Config::get('csv.identifiers.patient.dyn_pat_duplicate') => $patient->duplicate,
+                Config::get('csv.identifiers.patient.dyn_pat_other_uid') => $patient->other_uid,
+                Config::get('csv.identifiers.patient.dyn_pat_other_study_id') => $patient->other_study_id,
+                Config::get('csv.identifiers.patient.dyn_pat_other_group_id') => $patient->other_group_id,
+                Config::get('csv.identifiers.patient.dyn_pat_merged_with') => $patient->merged_with,
+                Config::get('csv.identifiers.patient.dyn_pat_merged') => $patient->merged,
+                Config::get('csv.identifiers.patient.dyn_pat_status') => $patient->status,
+                Config::get('csv.identifiers.patient.dyn_pat_related_ids') => $patient->related_ids,
+                Config::get('csv.identifiers.patient.dyn_pat_middle_name') => $patient->middle_name,
+                Config::get('csv.identifiers.patient.dyn_pat_other_id') => $patient->other_id
             ];
         }
 
@@ -56,13 +74,30 @@ class CsvExport
     }
 
     /**
+     * Returns a string representation of an array of attributes.
+     */
+    private function attributesToStr($attributes){
+        $new_attributes = [];
+        foreach($attributes as $attribute){
+            if(is_array($attribute)){
+                $new_attributes[] = implode(',', $attribute);
+            }else{
+                $new_attributes[] = $attribute;
+            }
+        }
+
+        return $new_attributes;
+    }
+
+    /**
      * Write data to file.
      */
     private function writeToFile($file_name, $data)
     {
         $file = fopen($file_name, "w");
         foreach ($data as $line){
-            fputcsv($file, (array) $line);
+            $attributes = self::attributesToStr((array) $line);
+            fputcsv($file, $attributes);
         }
         fclose($file);
     }
