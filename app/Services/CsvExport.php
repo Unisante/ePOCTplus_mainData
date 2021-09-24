@@ -196,7 +196,7 @@ class CsvExport
 				Config::get('csv.identifiers.version.dyn_ver_updated_at') 			=> $version->updated_at,
 				Config::get('csv.identifiers.version.dyn_ver_consent_management') 	=> $version->consent_management,
 				Config::get('csv.identifiers.version.dyn_ver_study') 				=> $version->study,
-				Config::get('csv.identifiers.version.dyn_is_arm_control') 			=> $version->dyn_is_arm_control
+				Config::get('csv.identifiers.version.dyn_ver_is_arm_control') 		=> $version->is_arm_control
 			];
 		}
 
