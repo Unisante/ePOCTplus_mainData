@@ -44,6 +44,16 @@ class CsvExport
 	 */
 	private function isSkippedPatient($patient)
 	{
+		$patient_discarded_names = Config::get('csv.patient_discarded_names');
+		foreach ($patient_discarded_names as $discarded_name) {
+			$first_name = trim(strtolower($patient->first_name));
+			$last_name = trim(strtolower($patient->last_name));
+
+			if($first_name == $discarded_name || $last_name == $discarded_name){
+				return true;
+			}
+		}
+
 		return false;
 	}
 
@@ -479,11 +489,11 @@ class CsvExport
 	/**
 	 * Retrieve the list of patient ids. TODO
 	 */
-	private function getPatientIds($patients)
+	private function getPatientIds($patients_data)
 	{
 		$patient_ids = [];
-		foreach ($patients as $patient) {
-			$patient_ids[] = $patient[Config::get('csv.identifiers.patient.dyn_pat_study_id_patient')];
+		foreach (array_slice($patients_data, 1) as $patient_data) {
+			$patient_ids[] = $patient_data[Config::get('csv.identifiers.patient.dyn_pat_study_id_patient')];
 		}
 
 		return $patient_ids;
@@ -492,11 +502,11 @@ class CsvExport
 	/**
 	 * Retrieve the list of medcial case answer ids. TODO
 	 */
-	private function getMedicalCaseIds($medical_cases)
+	private function getMedicalCaseIds($medical_cases_data)
 	{
 		$medical_case_ids = [];
-		foreach ($medical_cases as $medical_case) {
-			$medical_case_ids[] = $medical_case[Config::get('csv.identifiers.medical_case.dyn_mc_id')];
+		foreach (array_slice($medical_cases_data, 1) as $medical_case_data) {
+		$medical_case_ids[] = $medical_case_data[Config::get('csv.identifiers.medical_case.dyn_mc_id')];
 		}
 
 		return $medical_case_ids;
@@ -509,14 +519,6 @@ class CsvExport
 	{
 		// only take patients created in the given date interval.
 		$patients = Patient::whereBetween(Config::get('csv.identifiers.patient.dyn_pat_created_at'), array($fromDate, $toDate));
-
-		// discard patients with specific attributes.
-		$patient_discarded_names = Config::get('csv.patient_discarded_names');
-		foreach ($patient_discarded_names as $discarded_name) {
-			$patients = $patients
-				->where(Config::get('csv.identifiers.patient.dyn_pat_first_name'), 'NOT ILIKE', '%' . $discarded_name . '%')
-				->where(Config::get('csv.identifiers.patient.dyn_pat_last_name'), 'NOT ILIKE', '%' . $discarded_name . '%');
-		}
 
 		return $patients->get();
 	}
@@ -783,13 +785,13 @@ class CsvExport
 		// get patients data.
 		$patients = $this->getPatientList($fromDate, $toDate);
 		$patients_data = $this->getFormattedPatientList($patients);
-		$patient_ids = $this->getPatientIds($patients);
+		$patient_ids = $this->getPatientIds($patients_data);
 		$this->writeToFile($file_names[0], $patients_data);
 
 		// get medical cases data.
 		$medical_cases = $this->getMedicalCaseList($patient_ids);
 		$medical_cases_data = $this->getFormattedMedicalCaseList($medical_cases);
-		$medical_case_ids = $this->getMedicalCaseIds($medical_cases);
+		$medical_case_ids = $this->getMedicalCaseIds($medical_cases_data);
 		$this->writeToFile($file_names[1], $medical_cases_data);
 
 		// get medical case answers data.
