@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services;
 
 use App\Patient;
@@ -13,6 +12,12 @@ use App\Diagnosis;
 use App\CustomDiagnosis;
 use App\DiagnosisReference;
 use App\Drug;
+use App\AdditionalDrug;
+use App\DrugReference;
+use App\Management;
+use App\ManagementReference;
+use App\AnswerType;
+use App\Formulation;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
@@ -313,6 +318,153 @@ class CsvExport
 	}
 
 	/**
+	 * Given the list of additional drugs, create a formatted array of additional drug attributes.
+	 */
+	private function getFormattedAdditionalDrugList($additional_drugs)
+	{
+		$data = [];
+		$data[] = $this->getAttributeList(Config::get('csv.identifiers.additional_drug'));
+		foreach ($additional_drugs as $additional_drug) {
+			$data[] = [
+				Config::get('csv.identifiers.additional_drug.dyn_adr_id') 									=> $additional_drug->id,
+				Config::get('csv.identifiers.additional_drug.dyn_adr_drug_id') 							=> $additional_drug->drug_id,
+				Config::get('csv.identifiers.additional_drug.dyn_adr_medical_case_id') 			=> $additional_drug->medical_case_id,
+				Config::get('csv.identifiers.additional_drug.dyn_adr_formulationSelected') 	=> $additional_drug->formulationSelected,
+				Config::get('csv.identifiers.additional_drug.dyn_adr_agreed') 							=> $additional_drug->agreed,
+				Config::get('csv.identifiers.additional_drug.dyn_adr_version_id') 					=> $additional_drug->version_id,
+				Config::get('csv.identifiers.additional_drug.dyn_adr_created_at') 					=> $additional_drug->created_at,
+				Config::get('csv.identifiers.additional_drug.dyn_adr_updated_at') 					=> $additional_drug->updated_at
+			];
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Given the list of drug references, create a formatted array of drug reference attributes.
+	 */
+	private function getFormattedDrugReferenceList($drug_references)
+	{
+		$data = [];
+		$data[] = $this->getAttributeList(Config::get('csv.identifiers.drug_reference'));
+		foreach ($drug_references as $drug_reference) {
+			$data[] = [
+				Config::get('csv.identifiers.drug_reference.dyn_dre_id') 									=> $drug_reference->id,
+				Config::get('csv.identifiers.drug_reference.dyn_dre_drug_id') 						=> $drug_reference->drug_id,
+				Config::get('csv.identifiers.drug_reference.dyn_dre_diagnosis_id') 				=> $drug_reference->diagnosis_id,
+				Config::get('csv.identifiers.drug_reference.dyn_dre_agreed')				 			=> $drug_reference->agreed,
+				Config::get('csv.identifiers.drug_reference.dyn_dre_created_at') 					=> $drug_reference->created_at,
+				Config::get('csv.identifiers.drug_reference.dyn_dre_updated_at') 					=> $drug_reference->updated_at,
+				Config::get('csv.identifiers.drug_reference.dyn_dre_formulationSelected') => $drug_reference->formulationSelected,
+				Config::get('csv.identifiers.drug_reference.dyn_dre_formulation_id') 			=> $drug_reference->formulation_id,
+				Config::get('csv.identifiers.drug_reference.dyn_dre_additional') 					=> $drug_reference->additional,
+				Config::get('csv.identifiers.drug_reference.dyn_dre_duration') 						=> $drug_reference->duration
+			];
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Given the list of managements, create a formatted array of management attributes.
+	 */
+	private function getFormattedManagementList($managements)
+	{
+		$data = [];
+		$data[] = $this->getAttributeList(Config::get('csv.identifiers.management'));
+		foreach ($managements as $management) {
+			$data[] = [
+				Config::get('csv.identifiers.management.dyn_man_id') 									=> $management->id,
+				Config::get('csv.identifiers.management.dyn_man_drug_id') 						=> $management->drug_id,
+				Config::get('csv.identifiers.management.dyn_man_diagnosis_id') 				=> $management->diagnosis_id,
+				Config::get('csv.identifiers.management.dyn_man_agreed') 							=> $management->agreed,
+				Config::get('csv.identifiers.management.dyn_man_created_at') 					=> $management->created_at,
+				Config::get('csv.identifiers.management.dyn_man_updated_at') 					=> $management->updated_at,
+				Config::get('csv.identifiers.management.dyn_man_formulationSelected') => $management->formulationSelected,
+				Config::get('csv.identifiers.management.dyn_man_formulation_id') 			=> $management->formulation_id,
+				Config::get('csv.identifiers.management.dyn_man_additional') 					=> $management->additional,
+				Config::get('csv.identifiers.management.dyn_man_duration') 						=> $management->duration
+			];
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Given the list of management references, create a formatted array of management reference attributes.
+	 */
+	private function getFormattedManagementReferenceList($management_references)
+	{
+		$data = [];
+		$data[] = $this->getAttributeList(Config::get('csv.identifiers.management_reference'));
+		foreach ($management_references as $management_reference) {
+			$data[] = [
+				Config::get('csv.identifiers.management_reference.dyn_mre_id') 						=> $management_reference->id,
+				Config::get('csv.identifiers.management_reference.dyn_mre_agreed') 				=> $management_reference->agreed,
+				Config::get('csv.identifiers.management_reference.dyn_mre_diagnosis_id') 	=> $management_reference->diagnosis_id,
+				Config::get('csv.identifiers.management_reference.dyn_mre_created_at') 		=> $management_reference->created_at,
+				Config::get('csv.identifiers.management_reference.dyn_mre_updated_at') 		=> $management_reference->updated_at,
+				Config::get('csv.identifiers.management_reference.dyn_mre_management_id') => $management_reference->management_id
+		
+			];
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Given the list of answer types, create a formatted array of answer type attributes.
+	 */
+	private function getFormattedAnswerTypeList($answer_types)
+	{
+		$data = [];
+		$data[] = $this->getAttributeList(Config::get('csv.identifiers.answer_type'));
+		foreach ($answer_types as $answer_type) {
+			$data[] = [
+				Config::get('csv.identifiers.answer_type.dyn_aty_id') 				=> $answer_type->id,
+				Config::get('csv.identifiers.answer_type.dyn_aty_value') 			=> $answer_type->value,
+				Config::get('csv.identifiers.answer_type.dyn_aty_created_at') => $answer_type->created_at,
+				Config::get('csv.identifiers.answer_type.dyn_aty_updated_at') => $answer_type->updated_at,
+			];
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Given the list of formulations, create a formatted array of formulation attributes.
+	 */
+	private function getFormattedFormulationList($formulations)
+	{
+		$data = [];
+		$data[] = $this->getAttributeList(Config::get('csv.identifiers.formulation'));
+		foreach ($formulations as $formulation) {
+			$data[] = [
+				Config::get('csv.identifiers.formulation.dyn_for_id') 														=> $formulation->id,
+				Config::get('csv.identifiers.formulation.dyn_for_medical_form') 									=> $formulation->medical_form,
+				Config::get('csv.identifiers.formulation.dyn_for_administration_route_name') 			=> $formulation->administration_route_name,
+				Config::get('csv.identifiers.formulation.dyn_for_liquid_concentration') 					=> $formulation->liquid_concentration,
+				Config::get('csv.identifiers.formulation.dyn_for_dose_form') 											=> $formulation->dose_form,
+				Config::get('csv.identifiers.formulation.dyn_for_unique_dose') 										=> $formulation->unique_dose,
+				Config::get('csv.identifiers.formulation.dyn_for_by_age') 												=> $formulation->by_age,
+				Config::get('csv.identifiers.formulation.dyn_for_minimal_dose_per_kg') 						=> $formulation->minimal_dose_per_kg,
+				Config::get('csv.identifiers.formulation.dyn_for_maximal_dose_per_kg') 						=> $formulation->maximal_dose_per_kg,
+				Config::get('csv.identifiers.formulation.dyn_for_maximal_dose') 									=> $formulation->maximal_dose,
+				Config::get('csv.identifiers.formulation.dyn_for_description') 										=> $formulation->description,
+				Config::get('csv.identifiers.formulation.dyn_for_doses_per_day') 									=> $formulation->doses_per_day,
+				Config::get('csv.identifiers.formulation.dyn_for_created_at') 										=> $formulation->created_at,
+				Config::get('csv.identifiers.formulation.dyn_for_updated_at') 										=> $formulation->updated_at,
+				Config::get('csv.identifiers.formulation.dyn_for_drug_id') 												=> $formulation->drug_id,
+				Config::get('csv.identifiers.formulation.dyn_for_administration_route_category') 	=> $formulation->administration_route_category,
+				Config::get('csv.identifiers.formulation.dyn_for_medal_c_id') 										=> $formulation->medal_c_id
+
+			];
+		}
+
+		return $data;
+	}
+
+	/**
 	 * Retrieve the list of patient ids.
 	 */
 	private function getPatientIds($patients)
@@ -464,11 +616,74 @@ class CsvExport
 		return $dianosis_references->get();
 	}
 
+	/**
+	 * Retrieve the list of drugs.
+	 */
 	private function getDrugList()
 	{
 		$drugs = Drug::all();
 
 		return $drugs;
+	}
+
+	/**
+	 * Retrieve the list of additional drugs.
+	 */
+	private function getAdditionalDrugList($medical_case_ids)
+	{
+		$additional_drugs = AdditionalDrug::whereIn(Config::get('csv.identifiers.additional_drug.dyn_adr_medical_case_id'), $medical_case_ids);
+
+		return $additional_drugs;
+	}
+
+	/**
+	 * Retrieve the list of drug references.
+	 */
+	private function getDrugReferenceList()
+	{
+		$drug_references = DrugReference::all();
+
+		return $drug_references;
+	}
+
+	/**
+	 * Retrieve the list of managements.
+	 */
+	private function getManagementList()
+	{
+		$managements = Management::all();
+
+		return $managements;
+	}
+
+	/**
+	 * Retrieve the list of management references.
+	 */
+	private function getManagementReferenceList()
+	{
+		$management_references = ManagementReference::all();
+
+		return $management_references;
+	}
+
+	/**
+	 * Retrieve the list of answer types.
+	 */
+	private function getAnswerTypeList()
+	{
+		$answer_types = AnswerType::all();
+
+		return $answer_types;
+	}
+
+	/**
+	 * Retrieve the list of formulations.
+	 */
+	private function getFormulationList()
+	{
+		$formulations = Formulation::all();
+
+		return $formulations;
 	}
 
 	/**
@@ -546,6 +761,12 @@ class CsvExport
 		$file_names[] = Config::get('csv.file_names.custom_diagnoses');
 		$file_names[] = Config::get('csv.file_names.diagnosis_references');
 		$file_names[] = Config::get('csv.file_names.drugs');
+		$file_names[] = Config::get('csv.file_names.additional_drugs');
+		$file_names[] = Config::get('csv.file_names.drug_references');
+		$file_names[] = Config::get('csv.file_names.managements');
+		$file_names[] = Config::get('csv.file_names.management_references');
+		$file_names[] = Config::get('csv.file_names.answer_types');
+		$file_names[] = Config::get('csv.file_names.formulations');
 
 		// get patients data.
 		$patients = $this->getPatientList($fromDate, $toDate);
@@ -605,16 +826,34 @@ class CsvExport
 		$this->writeToFile($file_names[10], $drugs_data);
 
 		// get additional drugs data.
+		$additional_drugs = $this->getAdditionalDrugList($medical_case_ids);
+		$additional_drugs_data = $this->getFormattedAdditionalDrugList($additional_drugs);
+		$this->writeToFile($file_names[11], $additional_drugs_data);
 
 		// get drug references data.
+		$drug_references = $this->getDrugReferenceList();
+		$drug_references_data = $this->getFormattedDrugReferenceList($drug_references);
+		$this->writeToFile($file_names[12], $drug_references_data);
 
 		// get managements data.
+		$managements = $this->getManagementList();
+		$managements_data = $this->getFormattedManagementList($managements);
+		$this->writeToFile($file_names[13], $managements_data);
 
 		// get management references data.
+		$management_references = $this->getManagementReferenceList();
+		$management_references_data = $this->getFormattedManagementReferenceList($management_references);
+		$this->writeToFile($file_names[14], $management_references_data);
 
 		// get answer types data.
+		$answer_types = $this->getAnswerTypeList();
+		$answer_types_data = $this->getFormattedAnswerTypeList($answer_types);
+		$this->writeToFile($file_names[15], $answer_types_data);
 
 		// get formulations data.
+		$formulations = $this->getFormulationList();
+		$formulations_data = $this->getFormattedFormulationList($formulations);
+		$this->writeToFile($file_names[16], $formulations_data);
 
 		$this->downloadFiles($file_names);
 		exit();
