@@ -108,7 +108,21 @@ class ExportsController extends Controller
       }
 
       if(Arr::exists($request->input(),'DownloadFlat')){
-        $this->exportFlatZip($fromDate, $toDate);
+        $today=Carbon::now()->format('Y_m_d');
+        $extract='ibu_flat';
+        $zipper = new \Madnest\Madzipper\Madzipper;
+        $path = storage_path().'/app/flat_files';
+        $d = File::allFiles($path);
+        $zipper->make($extract.".zip")->add($d);
+        $zipper->close();
+        $fileFromPublic=base_path().'/public/'.$extract.'.zip';
+        
+        // download
+        header("Content-Description: File Transfer");
+        header("Content-Disposition: attachment; filename=".$fileFromPublic);
+        header("Content-Type: application/csv; ");
+        readfile($fileFromPublic);
+        unlink($fileFromPublic);
         exit();
 
       }else if(Arr::exists($request->input(),'DownloadSeparate')){
