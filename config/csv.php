@@ -36,7 +36,7 @@ return [
       'dyn_pat_local_patient_id'  => 'local_patient_id',
       'dyn_pat_group_id'          => 'group_id',
       'dyn_pat_consent'           => 'consent',
-      'dyn_pat_consent'           => 'redcap',
+      'dyn_pat_redcap'            => 'redcap',
       'dyn_pat_duplicate'         => 'duplicate',
       'dyn_pat_other_uid'         => 'other_uid',
       'dyn_pat_other_study_id'    => 'other_study_id',
