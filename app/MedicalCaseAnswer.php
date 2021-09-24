@@ -56,10 +56,10 @@ class MedicalCaseAnswer extends Model implements Auditable
     Storage::put("$folder_name/$drugFile_name","");
     Storage::put("$folder_name/$case_file_name","");
     $drug_csv=null;
-    if(count($case_drug_id_list) > 0){
-      $new_drug_instance=new DrugReference();
-      $drug_csv=$new_drug_instance->makeFlatCsv($case_drug_id_list,$folder_name);
-    }
+    // if(count($case_drug_id_list) > 0){
+    //   $new_drug_instance=new DrugReference();
+    //   $drug_csv=$new_drug_instance->makeFlatCsv($case_drug_id_list,$folder_name);
+    // }
     $caseAnswers=$case_answers_array;
     $cols = []; $pivot = []; $cols_to_rotate=[];
       foreach($caseAnswers as $record){
