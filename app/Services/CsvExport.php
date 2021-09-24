@@ -18,6 +18,7 @@ use App\Management;
 use App\ManagementReference;
 use App\AnswerType;
 use App\Formulation;
+use \DateInterval;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
@@ -50,7 +51,7 @@ class CsvExport
 			$first_name = trim(strtolower($patient->first_name));
 			$last_name = trim(strtolower($patient->last_name));
 
-			if($first_name == $discarded_name || $last_name == $discarded_name){
+			if(str_contains($first_name, $discarded_name) || str_contains($last_name, $discarded_name)){
 				return true;
 			}
 		}
@@ -521,6 +522,7 @@ class CsvExport
 	private function getPatientList($fromDate, $toDate)
 	{
 		// only take patients created in the given date interval.
+		$toDate->add(new DateInterval('P1D'));
 		$patients = Patient::whereBetween(Config::get('csv.identifiers.patient.dyn_pat_created_at'), array($fromDate, $toDate));
 
 		return $patients->get();
