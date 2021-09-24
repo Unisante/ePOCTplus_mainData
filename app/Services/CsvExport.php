@@ -49,7 +49,7 @@ class CsvExport
 			$first_name = trim(strtolower($patient->first_name));
 			$last_name = trim(strtolower($patient->last_name));
 
-			if($first_name == $discarded_name || $last_name == $discarded_name){
+			if(str_contains($first_name, $discarded_name) || str_contains($last_name, $discarded_name)){
 				return true;
 			}
 		}
