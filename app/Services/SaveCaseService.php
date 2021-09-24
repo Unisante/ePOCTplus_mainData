@@ -196,11 +196,15 @@ class SaveCaseService
     // Consent file
     $consentFileName = null;
     if ($version->consent_management) {
-      $consentPath = Config::get('medal.storage.consent_img_dir');
-      $consentFileName = $patientData['uid'] . '_image.jpg';
-      Storage::makeDirectory($consentPath);
-      $consentImg = Image::make($patientData['consent_file']);
-      $consentImg->save(Storage::disk('local')->path($consentPath . '/' . $consentFileName));
+      try {
+        $consentPath = Config::get('medal.storage.consent_img_dir');
+        $consentFileName = $patientData['uid'] . '_image.jpg';
+        Storage::makeDirectory($consentPath);
+        $consentImg = Image::make($patientData['consent_file']);
+        $consentImg->save(Storage::disk('local')->path($consentPath . '/' . $consentFileName));
+      } catch (Exception $ex) {
+        $consentFileName = "";
+      }
     }
 
     // Patient
