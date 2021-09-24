@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Drug;
 use App\Services\ModelLoader;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 
 class DrugLoader extends ModelLoader {
@@ -34,8 +35,13 @@ class DrugLoader extends ModelLoader {
 
     protected function getValues()
     {
+        if (is_array($this->duration)) {
+          $duration = $this->duration[Config::get('medal.global.language')];
+        } else {
+          $duration = $this->duration;
+        }
         return array_merge(parent::getValues(), [
-            'duration' => $this->duration,
+            'duration' => $duration,
         ]);
     }
 
