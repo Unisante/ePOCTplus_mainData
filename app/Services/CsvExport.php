@@ -21,6 +21,7 @@ use App\Formulation;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 
 class CsvExport
 {
@@ -66,6 +67,7 @@ class CsvExport
 		$data[] = $this->getAttributeList(Config::get('csv.identifiers.patient'));
 		foreach ($patients as $patient) {
 			if($this->isSkippedPatient($patient)){
+			  Log::info('Patient skipped');
 				continue;
 			}
 
@@ -93,8 +95,10 @@ class CsvExport
 				Config::get('csv.identifiers.patient.dyn_pat_other_id') 		=> $patient->other_id
 			];
 		}
+    Log::info(json_encode($data));
 
-		return $data;
+
+    return $data;
 	}
 
 	/**
@@ -427,7 +431,7 @@ class CsvExport
 				Config::get('csv.identifiers.management_reference.dyn_mre_created_at') 		=> $management_reference->created_at,
 				Config::get('csv.identifiers.management_reference.dyn_mre_updated_at') 		=> $management_reference->updated_at,
 				Config::get('csv.identifiers.management_reference.dyn_mre_management_id') 	=> $management_reference->management_id
-		
+
 			];
 		}
 
