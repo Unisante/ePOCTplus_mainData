@@ -64,7 +64,9 @@ class CsvExport
 	private function getFormattedPatientList($patients)
 	{
 		$data = [];
-		$data[] = $this->getAttributeList(Config::get('csv.identifiers.patient'));
+    Log::info('export Patient');
+
+    $data[] = $this->getAttributeList(Config::get('csv.identifiers.patient'));
 		foreach ($patients as $patient) {
 			if($this->isSkippedPatient($patient)){
 			  Log::info('Patient skipped');
