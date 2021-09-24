@@ -103,7 +103,8 @@ return [
       'dyn_ver_created_at'          => 'created_at',
       'dyn_ver_updated_at'          => 'updated_at',
       'dyn_ver_consent_management'  => 'consent_management',
-      'dyn_ver_study'               => 'study'
+      'dyn_ver_study'               => 'study',
+      'dyn_ver_is_arm_control'      => 'is_arm_control'
     ],
 
     'algorithm' => [
@@ -112,7 +113,6 @@ return [
       'dyn_alg_name'            => 'name',
       'dyn_alg_created_at'      => 'created_at',
       'dyn_alg_updated_at'      => 'updated_at',
-      'dyn_alg_is_arm_control'  => 'is_arm_control'
     ],
 
     'activity' => [

@@ -195,7 +195,8 @@ class CsvExport
 				Config::get('csv.identifiers.version.dyn_ver_created_at') 			=> $version->created_at,
 				Config::get('csv.identifiers.version.dyn_ver_updated_at') 			=> $version->updated_at,
 				Config::get('csv.identifiers.version.dyn_ver_consent_management') 	=> $version->consent_management,
-				Config::get('csv.identifiers.version.dyn_ver_study') 				=> $version->study
+				Config::get('csv.identifiers.version.dyn_ver_study') 				=> $version->study,
+				Config::get('csv.identifiers.version.dyn_is_arm_control') 			=> $version->dyn_is_arm_control
 			];
 		}
 
@@ -215,8 +216,7 @@ class CsvExport
 				Config::get('csv.identifiers.algorithm.dyn_alg_medal_c_id') 	=> $algorithm->medal_c_id,
 				Config::get('csv.identifiers.algorithm.dyn_alg_name') 			=> $algorithm->name,
 				Config::get('csv.identifiers.algorithm.dyn_alg_created_at') 	=> $algorithm->created_at,
-				Config::get('csv.identifiers.algorithm.dyn_alg_updated_at') 	=> $algorithm->updated_at,
-				Config::get('csv.identifiers.algorithm.dyn_alg_is_arm_control') => $algorithm->is_arm_control,
+				Config::get('csv.identifiers.algorithm.dyn_alg_updated_at') 	=> $algorithm->updated_at
 			];
 		}
 
