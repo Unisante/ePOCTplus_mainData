@@ -35,6 +35,7 @@ use Auth;
 use DateTime;
 use Carbon\Carbon;
 use App\Services\CsvExport;
+use Illuminate\Support\Facades\File;
 
 class ExportsController extends Controller
 {
