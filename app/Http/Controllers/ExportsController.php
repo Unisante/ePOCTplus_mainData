@@ -10,7 +10,6 @@ use App\DiagnosisReference;
 use App\DrugReference;
 use Illuminate\Http\Request;
 use App\Exports\PatientExport;
-use App\Exports\DataSheet;
 use App\Exports\DiagnosisReferenceExport;
 use App\Exports\AnswerExport;
 use App\Exports\Medical_CaseExport;
@@ -29,17 +28,11 @@ use App\Exports\AnswerTypeExport;
 use App\Exports\VersionExport;
 use Excel;
 use App\Patient;
-use Illuminate\Support\Facades\DB;
 use App\MedicalCaseAnswer;
-use Illuminate\Support\Facades\Storage;
-use ZipArchive;
-use Schema;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\File;
 use App\User;
 use Auth;
 use DateTime;
-use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Services\CsvExport;
 
@@ -78,7 +71,7 @@ class ExportsController extends Controller
       return view('exports.index')->with($data);;
     }
 
-    public function exportFlatZip($fromDate,$toDate){
+    public function exportFlatZip($fromDate, $toDate){
       ini_set('memory_limit', '4096M');
       ini_set('max_execution_time', '3600');
 
@@ -87,8 +80,8 @@ class ExportsController extends Controller
         return back()->withErrors("We currently do not have records in the database.");
       }
 
-      $filename='ibuFlat.csv';
-      return $caseAnswers->makeFlatCsv($filename, $fromDate, $toDate);
+      $file_name = 'ibuFlat.csv';
+      return $caseAnswers->makeFlatCsv($file_name, $fromDate, $toDate);
     }
 
     public function exportZipByDate(Request $request){
@@ -104,8 +97,9 @@ class ExportsController extends Controller
         'toDate' => 'required|date',
       ));
 
-      $fromDate= new DateTime($request->input('fromDate'));
-      $toDate= new DateTime($request->input('toDate'));
+      // get and check dates
+      $fromDate = new DateTime($request->input('fromDate'));
+      $toDate = new DateTime($request->input('toDate'));
       if($fromDate > $toDate){
         return back()->withErrors("Invalid date interval.");
       }
@@ -114,11 +108,14 @@ class ExportsController extends Controller
       }
 
       if(Arr::exists($request->input(),'DownloadFlat')){
+        $this->exportFlatZip($fromDate, $toDate);
         exit();
+
       }else if(Arr::exists($request->input(),'DownloadSeparate')){
         $csv_export = new CsvExport();
         $csv_export->exportDataByDate($fromDate, $toDate);
         exit();
+
       }else{
         return back()->withErrors("Something went wrong.");
       }

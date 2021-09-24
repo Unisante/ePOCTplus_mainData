@@ -40,6 +40,14 @@ class CsvExport
 	}
 
 	/**
+	 * Returns true if the patient should not be exported.
+	 */
+	private function isSkippedPatient($patient)
+	{
+		return false;
+	}
+
+	/**
 	 * Given the list of patients, create a formatted array of patient attributes.
 	 */
 	private function getFormattedPatientList($patients)
@@ -47,6 +55,10 @@ class CsvExport
 		$data = [];
 		$data[] = $this->getAttributeList(Config::get('csv.identifiers.patient'));
 		foreach ($patients as $patient) {
+			if($this->isSkippedPatient($patient)){
+				continue;
+			}
+
 			$data[] = [
 				Config::get('csv.identifiers.patient.dyn_pat_study_id_patient') => $patient->id,
 				Config::get('csv.identifiers.patient.dyn_pat_first_name')				=> $patient->first_name,
@@ -465,7 +477,7 @@ class CsvExport
 	}
 
 	/**
-	 * Retrieve the list of patient ids.
+	 * Retrieve the list of patient ids. TODO
 	 */
 	private function getPatientIds($patients)
 	{
@@ -478,7 +490,7 @@ class CsvExport
 	}
 
 	/**
-	 * Retrieve the list of medcial case answer ids.
+	 * Retrieve the list of medcial case answer ids. TODO
 	 */
 	private function getMedicalCaseIds($medical_cases)
 	{
