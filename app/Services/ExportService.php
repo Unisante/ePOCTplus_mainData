@@ -9,6 +9,11 @@ abstract class ExportService
 {
     protected $medical_cases;
 
+    public function __construct($med)
+    {
+
+    }
+
     /**
      * Checks if the medical case list is valid.
      * @param medical_cases the list of medical cases
