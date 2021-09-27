@@ -118,7 +118,7 @@ class CsvExport
 				Config::get('csv.identifiers.medical_case.dyn_mc_local_medical_case_id') 	=> $medical_case->local_medical_case_id,
 				Config::get('csv.identifiers.medical_case.dyn_mc_consent') 					=> $medical_case->consent,
 				Config::get('csv.identifiers.medical_case.dyn_mc_isEligible') 				=> $medical_case->isEligible,
-				Config::get('csv.identifiers.medical_case.dyn_mc_group_id') 				=> $medical_case->group_id,
+				Config::get('csv.identifiers.medical_case.dyn_mc_group_id') 				=> $medical_case->patient->group_id,
 				Config::get('csv.identifiers.medical_case.dyn_mc_redcap') 					=> $medical_case->redcap,
 				Config::get('csv.identifiers.medical_case.dyn_mc_consultation_date') 		=> $medical_case->consultation_date,
 				Config::get('csv.identifiers.medical_case.dyn_mc_closedAt') 				=> $medical_case->closedAt,
@@ -295,6 +295,14 @@ class CsvExport
 	}
 
 	/**
+	 * Returns true if the diagnosis reference should not be exported.
+	 */
+	private function isSkippedDiagnosisReference($diagnosis_reference)
+	{
+		return $diagnosis_reference->excluded;
+	}
+
+	/**
 	 * Given the list of diagnosis references, create a formatted array of diagnosis reference attributes.
 	 */
 	private function getFormattedDiagnosisReferenceList($diagnosis_references)
@@ -302,6 +310,10 @@ class CsvExport
 		$data = [];
 		$data[] = $this->getAttributeList(Config::get('csv.identifiers.diagnosis_reference'));
 		foreach ($diagnosis_references as $diagnosis_reference) {
+			if($this->isSkippedDiagnosisReference($diagnosis_reference)){
+				continue;
+			}
+
 			$data[] = [
 				Config::get('csv.identifiers.diagnosis_reference.dyn_dre_id') 				=> $diagnosis_reference->id,
 				Config::get('csv.identifiers.diagnosis_reference.dyn_dre_agreed') 			=> $diagnosis_reference->agreed,
@@ -309,8 +321,7 @@ class CsvExport
 				Config::get('csv.identifiers.diagnosis_reference.dyn_dre_diagnosis_id') 	=> $diagnosis_reference->diagnosis_id,
 				Config::get('csv.identifiers.diagnosis_reference.dyn_dre_medical_case_id') 	=> $diagnosis_reference->medical_case_id,
 				Config::get('csv.identifiers.diagnosis_reference.dyn_dre_created_at') 		=> $diagnosis_reference->created_at,
-				Config::get('csv.identifiers.diagnosis_reference.dyn_dre_updated_at') 		=> $diagnosis_reference->updated_at,
-				Config::get('csv.identifiers.diagnosis_reference.dyn_dre_excluded') 		=> $diagnosis_reference->excluded
+				Config::get('csv.identifiers.diagnosis_reference.dyn_dre_updated_at') 		=> $diagnosis_reference->updated_at
 			];
 		}
 
