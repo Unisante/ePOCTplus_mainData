@@ -35,6 +35,7 @@ use Auth;
 use DateTime;
 use Carbon\Carbon;
 use App\Services\CsvExport;
+use App\Services\ExportCsvSeparate;
 use Illuminate\Support\Facades\File;
 
 class ExportsController extends Controller
@@ -127,8 +128,8 @@ class ExportsController extends Controller
         exit();
 
       }else if(Arr::exists($request->input(),'DownloadSeparate')){
-        $csv_export = new CsvExport();
-        $csv_export->exportDataByDate($fromDate, $toDate);
+        $csv_export = new ExportCsvSeparate(MedicalCase::all(), $fromDate, $toDate);
+        $csv_export->export();
         exit();
 
       }else{

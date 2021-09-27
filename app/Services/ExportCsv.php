@@ -3,7 +3,11 @@
 namespace App\Services;
 
 use \InvalidArgumentException;
+use \DateInterval;
 use Carbon\Carbon;
+
+use Illuminate\Support\Facades\Config;
+
 
 abstract class ExportCsv extends ExportService
 {
@@ -13,8 +17,8 @@ abstract class ExportCsv extends ExportService
 
     /**
      * Checks if the dates form a valid date interval.
-     * @param from_date the start date
-     * @param to_date the end date
+     * @param DateTime from_date, the start date
+     * @param DateTime to_date, the end date
      * @throws InvalidArgumentException
      */
     protected static function checkDateInterval($from_date, $to_date)
@@ -32,42 +36,135 @@ abstract class ExportCsv extends ExportService
         }
     }
 
-    protected function getPatientList()
-	{
-		$data = [];
+    /**
+     * @param MedicalCase medical_case, a medical case
+     * @return boolean true if the medical case should be skipped, false otherwise
+     */
+    private function isSkippedMedicalCase($medical_case)
+    {
+        // select medical cases only in date interval.
+        $date = $medical_case->patient->created_at;
+        if($date < $this->from_date || $date > $this->to_date){
+            return true;
+        }
 
-        $data[] = $this->getAttributeList(Config::get('csv.identifiers.patient'));
-            foreach ($patients as $patient) {
-                if($this->isSkippedPatient($patient)){
-                    continue;
-                }
+        // patient's name may discard a medical case.
+        $patient_discarded_names = Config::get('csv.patient_discarded_names');
+		foreach ($patient_discarded_names as $discarded_name) {
+			$first_name = trim(strtolower($medical_case->patient->first_name));
+			$last_name = trim(strtolower($medical_case->patient->last_name));
 
-                $data[] = [
-                    Config::get('csv.identifiers.patient.dyn_pat_study_id_patient') => $patient->id,
-                    Config::get('csv.identifiers.patient.dyn_pat_first_name')		=> $patient->first_name,
-                    Config::get('csv.identifiers.patient.dyn_pat_last_name')        => $patient->last_name,
-                    Config::get('csv.identifiers.patient.dyn_pat_created_at')       => $patient->created_at,
-                    Config::get('csv.identifiers.patient.dyn_pat_updated_at')       => $patient->updated_at,
-                    Config::get('csv.identifiers.patient.dyn_pat_birth_date')       => $patient->birthdate,
-                    Config::get('csv.identifiers.patient.dyn_pat_gender') 			=> $patient->gender,
-                    Config::get('csv.identifiers.patient.dyn_pat_local_patient_id') => $patient->local_patient_id,
-                    Config::get('csv.identifiers.patient.dyn_pat_group_id') 		=> $patient->group_id,
-                    Config::get('csv.identifiers.patient.dyn_pat_consent') 			=> $patient->consent,
-                    Config::get('csv.identifiers.patient.dyn_pat_redcap') 			=> $patient->redcap,
-                    Config::get('csv.identifiers.patient.dyn_pat_duplicate') 		=> $patient->duplicate,
-                    Config::get('csv.identifiers.patient.dyn_pat_other_uid') 		=> $patient->other_uid,
-                    Config::get('csv.identifiers.patient.dyn_pat_other_study_id') 	=> $patient->other_study_id,
-                    Config::get('csv.identifiers.patient.dyn_pat_other_group_id') 	=> $patient->other_group_id,
-                    Config::get('csv.identifiers.patient.dyn_pat_merged_with') 		=> $patient->merged_with,
-                    Config::get('csv.identifiers.patient.dyn_pat_merged') 			=> $patient->merged,
-                    Config::get('csv.identifiers.patient.dyn_pat_status') 			=> $patient->status,
-                    Config::get('csv.identifiers.patient.dyn_pat_related_ids') 		=> $patient->related_ids,
-                    Config::get('csv.identifiers.patient.dyn_pat_middle_name') 		=> $patient->middle_name,
-                    Config::get('csv.identifiers.patient.dyn_pat_other_id') 		=> $patient->other_id
-                ];
+			if(str_contains($first_name, $discarded_name) || str_contains($last_name, $discarded_name)){
+				return true;
+			}
+		}
+
+        return false;
+    }
+
+    /**
+     * @param Collection medical_cases, the list of medical cases to filter
+     * @return Collection filtered list of medical cases.
+     */
+    protected function getFilteredMedicalCases($medical_cases)
+    {
+        $new_medical_cases = [];
+        foreach($medical_cases as $medical_case){
+            if($this->isSkippedMedicalCase($medical_case)){
+               continue; 
             }
 
+            $new_medical_cases[] = $medical_case;
+        }
 
-        return $data;
+        return $new_medical_cases;
+    }
+
+    /**
+     * Constructor
+     * @param Collection medical_cases, medical cases to export
+     * @param DateTime from_date, the starting date
+     * @param DateTime to_date, the ending date
+     */
+    public function __construct($medical_cases, $from_date, $to_date)
+    {
+        self::checkDateInterval($from_date, $to_date);
+
+        $this->from_date = $from_date;
+        $this->to_date = $to_date;
+        $this->to_date->add(new DateInterval('P1D'));
+
+        parent::__construct($this->getFilteredMedicalCases($medical_cases));
+    }
+
+    /**
+	 * Given identifier, returns the list of attributes
+	 */
+	protected static function getAttributeList($identifier)
+	{
+		$attribute_names = [];
+		foreach($identifier as $attribute_name) {
+			$attribute_names[] = $attribute_name;
+		}
+
+		return $attribute_names;
+	}
+
+    /**
+	 * Returns a string representation of an array of attributes.
+	 */
+	protected static function attributesToStr($attributes)
+	{
+		$new_attributes = [];
+		foreach ($attributes as $attribute) {
+			if (is_array($attribute)) {
+				$new_attributes[] = implode(',', $attribute);
+			} else if (is_bool($attribute)) {
+				$new_attributes[] = $attribute ? "1" : "0";
+			} else {
+				$new_attributes[] = $attribute;
+			}
+		}
+
+		return $new_attributes;
+	}
+
+    /**
+	 * Write data to file.
+	 */
+	protected static function writeToFile($file_name, $data)
+	{
+		$file = fopen($file_name, "w");
+		foreach ($data as $line) {
+			$attributes = self::attributesToStr((array) $line);
+			fputcsv($file, $attributes);
+		}
+		fclose($file);
+	}
+
+	/**
+	 * Generate new zip file given files' names and download it.
+	 */
+	protected static function downloadFiles($file_names)
+	{
+		$extract_file_name = Config::get('csv.public_extract_name');
+		$file_from_public = base_path() . '/public/' . $extract_file_name;
+
+		// generate the data file.
+		$zipper = new \Madnest\Madzipper\Madzipper;
+		$zipper->make($extract_file_name)->add($file_names);
+		$zipper->close();
+
+		// download the data file.
+		header("Content-Description: File Transfer");
+		header("Content-Disposition: attachment; filename=" . $file_from_public);
+		header("Content-Type: application/csv; ");
+		readfile($file_from_public);
+
+		// delete the data files.
+		foreach ($file_names as $csv) {
+			unlink($csv);
+		}
+		unlink($file_from_public);
 	}
 }
