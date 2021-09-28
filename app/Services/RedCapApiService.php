@@ -265,7 +265,7 @@ class RedCapApiService
         if ($diagnose->excluded) {continue;};
 
         if ($diagnose->agreed) {
-          foreach ($diagnose->drugReferences as $drug) {
+          foreach ($diagnose->drug_references as $drug) {
             $records[] = [
               'record_id' => $medicalCase->local_medical_case_id,
               'redcap_repeat_instrument' => 'drugs',
@@ -294,7 +294,7 @@ class RedCapApiService
       $instanceNumber = 1;
       foreach ($medicalCase->custom_diagnoses as $customDiagnose) {
         /** @var CustomDrug $customDrug */
-        foreach ($customDiagnose->customDrugs as $customDrug) {
+        foreach ($customDiagnose->custom_drugs as $customDrug) {
           $records[] = [
             'record_id' => $medicalCase->local_medical_case_id,
             'redcap_repeat_instrument' => 'custom_drugs',
@@ -318,7 +318,7 @@ class RedCapApiService
 
         if ($diagnose->agreed) {
           /** @var ManagementReference $management */
-          foreach ($diagnose->managementReferences as $management) {
+          foreach ($diagnose->management_references as $management) {
               $records[] = [
                 'record_id' => $medicalCase->local_medical_case_id,
                 'redcap_repeat_instrument' => 'managements',

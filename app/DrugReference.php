@@ -33,7 +33,7 @@ class DrugReference extends Model
     $cases = MedicalCase::find($case_drug_id_list);
     foreach($cases as $indexcase=>$case){
       foreach($case->diagnoses_references as $indexdf=>$df){
-        foreach($df->drugReferences as $drf){
+        foreach($df->drug_references as $drf){
           $drugs_needed[$drf->id]=$drf;
         }
       }
@@ -64,7 +64,7 @@ class DrugReference extends Model
           if($index == 0){
             array_push($tempArr,$record->id);
           }else if($index == 1){
-            array_push($tempArr,$record->diagnosisReference->medicalCase->local_medical_case_id);
+            array_push($tempArr,$record->diagnosisReference->medical_case->local_medical_case_id);
           }else if($index == 2){
             array_push($tempArr,$record->diagnosisReference->diagnosis->label);
           }

@@ -42,7 +42,7 @@ class DiagnosisReference extends Model
   * Make diagnosis relation
   * @return one to many drub references retionship
   */
-  public function drugReferences(){
+  public function drug_references(){
     return $this->hasMany('App\DrugReference','diagnosis_id','id');
   }
 
@@ -61,11 +61,11 @@ class DiagnosisReference extends Model
   * Make diagnosis relation
   * @return one to many management references retionship
   */
-  public function managementReferences(){
+  public function management_references(){
     return $this->hasMany('App\ManagementReference','diagnosis_id','id');
   }
 
-  public function medicalCase(){
+  public function medical_case(){
     return $this->belongsTo('App\MedicalCase','medical_case_id');
   }
 }

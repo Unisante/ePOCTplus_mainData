@@ -441,7 +441,7 @@ class ExportCsvSeparate extends ExportCsv
                 // get diagnoses
                 $this->addDiagnosisData($diagnoses_data, $diagnosis);
 
-                $drug_references = $diagnosis_reference->drugReferences;
+                $drug_references = $diagnosis_reference->drug_references;
                 foreach($drug_references as $drug_reference){
                     $drug = $drug_reference->drugs;
                     // get drug references
@@ -462,7 +462,7 @@ class ExportCsvSeparate extends ExportCsv
                     }
                 }
 
-                $management_references = $diagnosis_reference->managementReferences;
+                $management_references = $diagnosis_reference->management_references;
                 foreach($management_references as $management_reference){
                     $management = $management_reference->managements;
                     // get management references

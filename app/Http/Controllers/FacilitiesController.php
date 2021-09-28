@@ -27,8 +27,8 @@ class FacilitiesController extends Controller
           $case_count=0;
           $time_array=[];
           foreach($facility->patients as $patient){
-            $patient_case_count=$patient->medicalCases->count();
-            $latest_case=$patient->medicalCases->sortByDesc('updated_at')->first()->toArray();
+            $patient_case_count=$patient->medical_cases->count();
+            $latest_case=$patient->medical_cases->sortByDesc('updated_at')->first()->toArray();
             if($latest_case != null){
             array_push($time_array,$latest_case['updated_at']);
             }

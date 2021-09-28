@@ -32,7 +32,7 @@ class HealthFacility extends Model
   public function patients(){
     return $this->hasMany('App\Patient','group_id','group_id');
   }
-  public function versionJson(){
+  public function version_json(){
     return $this->hasOne('App\VersionJson');
   }
 
