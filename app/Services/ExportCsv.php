@@ -100,7 +100,7 @@ abstract class ExportCsv extends ExportService
     /**
 	 * Given identifier, returns the list of attributes
 	 */
-	protected static function getAttributeList($identifier)
+	protected function getAttributeList($identifier)
 	{
 		$attribute_names = [];
 		foreach($identifier as $attribute_name) {
@@ -113,7 +113,7 @@ abstract class ExportCsv extends ExportService
     /**
 	 * Returns a string representation of an array of attributes.
 	 */
-	protected static function attributesToStr($attributes)
+	protected function attributesToStr($attributes)
 	{
 		$new_attributes = [];
 		foreach ($attributes as $attribute) {
@@ -132,11 +132,11 @@ abstract class ExportCsv extends ExportService
     /**
 	 * Write data to file.
 	 */
-	protected static function writeToFile($file_name, $data)
+	protected function writeToFile($file_name, $data)
 	{
 		$file = fopen($file_name, "w");
 		foreach ($data as $line) {
-			$attributes = self::attributesToStr((array) $line);
+			$attributes = $this->attributesToStr((array) $line);
 			fputcsv($file, $attributes);
 		}
 		fclose($file);
@@ -145,19 +145,22 @@ abstract class ExportCsv extends ExportService
 	/**
 	 * Generate new zip file given files' names and download it.
 	 */
-	protected static function downloadFiles($file_names)
+	protected function downloadFiles($file_names)
 	{
 		$extract_file_name = Config::get('csv.public_extract_name');
-		$file_from_public = base_path() . '/public/' . $extract_file_name;
+		$file_from_public = base_path() . '/public/' . $extract_file_name . '.zip';
 
 		// generate the data file.
 		$zipper = new \Madnest\Madzipper\Madzipper;
-		$zipper->make($extract_file_name)->add($file_names);
+		$zipper->make($extract_file_name . '.zip')->add($file_names);
 		$zipper->close();
 
 		// download the data file.
+        $from_date_str = $this->from_date->format('Y-m-d');
+        $to_date_str = $this->to_date->sub(new DateInterval('P1D'))->format('Y-m-d');
+        
 		header("Content-Description: File Transfer");
-		header("Content-Disposition: attachment; filename=" . $file_from_public);
+		header("Content-Disposition: attachment; filename=" . Config::get('csv.public_extract_name') . '_' . $from_date_str . '_' . $to_date_str . '.zip');
 		header("Content-Type: application/csv; ");
 		readfile($file_from_public);
 

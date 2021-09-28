@@ -1,7 +1,7 @@
 <?php
 
 return [
-  'public_extract_name' => 'ibu.zip',
+  'public_extract_name' => 'extract',
   'patient_discarded_names' => ['test'],
 
   'file_names' => [

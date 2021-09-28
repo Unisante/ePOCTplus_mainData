@@ -358,39 +358,39 @@ class ExportCsvSeparate extends ExportCsv
     {
         // Initialize data arrays.
         $patients_data = [];
-        $patients_data[] = self::getAttributeList(Config::get('csv.identifiers.patient'));
+        $patients_data[] = $this->getAttributeList(Config::get('csv.identifiers.patient'));
         $medical_cases_data = [];
-        $medical_cases_data[] = self::getAttributeList(Config::get('csv.identifiers.medical_case'));
+        $medical_cases_data[] = $this->getAttributeList(Config::get('csv.identifiers.medical_case'));
         $medical_case_answers_data = [];
-        $medical_case_answers_data[] = self::getAttributeList(Config::get('csv.identifiers.medical_case_answer'));
+        $medical_case_answers_data[] = $this->getAttributeList(Config::get('csv.identifiers.medical_case_answer'));
         $nodes_data = [];
-        $nodes_data[] = self::getAttributeList(Config::get('csv.identifiers.node'));
+        $nodes_data[] = $this->getAttributeList(Config::get('csv.identifiers.node'));
         $versions_data = [];
-        $versions_data[] = self::getAttributeList(Config::get('csv.identifiers.version'));
+        $versions_data[] = $this->getAttributeList(Config::get('csv.identifiers.version'));
         $algorithms_data = [];
-        $algorithms_data[] = self::getAttributeList(Config::get('csv.identifiers.algorithm'));
+        $algorithms_data[] = $this->getAttributeList(Config::get('csv.identifiers.algorithm'));
         $activities_data = [];
-        $activities_data[] = self::getAttributeList(Config::get('csv.identifiers.activity'));
+        $activities_data[] = $this->getAttributeList(Config::get('csv.identifiers.activity'));
         $diagnoses_data = [];
-        $diagnoses_data[] = self::getAttributeList(Config::get('csv.identifiers.diagnosis'));
+        $diagnoses_data[] = $this->getAttributeList(Config::get('csv.identifiers.diagnosis'));
         $custom_diagnoses_data = [];
-        $custom_diagnoses_data[] = self::getAttributeList(Config::get('csv.identifiers.custom_diagnosis'));
+        $custom_diagnoses_data[] = $this->getAttributeList(Config::get('csv.identifiers.custom_diagnosis'));
         $diagnosis_references_data = [];
-        $diagnosis_references_data[] = self::getAttributeList(Config::get('csv.identifiers.diagnosis_reference'));
+        $diagnosis_references_data[] = $this->getAttributeList(Config::get('csv.identifiers.diagnosis_reference'));
         $drugs_data = [];
-        $drugs_data[] = self::getAttributeList(Config::get('csv.identifiers.drug'));
+        $drugs_data[] = $this->getAttributeList(Config::get('csv.identifiers.drug'));
         $additional_drugs_data = [];
-        $additional_drugs_data[] = self::getAttributeList(Config::get('csv.identifiers.additional_drug'));
+        $additional_drugs_data[] = $this->getAttributeList(Config::get('csv.identifiers.additional_drug'));
         $drug_references_data = [];
-        $drug_references_data[] = self::getAttributeList(Config::get('csv.identifiers.drug_reference'));
+        $drug_references_data[] = $this->getAttributeList(Config::get('csv.identifiers.drug_reference'));
         $managements_data = [];
-        $managements_data[] = self::getAttributeList(Config::get('csv.identifiers.management'));
+        $managements_data[] = $this->getAttributeList(Config::get('csv.identifiers.management'));
         $management_references_data = [];
-        $management_references_data[] = self::getAttributeList(Config::get('csv.identifiers.management_reference'));
+        $management_references_data[] = $this->getAttributeList(Config::get('csv.identifiers.management_reference'));
         $answer_types_data = [];
-        $answer_types_data[] = self::getAttributeList(Config::get('csv.identifiers.answer_type'));
+        $answer_types_data[] = $this->getAttributeList(Config::get('csv.identifiers.answer_type'));
         $formulations_data = [];
-        $formulations_data[] = self::getAttributeList(Config::get('csv.identifiers.formulation'));
+        $formulations_data[] = $this->getAttributeList(Config::get('csv.identifiers.formulation'));
 
 
 
@@ -513,26 +513,11 @@ class ExportCsvSeparate extends ExportCsv
         $data = $this->getDataFromMedicalCases();
         $file_names = array_keys($data);
 
+        foreach(Config::get('csv.file_names') as $file_name){
+            $this->writeToFile($file_name, $data[$file_name]);
+        }
 
-		self::writeToFile(Config::get('csv.file_names.patients'), $data[Config::get('csv.file_names.patients')]);
-        self::writeToFile(Config::get('csv.file_names.medical_cases'), $data[Config::get('csv.file_names.medical_cases')]);
-        self::writeToFile(Config::get('csv.file_names.medical_case_answers'), $data[Config::get('csv.file_names.medical_case_answers')]);
-        self::writeToFile(Config::get('csv.file_names.nodes'), $data[Config::get('csv.file_names.nodes')]);
-        self::writeToFile(Config::get('csv.file_names.versions'), $data[Config::get('csv.file_names.versions')]);
-        self::writeToFile(Config::get('csv.file_names.algorithms'), $data[Config::get('csv.file_names.algorithms')]);
-        self::writeToFile(Config::get('csv.file_names.activities'), $data[Config::get('csv.file_names.activities')]);
-        self::writeToFile(Config::get('csv.file_names.diagnoses'), $data[Config::get('csv.file_names.diagnoses')]);
-        self::writeToFile(Config::get('csv.file_names.custom_diagnoses'), $data[Config::get('csv.file_names.custom_diagnoses')]);
-        self::writeToFile(Config::get('csv.file_names.diagnosis_references'), $data[Config::get('csv.file_names.diagnosis_references')]);
-        self::writeToFile(Config::get('csv.file_names.drugs'), $data[Config::get('csv.file_names.drugs')]);
-        self::writeToFile(Config::get('csv.file_names.additional_drugs'), $data[Config::get('csv.file_names.additional_drugs')]);
-        self::writeToFile(Config::get('csv.file_names.drug_references'), $data[Config::get('csv.file_names.drug_references')]);
-        self::writeToFile(Config::get('csv.file_names.managements'), $data[Config::get('csv.file_names.managements')]);
-        self::writeToFile(Config::get('csv.file_names.management_references'), $data[Config::get('csv.file_names.management_references')]);
-        self::writeToFile(Config::get('csv.file_names.answer_types'), $data[Config::get('csv.file_names.answer_types')]);
-        self::writeToFile(Config::get('csv.file_names.formulations'), $data[Config::get('csv.file_names.formulations')]);
-
-		self::downloadFiles($file_names);
+		$this->downloadFiles($file_names);
 		exit();
     }
 }
