@@ -117,9 +117,9 @@ abstract class ExportCsv extends ExportService
 	{
 		$new_attributes = [];
 		foreach ($attributes as $attribute) {
-			if (is_array($attribute)) {
+			if(is_array($attribute)) {
 				$new_attributes[] = implode(',', $attribute);
-			} else if (is_bool($attribute)) {
+			} else if(is_bool($attribute)) {
 				$new_attributes[] = $attribute ? "1" : "0";
 			} else {
 				$new_attributes[] = $attribute;
@@ -158,7 +158,7 @@ abstract class ExportCsv extends ExportService
 		// download the data file.
         $from_date_str = $this->from_date->format('Y-m-d');
         $to_date_str = $this->to_date->sub(new DateInterval('P1D'))->format('Y-m-d');
-        
+
 		header("Content-Description: File Transfer");
 		header("Content-Disposition: attachment; filename=" . Config::get('csv.public_extract_name') . '_' . $from_date_str . '_' . $to_date_str . '.zip');
 		header("Content-Type: application/csv; ");

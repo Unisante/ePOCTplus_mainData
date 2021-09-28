@@ -34,9 +34,8 @@ use App\User;
 use Auth;
 use DateTime;
 use Carbon\Carbon;
-use App\Services\CsvExport;
 use App\Services\ExportCsvSeparate;
-use Illuminate\Support\Facades\File;
+use App\Services\ExportCsvFlat;
 
 class ExportsController extends Controller
 {
@@ -110,32 +109,17 @@ class ExportsController extends Controller
       }
 
       if(Arr::exists($request->input(),'DownloadFlat')){
-        $today=Carbon::now()->format('Y_m_d');
-        $extract='ibu_flat';
-        $zipper = new \Madnest\Madzipper\Madzipper;
-        $path = storage_path().'/app/flat_files';
-        $d = File::allFiles($path);
-        $zipper->make($extract.".zip")->add($d);
-        $zipper->close();
-        $fileFromPublic=base_path().'/public/'.$extract.'.zip';
-        
-        // download
-        header("Content-Description: File Transfer");
-        header("Content-Disposition: attachment; filename=".$fileFromPublic);
-        header("Content-Type: application/csv; ");
-        readfile($fileFromPublic);
-        unlink($fileFromPublic);
-        exit();
+        $csv_export = new ExportCsvFlat(MedicalCase::all(), $fromDate, $toDate);
 
       }else if(Arr::exists($request->input(),'DownloadSeparate')){
         $csv_export = new ExportCsvSeparate(MedicalCase::all(), $fromDate, $toDate);
-        $csv_export->export();
-        exit();
 
       }else{
         return back()->withErrors("Something went wrong.");
       }
 
+      $csv_export->export();
+      exit();
 
     }
     public function Patients(){
