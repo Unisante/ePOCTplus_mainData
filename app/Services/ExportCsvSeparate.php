@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Node;
-use App\AdditionalDrug;
 use App\AnswerType;
 use App\Services\ExportCsv;
 
@@ -67,7 +65,7 @@ class ExportCsvSeparate extends ExportCsv
 			Config::get('csv.identifiers.medical_case.dyn_mc_local_medical_case_id') 	=> $medical_case->local_medical_case_id,
 			Config::get('csv.identifiers.medical_case.dyn_mc_consent') 					=> $medical_case->consent,
 			Config::get('csv.identifiers.medical_case.dyn_mc_isEligible') 				=> $medical_case->isEligible,
-			Config::get('csv.identifiers.medical_case.dyn_mc_group_id') 				=> $medical_case->group_id,
+			Config::get('csv.identifiers.medical_case.dyn_mc_group_id') 				=> $medical_case->patient->group_id,
 			Config::get('csv.identifiers.medical_case.dyn_mc_redcap') 					=> $medical_case->redcap,
 			Config::get('csv.identifiers.medical_case.dyn_mc_consultation_date') 		=> $medical_case->consultation_date,
 			Config::get('csv.identifiers.medical_case.dyn_mc_closedAt') 				=> $medical_case->closedAt,
@@ -210,8 +208,7 @@ class ExportCsvSeparate extends ExportCsv
             Config::get('csv.identifiers.diagnosis_reference.dyn_dre_diagnosis_id') 	=> $diagnosis_reference->diagnosis_id,
             Config::get('csv.identifiers.diagnosis_reference.dyn_dre_medical_case_id') 	=> $diagnosis_reference->medical_case_id,
             Config::get('csv.identifiers.diagnosis_reference.dyn_dre_created_at') 		=> $diagnosis_reference->created_at,
-            Config::get('csv.identifiers.diagnosis_reference.dyn_dre_updated_at') 		=> $diagnosis_reference->updated_at,
-            Config::get('csv.identifiers.diagnosis_reference.dyn_dre_excluded') 		=> $diagnosis_reference->excluded
+            Config::get('csv.identifiers.diagnosis_reference.dyn_dre_updated_at') 		=> $diagnosis_reference->updated_at
         ];
     }
 
@@ -345,6 +342,15 @@ class ExportCsvSeparate extends ExportCsv
         ];
     }
 
+    protected static function isSkippedMedicalCaseAnswer($medical_case_answer){
+        return ($medical_case_answer->node->category == "background_calculation" && $medical_case_answer->node->display_format != 'Reference')
+            || ($medical_case_answer->value == '' and $medical_case_answer->answer_id === null);
+    }
+
+    protected static function isSkippedDiagnosisReference($diagnosis_reference){
+        return $diagnosis_reference->excluded;
+    }
+
     /**
      * Retrieve all the data.
      */
@@ -398,6 +404,9 @@ class ExportCsvSeparate extends ExportCsv
 
             $medical_case_answers = $medical_case->medical_case_answers;
             foreach($medical_case_answers as $medical_case_answer){
+                if(self::isSkippedMedicalCaseAnswer($medical_case_answer)){
+                    continue;
+                }
                 // get medical_case_answers
                 $this->addMedicalCaseAnswerData($medical_case_answers_data, $medical_case_answer);
 
@@ -417,11 +426,15 @@ class ExportCsvSeparate extends ExportCsv
             $activities = $medical_case->activities;
             foreach($activities as $activity){
                 // get activities
-                $this->addActivityData($activities_data, $activity); // TODO
+                $this->addActivityData($activities_data, $activity);
             }
 
             $diagnosis_references = $medical_case->diagnosesReferences;
             foreach($diagnosis_references as $diagnosis_reference){
+                if(self::isSkippedDiagnosisReference($diagnosis_reference)){
+                    continue;
+                }
+
                 $diagnosis = $diagnosis_reference->diagnoses;
                 // get diagnosis references
                 $this->addDiagnosisReferenceData($diagnosis_references_data, $diagnosis_reference);
@@ -438,9 +451,14 @@ class ExportCsvSeparate extends ExportCsv
 
                     $formulations = $drug->formulations;
                     foreach($formulations as $formulation){
-                        exit();
                         // get formulations
-                        $this->addFormulationData($formulations_data, $formulation); // TODO
+                        $this->addFormulationData($formulations_data, $formulation);
+                    }
+
+                    $additional_drugs = $drug->additional_drugs;
+                    foreach($additional_drugs as $additional_drug){
+                        // get additional drug
+                        $this->addAdditionalDrugData($additional_drugs_data, $additional_drug);
                     }
                 }
 
@@ -459,12 +477,6 @@ class ExportCsvSeparate extends ExportCsv
                 // get custom diagnoses
                 $this->AddCustomDiagnosisData($custom_diagnoses_data, $custom_diagnosis);
             }
-        }
-
-        $additional_drugs = AdditionalDrug::all();
-        foreach($additional_drugs as $additional_drug){
-            // get additional drug
-            $this->addAdditionalDrugData($additional_drugs_data, $additional_drug);
         }
 
         $answer_types = AnswerType::all();

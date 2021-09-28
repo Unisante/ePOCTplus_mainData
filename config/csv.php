@@ -153,8 +153,7 @@ return [
       'dyn_dre_diagnosis_id'    => 'diagnosis_id',
       'dyn_dre_medical_case_id' => 'medical_case_id',
       'dyn_dre_created_at'      => 'created_at',
-      'dyn_dre_updated_at'      => 'updated_at',
-      'dyn_dre_excluded'        => 'excluded'
+      'dyn_dre_updated_at'      => 'updated_at'
     ],
 
     'drug' => [
