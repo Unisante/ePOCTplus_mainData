@@ -32,7 +32,7 @@ class DrugReference extends Model
     $drugs_needed=[];
     $cases = MedicalCase::find($case_drug_id_list);
     foreach($cases as $indexcase=>$case){
-      foreach($case->diagnosesReferences as $indexdf=>$df){
+      foreach($case->diagnoses_references as $indexdf=>$df){
         foreach($df->drugReferences as $drf){
           $drugs_needed[$drf->id]=$drf;
         }

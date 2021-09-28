@@ -429,7 +429,7 @@ class ExportCsvSeparate extends ExportCsv
                 $this->addActivityData($activities_data, $activity);
             }
 
-            $diagnosis_references = $medical_case->diagnosesReferences;
+            $diagnosis_references = $medical_case->diagnoses_references;
             foreach($diagnosis_references as $diagnosis_reference){
                 if(self::isSkippedDiagnosisReference($diagnosis_reference)){
                     continue;
@@ -472,7 +472,7 @@ class ExportCsvSeparate extends ExportCsv
                 }
             }
 
-            $custom_diagnoses = $medical_case->customDiagnoses;
+            $custom_diagnoses = $medical_case->custom_diagnoses;
             foreach($custom_diagnoses as $custom_diagnosis){
                 // get custom diagnoses
                 $this->AddCustomDiagnosisData($custom_diagnoses_data, $custom_diagnosis);

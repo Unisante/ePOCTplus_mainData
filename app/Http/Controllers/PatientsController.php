@@ -334,7 +334,7 @@ class PatientsController extends Controller
     $patient=Patient::find($request->patient_id);
     if($patient->medicalCases){
       foreach($patient->medicalCases as $case){
-        $case->diagnosesReferences->each->delete();
+        $case->diagnoses_references->each->delete();
       }
       $patient->medicalCases->each->delete();
     }
