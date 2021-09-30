@@ -249,10 +249,61 @@ return [
     ],
 
     'identifiers' => [
-      'answers' => [
-        //patient,case_id,"1-2d, 3-59d, >=60 days","Weight category for Dihydroartemisinin-Piperaquine","Height feasible or not","Low Weight ","Age in months: 2 / 6 / 12 / 24 / 59","Age in months: 3 / 12 / 24 / 36 / 59","Age in days","Current Weight (kg)",Sex,"Height (cm) - if length is measured subtract 0.7cm",General,"General / Universal Assessment","Weight for age (z-score)","Weight for height z-score","1 / 2-13 / 14-21/ 22-59 days","Eye complaint",Unconscious,Fever,"Malformation of birth anomaly","Axillary temperature ","Age category in days","Age < 18m / >=18m","Age in months: 2 / 6 /9 / 12 / 24","Follow-up visit for a previous problem","Known sickle cell disease","Diarrhoea (loose / liquid stool)","Age: 2 months to 5 years","Fever within the last 2 days","Respiratory (Cough or difficult breathing)",Cough,"Difficulty breathing","Recent close contact with somebody with TB","Axillary temperature (in °C)","Age < / >= 24 months","Runny or blocked nose","Gastrointestinal (abdominal problems, vomiting)","Unable to drink or breastfeed","Blood in stool","Eating / breastfeeding a lot less than usual","Duration of diarrhea (days)","<6m, >=6m - <12m, >=12m","Weight categories for Artemether-Lumefantrine","Injuries (birth and non-birth related)","HIV status of biologic mother","1 to 7 days of life","1 to 28 days of life","Vomiting everything","Age 1-7d, 7-28d, 29-59d","Sunken eyes","Ear or mouth complaint",Skin,"Diarrhea, abdominal, gastro-intestinal","Did the patient visit this or another health facility for an acute illness in the last 14 days?","What kind of consultation is this?","Ear, Nose, Throat","Eyes / skin / hair","Convulsions in present illness","Convulsing now","Life-threatening emergency: Obstructed or absent breathing, severe respiratory distress, anaphylaxis, shock, coma, convulsion, major trauma, major burns",Respiratory,"Urine or genital problems","Palmar pallor","Skin pinch","Accidents, injuries & musculoskeletal (joint/ muscle/bone) problems","Bilateral pedal oedema","Agitated / irritable","Has the child had measles in the last 3 months?","Weight loss / failure to gain weight","Temperature cut-offs","Weight categories <10, 10 - 19, >=20",Diarrhoea,Lethargic,"Age <14 months / >=14 months","Weight categories diazepam","Weight <10 /  >=10","One or both parents known to have sickle cell (trait / disease)","Default true","Respiratory rate","Wheezing ","Duration of cough / difficulty breathing (days)","Chest indrawing","Barking cough","Vaccinations up to date?","Oxygen saturation (%)",Grunting,"Vitamin A in last 6 months?","Severe difficult breathing needing referral","MUAC in mm (only if age 6 months or older)","MUAC cut-offs in mm","Mouth problem","Sore throat","Duration of fever (days)",Stridor,"Malaria rapid diagnostic test","Neck lump / lymphadenopathy","Is oral co-amoxiclav (Amoxicillin / clavulanic acid) available ?",Jaundice,"Unexplained bleeding","Possibility of foreign object in airway ? (Choking episode?)","Ear problem (pain or discharge)","Deworming in last 6 months?","Stiff neck","Nose bleed","Is Albendazole available?","Well appearing","Identifiable source of fever?","Anal itching","Abdominal pain","Worms in stool",Vomiting,"Bilious vomit","Suspicion of severe gastrointestinal bleeding (excessive blood in stool or vomit)","Severe palmar pallor","Anaemia peristent (2 or more months) or recurrent (multiple episodes)?","Bulging fontanelle","Middle name","Is oral Ciprofloxacin available ? ","Is Azithromycin available ? ","Additional tests (not already proposed by algorithm)","Blood glucose test (g/dL)","Is Amoxicillin available?","Recurrent pneumonia","Decreased frequency of defecation","Hard stool","Tender / colored abdominal bulge","Severe abdominal tenderness (needing referral)","Tonsillar exudate","Currently treated with Ready to use therapeutic food (RUTF)","Visible severe wasting","Accompanied by mother","Duration of red eye","Eye pain ","Red eye","Warm, tender swelling around eye / eyelid","Head lice (pediculosis)","Generalized skin problem","Clouding of the cornea","Bleeding inside the eye","Loss of vision","In-turned eyelashes","Severe pain in eye","Measles rash and associated signs",Urticaria,"Localized skin problem","Sticky eye / pus draining from eye","Eye problem","Runny or blocked nose for 1 month or more","Tonsillar swelling","Abscess (Elevated skin bump that is painful, tender, and fluctuant.)",Anaphylaxis,"Bullous impetigo",Impetigo,"Abscess size (cm)","Abscess located on face","Large area of warm, pink and tender skin around abscess","Cellulitis (Warm or tender or swollen skin)","Ecthyma lesion","Tinea corporis","Tinea capitis","Is oral Griseofulvin available ? ","Is oral Cetrizine hydrochoride available ?",Scabies,"Is inhalable Salbutamol available ?","Wheeze: Attempt trial of bronchodilator","Chest indrawing after bronchodilator","Respiratory rate after bronchodilator","Number of illness episodes with wheezing","Improvement since the last visit","Duration of joint pain or limb problem","Unable to move extremity or limp","History of fall or trauma","Burn injury","Significant exposure to fire or smoke","Ingestion of caustic substance","Musculo-skeletal pain or swelling (bone or joint pain/swelling)",Wound,"Warm, tender or swollen joint or bone","Return visit for dysentery after 3 days of treatment with ciprofloxacine?","Skin lesion size > 1x patient's palm","Is Potassium Permanganate Solution available ? ","Groin or genital pain / swelling","Oral fluid test","HIV status of child","Is Mupirocin cream 2% available?","Is oral Flucloxacillin available ?","Gestational age at delivery from records (weeks)","Severe chest indrawing","How is the infant feeding currently?","Concern for not gaining weight, or losing weight","Yellow appearing skin or eyes (jaundice)","Diarrhea (stools are looser or more watery than normal)","Birth weight (from records)","Skin pustules or blisters","Observation of movement","Duration of ear discharge","Ear pain","Ear pain in both ears","Tender swelling behind the ear OR Protrusion of auricula","Is Ceftriaxone IV/IM available?","Ear discharge","Did the patient eat or drink (not including water) in the last 8 hours?","Appetite test","Is the caregiver appointed as responsible for the child's care?"
-        'dyn_fla_patient_id' => 'patient',
-        'dyn_fla_medical_case_id' => 'medical_case_id'
+      'patient' => [
+        'dyn_pat_study_id_patient'  => 'patient_id',
+        'dyn_pat_first_name'        => 'patient_first_name',
+        'dyn_pat_last_name'         => 'patient_last_name',
+        'dyn_pat_birth_date'        => 'patient_birthdate',
+        'dyn_pat_gender'            => 'patient_gender',
+        'dyn_pat_local_patient_id'  => 'patient_local_patient_id',
+        'dyn_pat_group_id'          => 'patient_group_id',
+        'dyn_pat_consent'           => 'patient_consent',
+        'dyn_pat_redcap'            => 'patient_redcap',
+        'dyn_pat_duplicate'         => 'patient_duplicate',
+        'dyn_pat_other_uid'         => 'patient_other_uid',
+        'dyn_pat_other_study_id'    => 'patient_other_study_id',
+        'dyn_pat_other_group_id'    => 'patient_other_group_id',
+        'dyn_pat_merged_with'       => 'patient_merged_with',
+        'dyn_pat_merged'            => 'patient_merged',
+        'dyn_pat_status'            => 'patient_status',
+        'dyn_pat_related_ids'       => 'patient_related_ids',
+        'dyn_pat_middle_name'       => 'patient_middle_name',
+        'dyn_pat_other_id'          => 'patient_other_id'
+      ],
+
+      'medical_case' => [
+        'dyn_mc_id' => 'medical_case_id',
+        'dyn_mc_local_medical_case_id' => 'medical_case_local_id',
+        'dyn_mc_consent' => 'medical_case_consent',
+        'dyn_mc_isEligible' => 'medical_case_isEligible',
+        'dyn_mc_redcap' => 'medical_case_redcap',
+        'dyn_mc_consultation_date' => 'medical_case_consultation_date',
+        'dyn_mc_force_close' => 'medical_case_close',
+        'dyn_mc_mc_redcap_flag' => 'medical_case_mc_redcap_flag'
+      ],
+
+      'health_facility' => [
+        'dyn_hfa_id' => 'health_facility_id',
+        'dyn_hfa_long' => 'health_facility_longitude',
+        'dyn_hfa_lat' => 'health_facility_latitude',
+        'dyn_hfa_hf_mode' => 'health_facility_hf_mode',
+        'dyn_hfa_name' => 'health_facility_name',
+        'dyn_hfa_country' => 'health_facility_country',
+        'dyn_hfa_area' => 'health_facility_area'
+      ],
+
+      'version' => [
+        'dyn_ver_id' => 'version_id',
+        'dyn_ver_medal_c_id' => 'version_medal_c_id',
+        'dyn_ver_name' => 'version_name',
+        'dyn_ver_consent_management' => 'version_consent_management',
+        'dyn_ver_study' => 'version_study',
+        'dyn_ver_is_arm_control' => 'version_is_arm_control'
+      ],
+
+      'algorithm' => [
+        'dyn_alg_id' => 'algorithm_id',
+        'dyn_alg_name' => 'algorithm_name'
       ]
     ]
   ]

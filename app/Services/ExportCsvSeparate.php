@@ -22,11 +22,12 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     *  Adds a patient to the data array
+     * @param Patient $patient
+     * @return Collection patient data
      */
-    protected function addPatientData(&$data, $patient)
-	{
-        $data[$patient->id] = [
+    protected static function getPatientData($patient)
+    {
+        return [
             Config::get('csv.identifiers.patient.dyn_pat_study_id_patient') => $patient->id,
             Config::get('csv.identifiers.patient.dyn_pat_first_name')		=> $patient->first_name,
             Config::get('csv.identifiers.patient.dyn_pat_last_name')        => $patient->last_name,
@@ -49,14 +50,15 @@ class ExportCsvSeparate extends ExportCsv
             Config::get('csv.identifiers.patient.dyn_pat_middle_name') 		=> $patient->middle_name,
             Config::get('csv.identifiers.patient.dyn_pat_other_id') 		=> $patient->other_id
         ];
-	}
+    }
 
     /**
-     * Adds a medical case to the data array
+     * @param MedicalCase $medical_case
+     * @return Collection medical case data
      */
-    protected function addMedicalCaseData(&$data, $medical_case)
+    protected static function getMedicalCaseData($medical_case)
     {
-		$data[$medical_case->id] = [
+        return [
 			Config::get('csv.identifiers.medical_case.dyn_mc_id') 						=> $medical_case->id,
 			Config::get('csv.identifiers.medical_case.dyn_mc_version_id') 				=> $medical_case->version_id,
 			Config::get('csv.identifiers.medical_case.dyn_mc_patient_id') 				=> $medical_case->patient_id,
@@ -75,11 +77,12 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     * Adds a medical case answer to the data array
+     * @param MedicalCase $medical_case_answer
+     * @return Collection medical case answer data
      */
-    protected function addMedicalCaseAnswerData(&$data, $medical_case_answer)
+    protected static function getMedicalCaseAnswerData($medical_case_answer)
     {
-        $data[$medical_case_answer->id] = [
+        return [
             Config::get('csv.identifiers.medical_case_answer.dyn_mca_id') 				=> $medical_case_answer->id,
             Config::get('csv.identifiers.medical_case_answer.dyn_mca_medical_case_id') 	=> $medical_case_answer->medical_case_id,
             Config::get('csv.identifiers.medical_case_answer.dyn_mca_answer_id') 		=> $medical_case_answer->answer_id,
@@ -91,11 +94,12 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     * Adds a node to the data array
+     * @param  $node
+     * @return Collection node data
      */
-    protected function addNodeData(&$data, $node)
+    protected static function getNodeData($node)
     {
-        $data[$node->id] = [
+        return [
             Config::get('csv.identifiers.node.dyn_nod_id') 				=> $node->id,
             Config::get('csv.identifiers.node.dyn_nod_medal_c_id') 		=> $node->medal_c_id,
             Config::get('csv.identifiers.node.dyn_nod_reference') 		=> $node->reference,
@@ -116,11 +120,12 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     * Adds a version to the data array
+     * @param  $version
+     * @return Collection version data
      */
-    protected function addVersionData(&$data, $version)
+    protected static function getVersionData($version)
     {
-        $data[$version->id] = [
+        return [
             Config::get('csv.identifiers.version.dyn_ver_id') 					=> $version->id,
             Config::get('csv.identifiers.version.dyn_ver_medal_c_id') 			=> $version->medal_c_id,
             Config::get('csv.identifiers.version.dyn_ver_name') 				=> $version->name,
@@ -134,11 +139,12 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     * Adds an algorithm to the data array
+     * @param  $algorithm
+     * @return Collection algorithm data
      */
-    protected function addAlgorithmData(&$data, $algorithm)
+    protected static function getAlgorithmData($algorithm)
     {
-        $data[$algorithm->id] = [
+        return [
             Config::get('csv.identifiers.algorithm.dyn_alg_id') 			=> $algorithm->id,
             Config::get('csv.identifiers.algorithm.dyn_alg_medal_c_id') 	=> $algorithm->medal_c_id,
             Config::get('csv.identifiers.algorithm.dyn_alg_name') 			=> $algorithm->name,
@@ -148,11 +154,12 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     * Adds an activity to the data array
+     * @param  $activity
+     * @return Collection activity data
      */
-    protected function addActivityData(&$data, $activity)
+    protected static function getActivityData($activity)
     {
-        $data[$activity->id] = [
+        return [
             Config::get('csv.identifiers.activity.dyn_act_id') 				=> $activity->id,
             Config::get('csv.identifiers.activity.dyn_act_medical_case_id') => $activity->medical_case_id,
             Config::get('csv.identifiers.activity.dyn_act_medal_c_id') 		=> $activity->medal_c_id,
@@ -165,11 +172,12 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     * Adds a diagnosis to the data array
+     * @param  $diagnosis
+     * @return Collection diagnosis data
      */
-    protected function addDiagnosisData(&$data, $diagnosis)
+    protected static function getDiagnosisData($diagnosis)
     {
-        $data[$diagnosis->id] = [
+        return [
             Config::get('csv.identifiers.diagnosis.dyn_dia_id') 			=> $diagnosis->id,
             Config::get('csv.identifiers.diagnosis.dyn_dia_medal_c_id') 	=> $diagnosis->medal_c_id,
             Config::get('csv.identifiers.diagnosis.dyn_dia_label')		 	=> $diagnosis->label,
@@ -182,11 +190,12 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     * Adds a custom diagnosis to the data array
+     * @param  $custom_diagnosis
+     * @return Collection custom diagnosis data
      */
-    protected function addCustomDiagnosisData(&$data, $custom_diagnosis)
+    protected static function getCustomDiagnosisData($custom_diagnosis)
     {
-        $data[$custom_diagnosis->id] = [
+        return [
             Config::get('csv.identifiers.custom_diagnosis.dyn_cdi_id') 				=> $custom_diagnosis->id,
             Config::get('csv.identifiers.custom_diagnosis.dyn_cdi_label') 			=> $custom_diagnosis->label,
             Config::get('csv.identifiers.custom_diagnosis.dyn_cdi_drugs') 			=> $custom_diagnosis->drugs,
@@ -197,11 +206,12 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     * Adds a diagnosis reference to the data array
+     * @param  $diagnosis_reference
+     * @return Collection diagnosis reference data
      */
-    protected function addDiagnosisReferenceData(&$data, $diagnosis_reference)
+    protected static function getDiagnosisReferenceData($diagnosis_reference)
     {
-        $data[$diagnosis_reference->id] = [
+        return [
             Config::get('csv.identifiers.diagnosis_reference.dyn_dre_id') 				=> $diagnosis_reference->id,
             Config::get('csv.identifiers.diagnosis_reference.dyn_dre_agreed') 			=> $diagnosis_reference->agreed,
             Config::get('csv.identifiers.diagnosis_reference.dyn_dre_additional') 		=> $diagnosis_reference->additional,
@@ -213,11 +223,12 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     * Adds a drug to the data array
+     * @param  $drug
+     * @return Collection drug data
      */
-    protected function addDrugData(&$data, $drug)
+    protected static function getDrugData($drug)
     {
-        $data[$drug->id] = [
+        return [
             Config::get('csv.identifiers.drug.dyn_dru_id') 					=> $drug->id,
             Config::get('csv.identifiers.drug.dyn_dru_medal_c_id') 			=> $drug->medal_c_id,
             Config::get('csv.identifiers.drug.dyn_dru_type') 				=> $drug->type,
@@ -233,11 +244,12 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     * Adds an additional drug to the data array
+     * @param  $additional_drug
+     * @return Collection additional drug data
      */
-    protected function addAdditionalDrugData(&$data, $additional_drug)
+    protected static function getAdditionalDrugData($additional_drug)
     {
-        $data[$additional_drug->id] = [
+        return [
             Config::get('csv.identifiers.additional_drug.dyn_adr_id') 					=> $additional_drug->id,
             Config::get('csv.identifiers.additional_drug.dyn_adr_drug_id') 				=> $additional_drug->drug_id,
             Config::get('csv.identifiers.additional_drug.dyn_adr_medical_case_id') 		=> $additional_drug->medical_case_id,
@@ -250,11 +262,12 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     * Adds a drug reference to the data array
+     * @param  $drug_reference
+     * @return Collection drug reference data
      */
-    protected function addDrugReferenceData(&$data, $drug_reference)
+    protected static function getDrugReferenceData($drug_reference)
     {
-        $data[$drug_reference->id] = [
+        return [
             Config::get('csv.identifiers.drug_reference.dyn_dre_id') 					=> $drug_reference->id,
             Config::get('csv.identifiers.drug_reference.dyn_dre_drug_id') 				=> $drug_reference->drug_id,
             Config::get('csv.identifiers.drug_reference.dyn_dre_diagnosis_id') 			=> $drug_reference->diagnosis_id,
@@ -269,11 +282,12 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     * Adds a management to the data array
+     * @param  $management
+     * @return Collection management data
      */
-    protected function addManagementData(&$data, $management)
+    protected static function getManagementData($management)
     {
-        $data[$management->id] = [
+        return [
             Config::get('csv.identifiers.management.dyn_man_id') 					=> $management->id,
             Config::get('csv.identifiers.management.dyn_man_drug_id') 				=> $management->drug_id,
             Config::get('csv.identifiers.management.dyn_man_diagnosis_id') 			=> $management->diagnosis_id,
@@ -288,27 +302,28 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     * Adds a management reference to the data array
+     * @param  $management_reference
+     * @return Collection management reference data
      */
-    protected function addManagementReferenceData(&$data, $management_reference)
+    protected static function getManagementReferenceData($management_reference)
     {
-        $data[$management_reference->id] = [
+        return [
             Config::get('csv.identifiers.management_reference.dyn_mre_id') 				=> $management_reference->id,
             Config::get('csv.identifiers.management_reference.dyn_mre_agreed') 			=> $management_reference->agreed,
             Config::get('csv.identifiers.management_reference.dyn_mre_diagnosis_id') 	=> $management_reference->diagnosis_id,
             Config::get('csv.identifiers.management_reference.dyn_mre_created_at') 		=> $management_reference->created_at,
             Config::get('csv.identifiers.management_reference.dyn_mre_updated_at') 		=> $management_reference->updated_at,
             Config::get('csv.identifiers.management_reference.dyn_mre_management_id') 	=> $management_reference->management_id
-
         ];
     }
 
     /**
-     * Adds an answer type to the data array
+     * @param  $answer_type
+     * @return Collection answer type data
      */
-    protected function addAnswerTypeData(&$data, $answer_type)
+    protected static function getAnswerTypeData($answer_type)
     {
-        $data[$answer_type->id] = [
+        return [
             Config::get('csv.identifiers.answer_type.dyn_aty_id') 			=> $answer_type->id,
             Config::get('csv.identifiers.answer_type.dyn_aty_value') 		=> $answer_type->value,
             Config::get('csv.identifiers.answer_type.dyn_aty_created_at') 	=> $answer_type->created_at,
@@ -317,11 +332,12 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
-     * Adds a formulation to the data array
+     * @param  $formulation
+     * @return Collection formulation data
      */
-    protected function addFormulationData(&$data, $formulation)
+    protected static function getFormulationData($formulation)
     {
-        $data[$formulation->id] = [
+        return [
             Config::get('csv.identifiers.formulation.dyn_for_id') 								=> $formulation->id,
             Config::get('csv.identifiers.formulation.dyn_for_medical_form') 					=> $formulation->medical_form,
             Config::get('csv.identifiers.formulation.dyn_for_administration_route_name') 		=> $formulation->administration_route_name,
@@ -340,6 +356,142 @@ class ExportCsvSeparate extends ExportCsv
             Config::get('csv.identifiers.formulation.dyn_for_administration_route_category') 	=> $formulation->administration_route_category,
             Config::get('csv.identifiers.formulation.dyn_for_medal_c_id') 						=> $formulation->medal_c_id
         ];
+    }
+
+    /**
+     *  Adds a patient to the data array
+     */
+    protected function addPatientData(&$data, $patient)
+	{
+        $data[$patient->id] = self::getPatientData($patient);
+	}
+
+    /**
+     * Adds a medical case to the data array
+     */
+    protected function addMedicalCaseData(&$data, $medical_case)
+    {
+		$data[$medical_case->id] = self::getMedicalCaseData($medical_case);
+    }
+
+    /**
+     * Adds a medical case answer to the data array
+     */
+    protected function addMedicalCaseAnswerData(&$data, $medical_case_answer)
+    {
+        $data[$medical_case_answer->id] = self::getMedicalCaseAnswerData($medical_case_answer);
+    }
+
+    /**
+     * Adds a node to the data array
+     */
+    protected function addNodeData(&$data, $node)
+    {
+        $data[$node->id] = self::getNodeData($node);
+    }
+
+    /**
+     * Adds a version to the data array
+     */
+    protected function addVersionData(&$data, $version)
+    {
+        $data[$version->id] = self::getVersionData($version);
+    }
+
+    /**
+     * Adds an algorithm to the data array
+     */
+    protected function addAlgorithmData(&$data, $algorithm)
+    {
+        $data[$algorithm->id] = self::getAlgorithmData($algorithm);
+    }
+
+    /**
+     * Adds an activity to the data array
+     */
+    protected function addActivityData(&$data, $activity)
+    {
+        $data[$activity->id] = self::getActivityData($activity);
+    }
+
+    /**
+     * Adds a diagnosis to the data array
+     */
+    protected function addDiagnosisData(&$data, $diagnosis)
+    {
+        $data[$diagnosis->id] = self::getDiagnosisData($diagnosis);
+    }
+
+    /**
+     * Adds a custom diagnosis to the data array
+     */
+    protected function addCustomDiagnosisData(&$data, $custom_diagnosis)
+    {
+        $data[$custom_diagnosis->id] = self::getCustomDiagnosisData($custom_diagnosis);
+    }
+
+    /**
+     * Adds a diagnosis reference to the data array
+     */
+    protected function addDiagnosisReferenceData(&$data, $diagnosis_reference)
+    {
+        $data[$diagnosis_reference->id] = self::getDiagnosisReferenceData($diagnosis_reference);
+    }
+
+    /**
+     * Adds a drug to the data array
+     */
+    protected function addDrugData(&$data, $drug)
+    {
+        $data[$drug->id] = self::getDrugData($drug);
+    }
+
+    /**
+     * Adds an additional drug to the data array
+     */
+    protected function addAdditionalDrugData(&$data, $additional_drug)
+    {
+        $data[$additional_drug->id] = self::getAdditionalDrugData($additional_drug);
+    }
+
+    /**
+     * Adds a drug reference to the data array
+     */
+    protected function addDrugReferenceData(&$data, $drug_reference)
+    {
+        $data[$drug_reference->id] = self::getDrugReferenceData($drug_reference);
+    }
+
+    /**
+     * Adds a management to the data array
+     */
+    protected function addManagementData(&$data, $management)
+    {
+        $data[$management->id] = self::getManagementData($management);
+    }
+
+    /**
+     * Adds a management reference to the data array
+     */
+    protected function addManagementReferenceData(&$data, $management_reference)
+    {
+        $data[$management_reference->id] = self::getManagementReferenceData($management_reference);
+    }
+
+    /**
+     * Adds an answer type to the data array
+     */
+    protected function addAnswerTypeData(&$data, $answer_type)
+    {
+        $data[$answer_type->id] = self::getAnswerTypeData($answer_type);
+    }
+
+    /**
+     * Adds a formulation to the data array
+     */
+    protected function addFormulationData(&$data, $formulation)
+    {
+        $data[$formulation->id] = self::getFormulationData($formulation);
     }
 
     protected static function isSkippedMedicalCaseAnswer($medical_case_answer){
