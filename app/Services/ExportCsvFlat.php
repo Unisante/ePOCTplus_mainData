@@ -4,7 +4,6 @@ namespace App\Services;
 
 use DB;
 use App\Version;
-use Doctrine\Common\Cache\Psr6\InvalidArgument;
 use Illuminate\Support\Facades\Config;
 
 class ExportCsvFlat extends ExportCsv
@@ -529,6 +528,38 @@ class ExportCsvFlat extends ExportCsv
         $data[0] = array_merge($data[0], $labels);
     }
 
+    protected static function getCustomDrugsLabels($custom_drugs_objs)
+    {
+        $labels = [];
+        foreach($custom_drugs_objs as $custom_drug_obj){
+            $labels[] = "[Drug] " . $custom_drug_obj->id . " - " . $custom_drug_obj->name;
+        }
+
+        return $labels;
+    }
+
+    /**
+     * Adds custom drugs to the data array.
+     */
+    protected function addCustomDrugData(&$data, $index, $custom_diagnoses)
+    {
+        $custom_drugs_objs = DB::table('custom_drugs')->select('id', 'name')->get();
+        $custom_drugs_values = self::getDrugDefaultValues($custom_drugs_objs);
+
+        foreach($custom_diagnoses as $custom_diagnosis){
+            $custom_drugs = $custom_diagnosis->custom_drugs;
+            foreach($custom_drugs as $custom_drug){
+                $id = $custom_drug->id;
+                $custom_drugs_values[$id] = self::$DRUG_MANUALLY_ADDED;
+            }
+        }
+
+        $data[$index] = array_merge($data[$index], $custom_drugs_values);
+        // add labels
+        $labels = self::getCustomDrugsLabels($custom_drugs_objs);
+        $data[0] = array_merge($data[0], $labels);
+    }
+
     /**
      * Adds all children to the variables data. Recursive.
      */
@@ -618,6 +649,9 @@ class ExportCsvFlat extends ExportCsv
 
             // get drug data
             $this->addDrugData($data, $index, $diagnosis_references);
+
+            // get custom drug data
+            $this->addCustomDrugData($data, $index, $custom_diagnoses);
         }
 
         $data[0] = array_unique($data[0]);
