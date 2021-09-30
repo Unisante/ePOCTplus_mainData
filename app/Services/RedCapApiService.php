@@ -212,7 +212,7 @@ class RedCapApiService
       // Diagnoses
       /** @var DiagnosisReference $diagnose */
       $instanceNumber = 1;
-      foreach ($medicalCase->diagnosesReferences as $diagnose) {
+      foreach ($medicalCase->diagnoses_references as $diagnose) {
         if ($diagnose->excluded) {continue;};
 
         if ($diagnose->agreed) {
@@ -243,7 +243,7 @@ class RedCapApiService
       // Custom Diagnoses
       /** @var CustomDiagnosis $diagnose */
       $instanceNumber = 1;
-      foreach ($medicalCase->customDiagnoses as $customDiagnose) {
+      foreach ($medicalCase->custom_diagnoses as $customDiagnose) {
         $records[] = [
           'record_id' => $medicalCase->local_medical_case_id,
           'redcap_repeat_instrument' => 'custom_diagnoses',
@@ -261,11 +261,11 @@ class RedCapApiService
       // Drugs
       /** @var DiagnosisReference $diagnose */
       $instanceNumber = 1;
-      foreach ($medicalCase->diagnosesReferences as $diagnose) {
+      foreach ($medicalCase->diagnoses_references as $diagnose) {
         if ($diagnose->excluded) {continue;};
 
         if ($diagnose->agreed) {
-          foreach ($diagnose->drugReferences as $drug) {
+          foreach ($diagnose->drug_references as $drug) {
             $records[] = [
               'record_id' => $medicalCase->local_medical_case_id,
               'redcap_repeat_instrument' => 'drugs',
@@ -292,9 +292,9 @@ class RedCapApiService
       // Custom Drugs
       /** @var CustomDiagnosis $customDiagnose */
       $instanceNumber = 1;
-      foreach ($medicalCase->customDiagnoses as $customDiagnose) {
+      foreach ($medicalCase->custom_diagnoses as $customDiagnose) {
         /** @var CustomDrug $customDrug */
-        foreach ($customDiagnose->customDrugs as $customDrug) {
+        foreach ($customDiagnose->custom_drugs as $customDrug) {
           $records[] = [
             'record_id' => $medicalCase->local_medical_case_id,
             'redcap_repeat_instrument' => 'custom_drugs',
@@ -313,12 +313,12 @@ class RedCapApiService
       // Managements
       /** @var DiagnosisReference $diagnose */
       $instanceNumber = 1;
-      foreach ($medicalCase->diagnosesReferences as $diagnose) {
+      foreach ($medicalCase->diagnoses_references as $diagnose) {
         if ($diagnose->excluded) {continue;};
 
         if ($diagnose->agreed) {
           /** @var ManagementReference $management */
-          foreach ($diagnose->managementReferences as $management) {
+          foreach ($diagnose->management_references as $management) {
               $records[] = [
                 'record_id' => $medicalCase->local_medical_case_id,
                 'redcap_repeat_instrument' => 'managements',

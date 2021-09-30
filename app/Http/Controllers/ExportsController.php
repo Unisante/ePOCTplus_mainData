@@ -34,8 +34,8 @@ use App\User;
 use Auth;
 use DateTime;
 use Carbon\Carbon;
-use App\Services\CsvExport;
-use Illuminate\Support\Facades\File;
+use App\Services\ExportCsvSeparate;
+use App\Services\ExportCsvFlat;
 
 class ExportsController extends Controller
 {
@@ -43,49 +43,9 @@ class ExportsController extends Controller
       $this->middleware('auth');
     }
 
-    public function selectDate(){
-      if(Patient::all()->count() == 0){
-        return back()->withErrors("We Currently Do not have records in the database");
-      }
-
-      $date_array= [];
-      MedicalCase::all()->each(function($case) use(&$date_array){
-        if($case->consultation_date == null ){
-          $case->consultation_date = $case->created_at;
-          $case->save();
-        }
-
-        $curDate = strtotime($case->consultation_date);
-        array_push($date_array,$curDate);
-      });
-
-      $data=array(
-        'currentUser'   => Auth::user(),
-        'userCount'     => User::all()->count(),
-        'mdCases'       => MedicalCase::all()->count(),
-        'oldest_date'   => date('Y-m-d', min($date_array)),
-        'newest_date'   => date('Y-m-d', max($date_array)),
-        'patientCount'  => Patient::all()->count(),
-
-      );
-
-      return view('exports.index')->with($data);;
-    }
-
-    public function exportFlatZip($fromDate, $toDate){
-      ini_set('memory_limit', '4096M');
-      ini_set('max_execution_time', '3600');
-
-      $caseAnswers = new MedicalCaseAnswer();
-      if($caseAnswers::all()->count() == 0){
-        return back()->withErrors("We currently do not have records in the database.");
-      }
-
-      $file_name = 'ibuFlat.csv';
-      return $caseAnswers->makeFlatCsv($file_name, $fromDate, $toDate);
-    }
-
     public function exportZipByDate(Request $request){
+      $export_completion = 0;
+
       ini_set('memory_limit', '4096M');
       ini_set('max_execution_time', '3600');
 
@@ -108,34 +68,47 @@ class ExportsController extends Controller
         return back()->withErrors("Date cannot be in the future.");
       }
 
+      // check export mode
       if(Arr::exists($request->input(),'DownloadFlat')){
-        $today=Carbon::now()->format('Y_m_d');
-        $extract='ibu_flat';
-        $zipper = new \Madnest\Madzipper\Madzipper;
-        $path = storage_path().'/app/flat_files';
-        $d = File::allFiles($path);
-        $zipper->make($extract.".zip")->add($d);
-        $zipper->close();
-        $fileFromPublic=base_path().'/public/'.$extract.'.zip';
-        
-        // download
-        header("Content-Description: File Transfer");
-        header("Content-Disposition: attachment; filename=".$fileFromPublic);
-        header("Content-Type: application/csv; ");
-        readfile($fileFromPublic);
-        unlink($fileFromPublic);
-        exit();
+        $csv_export = new ExportCsvFlat(MedicalCase::all(), $fromDate, $toDate);
 
       }else if(Arr::exists($request->input(),'DownloadSeparate')){
-        $csv_export = new CsvExport();
-        $csv_export->exportDataByDate($fromDate, $toDate);
-        exit();
+        $csv_export = new ExportCsvSeparate(MedicalCase::all(), $fromDate, $toDate);
 
       }else{
         return back()->withErrors("Something went wrong.");
       }
 
+      $csv_export->export();
+      exit();
+    }
 
+    public function selectDate(){
+      if(Patient::all()->count() == 0){
+        return back()->withErrors("We Currently Do not have records in the database");
+      }
+
+      $date_array= [];
+      MedicalCase::all()->each(function($case) use(&$date_array){
+        if($case->consultation_date == null ){
+          $case->consultation_date = $case->created_at;
+          $case->save();
+        }
+
+        $curDate = strtotime($case->consultation_date);
+        array_push($date_array,$curDate);
+      });
+
+      $data=array(
+        'currentUser'     => Auth::user(),
+        'userCount'       => User::all()->count(),
+        'mdCases'         => MedicalCase::all()->count(),
+        'oldest_date'     => date('Y-m-d', min($date_array)),
+        'newest_date'     => date('Y-m-d', max($date_array)),
+        'patientCount'    => Patient::all()->count(),
+      );
+
+      return view('exports.index')->with($data);;
     }
     public function Patients(){
       return Excel::download(new PatientExport,'patients.csv');

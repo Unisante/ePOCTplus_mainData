@@ -213,10 +213,10 @@
                     <tr>
                       <td>Number of medical Cases:</td>
                       <td>
-                        <label>{{$first_patient->medicalCases()->count()}}</label>
+                        <label>{{$first_patient->medical_cases()->count()}}</label>
                       </td>
                       <td>
-                        <label>{{$second_patient->medicalCases()->count()}}</label>
+                        <label>{{$second_patient->medical_cases()->count()}}</label>
                       </td>
                     </tr>
                 </tbody>

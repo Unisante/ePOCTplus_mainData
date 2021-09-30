@@ -73,11 +73,11 @@ Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
   $latest_sync_time=Carbon::createFromFormat('Y-m-d H:i:s', '1970-01-01 00:00:00');
   $cases_today=0;
   $facility->patients->each(function($patient) use (&$nb_of_cases_synced,&$latest_sync_time, &$cases_today){
-    $nb_of_cases_synced=$nb_of_cases_synced + $patient->medicalCases->count();
-    if($patient->medicalCases->last()->created_at->toDateString() > $latest_sync_time ){
-      $latest_sync_time=$patient->medicalCases->last()->created_at;
+    $nb_of_cases_synced=$nb_of_cases_synced + $patient->medical_cases->count();
+    if($patient->medical_cases->last()->created_at->toDateString() > $latest_sync_time ){
+      $latest_sync_time=$patient->medical_cases->last()->created_at;
     }
-    $patient->medicalCases->each(function($case) use (&$cases_today){
+    $patient->medical_cases->each(function($case) use (&$cases_today){
       if($case->created_at->format('d-m-y') == Carbon::now()->format('d-m-y')){
         $cases_today = $cases_today + 1;
       }

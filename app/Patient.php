@@ -174,10 +174,11 @@ class Patient extends Model implements Auditable
   * making a relationship to medicalCase
   * @return Many medical cases
   */
-  public function medicalCases()
+  public function medical_cases()
   {
     return $this->hasMany('App\MedicalCase');
   }
+
   public function facility(){
     return $this->belongsTo('App\HealthFacility','group_id','group_id');
   }

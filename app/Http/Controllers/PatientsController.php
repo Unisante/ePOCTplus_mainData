@@ -304,11 +304,11 @@ class PatientsController extends Controller
       "related_ids"=>$allrelatedIds
     ]);
     $hybrid_patient->save();
-    $first_patient->medicalCases()->each(function($case)use(&$hybrid_patient){
+    $first_patient->medical_cases()->each(function($case)use(&$hybrid_patient){
       $case->patient_id=$hybrid_patient->id;
       $case->save();
     });
-    $second_patient->medicalCases()->each(function($case)use(&$hybrid_patient){
+    $second_patient->medical_cases()->each(function($case)use(&$hybrid_patient){
       $case->patient_id=$hybrid_patient->id;
       $case->save();
     });
@@ -332,11 +332,11 @@ class PatientsController extends Controller
   */
   public function destroy(Request $request){
     $patient=Patient::find($request->patient_id);
-    if($patient->medicalCases){
-      foreach($patient->medicalCases as $case){
-        $case->diagnosesReferences->each->delete();
+    if($patient->medical_cases){
+      foreach($patient->medical_cases as $case){
+        $case->diagnoses_references->each->delete();
       }
-      $patient->medicalCases->each->delete();
+      $patient->medical_cases->each->delete();
     }
     if($patient->delete()){
       return redirect()->action(

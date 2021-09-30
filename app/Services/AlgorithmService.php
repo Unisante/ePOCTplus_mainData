@@ -145,10 +145,10 @@ class AlgorithmService {
         if ($healthFacility == null){
             throw new Exception("Device is not assigned to any Health Facility");
         } 
-        if ($healthFacility->versionJson == null){
+        if ($healthFacility->version_json == null){
             throw new Exception("No Version is assigned to the associated Health Facility");
         }
-        return json_decode($healthFacility->versionJson->json);
+        return json_decode($healthFacility->version_json->json);
     }
     
 }

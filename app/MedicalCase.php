@@ -38,25 +38,6 @@ class MedicalCase extends Model implements Auditable
       return $follow_up;
   }
 
-  /**
-  * fetch attribute
-  * @params $medical_case
-  * @params $medal_c_id
-  * @return Void
-  */
-  public static function fetchAttribute($medical_case,$medal_c_id){
-    $node=Node::where('medal_c_id',$medal_c_id)->first();
-    $record=$medical_case->medical_case_answers()->where('node_id',$node->id)->first();
-    if($record == null){
-      return null;
-    }
-    if($record->answer_id){
-      return $record->answer->label;
-    }else{
-      return $record->value;
-    }
-  }
-
   public function listUnfollowed(){
     $caseFollowUpCollection=new Collection();
     foreach(MedicalCase::where('redcap',false)->get() as $medicalcase){
@@ -75,30 +56,6 @@ class MedicalCase extends Model implements Auditable
       $caseFollowUpCollection->add($followUp);
     }
     return $caseFollowUpCollection;
-  }
-
-  public function getDataCsv($table_name, $fromDate, $toDate){
-    ini_set('memory_limit', '4096M');
-    ini_set('max_execution_time', '300');
-    
-    if($fromDate != null && $toDate != null){
-      $patient_data = collect(DB::table($table_name)->whereDate('created_at','>=',$fromDate)->whereDate('created_at','<=',$toDate)->get());
-    }else{
-      $patient_data = collect(DB::table($table_name)->get());
-    }
-
-    $table_columns = Schema::getColumnListing($table_name);
-    $patient_data = Arr::prepend($patient_data->toArray(), $table_columns);
-
-    // file creation
-    $filename = $table_name.'.csv';
-    $file = fopen($filename, "w");
-    foreach ($patient_data as $line){
-      fputcsv($file, (array)$line);
-    }
-    fclose($file);
-
-    return $filename;
   }
 
   /**
@@ -131,7 +88,7 @@ class MedicalCase extends Model implements Auditable
   * Make diagnosis relation
   * @return one to many medical cases retionship
   */
-  public function diagnosesReferences(){
+  public function diagnoses_references(){
     return $this->hasMany('App\DiagnosisReference');
   }
 
@@ -139,7 +96,7 @@ class MedicalCase extends Model implements Auditable
    * Make diagnosis relation
    * @return one to many medical cases retionship
    */
-  public function customDiagnoses(){
+  public function custom_diagnoses(){
     return $this->hasMany('App\CustomDiagnosis');
   }
 

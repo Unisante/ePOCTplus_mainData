@@ -1,7 +1,7 @@
 <?php
 
 return [
-  'public_extract_name' => 'ibu.zip',
+  'public_extract_name' => 'extract',
   'patient_discarded_names' => ['test'],
 
   'file_names' => [
@@ -240,6 +240,71 @@ return [
       'dyn_for_drug_id'                       => 'drug_id',
       'dyn_for_administration_route_category' => 'administration_route_category',
       'dyn_for_medal_c_id'                    => 'medal_c_id'
+    ],
+  ],
+
+  'flat' => [
+    'file_names' => [
+      'answers.csv'
+    ],
+
+    'identifiers' => [
+      'patient' => [
+        'dyn_pat_study_id_patient'  => 'patient_id',
+        'dyn_pat_first_name'        => 'patient_first_name',
+        'dyn_pat_last_name'         => 'patient_last_name',
+        'dyn_pat_birth_date'        => 'patient_birthdate',
+        'dyn_pat_gender'            => 'patient_gender',
+        'dyn_pat_local_patient_id'  => 'patient_local_patient_id',
+        'dyn_pat_group_id'          => 'patient_group_id',
+        'dyn_pat_consent'           => 'patient_consent',
+        'dyn_pat_redcap'            => 'patient_redcap',
+        'dyn_pat_duplicate'         => 'patient_duplicate',
+        'dyn_pat_other_uid'         => 'patient_other_uid',
+        'dyn_pat_other_study_id'    => 'patient_other_study_id',
+        'dyn_pat_other_group_id'    => 'patient_other_group_id',
+        'dyn_pat_merged_with'       => 'patient_merged_with',
+        'dyn_pat_merged'            => 'patient_merged',
+        'dyn_pat_status'            => 'patient_status',
+        'dyn_pat_related_ids'       => 'patient_related_ids',
+        'dyn_pat_middle_name'       => 'patient_middle_name',
+        'dyn_pat_other_id'          => 'patient_other_id'
+      ],
+
+      'medical_case' => [
+        'dyn_mc_id' => 'medical_case_id',
+        'dyn_mc_local_medical_case_id' => 'medical_case_local_id',
+        'dyn_mc_consent' => 'medical_case_consent',
+        'dyn_mc_isEligible' => 'medical_case_isEligible',
+        'dyn_mc_redcap' => 'medical_case_redcap',
+        'dyn_mc_consultation_date' => 'medical_case_consultation_date',
+        'dyn_mc_force_close' => 'medical_case_close',
+        'dyn_mc_mc_redcap_flag' => 'medical_case_mc_redcap_flag'
+      ],
+
+      'health_facility' => [
+        'dyn_hfa_id' => 'health_facility_id',
+        'dyn_hfa_long' => 'health_facility_longitude',
+        'dyn_hfa_lat' => 'health_facility_latitude',
+        'dyn_hfa_hf_mode' => 'health_facility_hf_mode',
+        'dyn_hfa_name' => 'health_facility_name',
+        'dyn_hfa_country' => 'health_facility_country',
+        'dyn_hfa_area' => 'health_facility_area'
+      ],
+
+      'version' => [
+        'dyn_ver_id' => 'version_id',
+        'dyn_ver_medal_c_id' => 'version_medal_c_id',
+        'dyn_ver_name' => 'version_name',
+        'dyn_ver_consent_management' => 'version_consent_management',
+        'dyn_ver_study' => 'version_study',
+        'dyn_ver_is_arm_control' => 'version_is_arm_control'
+      ],
+
+      'algorithm' => [
+        'dyn_alg_id' => 'algorithm_id',
+        'dyn_alg_name' => 'algorithm_name'
+      ]
     ]
   ]
 ];
