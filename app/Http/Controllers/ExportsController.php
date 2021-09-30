@@ -106,7 +106,6 @@ class ExportsController extends Controller
         'oldest_date'     => date('Y-m-d', min($date_array)),
         'newest_date'     => date('Y-m-d', max($date_array)),
         'patientCount'    => Patient::all()->count(),
-
       );
 
       return view('exports.index')->with($data);;
