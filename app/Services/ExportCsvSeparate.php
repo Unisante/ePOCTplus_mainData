@@ -359,6 +359,22 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
+     * @param  $answer
+     * @return Collection answer data
+     */
+    protected static function getAnswerData($answer)
+    {
+        return [
+            Config::get('csv.identifiers.answer.dyn_ans_id') => $answer->id,
+            Config::get('csv.identifiers.answer.dyn_ans_label') => $answer->label,
+            Config::get('csv.identifiers.answer.dyn_ans_medal_c_id') => $answer->medal_c_id,
+            Config::get('csv.identifiers.answer.dyn_ans_node_id') => $answer->node_id,
+            Config::get('csv.identifiers.answer.dyn_ans_created_at') => $answer->created_at,
+            Config::get('csv.identifiers.answer.dyn_ans_updated_at') => $answer->updated_at,
+        ];
+    }
+
+    /**
      *  Adds a patient to the data array
      */
     protected function addPatientData(&$data, $patient)
@@ -494,6 +510,14 @@ class ExportCsvSeparate extends ExportCsv
         $data[$formulation->id] = self::getFormulationData($formulation);
     }
 
+    /**
+     * 
+     */
+    protected function addAnswerData(&$data, $answer)
+    {
+        $data[$answer->id] = self::getAnswerData($answer);
+    }
+
     protected static function isSkippedMedicalCaseAnswer($medical_case_answer){
         return ($medical_case_answer->node->category == "background_calculation" && $medical_case_answer->node->display_format != 'Reference')
             || ($medical_case_answer->value == '' and $medical_case_answer->answer_id === null);
@@ -509,40 +533,42 @@ class ExportCsvSeparate extends ExportCsv
     protected function getDataFromMedicalCases()
     {
         // Initialize data arrays.
-        $patients_data = [];
-        $patients_data[] = $this->getAttributeList(Config::get('csv.identifiers.patient'));
-        $medical_cases_data = [];
-        $medical_cases_data[] = $this->getAttributeList(Config::get('csv.identifiers.medical_case'));
-        $medical_case_answers_data = [];
-        $medical_case_answers_data[] = $this->getAttributeList(Config::get('csv.identifiers.medical_case_answer'));
-        $nodes_data = [];
-        $nodes_data[] = $this->getAttributeList(Config::get('csv.identifiers.node'));
-        $versions_data = [];
-        $versions_data[] = $this->getAttributeList(Config::get('csv.identifiers.version'));
-        $algorithms_data = [];
-        $algorithms_data[] = $this->getAttributeList(Config::get('csv.identifiers.algorithm'));
-        $activities_data = [];
-        $activities_data[] = $this->getAttributeList(Config::get('csv.identifiers.activity'));
-        $diagnoses_data = [];
-        $diagnoses_data[] = $this->getAttributeList(Config::get('csv.identifiers.diagnosis'));
-        $custom_diagnoses_data = [];
-        $custom_diagnoses_data[] = $this->getAttributeList(Config::get('csv.identifiers.custom_diagnosis'));
-        $diagnosis_references_data = [];
-        $diagnosis_references_data[] = $this->getAttributeList(Config::get('csv.identifiers.diagnosis_reference'));
-        $drugs_data = [];
-        $drugs_data[] = $this->getAttributeList(Config::get('csv.identifiers.drug'));
-        $additional_drugs_data = [];
-        $additional_drugs_data[] = $this->getAttributeList(Config::get('csv.identifiers.additional_drug'));
-        $drug_references_data = [];
-        $drug_references_data[] = $this->getAttributeList(Config::get('csv.identifiers.drug_reference'));
-        $managements_data = [];
-        $managements_data[] = $this->getAttributeList(Config::get('csv.identifiers.management'));
-        $management_references_data = [];
-        $management_references_data[] = $this->getAttributeList(Config::get('csv.identifiers.management_reference'));
-        $answer_types_data = [];
-        $answer_types_data[] = $this->getAttributeList(Config::get('csv.identifiers.answer_type'));
-        $formulations_data = [];
-        $formulations_data[] = $this->getAttributeList(Config::get('csv.identifiers.formulation'));
+        $patients_data                  = [];
+        $patients_data[]                = $this->getAttributeList(Config::get('csv.identifiers.patient'));
+        $medical_cases_data             = [];
+        $medical_cases_data[]           = $this->getAttributeList(Config::get('csv.identifiers.medical_case'));
+        $medical_case_answers_data      = [];
+        $medical_case_answers_data[]    = $this->getAttributeList(Config::get('csv.identifiers.medical_case_answer'));
+        $nodes_data                     = [];
+        $nodes_data[]                   = $this->getAttributeList(Config::get('csv.identifiers.node'));
+        $versions_data                  = [];
+        $versions_data[]                = $this->getAttributeList(Config::get('csv.identifiers.version'));
+        $algorithms_data                = [];
+        $algorithms_data[]              = $this->getAttributeList(Config::get('csv.identifiers.algorithm'));
+        $activities_data                = [];
+        $activities_data[]              = $this->getAttributeList(Config::get('csv.identifiers.activity'));
+        $diagnoses_data                 = [];
+        $diagnoses_data[]               = $this->getAttributeList(Config::get('csv.identifiers.diagnosis'));
+        $custom_diagnoses_data          = [];
+        $custom_diagnoses_data[]        = $this->getAttributeList(Config::get('csv.identifiers.custom_diagnosis'));
+        $diagnosis_references_data      = [];
+        $diagnosis_references_data[]    = $this->getAttributeList(Config::get('csv.identifiers.diagnosis_reference'));
+        $drugs_data                     = [];
+        $drugs_data[]                   = $this->getAttributeList(Config::get('csv.identifiers.drug'));
+        $additional_drugs_data          = [];
+        $additional_drugs_data[]        = $this->getAttributeList(Config::get('csv.identifiers.additional_drug'));
+        $drug_references_data           = [];
+        $drug_references_data[]         = $this->getAttributeList(Config::get('csv.identifiers.drug_reference'));
+        $managements_data               = [];
+        $managements_data[]             = $this->getAttributeList(Config::get('csv.identifiers.management'));
+        $management_references_data     = [];
+        $management_references_data[]   = $this->getAttributeList(Config::get('csv.identifiers.management_reference'));
+        $answer_types_data              = [];
+        $answer_types_data[]            = $this->getAttributeList(Config::get('csv.identifiers.answer_type'));
+        $formulations_data              = [];
+        $formulations_data[]            = $this->getAttributeList(Config::get('csv.identifiers.formulation'));
+        $answers_data                   = [];
+        $answers_data[]                 = $this->getAttributeList(Config::get('csv.identifiers.answer'));
 
 
 
@@ -565,6 +591,12 @@ class ExportCsvSeparate extends ExportCsv
                 // get nodes
                 $node = $medical_case_answer->node;
                 $this->addNodeData($nodes_data, $node);
+
+                // get answers
+                $answers = $node->answers;
+                foreach($answers as $answer){
+                    $this->addAnswerData($answers_data, $answer);
+                }
             }
 
             $version = $medical_case->version;
@@ -656,7 +688,8 @@ class ExportCsvSeparate extends ExportCsv
             Config::get('csv.file_names.managements')           => $managements_data,
             Config::get('csv.file_names.management_references') => $management_references_data,
             Config::get('csv.file_names.answer_types')          => $answer_types_data,
-            Config::get('csv.file_names.formulations')          => $formulations_data
+            Config::get('csv.file_names.formulations')          => $formulations_data,
+            Config::get('csv.file_names.answers')               => $answers_data
         ];
     }
 

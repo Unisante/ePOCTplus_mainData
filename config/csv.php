@@ -21,7 +21,8 @@ return [
     'managements'           => 'managements.csv',
     'management_references' => 'management_references.csv',
     'answer_types'          => 'answer_types.csv',
-    'formulations'          => 'formulations.csv'
+    'formulations'          => 'formulations.csv',
+    'answers'               => 'answers.csv'
   ],
 
   'identifiers' => [
@@ -241,6 +242,15 @@ return [
       'dyn_for_administration_route_category' => 'administration_route_category',
       'dyn_for_medal_c_id'                    => 'medal_c_id'
     ],
+
+    'answer' => [
+      'dyn_ans_id' => 'id',
+      'dyn_ans_label' => 'label',
+      'dyn_ans_medal_c_id' => 'medal_c_id',
+      'dyn_ans_node_id' => 'node_id',
+      'dyn_ans_created_at' => 'created_at',
+      'dyn_ans_updated_at' => 'updated_at'
+    ]
   ],
 
   'flat' => [
