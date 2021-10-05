@@ -171,21 +171,30 @@ class UsersController extends Controller
     return view('users.showPassword')->with('user',$currentUser);
   }
   public function changePassword(Request $request){
-    $current_user = Auth::user();
     $request->validate(array(
       'current_password' => 'required|string',
       'new_password' => 'required|string',
     ));
+    $current_user = Auth::user();
+    $current_password = $request->input('current_password');
+    $new_password = $request->input('new_password');
+
     if (!(Hash::check($request->input('current_password'), $current_user->password))) {
-      return back()->with('error', 'Wrong current Password!');
+      return back()->with('error', 'Wrong current password!');
     }
+    if($current_password === $new_password){
+      return back()->with('error', 'Password cannot be the same!');
+    }
+
     $current_user->password = Hash::make($request->input('new_password'));
     if($current_user->save()){
-      // give new admin role with more permissions if password changed.
-      $administrator_id = DB::table('roles')->where('name','Administrator')->select('id')->first();
-      Auth::user()->roles()->sync([$administrator_id->id]);
+      if($current_user->hasRole('Unregistered Administrator')){
+        // give new admin role with more permissions if password changed.
+        $administrator_id = DB::table('roles')->where('name','Administrator')->select('id')->first();
+        Auth::user()->roles()->sync([$administrator_id->id]);
+      }
 
-      return redirect()->route('users.profile')->with('success','password has been saved Changed.');
+      return redirect()->route('users.profile')->with('success','Password has been changed!');
     }else{
       return back()->with('error', 'Something Went wrong');
     }
