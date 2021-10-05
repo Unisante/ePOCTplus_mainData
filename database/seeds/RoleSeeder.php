@@ -13,6 +13,9 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
+        // create admin role when it has default password
+        $unregistered_admin=Role::firstOrCreate(['name'=>'Unregistered Administrator']);
+        $unregistered_admin->givePermissionTo('Reset_Own_Password');
         // create admin role
         $admin=Role::firstOrCreate(['name'=>'Administrator']);
         $admin->givePermissionTo('Access_ADMIN_PANEL');
@@ -26,9 +29,9 @@ class RoleSeeder extends Seeder
         $user = User::firstOrCreate([
           'name'=>'admin',
           'email'=>'admin@dynamic.com',
-          'password'=>Hash::make('1234')
+          'password'=> Hash::make('1234')
         ]);
 
-        $user->assignRole($admin);
+        $user->assignRole($unregistered_admin);
     }
 }
