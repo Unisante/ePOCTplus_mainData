@@ -18,11 +18,19 @@ Route::get('/', function () {
   return redirect(route('login'));
 });
 
+// for registration
+Route::post('/2fa', function () {
+  return redirect(URL()->previous());
+})->name('2fa')->middleware('2fa');
+
+Route::get('/complete-registration', 'Auth\RegisterController@completeRegistration');
+
 Route::post('/user/password/reset', 'HomeController@forgotPassword')->name('HomeController@forgotPassword');
 Route::get('/check_password_reset_token/{id}', 'HomeController@checkToken')->name('HomeController@checkToken');
 Route::post('/reset_user_password', 'HomeController@makePassword')->name('HomeController@makePassword');
 
 Route::group(['middleware' => ['auth']], function () {
+
   Route::resource('roles', 'RolesController');
   Route::resource('users', 'UsersController');
   Route::get('/user/profile', ['as' => 'users.profile', 'uses' => 'UsersController@profile']);

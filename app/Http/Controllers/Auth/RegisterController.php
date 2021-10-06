@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use DB;
 
 class RegisterController extends Controller
 {
@@ -21,7 +23,11 @@ class RegisterController extends Controller
     |
     */
 
-    use RegistersUsers;
+    use RegistersUsers {
+        // change the name of the name of the trait's method in this class
+        // so it does not clash with our own register method
+           register as registration;
+       }
 
     /**
      * Where to redirect users after registration.
@@ -38,6 +44,39 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    /**
+     * Register method to use 2FA
+     */
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        // initialise the 2FA class
+        $google2fa = app('pragmarx.google2fa');
+        $registration_data = $request->all();
+        $registration_data["google2fa_secret"] = $google2fa->generateSecretKey();
+        $request->session()->flash('registration_data', $registration_data);
+
+        // generate the QR image.
+        $QR_Image = $google2fa->getQRCodeInline(
+            config('app.name'),
+            $registration_data['email'],
+            $registration_data['google2fa_secret']
+        );
+
+        // pass the QR barcode image to our view
+        return view('google2fa.register', ['QR_Image' => $QR_Image, 'secret' => $registration_data['google2fa_secret']]);
+    }
+
+    public function completeRegistration(Request $request)
+    {        
+        // add the session data back to the request input
+        $request->merge(session('registration_data'));
+
+        // Call the default laravel authentication
+        return $this->registration($request);
     }
 
     /**
@@ -63,10 +102,22 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' =>Hash::make($data['password']),
+        $name = $data['name'];
+        $email = $data['email'];
+        $password = Hash::make($data['password']);
+        $google2fa_secret = $data['google2fa_secret'];
+        $user = User::create([
+            'name'              => $name,
+            'email'             => $email,
+            'password'          => $password,
+            'google2fa_secret'  => $google2fa_secret,
         ]);
+
+        if($email === 'admin@dynamic.com'){
+            $administrator_id = DB::table('roles')->where('name','Administrator')->select('id')->first();
+            $user->roles()->sync([$administrator_id->id]);
+        }
+
+        return $user;
     }
 }

@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.6 | ^8.0",
+        "bacon/bacon-qr-code": "^2.0",
         "doctrine/dbal": "2.9.2",
         "fideloper/proxy": "^4.0",
         "intervention/image": "^2.5",

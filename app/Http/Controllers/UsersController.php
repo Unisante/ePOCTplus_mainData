@@ -188,12 +188,6 @@ class UsersController extends Controller
 
     $current_user->password = Hash::make($request->input('new_password'));
     if($current_user->save()){
-      if($current_user->hasRole('Unregistered Administrator')){
-        // give new admin role with more permissions if password changed.
-        $administrator_id = DB::table('roles')->where('name','Administrator')->select('id')->first();
-        Auth::user()->roles()->sync([$administrator_id->id]);
-      }
-
       return redirect()->route('users.profile')->with('success','Password has been changed!');
     }else{
       return back()->with('error', 'Something Went wrong');

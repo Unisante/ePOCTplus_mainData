@@ -23,7 +23,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['forgotPassword','makePassword','checkToken']]);
+        $this->middleware(['auth', '2fa'], ['except' => ['forgotPassword','makePassword','checkToken']]);
     }
 
     /**
