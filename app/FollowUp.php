@@ -1,7 +1,8 @@
 <?php
 namespace App;
 
-use App\Answer;
+use App\Node;
+use App\Patient;
 use App\PatientConfig;
 use Illuminate\Support\Facades\Log;
 
