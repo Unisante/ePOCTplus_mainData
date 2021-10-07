@@ -46,6 +46,14 @@ class HomeController extends Controller
     public function reauthenticate(Request $request)
     {
       $user = Auth::user();
+      return view('google2fa.confirm', [
+        'user_id' => $user->id
+      ]);
+    }
+
+    public function reauthenticateConfirmed()
+    {
+      $user = Auth::user();
 
       $google2fa = app('pragmarx.google2fa');
       $user->google2fa_secret = $google2fa->generateSecretKey();

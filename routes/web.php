@@ -32,7 +32,8 @@ Route::post('/reset_user_password', 'HomeController@makePassword')->name('HomeCo
 Route::group(['middleware' => ['auth', '2fa']], function () {
 
   // for registration
-  Route::get('/re-authenticate', 'HomeController@reauthenticate');
+  Route::post('/re-authenticate-confirmed', 'HomeController@reauthenticateConfirmed')->name('re-authenticate-confirmed');
+  Route::get('/re-authenticate', 'HomeController@reauthenticate')->name('re-authenticate');
 
   Route::resource('roles', 'RolesController');
   Route::resource('users', 'UsersController');
