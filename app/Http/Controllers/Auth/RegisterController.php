@@ -67,7 +67,11 @@ class RegisterController extends Controller
         );
 
         // pass the QR barcode image to our view
-        return view('google2fa.register', ['QR_Image' => $QR_Image, 'secret' => $registration_data['google2fa_secret']]);
+        return view('google2fa.register', [
+            'QR_Image' => $QR_Image, 
+            'secret' => $registration_data['google2fa_secret'],
+            'reauthenticating' => false
+        ]);
     }
 
     public function completeRegistration(Request $request)
@@ -75,7 +79,7 @@ class RegisterController extends Controller
         // add the session data back to the request input
         $request->merge(session('registration_data'));
 
-        // Call the default laravel authentication
+        // call the default laravel authentication
         return $this->registration($request);
     }
 
@@ -113,9 +117,12 @@ class RegisterController extends Controller
             'google2fa_secret'  => $google2fa_secret,
         ]);
 
+        // give admin rights to admin when registered
         if($email === 'admin@dynamic.com'){
             $administrator_id = DB::table('roles')->where('name','Administrator')->select('id')->first();
-            $user->roles()->sync([$administrator_id->id]);
+            if($administrator_id !== null){
+                $user->roles()->sync([$administrator_id->id]);
+            }
         }
 
         return $user;

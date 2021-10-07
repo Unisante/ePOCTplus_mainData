@@ -20,9 +20,8 @@ Route::get('/', function () {
 
 // for registration
 Route::post('/2fa', function () {
-  return redirect(URL()->previous());
+  return redirect(request()->get('2fa_referrer'));
 })->name('2fa')->middleware('2fa');
-
 Route::get('/complete-registration', 'Auth\RegisterController@completeRegistration');
 
 Route::post('/user/password/reset', 'HomeController@forgotPassword')->name('HomeController@forgotPassword');
@@ -30,6 +29,9 @@ Route::get('/check_password_reset_token/{id}', 'HomeController@checkToken')->nam
 Route::post('/reset_user_password', 'HomeController@makePassword')->name('HomeController@makePassword');
 
 Route::group(['middleware' => ['auth']], function () {
+
+  // for registration
+  Route::get('/re-authenticate', 'HomeController@reauthenticate');
 
   Route::resource('roles', 'RolesController');
   Route::resource('users', 'UsersController');

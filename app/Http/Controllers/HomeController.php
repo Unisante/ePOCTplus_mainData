@@ -43,6 +43,29 @@ class HomeController extends Controller
       return view('home')->with($data);
     }
 
+    public function reauthenticate(Request $request)
+    {
+      $user = Auth::user();
+
+      $google2fa = app('pragmarx.google2fa');
+      $user->google2fa_secret = $google2fa->generateSecretKey();
+      $user->save();
+
+      // generate the QR image
+      $QR_Image = $google2fa->getQRCodeInline(
+        config('app.name'),
+        $user->email,
+        $user->google2fa_secret
+      );
+
+      // Pass the QR barcode image to our view
+      return view('google2fa.register', [
+        'QR_Image' => $QR_Image, 
+        'secret' => $user->google2fa_secret,
+        'reauthenticating' => true
+      ]);
+    }
+
     public function forgotPassword(Request $request){
       $email=Str::lower($request->email);
       $userNotIn=User::where('email',$email)->doesntExist();
