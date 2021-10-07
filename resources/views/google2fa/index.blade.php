@@ -2,11 +2,11 @@
 
 @section('content')
 <div class="container">
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                {{ $errors->first('message') }}
-            </div>
-        @endif
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            {{ $errors->first('message') }}
+        </div>
+    @endif
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card card-body" >
@@ -16,8 +16,6 @@
                 <div class="card-body" >
                     <form class="form-horizontal" method="POST" action="{{ route('2fa') }}">
                             {{ csrf_field() }}
-                            <input type="hidden" name="2fa_referrer" value="{{ URL()->current() }}">
-
                             <div class="form-group">
                                 <label for="one_time_password" class="col-md-4 control-label">One Time Password</label>
                                 <div class="col-md-6">

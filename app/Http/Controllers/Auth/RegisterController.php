@@ -99,6 +99,42 @@ class RegisterController extends Controller
     }
 
     /**
+     * Adds roles to specific accounts when creating a new user.
+     */
+    protected function addRoleToSpecificAccounts(&$user){
+        if($user === null){
+            throw new \InvalidArgumentException('User should not be null.');
+        }
+
+        switch($user->email){
+            case 'admin@dynamic.com':
+                $role = 'Administrator';
+                break;
+            case 'datamanager@dynamic.com':
+                $role = 'Data Manager';
+                break;
+            case 'statistician@dynamic.com':
+                $role = 'Statistician';
+                break;
+            case 'logistician@dynamic.com':
+                $role = 'Logistician';
+                break;
+            default:
+                $role = null;
+        }
+
+        // no role to add
+        if($role === null){
+            return;
+        }
+
+        $role_entry = DB::table('roles')->where('name', $role)->first();
+        if($role_entry !== null){
+            $user->roles()->sync([$role_entry->id]);
+        }
+    }
+
+    /**
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
@@ -117,13 +153,7 @@ class RegisterController extends Controller
             'google2fa_secret'  => $google2fa_secret,
         ]);
 
-        // give admin rights to admin when registered
-        if($email === 'admin@dynamic.com'){
-            $administrator_id = DB::table('roles')->where('name','Administrator')->select('id')->first();
-            if($administrator_id !== null){
-                $user->roles()->sync([$administrator_id->id]);
-            }
-        }
+        $this->addRoleToSpecificAccounts($user);
 
         return $user;
     }

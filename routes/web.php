@@ -20,15 +20,16 @@ Route::get('/', function () {
 
 // for registration
 Route::post('/2fa', function () {
-  return redirect(request()->get('2fa_referrer'));
+  return redirect(URL()->previous());
 })->name('2fa')->middleware('2fa');
 Route::get('/complete-registration', 'Auth\RegisterController@completeRegistration');
+Route::get('/2fa', 'Auth\RegisterController@completeRegistration');
 
 Route::post('/user/password/reset', 'HomeController@forgotPassword')->name('HomeController@forgotPassword');
 Route::get('/check_password_reset_token/{id}', 'HomeController@checkToken')->name('HomeController@checkToken');
 Route::post('/reset_user_password', 'HomeController@makePassword')->name('HomeController@makePassword');
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth', '2fa']], function () {
 
   // for registration
   Route::get('/re-authenticate', 'HomeController@reauthenticate');
