@@ -84,8 +84,8 @@ class RedcapPush implements ShouldQueue
                     );
                 });
             }
+            sleep(30);
         }
-
         Log::info("followup exported");
     }
 
