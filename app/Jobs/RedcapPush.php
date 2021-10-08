@@ -71,16 +71,20 @@ class RedcapPush implements ShouldQueue
                 unset($caseFollowUpArray[$item]);
             };
         });
+
         $casefollowUpCollection = collect($caseFollowUpArray);
-        $medicalcase_id_list = $this->exportRedcapFollowUps($casefollowUpCollection);
-        if ($medicalcase_id_list != null) {
-            collect($medicalcase_id_list)->each(function ($case_id) {
-                MedicalCase::where('local_medical_case_id', $case_id)->update(
-                    [
-                        'redcap' => true,
-                    ]
-                );
-            });
+        foreach ($casefollowUpCollection->chunk(100) as $chunked_followups) {
+            $medicalcase_id_list = $this->exportRedcapFollowUps($chunked_followups);
+            if ($medicalcase_id_list != null) {
+                collect($medicalcase_id_list)->each(function ($case_id) {
+                    MedicalCase::where('local_medical_case_id', $case_id)->update(
+                        [
+                            'redcap' => true,
+                        ]
+                    );
+                });
+            }
+            sleep(30);
         }
         Log::info("followup exported");
     }
