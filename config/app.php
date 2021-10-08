@@ -166,6 +166,7 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Madnest\Madzipper\MadzipperServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        PragmaRX\Google2FALaravel\ServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -231,7 +232,8 @@ return [
         'Datatables' => yajra\Datatables\Datatables::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Madzipper' => Madnest\Madzipper\Madzipper::class,
-        'Image' => Intervention\Image\Facades\Image::class
+        'Image' => Intervention\Image\Facades\Image::class,
+        'Google2FA' => PragmaRX\Google2FALaravel\Facade::class
 
     ],
 

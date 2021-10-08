@@ -63,6 +63,7 @@ class Kernel extends HttpKernel
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
 	    'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'device.resolve' => \App\Http\Middleware\ResolveDevice::class,
+        '2fa' => \PragmaRX\Google2FALaravel\Middleware::class,
     ];
 
     /**
