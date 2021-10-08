@@ -1,6 +1,7 @@
 <?php
 
 return [
+  'hide_str' => '###',
   'public_extract_name' => 'extract',
   'patient_discarded_names' => ['test'],
 
