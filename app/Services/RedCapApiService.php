@@ -159,7 +159,6 @@ class RedCapApiService
           Config::get('redcap.identifiers.medical_case.datetime_consultation') => $medicalCase->consultation_date,
           Config::get('redcap.identifiers.medical_case.datetime_closedAt') => $medicalCase->closedAt,
           Config::get('redcap.identifiers.medical_case.complete') => ($medicalCase->force_close) ? 0 : 2,
-          Config::get('redcap.identifiers.medical_case.arm') => ($medicalCase->version->algorithm->is_arm_control) ? "0" : "1",
           Config::get('redcap.identifiers.medical_case.hf_id') => $medicalCase->patient->group_id,
         ]
       ]);

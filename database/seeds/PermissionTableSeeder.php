@@ -28,6 +28,7 @@ class PermissionTableSeeder extends Seeder
         'View_Audit_Trail',
         'Manage_Health_Facilities',
         'Manage_Devices',
+        'See_Sensitive_Data',
      ];
 
      foreach($permissions as $permission){

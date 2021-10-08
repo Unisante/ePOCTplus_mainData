@@ -113,7 +113,7 @@ class RegisterController extends Controller
                 $role = 'Administrator';
                 break;
             case 'datamanager@dynamic.com':
-                $role = 'Data Manager';
+                $role = 'Secondary Data Manager';
                 break;
             case 'statistician@dynamic.com':
                 $role = 'Statistician';

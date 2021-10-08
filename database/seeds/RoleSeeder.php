@@ -23,17 +23,30 @@ class RoleSeeder extends Seeder
         $admin->givePermissionTo('Reset_Own_Password');
         $admin->givePermissionTo('View_Audit_Trail');
 
-        // create data manager role
-        $data_manager=Role::firstOrCreate(['name'=>'Data Manager']);
-        $data_manager->givePermissionTo('View_Patient');
-        $data_manager->givePermissionTo('View_Case');
-        $data_manager->givePermissionTo('Edit_Patient');
-        $data_manager->givePermissionTo('Edit_Case');
-        $data_manager->givePermissionTo('Merge_Duplicates');
-        $data_manager->givePermissionTo('Delete_Patient');
-        $data_manager->givePermissionTo('Delete_Case');
-        $data_manager->givePermissionTo('Reset_User_Password');
-        $data_manager->givePermissionTo('Reset_Own_Password');
+        // create primary data manager role
+        $p_data_manager=Role::firstOrCreate(['name'=>'Primary Data Manager']);
+        $p_data_manager->givePermissionTo('View_Patient');
+        $p_data_manager->givePermissionTo('View_Case');
+        $p_data_manager->givePermissionTo('Edit_Patient');
+        $p_data_manager->givePermissionTo('Edit_Case');
+        $p_data_manager->givePermissionTo('Merge_Duplicates');
+        $p_data_manager->givePermissionTo('Delete_Patient');
+        $p_data_manager->givePermissionTo('Delete_Case');
+        $p_data_manager->givePermissionTo('Reset_User_Password');
+        $p_data_manager->givePermissionTo('Reset_Own_Password');
+        $p_data_manager->givePermissionTo('See_Sensitive_Data');
+
+        // create secondary data manager role
+        $s_data_manager=Role::firstOrCreate(['name'=>'Secondary Data Manager']);
+        $s_data_manager->givePermissionTo('View_Patient');
+        $s_data_manager->givePermissionTo('View_Case');
+        $s_data_manager->givePermissionTo('Edit_Patient');
+        $s_data_manager->givePermissionTo('Edit_Case');
+        $s_data_manager->givePermissionTo('Merge_Duplicates');
+        $s_data_manager->givePermissionTo('Delete_Patient');
+        $s_data_manager->givePermissionTo('Delete_Case');
+        $s_data_manager->givePermissionTo('Reset_User_Password');
+        $s_data_manager->givePermissionTo('Reset_Own_Password');
 
         // create statictician role
         $statistician = Role::firstOrCreate(['name'=>'Statistician']);

@@ -111,10 +111,6 @@ export default {
                     keyword: "end_date"
                 },
                 {
-                    label: "Arm Control",
-                    keyword: "is_arm_control"
-                },
-                {
                     label: "Reader Version",
                     keyword: "medal_r_json_version",
                 }
