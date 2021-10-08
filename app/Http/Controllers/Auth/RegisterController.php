@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use DB;
+use Doctrine\Common\Cache\Psr6\InvalidArgument;
+use PharIo\Manifest\InvalidUrlException;
 
 class RegisterController extends Controller
 {
@@ -75,7 +77,7 @@ class RegisterController extends Controller
     }
 
     public function completeRegistration(Request $request)
-    {        
+    {       
         // add the session data back to the request input
         $request->merge(session('registration_data'));
 
