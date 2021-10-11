@@ -29,6 +29,7 @@ class PermissionTableSeeder extends Seeder
         'Manage_Health_Facilities',
         'Manage_Devices',
         'See_Sensitive_Data',
+        'Export'
      ];
 
      foreach($permissions as $permission){

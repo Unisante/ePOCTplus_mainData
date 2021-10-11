@@ -27,38 +27,6 @@ class PatientsController extends Controller
   }
 
   /**
-   * change patient's fields if the user does not have permission
-   */
-  public function hidePatientFields($patient){
-    if(Auth::user()->can('See_Sensitive_Data')){
-      return $patient;
-    }
-
-    $hide_str = Config::get('csv.hide_str');
-    $patient->first_name = $hide_str;
-    $patient->middle_name = $hide_str;
-    $patient->last_name = $hide_str;
-
-    return $patient;
-  }
-
-  public function hideDuplicateArray($duplicate_array){
-    if($duplicate_array === null){
-      throw new \InvalidArgumentException('Duplicate array should not be null.');
-    }
-
-    $new_duplicate_array = [];
-    for($i = 0; $i < count($duplicate_array); $i++){
-      //$new_duplicate_array[$i] = [];
-      for($j = 0; $j < count($duplicate_array[$i]); $j++){
-        $new_duplicate_array[$i][$j] = $this->hidePatientFields($duplicate_array[$i][$j]);
-      }
-    }
-
-    return $new_duplicate_array;
-  }
-
-  /**
   * View all patients
   * @return $patients
   */
@@ -70,7 +38,6 @@ class PatientsController extends Controller
       }else{
         $patient->facility_name='';
       }
-      $patient = $this->hidePatientFields($patient);
     });
     return view('patients.index')->with('patients',$patients);
   }
@@ -83,7 +50,6 @@ class PatientsController extends Controller
   public function show($id){
     $patient=Patient::find($id);
     $patient->related_ids=implode(',',$patient->related_ids);
-    $patient = $this->hidePatientFields($patient);
     return view('patients.showPatient')->with('patient',$patient);
   }
 
@@ -95,9 +61,8 @@ class PatientsController extends Controller
   */
   public function compare($firstId,$secondId){
     $first_patient =  Patient::find($firstId);
-    $first_patient = $this->hidePatientFields($first_patient);
+    $first_patient = $this->FV($first_patient);
     $second_patient = Patient::find($secondId);
-    $second_patient = $this->hidePatientFields($second_patient);
     $data=array(
       'first_patient'=>$first_patient,
       'second_patient'=>$second_patient,
@@ -117,6 +82,7 @@ class PatientsController extends Controller
     // dd($duplicateArray);
     $duplicateArray=$patient->findByDuplicateKey($duplicateArray);
     $duplicateArray=$patient->checkForPairs($duplicateArray);
+    $duplicateArray = $this->hideDuplicateArray($duplicateArray);
     return view('patients.showDuplicates')->with("catchEachDuplicate",$duplicateArray);
   }
 
@@ -128,9 +94,7 @@ class PatientsController extends Controller
   */
   public function mergeShow($firstId,$secondId){
     $first_patient =  Patient::find($firstId);
-    $first_patient = $this->hidePatientFields($first_patient);
     $second_patient = Patient::find($secondId);
-    $first_patient = $this->hidePatientFields($first_patient);
     // dd($first_patient->related_ids);
     // if(count($first_patient->related_ids) != 0){
     //   $first_patient->related_ids=implode(',',$first_patient->related_ids);
@@ -176,7 +140,6 @@ class PatientsController extends Controller
             )->get();
           array_push($catchEachDuplicate,$patients);
         }
-        $catchEachDuplicate = $this->hideDuplicateArray($catchEachDuplicate);
         return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
       }
       else if(sizeOf($criteria)==2){
@@ -196,7 +159,6 @@ class PatientsController extends Controller
           )->get();
           array_push($catchEachDuplicate,$patients);
         }
-        $catchEachDuplicate = $this->hideDuplicateArray($catchEachDuplicate);
         return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
       }else if(sizeOf($criteria)==3){
         $duplicates = Patient::select($criteria[0],$criteria[1],$criteria[2])
@@ -216,7 +178,6 @@ class PatientsController extends Controller
           )->get();
           array_push($catchEachDuplicate,$patients);
         }
-        $catchEachDuplicate = $this->hideDuplicateArray($catchEachDuplicate);
         return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
       }else if(sizeOf($criteria)==4){
         $duplicates = Patient::select($criteria[0],$criteria[1],$criteria[2],$criteria[3])
@@ -237,7 +198,6 @@ class PatientsController extends Controller
           )->get();
           array_push($catchEachDuplicate,$patients);
         }
-        $catchEachDuplicate = $this->hideDuplicateArray($catchEachDuplicate);
         return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
       }
       // else if(sizeOf($criteria)==5){
@@ -272,7 +232,6 @@ class PatientsController extends Controller
         $users = Patient::where($criterias, $duplicate->$criterias)->get();
         array_push($catchEachDuplicate,$users);
       }
-      $catchEachDuplicate = $this->hideDuplicateArray($catchEachDuplicate);
       return view('patients.showDuplicates')->with("catchEachDuplicate",$catchEachDuplicate);
     }
     return redirect()->action(
