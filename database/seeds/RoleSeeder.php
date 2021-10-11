@@ -22,6 +22,7 @@ class RoleSeeder extends Seeder
         $admin->givePermissionTo('Reset_User_Password');
         $admin->givePermissionTo('Reset_Own_Password');
         $admin->givePermissionTo('View_Audit_Trail');
+        $admin->givePermissionTo('See_Sensitive_Data');
 
         // create primary data manager role
         $p_data_manager=Role::firstOrCreate(['name'=>'Primary Data Manager']);
@@ -54,6 +55,7 @@ class RoleSeeder extends Seeder
         $statistician->givePermissionTo('View_Case');
         $statistician->givePermissionTo('Reset_User_Password');
         $statistician->givePermissionTo('Reset_Own_Password');
+        $statistician->givePermissionTo('See_Sensitive_Data');
 
         // create logistician role
         $logistician = Role::firstOrCreate(['name'=>'Logistician']);
@@ -61,5 +63,6 @@ class RoleSeeder extends Seeder
         $logistician->givePermissionTo('Manage_Devices');
         $logistician->givePermissionTo('Reset_User_Password');
         $logistician->givePermissionTo('Reset_Own_Password');
+        $logistician->givePermissionTo('See_Sensitive_Data');
     }
 }

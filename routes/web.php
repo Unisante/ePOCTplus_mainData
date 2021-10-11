@@ -104,35 +104,36 @@ Route::group(['middleware' => ['auth', '2fa']], function () {
     ]);
   });
 
+  Route::group(['middleware' => ['permission:See_Sensitive_Data']], function () {
+    //for downloading exports
+    // Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('MedicalCasesController.medicalCaseIntoExcel');
+    // Route::get('/export-medicalCase-csv','MedicalCasesController@medicalCaseIntoCsv')->name('MedicalCasesController.medicalCaseIntoCsv');
+    // Route::get('/export-patient-excel','PatientsController@patientIntoExcel')->name('PatientsController.patientIntoExcel');
+    // Route::get('/export-patient-csv','PatientsController@patientIntoCsv')->name('PatientsController.patientIntoCsv');
+    // Route::get('/export-mainData-csv','PatientsController@allDataIntoExcel')->name('PatientsController.allDataIntoExcel');
 
-
-  //for downloading exports
-  // Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('MedicalCasesController.medicalCaseIntoExcel');
-  // Route::get('/export-medicalCase-csv','MedicalCasesController@medicalCaseIntoCsv')->name('MedicalCasesController.medicalCaseIntoCsv');
-  // Route::get('/export-patient-excel','PatientsController@patientIntoExcel')->name('PatientsController.patientIntoExcel');
-  // Route::get('/export-patient-csv','PatientsController@patientIntoCsv')->name('PatientsController.patientIntoCsv');
-  // Route::get('/export-mainData-csv','PatientsController@allDataIntoExcel')->name('PatientsController.allDataIntoExcel');
-  Route::get('/export/patients', 'ExportsController@patients')->name('ExportsController.patients');
-  Route::get('/export/medicalcases', 'ExportsController@cases')->name('ExportsController.cases');
-  Route::get('/export/answers', 'ExportsController@answers')->name('ExportsController.answers');
-  Route::get('/export/diagnosis_references', 'ExportsController@diagnosisReferences')->name('ExportsController.diagnosisReferences');
-  Route::get('/export/custom_diagnoses', 'ExportsController@customDiagnoses')->name('ExportsController.customDiagnoses');
-  Route::get('/export/drug_references', 'ExportsController@drugReferences')->name('ExportsController.drugReferences');
-  Route::get('/export/additional_drugs', 'ExportsController@additionalDrugs')->name('ExportsController.additionalDrugs');
-  Route::get('/export/management_references', 'ExportsController@managementReferences')->name('ExportsController.managementReferences');
-
-  Route::get('/export/diagnoses', 'ExportsController@diagnoses')->name('ExportsController.diagnoses');
-  Route::get('/export/drugs', 'ExportsController@drugs')->name('ExportsController.drugs');
-  Route::get('/export/formulations', 'ExportsController@formulations')->name('ExportsController.formulations');
-  Route::get('/export/managements', 'ExportsController@managements')->name('ExportsController.managements');
-  Route::get('/export/nodes', 'ExportsController@nodes')->name('ExportsController.nodes');
-  Route::get('/export/answer_types', 'ExportsController@answer_types')->name('ExportsController.answer_types');
-  Route::get('/export/algorithms', 'ExportsController@algorithms')->name('ExportsController.algorithms');
-  Route::get('/export/algorithm_versions', 'ExportsController@algorithmVersions')->name('ExportsController.algorithmVersions');
-  Route::get('/export/cases_answers', 'ExportsController@casesAnswers2')->name('ExportsController.casesAnswers2');
-  Route::get('/export/drug_analysis', 'ExportsController@drugAnalysis')->name('ExportsController.drugAnalysis');
-  Route::get('/exports/diagnosis_list', 'ExportsController@diagnosesSummary')->name('ExportsController.diagnosesSummary');
-  Route::get('/exports/drug_list', 'ExportsController@drugsSummary')->name('ExportsController.drugsSummary');
+    Route::get('/export/patients', 'ExportsController@patients')->name('ExportsController.patients');
+    Route::get('/export/medicalcases', 'ExportsController@cases')->name('ExportsController.cases');
+    Route::get('/export/answers', 'ExportsController@answers')->name('ExportsController.answers');
+    Route::get('/export/diagnosis_references', 'ExportsController@diagnosisReferences')->name('ExportsController.diagnosisReferences');
+    Route::get('/export/custom_diagnoses', 'ExportsController@customDiagnoses')->name('ExportsController.customDiagnoses');
+    Route::get('/export/drug_references', 'ExportsController@drugReferences')->name('ExportsController.drugReferences');
+    Route::get('/export/additional_drugs', 'ExportsController@additionalDrugs')->name('ExportsController.additionalDrugs');
+    Route::get('/export/management_references', 'ExportsController@managementReferences')->name('ExportsController.managementReferences');
+  
+    Route::get('/export/diagnoses', 'ExportsController@diagnoses')->name('ExportsController.diagnoses');
+    Route::get('/export/drugs', 'ExportsController@drugs')->name('ExportsController.drugs');
+    Route::get('/export/formulations', 'ExportsController@formulations')->name('ExportsController.formulations');
+    Route::get('/export/managements', 'ExportsController@managements')->name('ExportsController.managements');
+    Route::get('/export/nodes', 'ExportsController@nodes')->name('ExportsController.nodes');
+    Route::get('/export/answer_types', 'ExportsController@answer_types')->name('ExportsController.answer_types');
+    Route::get('/export/algorithms', 'ExportsController@algorithms')->name('ExportsController.algorithms');
+    Route::get('/export/algorithm_versions', 'ExportsController@algorithmVersions')->name('ExportsController.algorithmVersions');
+    Route::get('/export/cases_answers', 'ExportsController@casesAnswers2')->name('ExportsController.casesAnswers2');
+    Route::get('/export/drug_analysis', 'ExportsController@drugAnalysis')->name('ExportsController.drugAnalysis');
+    Route::get('/exports/diagnosis_list', 'ExportsController@diagnosesSummary')->name('ExportsController.diagnosesSummary');
+    Route::get('/exports/drug_list', 'ExportsController@drugsSummary')->name('ExportsController.drugsSummary');
+  });
 
   Route::post('/exports/exportZipByDate',['as'=>'exports.exportZipByDate','uses'=>'ExportsController@exportZipByDate']);
   Route::post('/exports/exportFlatZip',['as'=>'exports.exportFlatZip','uses'=>'ExportsController@exportFlatZip']);
