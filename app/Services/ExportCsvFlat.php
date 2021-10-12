@@ -371,6 +371,9 @@ class ExportCsvFlat extends ExportCsv
         $variable_values = self::getVariableDefaultValues($node_objs);
 
         foreach ($medical_case_answers as $medical_case_answer) {
+            if (self::isSkippedMedicalCaseAnswer($medical_case_answer)) {
+                continue;
+            }
             $node_id = $medical_case_answer->node_id;
             $variable_values[$node_id] = $medical_case_answer->answer->label ?? null;
         }
@@ -434,17 +437,14 @@ class ExportCsvFlat extends ExportCsv
         $diagnosis_values = self::getDiagnosisDefaultValues($diagnosis_objs);
 
         foreach ($diagnosis_references as $diagnosis_reference) {
-            $agreed = $diagnosis_reference->agreed;
-            $additional = $diagnosis_reference->additional;
-            $exluded = $diagnosis_reference->excluded;
-            $diagnosis_id = $diagnosis_reference->diagnosis_id;
-            if ($exluded) {
+            if (self::isSkippedDiagnosisReference($diagnosis_reference)) {
                 continue;
             }
-            if ($additional) {
+            $diagnosis_id = $diagnosis_reference->diagnosis_id;
+            if ($diagnosis_reference->additional) {
                 $diagnosis_values[$diagnosis_id] = self::$DIAGNOSIS_MANUALLY_ADDED;
             } else {
-                $diagnosis_values[$diagnosis_id] = $agreed ? self::$DIAGNOSIS_PROPOSED_AND_ACCEPTED : self::$DIAGNOSIS_PROPOSED_AND_REJECTED;
+                $diagnosis_values[$diagnosis_id] = $diagnosis_reference->agreed ? self::$DIAGNOSIS_PROPOSED_AND_ACCEPTED : self::$DIAGNOSIS_PROPOSED_AND_REJECTED;
             }
         }
 
