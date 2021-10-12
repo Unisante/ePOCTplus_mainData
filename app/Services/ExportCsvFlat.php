@@ -370,6 +370,9 @@ class ExportCsvFlat extends ExportCsv
         $variable_values = self::getVariableDefaultValues($node_objs);
 
         foreach($medical_case_answers as $medical_case_answer){
+            if(self::isSkippedMedicalCaseAnswer($medical_case_answer)){
+                continue;
+            }
             $is_identifiable = $medical_case_answer->node->is_identifiable;
             $node_id = $medical_case_answer->node_id;
             $variable_values[$node_id] = self::AnswerValueWithPermission($medical_case_answer->answer->label ?? null, $is_identifiable);
@@ -436,13 +439,12 @@ class ExportCsvFlat extends ExportCsv
         $diagnosis_values = self::getDiagnosisDefaultValues($diagnosis_objs);
 
         foreach($diagnosis_references as $diagnosis_reference){
-            $agreed = $diagnosis_reference->agreed;
-            $additional = $diagnosis_reference->additional;
-            $exluded = $diagnosis_reference->excluded;
-            $diagnosis_id = $diagnosis_reference->diagnosis_id;
-            if($exluded){
+            if($diagnosis_reference->excluded){
                 continue;
             }
+            $agreed = $diagnosis_reference->agreed;
+            $additional = $diagnosis_reference->additional;
+            $diagnosis_id = $diagnosis_reference->diagnosis_id;
             if($additional){
                 $diagnosis_values[$diagnosis_id] = self::$DIAGNOSIS_MANUALLY_ADDED; 
             }else{

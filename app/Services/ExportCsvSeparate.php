@@ -518,15 +518,6 @@ class ExportCsvSeparate extends ExportCsv
         $data[$answer->id] = self::getAnswerData($answer, $is_identifiable);
     }
 
-    protected static function isSkippedMedicalCaseAnswer($medical_case_answer){
-        return ($medical_case_answer->node->category == "background_calculation" && $medical_case_answer->node->display_format != 'Reference')
-            || ($medical_case_answer->value == '' and $medical_case_answer->answer_id === null);
-    }
-
-    protected static function isSkippedDiagnosisReference($diagnosis_reference){
-        return $diagnosis_reference->excluded;
-    }
-
     /**
      * Retrieve all the data.
      */
