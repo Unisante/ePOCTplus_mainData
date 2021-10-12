@@ -38,17 +38,17 @@ class RoleSeeder extends Seeder
         $data_manager->givePermissionTo('Reset_Own_Password');
         $data_manager->givePermissionTo('See_Sensitive_Data');
 
-        // create secondary data manager role
-        $s_data_manager=Role::firstOrCreate(['name'=>'Secondary Data Manager']);
-        $s_data_manager->givePermissionTo('View_Patient');
-        $s_data_manager->givePermissionTo('View_Case');
-        $s_data_manager->givePermissionTo('Edit_Patient');
-        $s_data_manager->givePermissionTo('Edit_Case');
-        $s_data_manager->givePermissionTo('Export');
-        $s_data_manager->givePermissionTo('Delete_Patient');
-        $s_data_manager->givePermissionTo('Delete_Case');
-        $s_data_manager->givePermissionTo('Reset_User_Password');
-        $s_data_manager->givePermissionTo('Reset_Own_Password');
+        // create project viewer role
+        $project_viewer=Role::firstOrCreate(['name'=>'Project Viewer']);
+        $project_viewer->givePermissionTo('View_Patient');
+        $project_viewer->givePermissionTo('View_Case');
+        $project_viewer->givePermissionTo('Edit_Patient');
+        $project_viewer->givePermissionTo('Edit_Case');
+        $project_viewer->givePermissionTo('Export');
+        $project_viewer->givePermissionTo('Delete_Patient');
+        $project_viewer->givePermissionTo('Delete_Case');
+        $project_viewer->givePermissionTo('Reset_User_Password');
+        $project_viewer->givePermissionTo('Reset_Own_Password');
 
         // create statictician role
         $statistician = Role::firstOrCreate(['name'=>'Statistician']);
