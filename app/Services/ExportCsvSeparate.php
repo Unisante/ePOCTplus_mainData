@@ -700,8 +700,9 @@ class ExportCsvSeparate extends ExportCsv
         if (!File::exists($folder)) {
             File::makeDirectory($folder);
         }
+
         foreach ($file_names as $file_name) {
-            $file = fopen($folder . $i . $file_name, "w");
+            $file = fopen($folder . $file_name, "w");
             foreach ($data[$file_name] as $line) {
                 $attributes = $this->attributesToStr((array) $line);
                 fputcsv($file, $attributes);

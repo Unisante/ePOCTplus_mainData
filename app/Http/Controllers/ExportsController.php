@@ -72,6 +72,7 @@ class ExportsController extends Controller
             return back()->withErrors("Date cannot be in the future.");
         }
 
+        $index = 1;
         $extract_file_name = Config::get('csv.public_extract_name');
         $file_from_public = base_path() . '/public/' . $extract_file_name . '.zip';
         // generate the data file.
@@ -79,17 +80,22 @@ class ExportsController extends Controller
         $zipper->make($extract_file_name . '.zip');
         // check export mode
         if (Arr::exists($request->input(), 'DownloadFlat')) {
-            MedicalCase::chunk(100, function ($medical_case, $key) use ($fromDate, $toDate, $zipper) {
+            MedicalCase::chunk(100, function ($medical_case, $key) use ($fromDate, $toDate, $zipper, $index) {
                 $csv_export = new ExportCsvFlat($medical_case, $fromDate, $toDate);
                 $csv_export->export($key);
-                $zipper->add(public_path(Config::get('csv.flat.folder') . $key . '.csv'));
+                if ($key % 5 === 0) {
+                    $zipper->add(public_path(Config::get('csv.flat.folder') . 'answers_' . $index . '.csv'));
+                    $index++;
+                } else {
+                    $zipper->add(public_path(Config::get('csv.flat.folder') . 'answers.csv'));
+                }
             });
 
         } else if (Arr::exists($request->input(), 'DownloadSeparate')) {
             MedicalCase::chunk(100, function ($medical_case, $key) use ($fromDate, $toDate, $zipper) {
                 $csv_export = new ExportCsvSeparate($medical_case, $fromDate, $toDate);
                 $csv_export->export($key);
-                $zipper->add(public_path(Config::get('csv.folder_separated') . '.csv'));
+                $zipper->add(public_path(Config::get('csv.folder_separated')));
             });
 
         } else {
@@ -112,7 +118,7 @@ class ExportsController extends Controller
             File::deleteDirectory(public_path(Config::get('csv.flat.folder')));
         }
         if (Arr::exists($request->input(), 'DownloadSeparate')) {
-            File::deleteDirectory(public_path(Config::get('csv.separated')));
+            File::deleteDirectory(public_path(Config::get('csv.folder_separated')));
         }
         unlink($file_from_public);
 

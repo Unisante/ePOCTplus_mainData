@@ -659,14 +659,21 @@ class ExportCsvFlat extends ExportCsv
 
     public function export($i)
     {
-
+        $index = 1;
         $data = $this->getDataFromMedicalCases();
         $folder = public_path() . Config::get('csv.flat.folder');
         if (!File::exists($folder)) {
             File::makeDirectory($folder);
         }
 
-        $file = fopen($folder . $i . '.csv', "w");
+        if ($i % 5 === 0) {
+            $file = fopen($folder . 'answers_' . $index . '.csv', "w");
+            $index++;
+        } else {
+            $file = fopen($folder . 'answers' . '.csv', "w");
+
+        }
+
         foreach ($data as $line) {
             $attributes = $this->attributesToStr((array) $line);
             fputcsv($file, $attributes);
