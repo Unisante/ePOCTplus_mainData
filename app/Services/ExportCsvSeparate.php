@@ -29,12 +29,12 @@ class ExportCsvSeparate extends ExportCsv
     {
         return [
             Config::get('csv.identifiers.patient.dyn_pat_study_id_patient') => $patient->id,
-            Config::get('csv.identifiers.patient.dyn_pat_first_name')		=> $patient->first_name,
-            Config::get('csv.identifiers.patient.dyn_pat_last_name')        => $patient->last_name,
+            Config::get('csv.identifiers.patient.dyn_pat_first_name')		=> self::ValueWithPermission($patient->first_name),
+            Config::get('csv.identifiers.patient.dyn_pat_last_name')        => self::ValueWithPermission($patient->last_name),
             Config::get('csv.identifiers.patient.dyn_pat_created_at')       => $patient->created_at,
             Config::get('csv.identifiers.patient.dyn_pat_updated_at')       => $patient->updated_at,
-            Config::get('csv.identifiers.patient.dyn_pat_birth_date')       => $patient->birthdate,
-            Config::get('csv.identifiers.patient.dyn_pat_gender') 			=> $patient->gender,
+            Config::get('csv.identifiers.patient.dyn_pat_birth_date')       => self::ValueWithPermission($patient->birthdate),
+            Config::get('csv.identifiers.patient.dyn_pat_gender') 			=> self::ValueWithPermission($patient->gender),
             Config::get('csv.identifiers.patient.dyn_pat_local_patient_id') => $patient->local_patient_id,
             Config::get('csv.identifiers.patient.dyn_pat_group_id') 		=> $patient->group_id,
             Config::get('csv.identifiers.patient.dyn_pat_consent') 			=> $patient->consent,
@@ -47,7 +47,7 @@ class ExportCsvSeparate extends ExportCsv
             Config::get('csv.identifiers.patient.dyn_pat_merged') 			=> $patient->merged,
             Config::get('csv.identifiers.patient.dyn_pat_status') 			=> $patient->status,
             Config::get('csv.identifiers.patient.dyn_pat_related_ids') 		=> $patient->related_ids,
-            Config::get('csv.identifiers.patient.dyn_pat_middle_name') 		=> $patient->middle_name,
+            Config::get('csv.identifiers.patient.dyn_pat_middle_name') 		=> self::ValueWithPermission($patient->middle_name),
             Config::get('csv.identifiers.patient.dyn_pat_other_id') 		=> $patient->other_id
         ];
     }
@@ -362,11 +362,11 @@ class ExportCsvSeparate extends ExportCsv
      * @param  $answer
      * @return Collection answer data
      */
-    protected static function getAnswerData($answer)
+    protected static function getAnswerData($answer, $is_identifiable)
     {
         return [
             Config::get('csv.identifiers.answer.dyn_ans_id') => $answer->id,
-            Config::get('csv.identifiers.answer.dyn_ans_label') => $answer->label,
+            Config::get('csv.identifiers.answer.dyn_ans_label') => self::AnswerValueWithPermission($answer->label, $is_identifiable),
             Config::get('csv.identifiers.answer.dyn_ans_medal_c_id') => $answer->medal_c_id,
             Config::get('csv.identifiers.answer.dyn_ans_node_id') => $answer->node_id,
             Config::get('csv.identifiers.answer.dyn_ans_created_at') => $answer->created_at,
@@ -513,9 +513,9 @@ class ExportCsvSeparate extends ExportCsv
     /**
      * 
      */
-    protected function addAnswerData(&$data, $answer)
+    protected function addAnswerData(&$data, $answer, $is_identifiable)
     {
-        $data[$answer->id] = self::getAnswerData($answer);
+        $data[$answer->id] = self::getAnswerData($answer, $is_identifiable);
     }
 
     protected static function isSkippedMedicalCaseAnswer($medical_case_answer){
@@ -594,8 +594,9 @@ class ExportCsvSeparate extends ExportCsv
 
                 // get answers
                 $answers = $node->answers;
+                $is_identifiable = $node->is_identifiable;
                 foreach($answers as $answer){
-                    $this->addAnswerData($answers_data, $answer);
+                    $this->addAnswerData($answers_data, $answer, $is_identifiable);
                 }
             }
 

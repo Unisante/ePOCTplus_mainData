@@ -5,6 +5,7 @@ namespace App\Services;
 use \InvalidArgumentException;
 use \DateInterval;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Config;
 
@@ -14,6 +15,19 @@ abstract class ExportCsv extends ExportService
 
     protected $from_date;
     protected $to_date;
+
+    /**
+     * @return true return the default value if the user has permission to see sensitive data, otherwise remove it.
+     */
+    protected static function ValueWithPermission($value)
+    {
+        return Auth::user()->can('See_Sensitive_Data') ? $value : null;
+    }
+
+    protected static function AnswerValueWithPermission($value, $is_identifiable)
+    {
+        return (!$is_identifiable || Auth::user()->can('See_Sensitive_Data')) ? $value : null;
+    }
 
     /**
      * Checks if the dates form a valid date interval.

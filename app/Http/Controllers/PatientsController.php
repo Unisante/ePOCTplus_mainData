@@ -1,48 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Exceptions\RedCapApiServiceException;
-use App\Followup;
-use App\Services\RedCapApiService;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use App\Patient;
-use App\Answer;
 use App\MedicalCase;
-use App\User;
-use App\Node;
 use App\Jobs\ExportZip;
-use App\DuplicatePair;
-use App\DiagnosisReference;
 use Illuminate\Http\Request;
-use Datatables;
-use DB;
 use Carbon;
-use Intervention\Image\ImageManagerStatic as Image;
-use Illuminate\Support\Facades\Storage;
 use App\Exports\PatientExport;
-use App\Exports\DataSheet;
-use App\Exports\DiagnosisReferenceExport;
-use App\Exports\AnswerExport;
-use App\Exports\Medical_CaseExport;
-use App\Exports\MedicalCaseAnswerExport;
-use App\Exports\DrugReferenceExport;
-use App\Exports\AlgorithmExport;
-use App\Exports\AdditionalDrugExport;
-use App\Exports\CustomDiagnosisExport;
-use App\Exports\ManagementReferenceExport;
-use App\Exports\DrugExport;
-use App\Exports\DiagnosisExport;
-use App\Exports\FormulationExport;
-use App\Exports\ManagementExport;
-use App\Exports\NodeExport;
-use App\Exports\AnswerTypeExport;
-use App\Exports\VersionExport;
 use Excel;
 use Auth;
-use Maatwebsite\Excel\Facades\Excel as FacadesExcel;
-use Madnest\Madzipper\Madzipper;
-use App\HealthFacility;
+use Illuminate\Support\Facades\Config;
+use InvalidArgumentException;
 
 class PatientsController extends Controller
 {
@@ -92,6 +61,7 @@ class PatientsController extends Controller
   */
   public function compare($firstId,$secondId){
     $first_patient =  Patient::find($firstId);
+    $first_patient = $this->FV($first_patient);
     $second_patient = Patient::find($secondId);
     $data=array(
       'first_patient'=>$first_patient,
@@ -112,6 +82,7 @@ class PatientsController extends Controller
     // dd($duplicateArray);
     $duplicateArray=$patient->findByDuplicateKey($duplicateArray);
     $duplicateArray=$patient->checkForPairs($duplicateArray);
+    $duplicateArray = $this->hideDuplicateArray($duplicateArray);
     return view('patients.showDuplicates')->with("catchEachDuplicate",$duplicateArray);
   }
 
