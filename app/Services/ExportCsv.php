@@ -61,6 +61,25 @@ abstract class ExportCsv extends ExportService
     }
 
     /**
+     * @param MedicalCaseAnswer medical_case_answer, a medical case answer
+     * @return boolean true if the medical case answer should be skipped, false otherwise
+     */
+    protected static function isSkippedMedicalCaseAnswer($medical_case_answer)
+    {
+        return ($medical_case_answer->node->category == "background_calculation" && $medical_case_answer->node->display_format != 'Reference')
+            || ($medical_case_answer->value == '' and $medical_case_answer->answer_id === null);
+    }
+
+    /**
+     * @param DiagnosisReference diagnosis_reference, a diagnosis_reference
+     * @return boolean true if the diagnosis reference should be skipped, false otherwise
+     */
+    protected static function isSkippedDiagnosisReference($diagnosis_reference)
+    {
+        return $diagnosis_reference->excluded;
+    }
+
+    /**
      * @param Collection medical_cases, the list of medical cases to filter
      * @return Collection filtered list of medical cases.
      */
