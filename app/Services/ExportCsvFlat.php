@@ -36,10 +36,10 @@ class ExportCsvFlat extends ExportCsv
     {
         return [
             Config::get('csv.flat.identifiers.patient.dyn_pat_study_id_patient') => $patient->id,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_first_name') => self::ValueWithPermission($patient->first_name),
-            Config::get('csv.flat.identifiers.patient.dyn_pat_last_name') => self::ValueWithPermission($patient->last_name),
-            Config::get('csv.flat.identifiers.patient.dyn_pat_birth_date') => self::ValueWithPermission($patient->birthdate),
-            Config::get('csv.flat.identifiers.patient.dyn_pat_gender') => self::ValueWithPermission($patient->gender),
+            Config::get('csv.flat.identifiers.patient.dyn_pat_first_name') => $patient->first_name,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_last_name') => $patient->last_name,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_birth_date') => $patient->birthdate,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_gender') => $patient->gender,
             Config::get('csv.flat.identifiers.patient.dyn_pat_local_patient_id') => $patient->local_patient_id,
             Config::get('csv.flat.identifiers.patient.dyn_pat_group_id') => $patient->group_id,
             Config::get('csv.flat.identifiers.patient.dyn_pat_consent') => $patient->consent,
@@ -52,7 +52,7 @@ class ExportCsvFlat extends ExportCsv
             Config::get('csv.flat.identifiers.patient.dyn_pat_merged') => $patient->merged,
             Config::get('csv.flat.identifiers.patient.dyn_pat_status') => $patient->status,
             Config::get('csv.flat.identifiers.patient.dyn_pat_related_ids') => $patient->related_ids,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_middle_name') => self::ValueWithPermission($patient->middle_name),
+            Config::get('csv.flat.identifiers.patient.dyn_pat_middle_name') => $patient->middle_name,
             Config::get('csv.flat.identifiers.patient.dyn_pat_other_id') => $patient->other_id,
         ];
     }
@@ -371,9 +371,8 @@ class ExportCsvFlat extends ExportCsv
         $variable_values = self::getVariableDefaultValues($node_objs);
 
         foreach ($medical_case_answers as $medical_case_answer) {
-            $is_identifiable = $medical_case_answer->node->is_identifiable;
             $node_id = $medical_case_answer->node_id;
-            $variable_values[$node_id] = self::AnswerValueWithPermission($medical_case_answer->answer->label ?? null, $is_identifiable);
+            $variable_values[$node_id] = $medical_case_answer->answer->label ?? null;
         }
 
         $data[$index] = array_merge($data[$index], $variable_values);

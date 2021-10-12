@@ -86,7 +86,7 @@ class ExportsController extends Controller
             });
 
         } else if (Arr::exists($request->input(), 'DownloadSeparate')) {
-            MedicalCase::chunk(1, function ($medical_case, $key) use ($fromDate, $toDate, $zipper) {
+            MedicalCase::chunk(100, function ($medical_case, $key) use ($fromDate, $toDate, $zipper) {
                 $csv_export = new ExportCsvSeparate($medical_case, $fromDate, $toDate);
                 $csv_export->export($key);
                 $zipper->add(public_path(Config::get('csv.folder_separated') . '.csv'));
