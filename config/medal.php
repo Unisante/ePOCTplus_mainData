@@ -41,8 +41,7 @@ return [
         'algorithm' => [
             'keys' => [
                 'name' => 'algorithm_name',
-                'medal_c_id' => 'algorithm_id',
-                'is_arm_control' => 'is_arm_control'
+                'medal_c_id' => 'algorithm_id'
             ]
         ],
         'activities' => [

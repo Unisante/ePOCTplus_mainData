@@ -15,12 +15,12 @@ abstract class ExportService
      */
     protected static function checkMedicalCases($medical_cases)
     {
-        if($medical_cases === null){
+        if ($medical_cases === null) {
             throw new InvalidArgumentException("Medical cases should not be null.");
         }
 
-        foreach($medical_cases as $medical_case){
-            if($medical_case === null){
+        foreach ($medical_cases as $medical_case) {
+            if ($medical_case === null) {
                 throw new InvalidArgumentException("Medical cases cannot contain null elements.");
             }
         }
@@ -40,5 +40,5 @@ abstract class ExportService
     /**
      * Exports the data.
      */
-    abstract public function export();
+    abstract public function export($i);
 }

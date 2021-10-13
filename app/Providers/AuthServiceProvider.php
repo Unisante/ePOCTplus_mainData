@@ -2,13 +2,9 @@
 
 namespace App\Providers;
 
-use Route;
-use App\Device;
-use App\Policies\DevicePolicy;
-use Laravel\Passport\Passport;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Config;
+use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -18,7 +14,6 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
         'App\Device' => 'App\Policies\DevicePolicy',
         'App\HealthFacility' => 'App\Policies\HealthFacilityPolicy',
     ];
@@ -34,11 +29,11 @@ class AuthServiceProvider extends ServiceProvider
         //All other passport routes:
         //Only keep the necessary routes, uncomment other groups if needed in the future
         Passport::routes(function ($router) {
-                    $router->forAuthorization();
-                    $router->forAccessTokens();
-                    //$router->forTransientTokens();
-                    //$router->forPersonalAccessTokens();
-                });
+            $router->forAuthorization();
+            $router->forAccessTokens();
+            //$router->forTransientTokens();
+            //$router->forPersonalAccessTokens();
+        });
         Passport::tokensExpireIn(now()->addDays(Config::get('medal.authentication.token_lifetime_days')));
         Passport::refreshTokensExpireIn(now()->addDays(Config::get('medal.authentication.refresh_token_lifetime_days')));
     }
