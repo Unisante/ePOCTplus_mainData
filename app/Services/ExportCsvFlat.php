@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
-use DB;
 use App\Version;
+use DB;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
 
 class ExportCsvFlat extends ExportCsv
 {
@@ -19,7 +21,7 @@ class ExportCsvFlat extends ExportCsv
     protected static $DRUG_PROPOSED_AND_REJECTED = "Rejected";
     protected static $DRUG_MANUALLY_ADDED = "Manually added";
 
-     /**
+    /**
      * Constructor
      */
     public function __construct($medical_cases, $from_date, $to_date)
@@ -34,25 +36,25 @@ class ExportCsvFlat extends ExportCsv
     protected static function getPatientData($patient)
     {
         return [
-            Config::get('csv.flat.identifiers.patient.dyn_pat_study_id_patient')    => $patient->id,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_first_name')		    => self::ValueWithPermission($patient->first_name),
-            Config::get('csv.flat.identifiers.patient.dyn_pat_last_name')           => self::ValueWithPermission($patient->last_name),
-            Config::get('csv.flat.identifiers.patient.dyn_pat_birth_date')          => self::ValueWithPermission($patient->birthdate),
-            Config::get('csv.flat.identifiers.patient.dyn_pat_gender') 			    => self::ValueWithPermission($patient->gender),
-            Config::get('csv.flat.identifiers.patient.dyn_pat_local_patient_id')    => $patient->local_patient_id,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_group_id') 		    => $patient->group_id,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_consent') 		    => $patient->consent,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_redcap') 			    => $patient->redcap,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_duplicate') 		    => $patient->duplicate,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_other_uid') 		    => $patient->other_uid,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_other_study_id') 	    => $patient->other_study_id,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_other_group_id') 	    => $patient->other_group_id,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_merged_with') 		=> $patient->merged_with,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_merged') 			    => $patient->merged,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_status') 			    => $patient->status,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_related_ids') 		=> $patient->related_ids,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_middle_name') 		=> self::ValueWithPermission($patient->middle_name),
-            Config::get('csv.flat.identifiers.patient.dyn_pat_other_id') 		    => $patient->other_id
+            Config::get('csv.flat.identifiers.patient.dyn_pat_study_id_patient') => $patient->id,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_first_name') => self::ValueWithPermission($patient->first_name),
+            Config::get('csv.flat.identifiers.patient.dyn_pat_last_name') => self::ValueWithPermission($patient->last_name),
+            Config::get('csv.flat.identifiers.patient.dyn_pat_birth_date') => self::ValueWithPermission($patient->birthdate),
+            Config::get('csv.flat.identifiers.patient.dyn_pat_gender') => self::ValueWithPermission($patient->gender),
+            Config::get('csv.flat.identifiers.patient.dyn_pat_local_patient_id') => $patient->local_patient_id,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_group_id') => $patient->group_id,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_consent') => $patient->consent,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_redcap') => $patient->redcap,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_duplicate') => $patient->duplicate,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_other_uid') => $patient->other_uid,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_other_study_id') => $patient->other_study_id,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_other_group_id') => $patient->other_group_id,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_merged_with') => $patient->merged_with,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_merged') => $patient->merged,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_status') => $patient->status,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_related_ids') => $patient->related_ids,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_middle_name') => self::ValueWithPermission($patient->middle_name),
+            Config::get('csv.flat.identifiers.patient.dyn_pat_other_id') => $patient->other_id,
         ];
     }
 
@@ -63,28 +65,28 @@ class ExportCsvFlat extends ExportCsv
     protected static function getMedicalCaseData($medical_case)
     {
         return [
-			Config::get('csv.flat.identifiers.medical_case.dyn_mc_id') 						=> $medical_case->id,
-			Config::get('csv.flat.identifiers.medical_case.dyn_mc_local_medical_case_id') 	=> $medical_case->local_medical_case_id,
-			Config::get('csv.flat.identifiers.medical_case.dyn_mc_consent') 				=> $medical_case->consent,
-			Config::get('csv.flat.identifiers.medical_case.dyn_mc_isEligible') 				=> $medical_case->isEligible,
-			Config::get('csv.flat.identifiers.medical_case.dyn_mc_redcap') 					=> $medical_case->redcap,
-			Config::get('csv.flat.identifiers.medical_case.dyn_mc_consultation_date') 		=> $medical_case->consultation_date,
-			Config::get('csv.flat.identifiers.medical_case.dyn_mc_force_close') 			=> $medical_case->force_close,
-			Config::get('csv.flat.identifiers.medical_case.dyn_mc_mc_redcap_flag') 			=> $medical_case->mc_redcap_flag
-		];
+            Config::get('csv.flat.identifiers.medical_case.dyn_mc_id') => $medical_case->id,
+            Config::get('csv.flat.identifiers.medical_case.dyn_mc_local_medical_case_id') => $medical_case->local_medical_case_id,
+            Config::get('csv.flat.identifiers.medical_case.dyn_mc_consent') => $medical_case->consent,
+            Config::get('csv.flat.identifiers.medical_case.dyn_mc_isEligible') => $medical_case->isEligible,
+            Config::get('csv.flat.identifiers.medical_case.dyn_mc_redcap') => $medical_case->redcap,
+            Config::get('csv.flat.identifiers.medical_case.dyn_mc_consultation_date') => $medical_case->consultation_date,
+            Config::get('csv.flat.identifiers.medical_case.dyn_mc_force_close') => $medical_case->force_close,
+            Config::get('csv.flat.identifiers.medical_case.dyn_mc_mc_redcap_flag') => $medical_case->mc_redcap_flag,
+        ];
     }
 
     protected static function getHealthFacilityData($health_facility)
     {
         return [
-			Config::get('csv.flat.identifiers.health_facility.dyn_hfa_id')              => $health_facility->id,
-            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_long')            => $health_facility->long,
-            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_lat')             => $health_facility->lat,
-            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_hf_mode')         => $health_facility->hf_mode,
-            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_name')            => $health_facility->name,
-            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_country')         => $health_facility->country,
-            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_area')            => $health_facility->area
-		];
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_id') => $health_facility->id,
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_long') => $health_facility->long,
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_lat') => $health_facility->lat,
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_hf_mode') => $health_facility->hf_mode,
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_name') => $health_facility->name,
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_country') => $health_facility->country,
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_area') => $health_facility->area,
+        ];
     }
 
     /**
@@ -94,12 +96,12 @@ class ExportCsvFlat extends ExportCsv
     protected static function getVersionData($version)
     {
         return [
-            Config::get('csv.flat.identifiers.version.dyn_ver_id') 					=> $version->id,
-            Config::get('csv.flat.identifiers.version.dyn_ver_medal_c_id') 			=> $version->medal_c_id,
-            Config::get('csv.flat.identifiers.version.dyn_ver_name') 				=> $version->name,
-            Config::get('csv.flat.identifiers.version.dyn_ver_consent_management') 	=> $version->consent_management,
-            Config::get('csv.flat.identifiers.version.dyn_ver_study') 				=> $version->study,
-            Config::get('csv.flat.identifiers.version.dyn_ver_is_arm_control') 		=> $version->is_arm_control
+            Config::get('csv.flat.identifiers.version.dyn_ver_id') => $version->id,
+            Config::get('csv.flat.identifiers.version.dyn_ver_medal_c_id') => $version->medal_c_id,
+            Config::get('csv.flat.identifiers.version.dyn_ver_name') => $version->name,
+            Config::get('csv.flat.identifiers.version.dyn_ver_consent_management') => $version->consent_management,
+            Config::get('csv.flat.identifiers.version.dyn_ver_study') => $version->study,
+            Config::get('csv.flat.identifiers.version.dyn_ver_is_arm_control') => $version->is_arm_control,
         ];
     }
 
@@ -110,8 +112,8 @@ class ExportCsvFlat extends ExportCsv
     protected static function getAlgorithmData($algorithm)
     {
         return [
-            Config::get('csv.flat.identifiers.algorithm.dyn_alg_id') 			=> $algorithm->id,
-            Config::get('csv.flat.identifiers.algorithm.dyn_alg_name') 			=> $algorithm->name
+            Config::get('csv.flat.identifiers.algorithm.dyn_alg_id') => $algorithm->id,
+            Config::get('csv.flat.identifiers.algorithm.dyn_alg_name') => $algorithm->name,
         ];
     }
 
@@ -122,14 +124,14 @@ class ExportCsvFlat extends ExportCsv
     protected static function getActivityData($activity)
     {
         return [
-            Config::get('csv.flat.identifiers.activity.dyn_act_id') 				=> $activity->id,
-            Config::get('csv.flat.identifiers.activity.dyn_act_medical_case_id')    => $activity->medical_case_id,
-            Config::get('csv.flat.identifiers.activity.dyn_act_medal_c_id') 		=> $activity->medal_c_id,
-            Config::get('csv.flat.identifiers.activity.dyn_act_step') 			    => $activity->step,
-            Config::get('csv.flat.identifiers.activity.dyn_act_clinician') 		    => $activity->clinician,
-            Config::get('csv.flat.identifiers.activity.dyn_act_mac_address') 	    => $activity->mac_address,
-            Config::get('csv.flat.identifiers.activity.dyn_act_created_at') 		=> $activity->created_at,
-            Config::get('csv.flat.identifiers.activity.dyn_act_updated_at') 		=> $activity->updated_at,
+            Config::get('csv.flat.identifiers.activity.dyn_act_id') => $activity->id,
+            Config::get('csv.flat.identifiers.activity.dyn_act_medical_case_id') => $activity->medical_case_id,
+            Config::get('csv.flat.identifiers.activity.dyn_act_medal_c_id') => $activity->medal_c_id,
+            Config::get('csv.flat.identifiers.activity.dyn_act_step') => $activity->step,
+            Config::get('csv.flat.identifiers.activity.dyn_act_clinician') => $activity->clinician,
+            Config::get('csv.flat.identifiers.activity.dyn_act_mac_address') => $activity->mac_address,
+            Config::get('csv.flat.identifiers.activity.dyn_act_created_at') => $activity->created_at,
+            Config::get('csv.flat.identifiers.activity.dyn_act_updated_at') => $activity->updated_at,
         ];
     }
 
@@ -140,14 +142,14 @@ class ExportCsvFlat extends ExportCsv
     protected static function getDiagnosisData($diagnosis)
     {
         return [
-            Config::get('csv.flat.identifiers.diagnosis.dyn_dia_id') 			=> $diagnosis->id,
-            Config::get('csv.flat.identifiers.diagnosis.dyn_dia_medal_c_id') 	=> $diagnosis->medal_c_id,
-            Config::get('csv.flat.identifiers.diagnosis.dyn_dia_label')		 	=> $diagnosis->label,
+            Config::get('csv.flat.identifiers.diagnosis.dyn_dia_id') => $diagnosis->id,
+            Config::get('csv.flat.identifiers.diagnosis.dyn_dia_medal_c_id') => $diagnosis->medal_c_id,
+            Config::get('csv.flat.identifiers.diagnosis.dyn_dia_label') => $diagnosis->label,
             Config::get('csv.flat.identifiers.diagnosis.dyn_dia_diagnostic_id') => $diagnosis->diagnostic_id,
-            Config::get('csv.flat.identifiers.diagnosis.dyn_dia_created_at') 	=> $diagnosis->created_at,
-            Config::get('csv.flat.identifiers.diagnosis.dyn_dia_updated_at') 	=> $diagnosis->updated_at,
-            Config::get('csv.flat.identifiers.diagnosis.dyn_dia_type') 			=> $diagnosis->type,
-            Config::get('csv.flat.identifiers.diagnosis.dyn_dia_version_id') 	=> $diagnosis->version_id,
+            Config::get('csv.flat.identifiers.diagnosis.dyn_dia_created_at') => $diagnosis->created_at,
+            Config::get('csv.flat.identifiers.diagnosis.dyn_dia_updated_at') => $diagnosis->updated_at,
+            Config::get('csv.flat.identifiers.diagnosis.dyn_dia_type') => $diagnosis->type,
+            Config::get('csv.flat.identifiers.diagnosis.dyn_dia_version_id') => $diagnosis->version_id,
         ];
     }
 
@@ -158,12 +160,12 @@ class ExportCsvFlat extends ExportCsv
     protected static function getCustomDiagnosisData($custom_diagnosis)
     {
         return [
-            Config::get('csv.flat.identifiers.custom_diagnosis.dyn_cdi_id') 			    => $custom_diagnosis->id,
-            Config::get('csv.flat.identifiers.custom_diagnosis.dyn_cdi_label') 			    => $custom_diagnosis->label,
-            Config::get('csv.flat.identifiers.custom_diagnosis.dyn_cdi_drugs') 			    => $custom_diagnosis->drugs,
-            Config::get('csv.flat.identifiers.custom_diagnosis.dyn_cdi_created_at') 	    => $custom_diagnosis->created_at,
-            Config::get('csv.flat.identifiers.custom_diagnosis.dyn_cdi_updated_at') 	    => $custom_diagnosis->updated_at,
-            Config::get('csv.flat.identifiers.custom_diagnosis.dyn_cdi_medical_case_id')    => $custom_diagnosis->medical_case_id
+            Config::get('csv.flat.identifiers.custom_diagnosis.dyn_cdi_id') => $custom_diagnosis->id,
+            Config::get('csv.flat.identifiers.custom_diagnosis.dyn_cdi_label') => $custom_diagnosis->label,
+            Config::get('csv.flat.identifiers.custom_diagnosis.dyn_cdi_drugs') => $custom_diagnosis->drugs,
+            Config::get('csv.flat.identifiers.custom_diagnosis.dyn_cdi_created_at') => $custom_diagnosis->created_at,
+            Config::get('csv.flat.identifiers.custom_diagnosis.dyn_cdi_updated_at') => $custom_diagnosis->updated_at,
+            Config::get('csv.flat.identifiers.custom_diagnosis.dyn_cdi_medical_case_id') => $custom_diagnosis->medical_case_id,
         ];
     }
 
@@ -174,13 +176,13 @@ class ExportCsvFlat extends ExportCsv
     protected static function getDiagnosisReferenceData($diagnosis_reference)
     {
         return [
-            Config::get('csv.flat.identifiers.diagnosis_reference.dyn_dre_id') 				=> $diagnosis_reference->id,
-            Config::get('csv.flat.identifiers.diagnosis_reference.dyn_dre_agreed') 			=> $diagnosis_reference->agreed,
-            Config::get('csv.flat.identifiers.diagnosis_reference.dyn_dre_additional') 		=> $diagnosis_reference->additional,
-            Config::get('csv.flat.identifiers.diagnosis_reference.dyn_dre_diagnosis_id') 	=> $diagnosis_reference->diagnosis_id,
+            Config::get('csv.flat.identifiers.diagnosis_reference.dyn_dre_id') => $diagnosis_reference->id,
+            Config::get('csv.flat.identifiers.diagnosis_reference.dyn_dre_agreed') => $diagnosis_reference->agreed,
+            Config::get('csv.flat.identifiers.diagnosis_reference.dyn_dre_additional') => $diagnosis_reference->additional,
+            Config::get('csv.flat.identifiers.diagnosis_reference.dyn_dre_diagnosis_id') => $diagnosis_reference->diagnosis_id,
             Config::get('csv.flat.identifiers.diagnosis_reference.dyn_dre_medical_case_id') => $diagnosis_reference->medical_case_id,
-            Config::get('csv.flat.identifiers.diagnosis_reference.dyn_dre_created_at') 		=> $diagnosis_reference->created_at,
-            Config::get('csv.flat.identifiers.diagnosis_reference.dyn_dre_updated_at') 		=> $diagnosis_reference->updated_at
+            Config::get('csv.flat.identifiers.diagnosis_reference.dyn_dre_created_at') => $diagnosis_reference->created_at,
+            Config::get('csv.flat.identifiers.diagnosis_reference.dyn_dre_updated_at') => $diagnosis_reference->updated_at,
         ];
     }
 
@@ -191,17 +193,17 @@ class ExportCsvFlat extends ExportCsv
     protected static function getDrugData($drug)
     {
         return [
-            Config::get('csv.flat.identifiers.drug.dyn_dru_id') 					=> $drug->id,
-            Config::get('csv.flat.identifiers.drug.dyn_dru_medal_c_id') 			=> $drug->medal_c_id,
-            Config::get('csv.flat.identifiers.drug.dyn_dru_type') 				    => $drug->type,
-            Config::get('csv.flat.identifiers.drug.dyn_dru_label') 				    => $drug->label,
-            Config::get('csv.flat.identifiers.drug.dyn_dru_description') 		    => $drug->description,
-            Config::get('csv.flat.identifiers.drug.dyn_dru_diagnosis_id') 		    => $drug->diagnosis_id,
-            Config::get('csv.flat.identifiers.drug.dyn_dru_created_at') 			=> $drug->created_at,
-            Config::get('csv.flat.identifiers.drug.dyn_dru_updated_at') 			=> $drug->updated_at,
-            Config::get('csv.flat.identifiers.drug.dyn_dru_is_anti_malarial') 	    => $drug->is_anti_malarial,
-            Config::get('csv.flat.identifiers.drug.dyn_dru_is_antibiotic') 		    => $drug->is_antibiotic,
-            Config::get('csv.flat.identifiers.drug.dyn_dru_duration') 			    => $drug->duration
+            Config::get('csv.flat.identifiers.drug.dyn_dru_id') => $drug->id,
+            Config::get('csv.flat.identifiers.drug.dyn_dru_medal_c_id') => $drug->medal_c_id,
+            Config::get('csv.flat.identifiers.drug.dyn_dru_type') => $drug->type,
+            Config::get('csv.flat.identifiers.drug.dyn_dru_label') => $drug->label,
+            Config::get('csv.flat.identifiers.drug.dyn_dru_description') => $drug->description,
+            Config::get('csv.flat.identifiers.drug.dyn_dru_diagnosis_id') => $drug->diagnosis_id,
+            Config::get('csv.flat.identifiers.drug.dyn_dru_created_at') => $drug->created_at,
+            Config::get('csv.flat.identifiers.drug.dyn_dru_updated_at') => $drug->updated_at,
+            Config::get('csv.flat.identifiers.drug.dyn_dru_is_anti_malarial') => $drug->is_anti_malarial,
+            Config::get('csv.flat.identifiers.drug.dyn_dru_is_antibiotic') => $drug->is_antibiotic,
+            Config::get('csv.flat.identifiers.drug.dyn_dru_duration') => $drug->duration,
         ];
     }
 
@@ -212,14 +214,14 @@ class ExportCsvFlat extends ExportCsv
     protected static function getAdditionalDrugData($additional_drug)
     {
         return [
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_id') 					=> $additional_drug->id,
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_drug_id') 			=> $additional_drug->drug_id,
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_medical_case_id') 	=> $additional_drug->medical_case_id,
+            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_id') => $additional_drug->id,
+            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_drug_id') => $additional_drug->drug_id,
+            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_medical_case_id') => $additional_drug->medical_case_id,
             Config::get('csv.flat.identifiers.additional_drug.dyn_adr_formulationSelected') => $additional_drug->formulationSelected,
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_agreed') 				=> $additional_drug->agreed,
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_version_id') 			=> $additional_drug->version_id,
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_created_at') 			=> $additional_drug->created_at,
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_updated_at') 			=> $additional_drug->updated_at
+            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_agreed') => $additional_drug->agreed,
+            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_version_id') => $additional_drug->version_id,
+            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_created_at') => $additional_drug->created_at,
+            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_updated_at') => $additional_drug->updated_at,
         ];
     }
 
@@ -230,16 +232,16 @@ class ExportCsvFlat extends ExportCsv
     protected static function getDrugReferenceData($drug_reference)
     {
         return [
-            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_id') 					=> $drug_reference->id,
-            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_drug_id') 				=> $drug_reference->drug_id,
-            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_diagnosis_id') 		=> $drug_reference->diagnosis_id,
-            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_agreed')				=> $drug_reference->agreed,
-            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_created_at') 			=> $drug_reference->created_at,
-            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_updated_at') 			=> $drug_reference->updated_at,
-            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_formulationSelected') 	=> $drug_reference->formulationSelected,
-            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_formulation_id') 		=> $drug_reference->formulation_id,
-            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_additional') 			=> $drug_reference->additional,
-            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_duration') 			=> $drug_reference->duration
+            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_id') => $drug_reference->id,
+            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_drug_id') => $drug_reference->drug_id,
+            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_diagnosis_id') => $drug_reference->diagnosis_id,
+            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_agreed') => $drug_reference->agreed,
+            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_created_at') => $drug_reference->created_at,
+            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_updated_at') => $drug_reference->updated_at,
+            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_formulationSelected') => $drug_reference->formulationSelected,
+            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_formulation_id') => $drug_reference->formulation_id,
+            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_additional') => $drug_reference->additional,
+            Config::get('csv.flat.identifiers.drug_reference.dyn_dre_duration') => $drug_reference->duration,
         ];
     }
 
@@ -250,16 +252,16 @@ class ExportCsvFlat extends ExportCsv
     protected static function getManagementData($management)
     {
         return [
-            Config::get('csv.flat.identifiers.management.dyn_man_id') 					=> $management->id,
-            Config::get('csv.flat.identifiers.management.dyn_man_drug_id') 				=> $management->drug_id,
-            Config::get('csv.flat.identifiers.management.dyn_man_diagnosis_id') 		=> $management->diagnosis_id,
-            Config::get('csv.flat.identifiers.management.dyn_man_agreed') 				=> $management->agreed,
-            Config::get('csv.flat.identifiers.management.dyn_man_created_at') 			=> $management->created_at,
-            Config::get('csv.flat.identifiers.management.dyn_man_updated_at') 			=> $management->updated_at,
-            Config::get('csv.flat.identifiers.management.dyn_man_formulationSelected') 	=> $management->formulationSelected,
-            Config::get('csv.flat.identifiers.management.dyn_man_formulation_id') 		=> $management->formulation_id,
-            Config::get('csv.flat.identifiers.management.dyn_man_additional') 			=> $management->additional,
-            Config::get('csv.flat.identifiers.management.dyn_man_duration') 			=> $management->duration
+            Config::get('csv.flat.identifiers.management.dyn_man_id') => $management->id,
+            Config::get('csv.flat.identifiers.management.dyn_man_drug_id') => $management->drug_id,
+            Config::get('csv.flat.identifiers.management.dyn_man_diagnosis_id') => $management->diagnosis_id,
+            Config::get('csv.flat.identifiers.management.dyn_man_agreed') => $management->agreed,
+            Config::get('csv.flat.identifiers.management.dyn_man_created_at') => $management->created_at,
+            Config::get('csv.flat.identifiers.management.dyn_man_updated_at') => $management->updated_at,
+            Config::get('csv.flat.identifiers.management.dyn_man_formulationSelected') => $management->formulationSelected,
+            Config::get('csv.flat.identifiers.management.dyn_man_formulation_id') => $management->formulation_id,
+            Config::get('csv.flat.identifiers.management.dyn_man_additional') => $management->additional,
+            Config::get('csv.flat.identifiers.management.dyn_man_duration') => $management->duration,
         ];
     }
 
@@ -270,12 +272,12 @@ class ExportCsvFlat extends ExportCsv
     protected static function getManagementReferenceData($management_reference)
     {
         return [
-            Config::get('csv.flat.identifiers.management_reference.dyn_mre_id') 			=> $management_reference->id,
-            Config::get('csv.flat.identifiers.management_reference.dyn_mre_agreed') 		=> $management_reference->agreed,
-            Config::get('csv.flat.identifiers.management_reference.dyn_mre_diagnosis_id') 	=> $management_reference->diagnosis_id,
-            Config::get('csv.flat.identifiers.management_reference.dyn_mre_created_at') 	=> $management_reference->created_at,
-            Config::get('csv.flat.identifiers.management_reference.dyn_mre_updated_at') 	=> $management_reference->updated_at,
-            Config::get('csv.flat.identifiers.management_reference.dyn_mre_management_id') 	=> $management_reference->management_id
+            Config::get('csv.flat.identifiers.management_reference.dyn_mre_id') => $management_reference->id,
+            Config::get('csv.flat.identifiers.management_reference.dyn_mre_agreed') => $management_reference->agreed,
+            Config::get('csv.flat.identifiers.management_reference.dyn_mre_diagnosis_id') => $management_reference->diagnosis_id,
+            Config::get('csv.flat.identifiers.management_reference.dyn_mre_created_at') => $management_reference->created_at,
+            Config::get('csv.flat.identifiers.management_reference.dyn_mre_updated_at') => $management_reference->updated_at,
+            Config::get('csv.flat.identifiers.management_reference.dyn_mre_management_id') => $management_reference->management_id,
         ];
     }
 
@@ -286,23 +288,23 @@ class ExportCsvFlat extends ExportCsv
     protected static function getFormulationData($formulation)
     {
         return [
-            Config::get('csv.flat.identifiers.formulation.dyn_for_id') 								=> $formulation->id,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_medical_form') 					=> $formulation->medical_form,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_administration_route_name') 		=> $formulation->administration_route_name,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_liquid_concentration') 			=> $formulation->liquid_concentration,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_dose_form') 						=> $formulation->dose_form,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_unique_dose') 					=> $formulation->unique_dose,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_by_age') 							=> $formulation->by_age,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_minimal_dose_per_kg') 			=> $formulation->minimal_dose_per_kg,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_maximal_dose_per_kg') 			=> $formulation->maximal_dose_per_kg,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_maximal_dose') 					=> $formulation->maximal_dose,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_description') 					=> $formulation->description,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_doses_per_day') 					=> $formulation->doses_per_day,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_created_at') 						=> $formulation->created_at,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_updated_at') 						=> $formulation->updated_at,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_drug_id') 						=> $formulation->drug_id,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_administration_route_category') 	=> $formulation->administration_route_category,
-            Config::get('csv.flat.identifiers.formulation.dyn_for_medal_c_id') 						=> $formulation->medal_c_id
+            Config::get('csv.flat.identifiers.formulation.dyn_for_id') => $formulation->id,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_medical_form') => $formulation->medical_form,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_administration_route_name') => $formulation->administration_route_name,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_liquid_concentration') => $formulation->liquid_concentration,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_dose_form') => $formulation->dose_form,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_unique_dose') => $formulation->unique_dose,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_by_age') => $formulation->by_age,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_minimal_dose_per_kg') => $formulation->minimal_dose_per_kg,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_maximal_dose_per_kg') => $formulation->maximal_dose_per_kg,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_maximal_dose') => $formulation->maximal_dose,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_description') => $formulation->description,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_doses_per_day') => $formulation->doses_per_day,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_created_at') => $formulation->created_at,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_updated_at') => $formulation->updated_at,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_drug_id') => $formulation->drug_id,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_administration_route_category') => $formulation->administration_route_category,
+            Config::get('csv.flat.identifiers.formulation.dyn_for_medal_c_id') => $formulation->medal_c_id,
         ];
     }
 
@@ -339,7 +341,7 @@ class ExportCsvFlat extends ExportCsv
     protected static function getVariableDefaultValues($node_objs)
     {
         $variable_values = [];
-        foreach($node_objs as $node_obj){
+        foreach ($node_objs as $node_obj) {
             $variable_values[$node_obj->id] = self::$VARIABLE_DEFAULT_VALUE;
         }
 
@@ -352,7 +354,7 @@ class ExportCsvFlat extends ExportCsv
     protected static function getVariableLabels($node_objs, $version_node_names)
     {
         $labels = [];
-        foreach($node_objs as $node_obj){
+        foreach ($node_objs as $node_obj) {
             $label = $node_obj->label;
             $label = $version_node_names[trim($label)] ?? $label;
             $labels[] = "[Variable] " . $node_obj->id . ' - ' . $label;
@@ -366,15 +368,17 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function addMedicalCaseAnswerData(&$data, $index, $medical_case_answers, $version_node_names)
     {
-        $node_objs = DB::table('nodes')->select('id', 'label')->get();
+        $node_objs = Cache::store('array')->rememberForever('node_objs', function () {
+            return DB::table('nodes')->select('id', 'label')->get();
+        });
+
         $variable_values = self::getVariableDefaultValues($node_objs);
 
-        foreach($medical_case_answers as $medical_case_answer){
+        foreach ($medical_case_answers as $medical_case_answer) {
             $is_identifiable = $medical_case_answer->node->is_identifiable;
             $node_id = $medical_case_answer->node_id;
             $variable_values[$node_id] = self::AnswerValueWithPermission($medical_case_answer->answer->label ?? null, $is_identifiable);
         }
-
 
         $data[$index] = array_merge($data[$index], $variable_values);
         // add labels
@@ -400,14 +404,13 @@ class ExportCsvFlat extends ExportCsv
         $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.algorithm')));
     }
 
-
     /**
      * @return Collection the list of default diagnosis' values
      */
     protected static function getDiagnosisDefaultValues($diagnosis_objs)
     {
         $diagnosis_values = [];
-        foreach($diagnosis_objs as $diagnosis_obj){
+        foreach ($diagnosis_objs as $diagnosis_obj) {
             $diagnosis_values[$diagnosis_obj->id] = self::$DIAGNOSIS_NOT_PROPOSED;
         }
 
@@ -420,7 +423,7 @@ class ExportCsvFlat extends ExportCsv
     protected static function getDiagnosisLabels($diagnosis_objs)
     {
         $labels = [];
-        foreach($diagnosis_objs as $diagnosis_obj){
+        foreach ($diagnosis_objs as $diagnosis_obj) {
             $labels[] = "[Diagnosis] " . $diagnosis_obj->id . " - " . $diagnosis_obj->label;
         }
 
@@ -432,21 +435,20 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function addDiagnosesData(&$data, $index, $diagnosis_references)
     {
-        $diagnosis_objs = DB::table('diagnoses')->select('id', 'label')->get();
+        $diagnosis_objs = Cache::store('array')->rememberForever('diagnosis_objs', function () {
+            return DB::table('diagnoses')->select('id', 'label')->get();
+        });
         $diagnosis_values = self::getDiagnosisDefaultValues($diagnosis_objs);
 
-        foreach($diagnosis_references as $diagnosis_reference){
-            $agreed = $diagnosis_reference->agreed;
-            $additional = $diagnosis_reference->additional;
-            $exluded = $diagnosis_reference->excluded;
-            $diagnosis_id = $diagnosis_reference->diagnosis_id;
-            if($exluded){
+        foreach ($diagnosis_references as $diagnosis_reference) {
+            if (self::isSkippedDiagnosisReference($diagnosis_reference)) {
                 continue;
             }
-            if($additional){
-                $diagnosis_values[$diagnosis_id] = self::$DIAGNOSIS_MANUALLY_ADDED; 
-            }else{
-                $diagnosis_values[$diagnosis_id] = $agreed ? self::$DIAGNOSIS_PROPOSED_AND_ACCEPTED : self::$DIAGNOSIS_PROPOSED_AND_REJECTED;
+            $diagnosis_id = $diagnosis_reference->diagnosis_id;
+            if ($diagnosis_reference->additional) {
+                $diagnosis_values[$diagnosis_id] = self::$DIAGNOSIS_MANUALLY_ADDED;
+            } else {
+                $diagnosis_values[$diagnosis_id] = $diagnosis_reference->agreed ? self::$DIAGNOSIS_PROPOSED_AND_ACCEPTED : self::$DIAGNOSIS_PROPOSED_AND_REJECTED;
             }
         }
 
@@ -461,10 +463,12 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function addCustomDiagnosesData(&$data, $index, $custom_diagnoses)
     {
-        $custom_diagnosis_objs = DB::table('custom_diagnoses')->select('id', 'label')->get();
+        $custom_diagnosis_objs = Cache::store('array')->rememberForever('custom_diagnosis_objs', function () {
+            return DB::table('custom_diagnoses')->select('id', 'label')->get();
+        });
         $custom_diagnosis_values = self::getDiagnosisDefaultValues($custom_diagnosis_objs);
 
-        foreach($custom_diagnoses as $custom_diagnosis){
+        foreach ($custom_diagnoses as $custom_diagnosis) {
             $id = $custom_diagnosis->id;
             $custom_diagnosis_values[$id] = self::$DIAGNOSIS_MANUALLY_ADDED;
         }
@@ -481,7 +485,7 @@ class ExportCsvFlat extends ExportCsv
     protected static function getDrugDefaultValues($drug_objs)
     {
         $drug_values = [];
-        foreach($drug_objs as $drug_obj){
+        foreach ($drug_objs as $drug_obj) {
             $drug_values[$drug_obj->id] = self::$DRUG_NOT_PROPOSED;
         }
 
@@ -494,7 +498,7 @@ class ExportCsvFlat extends ExportCsv
     protected static function getDrugLabels($drug_objs)
     {
         $labels = [];
-        foreach($drug_objs as $drug_obj){
+        foreach ($drug_objs as $drug_obj) {
             $labels[] = "[Drug] " . $drug_obj->id . " - " . $drug_obj->label;
         }
 
@@ -506,18 +510,21 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function addDrugData(&$data, $index, $diagnosis_references)
     {
-        $drug_objs = DB::table('drugs')->select('id', 'label')->get();
-        $drug_values  = self::getDrugDefaultValues($drug_objs);
 
-        foreach($diagnosis_references as $diagnosis_reference){
+        $drug_objs = Cache::store('array')->rememberForever('drug_objs', function () {
+            return DB::table('drugs')->select('id', 'label')->get();
+        });
+        $drug_values = self::getDrugDefaultValues($drug_objs);
+
+        foreach ($diagnosis_references as $diagnosis_reference) {
             $drug_references = $diagnosis_reference->drug_references;
-            foreach($drug_references as $drug_reference){
+            foreach ($drug_references as $drug_reference) {
                 $agreed = $drug_reference->agreed;
                 $additional = $drug_reference->additional;
                 $drug_id = $drug_reference->drug_id;
-                if($additional){
+                if ($additional) {
                     $drug_values[$drug_id] = self::$DRUG_MANUALLY_ADDED;
-                }else{
+                } else {
                     $drug_values[$drug_id] = $agreed ? self::$DRUG_PROPOSED_AND_ACCEPTED : self::$DRUG_PROPOSED_AND_REJECTED;
                 }
             }
@@ -532,7 +539,7 @@ class ExportCsvFlat extends ExportCsv
     protected static function getCustomDrugsLabels($custom_drugs_objs)
     {
         $labels = [];
-        foreach($custom_drugs_objs as $custom_drug_obj){
+        foreach ($custom_drugs_objs as $custom_drug_obj) {
             $labels[] = "[Drug] " . $custom_drug_obj->id . " - " . $custom_drug_obj->name;
         }
 
@@ -544,12 +551,15 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function addCustomDrugData(&$data, $index, $custom_diagnoses)
     {
-        $custom_drugs_objs = DB::table('custom_drugs')->select('id', 'name')->get();
+        $custom_drugs_objs = Cache::store('array')->rememberForever('custom_drugs_objs', function () {
+            return DB::table('custom_drugs')->select('id', 'name')->get();
+        });
+
         $custom_drugs_values = self::getDrugDefaultValues($custom_drugs_objs);
 
-        foreach($custom_diagnoses as $custom_diagnosis){
+        foreach ($custom_diagnoses as $custom_diagnosis) {
             $custom_drugs = $custom_diagnosis->custom_drugs;
-            foreach($custom_drugs as $custom_drug){
+            foreach ($custom_drugs as $custom_drug) {
                 $id = $custom_drug->id;
                 $custom_drugs_values[$id] = self::$DRUG_MANUALLY_ADDED;
             }
@@ -566,11 +576,11 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function addChildrenToArray(&$data, $json_children, $id)
     {
-        foreach($json_children as $json_child){
-            if(in_array('children', array_keys($json_child))){
+        foreach ($json_children as $json_child) {
+            if (in_array('children', array_keys($json_child))) {
                 $json_child_children = $json_child['children'];
                 $this->addChildrenToArray($data, $json_child_children, $id); // recursive search
-            }else{
+            } else {
                 $variable_name = trim(strstr($json_child['title'], " "));
                 $variable_name = trim(strstr($variable_name, " "));
                 $data[$id][$variable_name] = $json_child['title'];
@@ -584,25 +594,29 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function getJsonNodesInfo()
     {
-        $versions = Version::all();
 
-        $versions_data = [];
-        foreach($versions as $version){
-            $id = $version->medal_c_id;
-            $versions_data[$id] = [];
+        return Cache::store('array')->rememberForever('versions_data', function () {
 
-            ini_set("allow_url_fopen", 1);
-            $json = file_get_contents('https://medalc.unisante.ch/api/v1/versions/' . $version->medal_c_id);
-            $obj = json_decode($json);
-            $json_steps = json_decode($obj->full_order_json, true);
-            foreach($json_steps as $json_step){
-                $json_children = $json_step['children'];
-                $this->addChildrenToArray($versions_data, $json_children, $id);
+            $versions = Version::all();
+
+            $versions_data = [];
+            foreach ($versions as $version) {
+                $id = $version->medal_c_id;
+                $versions_data[$id] = [];
+
+                ini_set("allow_url_fopen", 1);
+                $json = file_get_contents('https://medalc.unisante.ch/api/v1/versions/' . $version->medal_c_id);
+                $obj = json_decode($json);
+                $json_steps = json_decode($obj->full_order_json, true);
+                foreach ($json_steps as $json_step) {
+                    $json_children = $json_step['children'];
+                    $this->addChildrenToArray($versions_data, $json_children, $id);
+                }
             }
-        }
+            return $versions_data;
+        });
 
-        return $versions_data;
-    } 
+    }
 
     /**
      * Retrieve all the data.
@@ -614,7 +628,7 @@ class ExportCsvFlat extends ExportCsv
 
         $version_node_names = $this->getJsonNodesInfo();
 
-        foreach($this->medical_cases as $medical_case){
+        foreach ($this->medical_cases as $medical_case) {
             $patient = $medical_case->patient;
             $index = $patient->id . '-' . $medical_case->id;
             $data[$index] = [];
@@ -627,7 +641,7 @@ class ExportCsvFlat extends ExportCsv
             $health_facility = $medical_case->patient->facility;
             // get health facility
             $this->addHealthFacilityData($data, $index, $health_facility);
-            
+
             $version = $medical_case->version;
             // get version data
             $this->addVersionData($data, $index, $version);
@@ -658,16 +672,22 @@ class ExportCsvFlat extends ExportCsv
         $data[0] = array_unique($data[0]);
         return $data;
     }
-    
-    public function export()
+
+    public function export($i)
     {
-        back()->withErrors("Something went wrong.");
         $data = $this->getDataFromMedicalCases();
-
-        foreach(Config::get('csv.flat.file_names') as $file_name){
-            $this->writeToFile($file_name, $data);
+        $folder = public_path() . Config::get('csv.flat.folder');
+        if (!File::exists($folder)) {
+            File::makeDirectory($folder);
         }
-
-		$this->downloadFiles(Config::get('csv.flat.file_names'));
+        $file = fopen($folder . 'answers.csv', "a+");
+        if ($i > 1) {
+            unset($data[0]);
+        }
+        foreach ($data as $line) {
+            $attributes = $this->attributesToStr((array) $line);
+            fputcsv($file, $attributes);
+        }
+        fclose($file);
     }
 }
