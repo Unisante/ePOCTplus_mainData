@@ -51,7 +51,7 @@ class ExportsController extends Controller
     {
         $export_completion = 0;
         ini_set('memory_limit', '4096M');
-        ini_set('max_execution_time', '3600');
+        ini_set('max_execution_time', '300');
 
         if (Patient::all()->count() == 0) {
             return back()->withErrors("We currently do not have records in the database.");
@@ -72,7 +72,6 @@ class ExportsController extends Controller
             return back()->withErrors("Date cannot be in the future.");
         }
 
-        $index = 1;
         $extract_file_name = Config::get('csv.public_extract_name');
         $file_from_public = base_path() . '/public/' . $extract_file_name . '.zip';
         // generate the data file.
@@ -80,23 +79,51 @@ class ExportsController extends Controller
         $zipper->make($extract_file_name . '.zip');
         // check export mode
         if (Arr::exists($request->input(), 'DownloadFlat')) {
-            MedicalCase::chunk(100, function ($medical_case, $key) use ($fromDate, $toDate, $zipper, $index) {
+            MedicalCase::with([
+                'patient',
+                'patient.facility',
+                'custom_diagnoses',
+                'custom_diagnoses.custom_drugs',
+                'version',
+                'facility',
+                'medical_case_answers',
+                'medical_case_answers.answer',
+                'medical_case_answers.node',
+                'diagnoses_references',
+                'diagnoses_references.drug_references',
+            ])->chunk(100, function ($medical_case, $key) use ($fromDate, $toDate) {
                 $csv_export = new ExportCsvFlat($medical_case, $fromDate, $toDate);
                 $csv_export->export($key);
-                if ($key % 5 === 0) {
-                    $zipper->add(public_path(Config::get('csv.flat.folder') . 'answers_' . $index . '.csv'));
-                    $index++;
-                } else {
-                    $zipper->add(public_path(Config::get('csv.flat.folder') . 'answers.csv'));
-                }
             });
+            $zipper->add(public_path(Config::get('csv.flat.folder') . 'answers.csv'));
 
         } else if (Arr::exists($request->input(), 'DownloadSeparate')) {
-            MedicalCase::chunk(100, function ($medical_case, $key) use ($fromDate, $toDate, $zipper) {
+            MedicalCase::with([
+                'activities',
+                'patient',
+                'patient.facility',
+                'custom_diagnoses',
+                'custom_diagnoses.custom_drugs',
+                'version',
+                'version.algorithm',
+                'facility',
+                'medical_case_answers',
+                'medical_case_answers.answer',
+                'medical_case_answers.node',
+                'medical_case_answers.node.answers',
+                'diagnoses_references',
+                'diagnoses_references.diagnoses',
+                'diagnoses_references.drug_references',
+                'diagnoses_references.drug_references.drugs',
+                'diagnoses_references.drug_references.drugs.formulations',
+                'diagnoses_references.drug_references.drugs.additional_drugs',
+                'diagnoses_references.management_references',
+                'diagnoses_references.management_references.managements',
+            ])->chunk(100, function ($medical_case, $key) use ($fromDate, $toDate) {
                 $csv_export = new ExportCsvSeparate($medical_case, $fromDate, $toDate);
                 $csv_export->export($key);
-                $zipper->add(public_path(Config::get('csv.folder_separated')));
             });
+            $zipper->add(public_path(Config::get('csv.folder_separated')));
 
         } else {
             return back()->withErrors("Something went wrong.");
@@ -121,14 +148,13 @@ class ExportsController extends Controller
             File::deleteDirectory(public_path(Config::get('csv.folder_separated')));
         }
         unlink($file_from_public);
-
-        exit();
+        exit;
     }
 
     public function selectDate()
     {
-        if (Patient::all()->count() == 0) {
-            return back()->withErrors("We Currently Do not have records in the database");
+        if (Patient::count() == 0) {
+            return back()->withErrors("We Currently Do not have any records in the database");
         }
 
         $date_array = [];
@@ -144,11 +170,11 @@ class ExportsController extends Controller
 
         $data = array(
             'currentUser' => Auth::user(),
-            'userCount' => User::all()->count(),
-            'mdCases' => MedicalCase::all()->count(),
+            'userCount' => User::count(),
+            'mdCases' => MedicalCase::count(),
             'oldest_date' => date('Y-m-d', min($date_array)),
             'newest_date' => date('Y-m-d', max($date_array)),
-            'patientCount' => Patient::all()->count(),
+            'patientCount' => Patient::count(),
         );
 
         return view('exports.index')->with($data);

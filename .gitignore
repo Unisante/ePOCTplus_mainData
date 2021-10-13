@@ -13,3 +13,4 @@ yarn-error.log
 /storage/consentFiles/*
 /storage/medicalCases/*
 /storage/*
+.vscode/launch.json

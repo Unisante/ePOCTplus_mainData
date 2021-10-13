@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Version;
 use DB;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 
@@ -367,7 +368,10 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function addMedicalCaseAnswerData(&$data, $index, $medical_case_answers, $version_node_names)
     {
-        $node_objs = DB::table('nodes')->select('id', 'label')->get();
+        $node_objs = Cache::store('array')->rememberForever('node_objs', function () {
+            return DB::table('nodes')->select('id', 'label')->get();
+        });
+
         $variable_values = self::getVariableDefaultValues($node_objs);
 
         foreach ($medical_case_answers as $medical_case_answer) {
@@ -433,7 +437,9 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function addDiagnosesData(&$data, $index, $diagnosis_references)
     {
-        $diagnosis_objs = DB::table('diagnoses')->select('id', 'label')->get();
+        $diagnosis_objs = Cache::store('array')->rememberForever('diagnosis_objs', function () {
+            return DB::table('diagnoses')->select('id', 'label')->get();
+        });
         $diagnosis_values = self::getDiagnosisDefaultValues($diagnosis_objs);
 
         foreach ($diagnosis_references as $diagnosis_reference) {
@@ -459,7 +465,9 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function addCustomDiagnosesData(&$data, $index, $custom_diagnoses)
     {
-        $custom_diagnosis_objs = DB::table('custom_diagnoses')->select('id', 'label')->get();
+        $custom_diagnosis_objs = Cache::store('array')->rememberForever('custom_diagnosis_objs', function () {
+            return DB::table('custom_diagnoses')->select('id', 'label')->get();
+        });
         $custom_diagnosis_values = self::getDiagnosisDefaultValues($custom_diagnosis_objs);
 
         foreach ($custom_diagnoses as $custom_diagnosis) {
@@ -504,7 +512,10 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function addDrugData(&$data, $index, $diagnosis_references)
     {
-        $drug_objs = DB::table('drugs')->select('id', 'label')->get();
+
+        $drug_objs = Cache::store('array')->rememberForever('drug_objs', function () {
+            return DB::table('drugs')->select('id', 'label')->get();
+        });
         $drug_values = self::getDrugDefaultValues($drug_objs);
 
         foreach ($diagnosis_references as $diagnosis_reference) {
@@ -542,7 +553,10 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function addCustomDrugData(&$data, $index, $custom_diagnoses)
     {
-        $custom_drugs_objs = DB::table('custom_drugs')->select('id', 'name')->get();
+        $custom_drugs_objs = Cache::store('array')->rememberForever('custom_drugs_objs', function () {
+            return DB::table('custom_drugs')->select('id', 'name')->get();
+        });
+
         $custom_drugs_values = self::getDrugDefaultValues($custom_drugs_objs);
 
         foreach ($custom_diagnoses as $custom_diagnosis) {
@@ -582,24 +596,28 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function getJsonNodesInfo()
     {
-        $versions = Version::all();
 
-        $versions_data = [];
-        foreach ($versions as $version) {
-            $id = $version->medal_c_id;
-            $versions_data[$id] = [];
+        return Cache::store('array')->rememberForever('versions_data', function () {
 
-            ini_set("allow_url_fopen", 1);
-            $json = file_get_contents('https://medalc.unisante.ch/api/v1/versions/' . $version->medal_c_id);
-            $obj = json_decode($json);
-            $json_steps = json_decode($obj->full_order_json, true);
-            foreach ($json_steps as $json_step) {
-                $json_children = $json_step['children'];
-                $this->addChildrenToArray($versions_data, $json_children, $id);
+            $versions = Version::all();
+
+            $versions_data = [];
+            foreach ($versions as $version) {
+                $id = $version->medal_c_id;
+                $versions_data[$id] = [];
+
+                ini_set("allow_url_fopen", 1);
+                $json = file_get_contents('https://medalc.unisante.ch/api/v1/versions/' . $version->medal_c_id);
+                $obj = json_decode($json);
+                $json_steps = json_decode($obj->full_order_json, true);
+                foreach ($json_steps as $json_step) {
+                    $json_children = $json_step['children'];
+                    $this->addChildrenToArray($versions_data, $json_children, $id);
+                }
             }
-        }
+            return $versions_data;
+        });
 
-        return $versions_data;
     }
 
     /**
@@ -659,21 +677,15 @@ class ExportCsvFlat extends ExportCsv
 
     public function export($i)
     {
-        $index = 1;
         $data = $this->getDataFromMedicalCases();
         $folder = public_path() . Config::get('csv.flat.folder');
         if (!File::exists($folder)) {
             File::makeDirectory($folder);
         }
-
-        if ($i % 5 === 0) {
-            $file = fopen($folder . 'answers_' . $index . '.csv', "w");
-            $index++;
-        } else {
-            $file = fopen($folder . 'answers' . '.csv', "w");
-
+        $file = fopen($folder . 'answers.csv', "a+");
+        if ($i > 1) {
+            unset($data[0]);
         }
-
         foreach ($data as $line) {
             $attributes = $this->attributesToStr((array) $line);
             fputcsv($file, $attributes);

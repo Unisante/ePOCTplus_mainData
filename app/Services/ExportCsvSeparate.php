@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\AnswerType;
 use App\Services\ExportCsv;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 
@@ -663,7 +664,10 @@ class ExportCsvSeparate extends ExportCsv
             }
         }
 
-        $answer_types = AnswerType::all();
+        $answer_types = Cache::store('array')->rememberForever('answer_types', function () {
+            return AnswerType::all();
+        });
+
         foreach ($answer_types as $answer_type) {
             // get answer type
             $this->addAnswerTypeData($answer_types_data, $answer_type);
@@ -700,9 +704,12 @@ class ExportCsvSeparate extends ExportCsv
         if (!File::exists($folder)) {
             File::makeDirectory($folder);
         }
-
         foreach ($file_names as $file_name) {
-            $file = fopen($folder . $file_name, "w");
+            //not the best way to remove header after each chunk
+            if ($i > 1) {
+                unset($data[$file_name][0]);
+            }
+            $file = fopen($folder . $file_name, "a+");
             foreach ($data[$file_name] as $line) {
                 $attributes = $this->attributesToStr((array) $line);
                 fputcsv($file, $attributes);
