@@ -5,6 +5,7 @@ namespace App\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use \DateInterval;
+use Illuminate\Support\Facades\Log;
 use \InvalidArgumentException;
 
 abstract class ExportCsv extends ExportService
@@ -42,7 +43,8 @@ abstract class ExportCsv extends ExportService
     {
         // select medical cases only in date interval.
         $date = $medical_case->patient->created_at;
-        if ($date < $this->from_date || $date > $this->to_date) {
+        $to_date_fix = (clone $this->to_date)->add(new DateInterval('P1D'));
+        if ($date < $this->from_date || $date > $to_date_fix) {
             return true;
         }
 
@@ -105,11 +107,11 @@ abstract class ExportCsv extends ExportService
      */
     public function __construct($medical_cases, $from_date, $to_date)
     {
+        Log::info($to_date->format('Y-m-d H:i:s') . "---" . Carbon::now()->format('Y-m-d H:i:s'));
         self::checkDateInterval($from_date, $to_date);
 
         $this->from_date = $from_date;
         $this->to_date = $to_date;
-        $this->to_date->add(new DateInterval('P1D'));
 
         parent::__construct($this->getFilteredMedicalCases($medical_cases));
     }
@@ -174,7 +176,7 @@ abstract class ExportCsv extends ExportService
 
         // download the data file.
         $from_date_str = $this->from_date->format('Y-m-d');
-        $to_date_str = $this->to_date->sub(new DateInterval('P1D'))->format('Y-m-d');
+        $to_date_str = $this->to_date->format('Y-m-d');
 
         header("Content-Description: File Transfer");
         header("Content-Disposition: attachment; filename=" . Config::get('csv.public_extract_name') . '_' . $from_date_str . '_' . $to_date_str . '.zip');

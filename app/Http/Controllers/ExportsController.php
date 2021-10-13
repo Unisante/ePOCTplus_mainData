@@ -133,7 +133,7 @@ class ExportsController extends Controller
 
         // download the data file.
         $from_date_str = $fromDate->format('Y-m-d');
-        $to_date_str = $toDate->sub(new DateInterval('P1D'))->format('Y-m-d');
+        $to_date_str = $toDate->format('Y-m-d');
 
         header("Content-Description: File Transfer");
         header("Content-Disposition: attachment; filename=" . Config::get('csv.public_extract_name') . '_' . $from_date_str . '_' . $to_date_str . '.zip');
@@ -285,35 +285,38 @@ class ExportsController extends Controller
 
     public function drugsSummary()
     {
-        $drug_ref0 = DrugReference::where('agreed', 1)->get();
-        $drug_ref0->each(function ($drug_ref) {
-            $drug = Drug::find($drug_ref->drug_id);
-            $diagnosis_ref = DiagnosisReference::find($drug_ref->diagnosis_id);
-            $drug_ref->case_id = MedicalCase::find($diagnosis_ref->medical_case_id)->local_medical_case_id;
-            $diagnosis = Diagnosis::find($diagnosis_ref->diagnosis_id);
-            $formulations = Formulation::where('drug_id', $drug->id)->get();
-            $drug_ref->formulation = $formulations->get($drug_ref->formulationSelected);
-            $drug_ref->drug_label = $drug->label;
-            $drug_ref->diagnosis_label = $diagnosis->label;
+        $drug_references = DrugReference::where('agreed', 1)->with([
+          'diagnosisReference',
+          'diagnosisReference.diagnoses',
+          'diagnosisReference.medical_case',
+          'drugs'
+        ])->get();
+        $drug_references->each(function ($drug_reference) {
+            $drug_reference->case_id = ($drug_reference->diagnosisReference->medical_case)->local_medical_case_id;
+            $drug_reference->formulation = $drug_reference->formulationSelected;
+            $drug_reference->drug_label = $drug_reference->drugs->label;
+            $drug_reference->diagnosis_label = $drug_reference->diagnosisReference->diagnoses->label;
         });
-        return view('drugs.index')->with('drugs', $drug_ref0);
+        return view('drugs.index')->with('drugs', $drug_references);
     }
     public function diagnosesSummary()
     {
-        $diagnoses_ref0 = DiagnosisReference::where('agreed', true)->get();
-        $diagnoses_ref0->each(function ($d_f) {
-            $case = MedicalCase::find($d_f->medical_case_id);
-            $d_f->local_medical_case_id = $case->local_medical_case_id;
-            $d_f->patient_id = $case->patient->id;
-            $d_f->local_patient_id = $case->patient->local_patient_id;
-            // $d_f->facility_name=$case->facility->facility_name;
-            if ($case->facility && $case->facility->facility_name) {
-                $d_f->facility_name = $case->facility->facility_name;
-            } else {
-                $case->facility_name = '';
-            }
-            $d_f->diagnosis_label = Diagnosis::find($d_f->diagnosis_id)->label;
+        $diagnoses_references = DiagnosisReference::where('agreed', true)->with([
+          'medical_case',
+          'medical_case.patient',
+          'medical_case.facility',
+          'diagnoses'
+        ])->get();
+        $diagnoses_references->each(function ($diagnoses_reference) {
+            $case = $diagnoses_reference->medical_case;
+            $facility = $case->facility;
+
+            $diagnoses_reference->local_medical_case_id = $case->local_medical_case_id;
+            $diagnoses_reference->patient_id = $case->patient->id;
+            $diagnoses_reference->local_patient_id = $case->patient->local_patient_id;
+            $diagnoses_reference->facility_name = ($facility && $facility->facility_name) ? $diagnoses_reference->facility_name = $facility->facility_name : '';
+            $diagnoses_reference->diagnosis_label = $diagnoses_reference->diagnoses->label;
         });
-        return view('diagnoses.index')->with('diagnoses', $diagnoses_ref0);
+        return view('diagnoses.index')->with('diagnoses', $diagnoses_references);
     }
 }
