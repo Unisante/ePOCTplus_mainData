@@ -22,7 +22,7 @@ class Patient extends Model implements Auditable
   ];
   protected $guarded = [];
 
-  public function findByUids(){ // use groupby
+  public function findByUids(){
     $nonMergedPatients = self::where([
       ['merged',0],
     ])->get();
