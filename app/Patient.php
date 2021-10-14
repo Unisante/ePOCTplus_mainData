@@ -3,10 +3,10 @@
 namespace App;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
+use App\MedicalCase;
+use App\DuplicatePairs;
 use Schema;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Cache;
-
 
 class Patient extends Model implements Auditable
 {
@@ -22,23 +22,28 @@ class Patient extends Model implements Auditable
   ];
   protected $guarded = [];
 
-  public function findByUids(){
-    $nonMergedPatients = self::where([['merged',0]])->get();
+  public function findByUids(){ // use groupby
+    $nonMergedPatients = self::where([
+      ['merged',0],
+    ])->get();
     $duplicateArray = [];
     $nonMergedPatients->each(function($patient)use (&$duplicateArray){
-      $keyword=$patient->other_uid;
+      $keyword = $patient->other_uid;
       if(!$keyword){
           $keyword='nothingToSearch';
       }
       $patientDuplicate = self::where([
-          ['merged', 0],
-          ['id','!=' , $patient->id]
+          ['other_uid', $patient->local_patient_id],
+          ['merged',0]
         ])
+        ->orWhere([
+          ['merged',0]
+          ])
         ->whereJsonContains('related_ids',[$keyword])
       ->get()->toArray();
       if($patientDuplicate){
-        array_push($patientDuplicate, $patient->toArray());
-        array_push($duplicateArray, $patientDuplicate);
+        array_push($patientDuplicate,$patient->toArray());
+        array_push($duplicateArray,$patientDuplicate);
       }
     });
     return $duplicateArray;
