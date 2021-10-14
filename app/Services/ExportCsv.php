@@ -109,7 +109,6 @@ abstract class ExportCsv extends ExportService
      */
     public function __construct($medical_cases, $from_date, $to_date, $chunk_key)
     {
-        Log::info($to_date->format('Y-m-d H:i:s') . "---" . Carbon::now()->format('Y-m-d H:i:s'));
         self::checkDateInterval($from_date, $to_date);
 
         $this->from_date = $from_date;
