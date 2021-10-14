@@ -42,8 +42,8 @@ class Patient extends Model implements Auditable
         ->whereJsonContains('related_ids',[$keyword])
       ->get()->toArray();
       if($patientDuplicate){
-        array_push($patientDuplicate,$patient->toArray());
-        array_push($duplicateArray,$patientDuplicate);
+        array_push($patientDuplicate, $patient->toArray());
+        array_push($duplicateArray, $patientDuplicate);
       }
     });
     return $duplicateArray;
