@@ -5,6 +5,7 @@ namespace App\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use \DateInterval;
+use Illuminate\Support\Facades\Log;
 use \InvalidArgumentException;
 
 abstract class ExportCsv extends ExportService
@@ -12,6 +13,7 @@ abstract class ExportCsv extends ExportService
 
     protected $from_date;
     protected $to_date;
+    protected $chunk_key;
 
     /**
      * Checks if the dates form a valid date interval.
@@ -42,7 +44,8 @@ abstract class ExportCsv extends ExportService
     {
         // select medical cases only in date interval.
         $date = $medical_case->patient->created_at;
-        if ($date < $this->from_date || $date > $this->to_date) {
+        $to_date_fix = (clone $this->to_date)->add(new DateInterval('P1D'));
+        if ($date < $this->from_date || $date > $to_date_fix) {
             return true;
         }
 
@@ -102,14 +105,15 @@ abstract class ExportCsv extends ExportService
      * @param Collection medical_cases, medical cases to export
      * @param DateTime from_date, the starting date
      * @param DateTime to_date, the ending date
+     * @param int chunk_key, chunk portion index
      */
-    public function __construct($medical_cases, $from_date, $to_date)
+    public function __construct($medical_cases, $from_date, $to_date, $chunk_key)
     {
         self::checkDateInterval($from_date, $to_date);
 
         $this->from_date = $from_date;
         $this->to_date = $to_date;
-        $this->to_date->add(new DateInterval('P1D'));
+        $this->chunk_key = $chunk_key;
 
         parent::__construct($this->getFilteredMedicalCases($medical_cases));
     }
@@ -174,7 +178,7 @@ abstract class ExportCsv extends ExportService
 
         // download the data file.
         $from_date_str = $this->from_date->format('Y-m-d');
-        $to_date_str = $this->to_date->sub(new DateInterval('P1D'))->format('Y-m-d');
+        $to_date_str = $this->to_date->format('Y-m-d');
 
         header("Content-Description: File Transfer");
         header("Content-Disposition: attachment; filename=" . Config::get('csv.public_extract_name') . '_' . $from_date_str . '_' . $to_date_str . '.zip');
