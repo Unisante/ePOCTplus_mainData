@@ -13,6 +13,7 @@ abstract class ExportCsv extends ExportService
 
     protected $from_date;
     protected $to_date;
+    protected $chunk_key;
 
     /**
      * Checks if the dates form a valid date interval.
@@ -104,14 +105,16 @@ abstract class ExportCsv extends ExportService
      * @param Collection medical_cases, medical cases to export
      * @param DateTime from_date, the starting date
      * @param DateTime to_date, the ending date
+     * @param int chunk_key, chunk portion index
      */
-    public function __construct($medical_cases, $from_date, $to_date)
+    public function __construct($medical_cases, $from_date, $to_date, $chunk_key)
     {
         Log::info($to_date->format('Y-m-d H:i:s') . "---" . Carbon::now()->format('Y-m-d H:i:s'));
         self::checkDateInterval($from_date, $to_date);
 
         $this->from_date = $from_date;
         $this->to_date = $to_date;
+        $this->chunk_key = $chunk_key;
 
         parent::__construct($this->getFilteredMedicalCases($medical_cases));
     }

@@ -92,8 +92,8 @@ class ExportsController extends Controller
                 'diagnoses_references',
                 'diagnoses_references.drug_references',
             ])->chunk(50, function ($medical_case, $key) use ($fromDate, $toDate) {
-                $csv_export = new ExportCsvFlat($medical_case, $fromDate, $toDate);
-                $csv_export->export($key);
+                $csv_export = new ExportCsvFlat($medical_case, $fromDate, $toDate, $key);
+                $csv_export->export();
             });
             $zipper->add(public_path(Config::get('csv.flat.folder') . 'answers.csv'));
 
@@ -120,8 +120,8 @@ class ExportsController extends Controller
                 'diagnoses_references.management_references',
                 'diagnoses_references.management_references.managements',
             ])->chunk(50, function ($medical_case, $key) use ($fromDate, $toDate) {
-                $csv_export = new ExportCsvSeparate($medical_case, $fromDate, $toDate);
-                $csv_export->export($key);
+                $csv_export = new ExportCsvSeparate($medical_case, $fromDate, $toDate, $key);
+                $csv_export->export();
             });
             $zipper->add(public_path(Config::get('csv.folder_separated')));
 
