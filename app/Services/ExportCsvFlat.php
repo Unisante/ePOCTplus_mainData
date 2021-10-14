@@ -24,9 +24,9 @@ class ExportCsvFlat extends ExportCsv
     /**
      * Constructor
      */
-    public function __construct($medical_cases, $from_date, $to_date)
+    public function __construct($medical_cases, $from_date, $to_date, $chunk_key)
     {
-        parent::__construct($medical_cases, $from_date, $to_date);
+        parent::__construct($medical_cases, $from_date, $to_date, $chunk_key);
     }
 
     /**
@@ -314,7 +314,9 @@ class ExportCsvFlat extends ExportCsv
     protected function addPatientData(&$data, $index, $patient)
     {
         $data[$index] = array_merge($data[$index], $this->getPatientData($patient));
-        $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.patient')));
+        if($this->chunk_key == 1){
+            $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.patient')));
+        }
     }
 
     /**
@@ -323,7 +325,9 @@ class ExportCsvFlat extends ExportCsv
     protected function addHealthFacilityData(&$data, $index, $health_facility)
     {
         $data[$index] = array_merge($data[$index], $this->getHealthFacilityData($health_facility));
-        $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.health_facility')));
+        if($this->chunk_key == 1){
+            $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.health_facility')));
+        }
     }
 
     /**
@@ -332,7 +336,9 @@ class ExportCsvFlat extends ExportCsv
     protected function addMedicalCaseData(&$data, $index, $medical_case)
     {
         $data[$index] = array_merge($data[$index], $this->getMedicalCaseData($medical_case));
-        $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.medical_case')));
+        if($this->chunk_key == 1){
+            $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.medical_case')));
+        }
     }
 
     /**
@@ -383,7 +389,9 @@ class ExportCsvFlat extends ExportCsv
         $data[$index] = array_merge($data[$index], $variable_values);
         // add labels
         $labels = self::getVariableLabels($node_objs, $version_node_names);
-        $data[0] = array_merge($data[0], $labels);
+        if($this->chunk_key == 1){
+            $data[0] = array_merge($data[0], $labels);
+        }
     }
 
     /**
@@ -392,7 +400,9 @@ class ExportCsvFlat extends ExportCsv
     protected function addVersionData(&$data, $index, $version)
     {
         $data[$index] = array_merge($data[$index], $this->getVersionData($version));
-        $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.version')));
+        if($this->chunk_key == 1){
+            $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.version')));
+        }
     }
 
     /**
@@ -401,7 +411,9 @@ class ExportCsvFlat extends ExportCsv
     protected function addAlgorithmData(&$data, $index, $algorithm)
     {
         $data[$index] = array_merge($data[$index], $this->getAlgorithmData($algorithm));
-        $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.algorithm')));
+        if($this->chunk_key == 1){
+            $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.algorithm')));
+        }
     }
 
     /**
@@ -454,8 +466,10 @@ class ExportCsvFlat extends ExportCsv
 
         $data[$index] = array_merge($data[$index], $diagnosis_values);
         // add labels
-        $labels = self::getDiagnosisLabels($diagnosis_objs);
-        $data[0] = array_merge($data[0], $labels);
+        if($this->chunk_key == 1){
+            $labels = self::getDiagnosisLabels($diagnosis_objs);
+            $data[0] = array_merge($data[0], $labels);
+        }
     }
 
     /**
@@ -475,8 +489,10 @@ class ExportCsvFlat extends ExportCsv
 
         $data[$index] = array_merge($data[$index], $custom_diagnosis_values);
         // add labels
-        $labels = self::getDiagnosisLabels($custom_diagnosis_objs);
-        $data[0] = array_merge($data[0], $labels);
+        if($this->chunk_key == 1){
+            $labels = self::getDiagnosisLabels($custom_diagnosis_objs);
+            $data[0] = array_merge($data[0], $labels);
+        }
     }
 
     /**
@@ -532,8 +548,10 @@ class ExportCsvFlat extends ExportCsv
 
         $data[$index] = array_merge($data[$index], $drug_values);
         // add labels
-        $labels = self::getDrugLabels($drug_objs);
-        $data[0] = array_merge($data[0], $labels);
+        if($this->chunk_key == 1){
+            $labels = self::getDrugLabels($drug_objs);
+            $data[0] = array_merge($data[0], $labels);
+        }
     }
 
     protected static function getCustomDrugsLabels($custom_drugs_objs)
@@ -567,8 +585,10 @@ class ExportCsvFlat extends ExportCsv
 
         $data[$index] = array_merge($data[$index], $custom_drugs_values);
         // add labels
-        $labels = self::getCustomDrugsLabels($custom_drugs_objs);
-        $data[0] = array_merge($data[0], $labels);
+        if($this->chunk_key == 1){
+            $labels = self::getCustomDrugsLabels($custom_drugs_objs);
+            $data[0] = array_merge($data[0], $labels);
+        }
     }
 
     /**
@@ -624,7 +644,9 @@ class ExportCsvFlat extends ExportCsv
     protected function getDataFromMedicalCases()
     {
         $data = [];
-        $data[] = []; // list of attributes.
+        if($this->chunk_key == 1){
+            $data[] = []; // list of attributes.
+        }
 
         $version_node_names = $this->getJsonNodesInfo();
 
@@ -669,11 +691,13 @@ class ExportCsvFlat extends ExportCsv
             $this->addCustomDrugData($data, $index, $custom_diagnoses);
         }
 
-        $data[0] = array_unique($data[0]);
+        if($this->chunk_key == 1){
+            $data[0] = array_unique($data[0]);
+        }
         return $data;
     }
 
-    public function export($i)
+    public function export()
     {
         $data = $this->getDataFromMedicalCases();
         $folder = public_path() . Config::get('csv.flat.folder');
@@ -681,9 +705,6 @@ class ExportCsvFlat extends ExportCsv
             File::makeDirectory($folder);
         }
         $file = fopen($folder . 'answers.csv', "a+");
-        if ($i > 1) {
-            unset($data[0]);
-        }
         foreach ($data as $line) {
             $attributes = $this->attributesToStr((array) $line);
             fputcsv($file, $attributes);

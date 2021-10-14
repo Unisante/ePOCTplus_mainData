@@ -31,13 +31,14 @@ class PatientsController extends Controller
   * @return $patients
   */
   public function index(){
-    $patients=Patient::orderBy('created_at')->get();
+    $patients=Patient::with([
+      'facility'
+    ])->orderBy('created_at')->get();
     $patients->each(function($patient){
-      if($patient->facility && $patient->facility->name){
-        $patient->facility_name=$patient->facility->name;
-      }else{
-        $patient->facility_name='';
-      }
+      $patient->facility_name = 
+        ($patient->facility && $patient->facility->name)
+        ? $patient->facility->name
+        : '';
     });
     return view('patients.index')->with('patients',$patients);
   }
