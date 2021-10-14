@@ -91,7 +91,7 @@ class ExportsController extends Controller
                 'medical_case_answers.node',
                 'diagnoses_references',
                 'diagnoses_references.drug_references',
-            ])->chunk(100, function ($medical_case, $key) use ($fromDate, $toDate) {
+            ])->chunk(50, function ($medical_case, $key) use ($fromDate, $toDate) {
                 $csv_export = new ExportCsvFlat($medical_case, $fromDate, $toDate);
                 $csv_export->export($key);
             });
@@ -119,7 +119,7 @@ class ExportsController extends Controller
                 'diagnoses_references.drug_references.drugs.additional_drugs',
                 'diagnoses_references.management_references',
                 'diagnoses_references.management_references.managements',
-            ])->chunk(100, function ($medical_case, $key) use ($fromDate, $toDate) {
+            ])->chunk(50, function ($medical_case, $key) use ($fromDate, $toDate) {
                 $csv_export = new ExportCsvSeparate($medical_case, $fromDate, $toDate);
                 $csv_export->export($key);
             });
