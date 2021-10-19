@@ -40,5 +40,5 @@ abstract class ExportService
     /**
      * Exports the data.
      */
-    abstract public function export($i);
+    abstract public function export();
 }
