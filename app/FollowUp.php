@@ -343,8 +343,8 @@ class FollowUp
 
     private function setChildRelation($config)
     {
+        $this->child_relation = 7;
         if (!isset($config->relationship_to_child_id)) {
-            $this->caregiver_gender = 7;
             return;
         }
 
@@ -357,7 +357,7 @@ class FollowUp
             6 => 'Neighbour/Friend',
             7 => 'Other',
         ];
-        $this->child_relation = 7;
+
         $child_relation_node_id = $config->relationship_to_child_id;
         $case_answer = $this->findCaseAnswer($child_relation_node_id);
         if ($case_answer != null && $case_answer->answer != null) {
