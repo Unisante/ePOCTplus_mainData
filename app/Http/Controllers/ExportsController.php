@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Diagnosis;
 use App\DiagnosisReference;
-use App\Drug;
 use App\DrugReference;
 use App\Exports\AdditionalDrugExport;
 use App\Exports\AlgorithmExport;
@@ -32,7 +30,6 @@ use App\Services\ExportCsvSeparate;
 use App\User;
 use Auth;
 use Carbon\Carbon;
-use DateInterval;
 use DateTime;
 use Excel;
 use Illuminate\Http\Request;
@@ -52,6 +49,7 @@ class ExportsController extends Controller
         $export_completion = 0;
         ini_set('memory_limit', '4096M');
         ini_set('max_execution_time', '300');
+        ini_set('default_socket_timeout', '300');
 
         if (Patient::all()->count() == 0) {
             return back()->withErrors("We currently do not have records in the database.");
@@ -286,10 +284,10 @@ class ExportsController extends Controller
     public function drugsSummary()
     {
         $drug_references = DrugReference::where('agreed', 1)->with([
-          'diagnosisReference',
-          'diagnosisReference.diagnoses',
-          'diagnosisReference.medical_case',
-          'drugs'
+            'diagnosisReference',
+            'diagnosisReference.diagnoses',
+            'diagnosisReference.medical_case',
+            'drugs',
         ])->get();
         $drug_references->each(function ($drug_reference) {
             $drug_reference->case_id = ($drug_reference->diagnosisReference->medical_case)->local_medical_case_id;
@@ -302,10 +300,10 @@ class ExportsController extends Controller
     public function diagnosesSummary()
     {
         $diagnoses_references = DiagnosisReference::where('agreed', true)->with([
-          'medical_case',
-          'medical_case.patient',
-          'medical_case.facility',
-          'diagnoses'
+            'medical_case',
+            'medical_case.patient',
+            'medical_case.facility',
+            'diagnoses',
         ])->get();
         $diagnoses_references->each(function ($diagnoses_reference) {
             $case = $diagnoses_reference->medical_case;
