@@ -555,7 +555,7 @@ class ExportCsvSeparate extends ExportCsv
         $formulations_data = [];
         $answers_data = [];
 
-        if($this->chunk_key == 1){
+        if ($this->chunk_key == 1) {
             $patients_data[] = $this->getAttributeList(Config::get('csv.identifiers.patient'));
             $medical_cases_data[] = $this->getAttributeList(Config::get('csv.identifiers.medical_case'));
             $medical_case_answers_data[] = $this->getAttributeList(Config::get('csv.identifiers.medical_case_answer'));
@@ -703,7 +703,7 @@ class ExportCsvSeparate extends ExportCsv
         $data = $this->getDataFromMedicalCases();
         $file_names = array_keys($data);
 
-        $folder = public_path(Config::get('csv.folder_separated'));
+        $folder = storage_path('app/export/' . Config::get('csv.folder_separated'));
         if (!File::exists($folder)) {
             File::makeDirectory($folder);
         }

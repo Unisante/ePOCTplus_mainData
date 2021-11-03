@@ -2,7 +2,8 @@
 
 return [
     'hide_str' => '###',
-    'public_extract_name' => 'extract',
+    'public_extract_name_flat' => 'export_flat',
+    'public_extract_name_separated' => 'export_separated',
     'patient_discarded_names' => ['test'],
 
     'file_names' => [
@@ -262,8 +263,8 @@ return [
         'identifiers' => [
             'patient' => [
                 'dyn_pat_study_id_patient' => 'patient_id',
-                'dyn_pat_first_name' => 'patient_first_name',
-                'dyn_pat_last_name' => 'patient_last_name',
+                // 'dyn_pat_first_name' => 'patient_first_name',
+                // 'dyn_pat_last_name' => 'patient_last_name',
                 'dyn_pat_birth_date' => 'patient_birthdate',
                 'dyn_pat_gender' => 'patient_gender',
                 'dyn_pat_local_patient_id' => 'patient_local_patient_id',
@@ -288,7 +289,8 @@ return [
                 'dyn_mc_consent' => 'medical_case_consent',
                 'dyn_mc_isEligible' => 'medical_case_isEligible',
                 'dyn_mc_redcap' => 'medical_case_redcap',
-                'dyn_mc_consultation_date' => 'medical_case_consultation_date',
+                'dyn_mc_consultation_month' => 'medical_case_consultation_month',
+                'dyn_mc_consultation_day' => 'medical_case_consultation_day',
                 'dyn_mc_force_close' => 'medical_case_close',
                 'dyn_mc_mc_redcap_flag' => 'medical_case_mc_redcap_flag',
             ],

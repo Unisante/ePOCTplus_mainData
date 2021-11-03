@@ -357,7 +357,6 @@ class FollowUp
             6 => 'Neighbour/Friend',
             7 => 'Other',
         ];
-
         $child_relation_node_id = $config->relationship_to_child_id;
         $case_answer = $this->findCaseAnswer($child_relation_node_id);
         if ($case_answer != null && $case_answer->answer != null) {

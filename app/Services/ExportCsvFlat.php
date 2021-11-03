@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Version;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
@@ -37,9 +38,9 @@ class ExportCsvFlat extends ExportCsv
     {
         return [
             Config::get('csv.flat.identifiers.patient.dyn_pat_study_id_patient') => $patient->id,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_first_name') => $patient->first_name,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_last_name') => $patient->last_name,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_birth_date') => $patient->birthdate,
+            // Config::get('csv.flat.identifiers.patient.dyn_pat_first_name') => $patient->first_name,
+            // Config::get('csv.flat.identifiers.patient.dyn_pat_last_name') => $patient->last_name,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_birth_date') => Carbon::parse($patient->birthdate)->diffInDays(Carbon::now()),
             Config::get('csv.flat.identifiers.patient.dyn_pat_gender') => $patient->gender,
             Config::get('csv.flat.identifiers.patient.dyn_pat_local_patient_id') => $patient->local_patient_id,
             Config::get('csv.flat.identifiers.patient.dyn_pat_group_id') => $patient->group_id,
@@ -70,7 +71,8 @@ class ExportCsvFlat extends ExportCsv
             Config::get('csv.flat.identifiers.medical_case.dyn_mc_consent') => $medical_case->consent,
             Config::get('csv.flat.identifiers.medical_case.dyn_mc_isEligible') => $medical_case->isEligible,
             Config::get('csv.flat.identifiers.medical_case.dyn_mc_redcap') => $medical_case->redcap,
-            Config::get('csv.flat.identifiers.medical_case.dyn_mc_consultation_date') => $medical_case->consultation_date,
+            Config::get('csv.flat.identifiers.medical_case.dyn_mc_consultation_month') => Carbon::parse($medical_case->consultation_date)->format('F'),
+            Config::get('csv.flat.identifiers.medical_case.dyn_mc_consultation_day') => Carbon::parse($medical_case->consultation_date)->format('l'),
             Config::get('csv.flat.identifiers.medical_case.dyn_mc_force_close') => $medical_case->force_close,
             Config::get('csv.flat.identifiers.medical_case.dyn_mc_mc_redcap_flag') => $medical_case->mc_redcap_flag,
         ];
@@ -314,7 +316,7 @@ class ExportCsvFlat extends ExportCsv
     protected function addPatientData(&$data, $index, $patient)
     {
         $data[$index] = array_merge($data[$index], $this->getPatientData($patient));
-        if($this->chunk_key == 1){
+        if ($this->chunk_key == 1) {
             $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.patient')));
         }
     }
@@ -325,7 +327,7 @@ class ExportCsvFlat extends ExportCsv
     protected function addHealthFacilityData(&$data, $index, $health_facility)
     {
         $data[$index] = array_merge($data[$index], $this->getHealthFacilityData($health_facility));
-        if($this->chunk_key == 1){
+        if ($this->chunk_key == 1) {
             $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.health_facility')));
         }
     }
@@ -336,7 +338,7 @@ class ExportCsvFlat extends ExportCsv
     protected function addMedicalCaseData(&$data, $index, $medical_case)
     {
         $data[$index] = array_merge($data[$index], $this->getMedicalCaseData($medical_case));
-        if($this->chunk_key == 1){
+        if ($this->chunk_key == 1) {
             $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.medical_case')));
         }
     }
@@ -363,7 +365,7 @@ class ExportCsvFlat extends ExportCsv
         foreach ($node_objs as $node_obj) {
             $label = $node_obj->label;
             $label = $version_node_names[trim($label)] ?? $label;
-            $labels[] = "[Variable] " . $node_obj->id . ' - ' . $label;
+            $labels[] = "[" . $node_obj->category . "] " . $node_obj->id . ' - ' . $label;
         }
 
         return $labels;
@@ -375,7 +377,7 @@ class ExportCsvFlat extends ExportCsv
     protected function addMedicalCaseAnswerData(&$data, $index, $medical_case_answers, $version_node_names)
     {
         $node_objs = Cache::store('array')->rememberForever('node_objs', function () {
-            return DB::table('nodes')->select('id', 'label')->get();
+            return DB::table('nodes')->select('id', 'label', 'category')->get();
         });
 
         $variable_values = self::getVariableDefaultValues($node_objs);
@@ -384,14 +386,19 @@ class ExportCsvFlat extends ExportCsv
             if (self::isSkippedMedicalCaseAnswer($medical_case_answer)) {
                 continue;
             }
-            $node_id = $medical_case_answer->node_id;
-            $variable_values[$node_id] = $medical_case_answer->answer->label ?? null;
-        }
 
+            $node_id = $medical_case_answer->node_id;
+            if ($medical_case_answer->answer) {
+                $variable_values[$node_id] = $medical_case_answer->answer->label ?? null;
+            } else {
+                $variable_values[$node_id] = $medical_case_answer->value ?? null;
+            }
+        }
         $data[$index] = array_merge($data[$index], $variable_values);
         // add labels
         $labels = self::getVariableLabels($node_objs, $version_node_names);
-        if($this->chunk_key == 1){
+
+        if ($this->chunk_key == 1) {
             $data[0] = array_merge($data[0], $labels);
         }
     }
@@ -402,7 +409,7 @@ class ExportCsvFlat extends ExportCsv
     protected function addVersionData(&$data, $index, $version)
     {
         $data[$index] = array_merge($data[$index], $this->getVersionData($version));
-        if($this->chunk_key == 1){
+        if ($this->chunk_key == 1) {
             $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.version')));
         }
     }
@@ -413,7 +420,7 @@ class ExportCsvFlat extends ExportCsv
     protected function addAlgorithmData(&$data, $index, $algorithm)
     {
         $data[$index] = array_merge($data[$index], $this->getAlgorithmData($algorithm));
-        if($this->chunk_key == 1){
+        if ($this->chunk_key == 1) {
             $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.algorithm')));
         }
     }
@@ -465,10 +472,9 @@ class ExportCsvFlat extends ExportCsv
                 $diagnosis_values[$diagnosis_id] = $diagnosis_reference->agreed ? self::$DIAGNOSIS_PROPOSED_AND_ACCEPTED : self::$DIAGNOSIS_PROPOSED_AND_REJECTED;
             }
         }
-
         $data[$index] = array_merge($data[$index], $diagnosis_values);
         // add labels
-        if($this->chunk_key == 1){
+        if ($this->chunk_key == 1) {
             $labels = self::getDiagnosisLabels($diagnosis_objs);
             $data[0] = array_merge($data[0], $labels);
         }
@@ -491,7 +497,7 @@ class ExportCsvFlat extends ExportCsv
 
         $data[$index] = array_merge($data[$index], $custom_diagnosis_values);
         // add labels
-        if($this->chunk_key == 1){
+        if ($this->chunk_key == 1) {
             $labels = self::getDiagnosisLabels($custom_diagnosis_objs);
             $data[0] = array_merge($data[0], $labels);
         }
@@ -550,7 +556,7 @@ class ExportCsvFlat extends ExportCsv
 
         $data[$index] = array_merge($data[$index], $drug_values);
         // add labels
-        if($this->chunk_key == 1){
+        if ($this->chunk_key == 1) {
             $labels = self::getDrugLabels($drug_objs);
             $data[0] = array_merge($data[0], $labels);
         }
@@ -587,7 +593,7 @@ class ExportCsvFlat extends ExportCsv
 
         $data[$index] = array_merge($data[$index], $custom_drugs_values);
         // add labels
-        if($this->chunk_key == 1){
+        if ($this->chunk_key == 1) {
             $labels = self::getCustomDrugsLabels($custom_drugs_objs);
             $data[0] = array_merge($data[0], $labels);
         }
@@ -646,7 +652,7 @@ class ExportCsvFlat extends ExportCsv
     protected function getDataFromMedicalCases()
     {
         $data = [];
-        if($this->chunk_key == 1){
+        if ($this->chunk_key == 1) {
             $data[] = []; // list of attributes.
         }
 
@@ -693,7 +699,7 @@ class ExportCsvFlat extends ExportCsv
             $this->addCustomDrugData($data, $index, $custom_diagnoses);
         }
 
-        if($this->chunk_key == 1){
+        if ($this->chunk_key == 1) {
             $data[0] = array_unique($data[0]);
         }
         return $data;
@@ -702,7 +708,7 @@ class ExportCsvFlat extends ExportCsv
     public function export()
     {
         $data = $this->getDataFromMedicalCases();
-        $folder = public_path() . Config::get('csv.flat.folder');
+        $folder = storage_path('app/export/' . Config::get('csv.flat.folder'));
         if (!File::exists($folder)) {
             File::makeDirectory($folder);
         }
