@@ -116,8 +116,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/exports/diagnosis_list', 'ExportsController@diagnosesSummary')->name('ExportsController.diagnosesSummary');
     Route::get('/exports/drug_list', 'ExportsController@drugsSummary')->name('ExportsController.drugsSummary');
 
-    Route::post('/exports/exportZipByDate', ['as' => 'exports.exportZipByDate', 'uses' => 'ExportsController@exportZipByDate']);
-    Route::post('/exports/exportFlatZip', ['as' => 'exports.exportFlatZip', 'uses' => 'ExportsController@exportFlatZip']);
+    // Route::post('/exports/exportZipByDate', ['as' => 'exports.exportZipByDate', 'uses' => 'ExportsController@exportZipByDate']);
+    // Route::post('/exports/exportFlatZip', ['as' => 'exports.exportFlatZip', 'uses' => 'ExportsController@exportFlatZip']);
     Route::get('/exports/exportZip', 'ExportsController@selectDate')->name('ExportsController.selectDate');
     Route::get('/exports/FullExportJob', 'ExportsController@FullExportJob')->name('ExportsController.export');
     Route::post('/exports/download/{file}', 'ExportsController@DownloadExport')->name('ExportsController.download');
