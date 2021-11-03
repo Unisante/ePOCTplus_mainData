@@ -12,6 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class ExportSeparated implements ShouldQueue
 {
@@ -24,8 +25,17 @@ class ExportSeparated implements ShouldQueue
      */
     public function handle()
     {
-        ini_set('memory_limit', '4096M');
+        $export_file = storage_path('app/export/export_separated.zip');
+        if (File::exists($export_file)) {
+            $lastmodified_file = File::lastModified($export_file);
+            $lastmodified = DateTime::createFromFormat("U", $lastmodified_file);
+            if ((new DateTime())->diff($lastmodified)->days === 0) {
+                Log::info('Separated export already done today, skipping');
+                return;
+            }
+        }
 
+        ini_set('memory_limit', '4096M');
         $extract_file_name = Config::get('csv.public_extract_name_separated');
         $file_from_public = storage_path('app/export/' . $extract_file_name . '.zip');
         $fromDate = new DateTime('2020-01-01');

@@ -34,13 +34,13 @@ class ExportCsvFlat extends ExportCsv
      * @param Patient $patient
      * @return Collection patient data
      */
-    protected static function getPatientData($patient)
+    protected static function getPatientData($patient, $consultation_date)
     {
         return [
             Config::get('csv.flat.identifiers.patient.dyn_pat_study_id_patient') => $patient->id,
             // Config::get('csv.flat.identifiers.patient.dyn_pat_first_name') => $patient->first_name,
             // Config::get('csv.flat.identifiers.patient.dyn_pat_last_name') => $patient->last_name,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_birth_date') => Carbon::parse($patient->birthdate)->diffInDays(Carbon::now()),
+            Config::get('csv.flat.identifiers.patient.dyn_pat_birth_date') => Carbon::parse($patient->birthdate)->diffInDays(Carbon::parse($consultation_date)),
             Config::get('csv.flat.identifiers.patient.dyn_pat_gender') => $patient->gender,
             Config::get('csv.flat.identifiers.patient.dyn_pat_local_patient_id') => $patient->local_patient_id,
             Config::get('csv.flat.identifiers.patient.dyn_pat_group_id') => $patient->group_id,
@@ -313,9 +313,9 @@ class ExportCsvFlat extends ExportCsv
     /**
      * Adds a medical case to the data array.
      */
-    protected function addPatientData(&$data, $index, $patient)
+    protected function addPatientData(&$data, $index, $patient, $consultation_date)
     {
-        $data[$index] = array_merge($data[$index], $this->getPatientData($patient));
+        $data[$index] = array_merge($data[$index], $this->getPatientData($patient, $consultation_date));
         if ($this->chunk_key == 1) {
             $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.patient')));
         }
@@ -666,7 +666,7 @@ class ExportCsvFlat extends ExportCsv
             $this->addMedicalCaseData($data, $index, $medical_case);
 
             // get patient data
-            $this->addPatientData($data, $index, $patient);
+            $this->addPatientData($data, $index, $patient, $medical_case->consultation_date);
 
             $health_facility = $medical_case->patient->facility;
             // get health facility
