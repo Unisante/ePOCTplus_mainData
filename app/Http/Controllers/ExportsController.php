@@ -21,8 +21,6 @@ use App\Exports\Medical_CaseExport;
 use App\Exports\NodeExport;
 use App\Exports\PatientExport;
 use App\Exports\VersionExport;
-use App\Jobs\ExportFlat;
-use App\Jobs\ExportSeparated;
 use App\MedicalCase;
 use App\MedicalCaseAnswer;
 use App\Patient;
@@ -170,7 +168,9 @@ class ExportsController extends Controller
         $export_path = storage_path('app/export/');
         if (File::exists($export_path)) {
             $files = File::files($export_path);
+
         }
+
         $data = array(
             'currentUser' => Auth::user(),
             'userCount' => User::count(),
@@ -184,20 +184,13 @@ class ExportsController extends Controller
         return view('exports.index')->with($data);
     }
 
-    public function FullExportJob()
-    {
-        ExportFlat::withChain([
-            new ExportSeparated,
-        ])->dispatch();
-    }
-
     public function DownloadExport($file)
     {
         $file_path = storage_path('app/export/' . $file);
         if (!File::exists($file_path)) {
             return redirect()->back()->withErrors('File not found');
         }
-        return response()->download($file_path);
+        return response()->download($file_path, Carbon::today()->format('d-m-Y') . '-' . $file);
     }
 
     public function Patients()

@@ -119,11 +119,10 @@
                   <div class="card-body">
                     @forelse( $files as $file)
                     <div class="col-md-10 mb-3">
-                      <form action="{{route('ExportsController.download',['file'=>$file->getFilename()])}}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
-                        @csrf
+                      <a class="btn btn-outline-secondary" href="{{route('ExportsController.download',['file'=>$file->getFilename()])}}">
+                        {{date('d/m/Y',$file->getMTime())}}
                         {{$file->getFilename()}}
-                        {{Form::submit('Download', array('class' => 'btn btn-outline-secondary'))}}
-                      </form>
+                      </a>
                     </div>
                     @empty
                       <p>No files</p>

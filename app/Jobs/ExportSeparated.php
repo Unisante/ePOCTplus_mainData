@@ -25,6 +25,7 @@ class ExportSeparated implements ShouldQueue
      */
     public function handle()
     {
+        Log::info('Starting separated export');
         $export_file = storage_path('app/export/export_separated.zip');
         if (File::exists($export_file)) {
             $lastmodified_file = File::lastModified($export_file);
@@ -71,6 +72,6 @@ class ExportSeparated implements ShouldQueue
         $zipper->add(storage_path('app/export/' . Config::get('csv.folder_separated')));
         $zipper->close();
         File::deleteDirectory(storage_path('app/export/' . Config::get('csv.folder_separated')));
-
+        Log::info('separated export done');
     }
 }

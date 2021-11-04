@@ -25,6 +25,7 @@ class ExportFlat implements ShouldQueue
      */
     public function handle()
     {
+        Log::info('Starting flat export');
         $export_file = storage_path('app/export/export_flat.zip');
         if (File::exists($export_file)) {
             $lastmodified_file = File::lastModified($export_file);
@@ -60,8 +61,9 @@ class ExportFlat implements ShouldQueue
             $csv_export->export();
         });
         $zipper->add(storage_path('app/export/' . Config::get('csv.flat.folder') . 'answers.csv'));
-
         $zipper->close();
         File::deleteDirectory(storage_path('app/export/' . Config::get('csv.flat.folder')));
+        Log::info('Flat export done');
+
     }
 }

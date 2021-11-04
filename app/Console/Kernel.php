@@ -2,7 +2,6 @@
 
 namespace App\Console;
 
-use App\Console\Commands\MedicalCasesExport;
 use App\Jobs\RedcapPush;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -26,8 +25,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-      $schedule->job(new RedcapPush())->everyThirtyMinutes();
-      //$schedule->command(MedicalCasesExport::class)->everyMinute();
+        $schedule->job(new RedcapPush())->everyThirtyMinutes();
+        $schedule->command('export:start')->dailyAt('03:00');
+        //$schedule->command(MedicalCasesExport::class)->everyMinute();
     }
 
     /**
@@ -37,7 +37,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
