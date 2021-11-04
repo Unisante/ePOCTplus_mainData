@@ -57,7 +57,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card">
+            {{-- <div class="card">
               <div class="card-header">Download By Date</div>
               <div class="card-body">
                   @if (session('status'))
@@ -83,7 +83,7 @@
                           </div>
                           <div class="ml-2">
                             <input type="submit" name="DownloadFlat" value="ExtractFlat">
-                          </div> --}}
+                          </div>
                           <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                             <div class="btn-group" role="group">
                               <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -98,13 +98,12 @@
                         </div>
                       </div>
                     </div>
-                  </form>
-
+                  </form> --}}
                   {{-- <form method="POST" action="{{ route('exports.exportFlatZip') }}" accept-charset="UTF-8">
                     {{ csrf_field() }}
                     <div class="row">
                       <div class="col border-right">
-                            <label for="fromDate">Download medAL-Data Flat File:</label>
+                        <label for="fromDate">Download medAL-Data Flat File:</label>
                       </div>
                       <div class="col border-right pt-10">
                         <div>
@@ -112,11 +111,27 @@
                         </div>
                       </div>
                     </div>
-                  </form> --}}
+                  </form>
+                </div>
+              </div>--}}
+              <div class="card">
+                <div class="card-header">Download Export</div>
+                  <div class="card-body">
+                    @forelse( $files as $file)
+                    <div class="col-md-10 mb-3">
+                      <a class="btn btn-outline-secondary" href="{{route('ExportsController.download',['file'=>$file->getFilename()])}}">
+                        {{date('d/m/Y',$file->getMTime())}}
+                        {{$file->getFilename()}}
+                      </a>
+                    </div>
+                    @empty
+                      <p>No files</p>
+                    @endforelse
+                  </div>
+                </div>
               </div>
+            </div>
           </div>
-        </div>
-    </div>
-    </div>
-</div>
-@stop
+      </div>
+  </div>
+  @stop

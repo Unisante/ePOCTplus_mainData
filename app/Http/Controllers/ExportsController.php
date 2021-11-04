@@ -21,7 +21,6 @@ use App\Exports\Medical_CaseExport;
 use App\Exports\NodeExport;
 use App\Exports\PatientExport;
 use App\Exports\VersionExport;
-use App\Formulation;
 use App\MedicalCase;
 use App\MedicalCaseAnswer;
 use App\Patient;
@@ -36,6 +35,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
 class ExportsController extends Controller
 {
@@ -165,6 +165,11 @@ class ExportsController extends Controller
             $curDate = strtotime($case->consultation_date);
             array_push($date_array, $curDate);
         });
+        $export_path = storage_path('app/export/');
+        if (File::exists($export_path)) {
+            $files = File::files($export_path);
+
+        }
 
         $data = array(
             'currentUser' => Auth::user(),
@@ -173,10 +178,21 @@ class ExportsController extends Controller
             'oldest_date' => date('Y-m-d', min($date_array)),
             'newest_date' => date('Y-m-d', max($date_array)),
             'patientCount' => Patient::count(),
+            'files' => $files ?? [],
         );
 
         return view('exports.index')->with($data);
     }
+
+    public function DownloadExport($file)
+    {
+        $file_path = storage_path('app/export/' . $file);
+        if (!File::exists($file_path)) {
+            return redirect()->back()->withErrors('File not found');
+        }
+        return response()->download($file_path, Carbon::today()->format('d-m-Y') . '-' . $file);
+    }
+
     public function Patients()
     {
         return Excel::download(new PatientExport, 'patients.csv');

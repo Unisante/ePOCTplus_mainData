@@ -5,7 +5,6 @@ namespace App\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use \DateInterval;
-use Illuminate\Support\Facades\Log;
 use \InvalidArgumentException;
 
 abstract class ExportCsv extends ExportService
@@ -70,8 +69,7 @@ abstract class ExportCsv extends ExportService
     protected static function isSkippedMedicalCaseAnswer($medical_case_answer)
     {
         return ($medical_case_answer->node->category == "background_calculation" && $medical_case_answer->node->display_format != 'Reference')
-            || ($medical_case_answer->value == '' and $medical_case_answer->answer_id === null);
-    }
+            || ($medical_case_answer->value == '' and $medical_case_answer->answer_id === null);}
 
     /**
      * @param DiagnosisReference diagnosis_reference, a diagnosis_reference
