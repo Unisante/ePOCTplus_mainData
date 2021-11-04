@@ -69,7 +69,8 @@ abstract class ExportCsv extends ExportService
     protected static function isSkippedMedicalCaseAnswer($medical_case_answer)
     {
         return ($medical_case_answer->node->category == "background_calculation" && $medical_case_answer->node->display_format != 'Reference')
-            || ($medical_case_answer->value == '' and $medical_case_answer->answer_id === null);}
+            || ($medical_case_answer->value == '' and $medical_case_answer->answer_id === null);
+    }
 
     /**
      * @param DiagnosisReference diagnosis_reference, a diagnosis_reference
