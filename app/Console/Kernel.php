@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->job(new RedcapPush())->everyThirtyMinutes();
-        // $schedule->command('export:start')->dailyAt('03:00');
+        $schedule->command('export:start')->dailyAt('03:00');
         //$schedule->command(MedicalCasesExport::class)->everyMinute();
     }
 
