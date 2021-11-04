@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Diagnosis;
 use App\DiagnosisReference;
-use App\Drug;
 use App\DrugReference;
 use App\Exports\AdditionalDrugExport;
 use App\Exports\AlgorithmExport;
@@ -23,7 +21,6 @@ use App\Exports\Medical_CaseExport;
 use App\Exports\NodeExport;
 use App\Exports\PatientExport;
 use App\Exports\VersionExport;
-use App\Formulation;
 use App\MedicalCase;
 use App\MedicalCaseAnswer;
 use App\Patient;
@@ -32,13 +29,13 @@ use App\Services\ExportCsvSeparate;
 use App\User;
 use Auth;
 use Carbon\Carbon;
-use DateInterval;
 use DateTime;
 use Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
 class ExportsController extends Controller
 {
@@ -52,6 +49,7 @@ class ExportsController extends Controller
         $export_completion = 0;
         ini_set('memory_limit', '4096M');
         ini_set('max_execution_time', '300');
+        ini_set('default_socket_timeout', '300');
 
         if (Patient::all()->count() == 0) {
             return back()->withErrors("We currently do not have records in the database.");
@@ -167,6 +165,11 @@ class ExportsController extends Controller
             $curDate = strtotime($case->consultation_date);
             array_push($date_array, $curDate);
         });
+        $export_path = storage_path('app/export/');
+        if (File::exists($export_path)) {
+            $files = File::files($export_path);
+
+        }
 
         $data = array(
             'currentUser' => Auth::user(),
@@ -175,10 +178,21 @@ class ExportsController extends Controller
             'oldest_date' => date('Y-m-d', min($date_array)),
             'newest_date' => date('Y-m-d', max($date_array)),
             'patientCount' => Patient::count(),
+            'files' => $files ?? [],
         );
 
         return view('exports.index')->with($data);
     }
+
+    public function DownloadExport($file)
+    {
+        $file_path = storage_path('app/export/' . $file);
+        if (!File::exists($file_path)) {
+            return redirect()->back()->withErrors('File not found');
+        }
+        return response()->download($file_path, Carbon::today()->format('d-m-Y') . '-' . $file);
+    }
+
     public function Patients()
     {
         return Excel::download(new PatientExport, 'patients.csv');
@@ -286,10 +300,10 @@ class ExportsController extends Controller
     public function drugsSummary()
     {
         $drug_references = DrugReference::where('agreed', 1)->with([
-          'diagnosisReference',
-          'diagnosisReference.diagnoses',
-          'diagnosisReference.medical_case',
-          'drugs'
+            'diagnosisReference',
+            'diagnosisReference.diagnoses',
+            'diagnosisReference.medical_case',
+            'drugs',
         ])->get();
         $drug_references->each(function ($drug_reference) {
             $drug_reference->case_id = ($drug_reference->diagnosisReference->medical_case)->local_medical_case_id;
@@ -302,10 +316,10 @@ class ExportsController extends Controller
     public function diagnosesSummary()
     {
         $diagnoses_references = DiagnosisReference::where('agreed', true)->with([
-          'medical_case',
-          'medical_case.patient',
-          'medical_case.facility',
-          'diagnoses'
+            'medical_case',
+            'medical_case.patient',
+            'medical_case.facility',
+            'diagnoses',
         ])->get();
         $diagnoses_references->each(function ($diagnoses_reference) {
             $case = $diagnoses_reference->medical_case;
