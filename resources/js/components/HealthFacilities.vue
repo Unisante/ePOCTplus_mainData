@@ -11,7 +11,8 @@
             :resources_data.sync="health_facilities"
             :custom_actions="custom_actions"
             @devices="manageDevices"
-            @algorithms="manageAlgorithms"></health-facility-index>
+            @algorithms="manageAlgorithms">
+            @medicalstaff="manageMedicalStaff"></health-facility-index>
         </div>
     </div>
     <basic-modal :show.sync="showDevices">
@@ -88,6 +89,11 @@ export default {
                     event: 'algorithms',
                     color: 'dark',
                 },
+                {
+                    label: "Medical staff",
+                    event: 'medical_staff',
+                    color: 'blue',
+                },
             ],
             default_actions : [
                 ['view','edit','delete']               
@@ -106,7 +112,6 @@ export default {
         
 
         manageDevices: function(id){
-            
             var url = this.health_facilities_route + "/" + id + "/manage-devices"
             axios.get(url)
               .then((response) => {
@@ -134,6 +139,9 @@ export default {
               .catch((error) => {
                 this.$toasted.global.error_notification("Error:" + error)
               });
+        },
+
+        manageMedicalStaff: function(id){
         }
     }
 }
