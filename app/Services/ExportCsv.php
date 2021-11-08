@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use \DateInterval;
-use Illuminate\Support\Facades\Log;
 use \InvalidArgumentException;
 
 abstract class ExportCsv extends ExportService

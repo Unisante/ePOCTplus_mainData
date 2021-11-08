@@ -42,11 +42,7 @@ class RoleSeeder extends Seeder
         $project_viewer=Role::firstOrCreate(['name'=>'Project Viewer']);
         $project_viewer->givePermissionTo('View_Patient');
         $project_viewer->givePermissionTo('View_Case');
-        $project_viewer->givePermissionTo('Edit_Patient');
-        $project_viewer->givePermissionTo('Edit_Case');
         $project_viewer->givePermissionTo('Export');
-        $project_viewer->givePermissionTo('Delete_Patient');
-        $project_viewer->givePermissionTo('Delete_Case');
         $project_viewer->givePermissionTo('Reset_User_Password');
         $project_viewer->givePermissionTo('Reset_Own_Password');
 
