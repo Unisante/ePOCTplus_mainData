@@ -46,8 +46,8 @@ class FixDiagNullAgreedValue extends Command
         }
         $all_agreed_diags = [];
         $all_refused_diags = [];
-        $i = 0;
         $json_success_files = Storage::files('json_success');
+
         foreach ($json_success_files as $json) {
             $filename = array_slice(explode('/', $json), -1)[0];
             $caseData = json_decode(Storage::get("json_success/$filename"), true);
@@ -86,9 +86,9 @@ class FixDiagNullAgreedValue extends Command
                         continue;
                     }
                     if ($this->argument('dry-run') == 0) {
-                        // $diag_ref->update([
-                        //     'agreed' => true,
-                        // ]);
+                        $diag_ref->update([
+                            'agreed' => true,
+                        ]);
                         $this->info("Diagnoses reference $diag_ref->id ($diagnose->label) from medical case $medical_case->id updated to agreed");
                     }
 
@@ -114,9 +114,9 @@ class FixDiagNullAgreedValue extends Command
                         continue;
                     }
                     if ($this->argument('dry-run') == 0) {
-                        // $diag_ref->update([
-                        //     'agreed' => false,
-                        // ]);
+                        $diag_ref->update([
+                            'agreed' => false,
+                        ]);
                         $this->info("Diagnoses reference $diag_ref->id ($diagnose->label) from medical case $medical_case->id updated to refused");
                     }
 
