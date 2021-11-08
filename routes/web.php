@@ -46,7 +46,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/patients/duplicates', 'PatientsController@findDuplicates');
     Route::post('/patients/duplicates/search', 'PatientsController@searchDuplicates')->name('PatientsController@searchDuplicates');
     Route::post('/patients/merge', 'PatientsController@merge');
-    Route::post('/patients/duplicates/delete', 'PatientsController@destroy')->name('PatientsController@destroy');
+    // Route::post('/patients/duplicates/delete', 'PatientsController@destroy')->name('PatientsController@destroy');
 
     //for medical case
     Route::get('/medicalcases', 'MedicalCasesController@index')->name('MedicalCasesController.index');
@@ -57,9 +57,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/medicalCase/changes/{id}', 'MedicalCasesController@showCaseChanges')->name('MedicalCasesController.showCaseChanges');
     Route::get('/medicalcases/duplicates', 'MedicalCasesController@findDuplicates');
     Route::post('/medicalCases/duplicates/search', 'MedicalCasesController@searchDuplicates')->name('MedicalCasesController@searchDuplicates');
-    Route::post('/medicalCases/duplicates/delete', 'MedicalCasesController@destroy')->name('MedicalCasesController@destroy');
+    // Route::post('/medicalCases/duplicates/delete', 'MedicalCasesController@destroy')->name('MedicalCasesController@destroy');
     Route::get('/followUp/delayed', 'MedicalCasesController@followUpDelayed');
-    Route::get('/followUp/done', 'MedicalCasesController@followUpDone');
+    Route::get('/followUp', 'MedicalCasesController@showFacilities');
+    Route::get('/followUp/show/{id}', 'MedicalCasesController@showFacility')->name('MedicalCasesController.showFacility');;
     //for questions
     Route::get('/questions', 'QuestionsController@index')->name('QuestionsController.index');
     Route::get('/question/{id}', 'QuestionsController@show')->name('QuestionsController@show');

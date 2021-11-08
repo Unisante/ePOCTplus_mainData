@@ -211,7 +211,7 @@ return [
         // ],
         [
           'text' => 'Follow-Up',
-          'url'  => '/followUp/done',
+          'url'  => '/followUp',
           'icon' => 'fas fa-fw fa-check-circle',
           'can' =>  'Merge_Duplicates'
         ],
