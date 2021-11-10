@@ -30,7 +30,7 @@ class ExportFlat implements ShouldQueue
         if (File::exists($export_file)) {
             $lastmodified_file = File::lastModified($export_file);
             $lastmodified = DateTime::createFromFormat("U", $lastmodified_file);
-            if ((new DateTime())->diff($lastmodified)->days === 0) {
+            if ((new DateTime())->diff($lastmodified)->h < 20) {
                 Log::info('Flat export already done today, skipping');
                 return;
             }
