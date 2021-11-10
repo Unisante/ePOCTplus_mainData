@@ -48,15 +48,30 @@ class MedicalCase extends Model implements Auditable
     return $caseFollowUpCollection;
   }
 
-  public function listFollowed(){
-    $caseFollowUpCollection=new Collection();
-    foreach(MedicalCase::where('redcap',true)->get() as $medicalcase){
-      $followUp=MedicalCase::makeFollowUp($medicalcase);
-        // find the patient related to this followup
-      $caseFollowUpCollection->add($followUp);
-    }
-    return $caseFollowUpCollection;
-  }
+  // public function listFacilities(){
+  //   $cases=self::all();
+  //   $facility_id_arr=[];
+  //   dd($cases->load("patient"));
+  //   // $facility_id_arr=$cases->each(function($case)use($facility_id_arr){
+  //   //   // dd($facility_id_arr);
+  //   //   $facility_id=$case->patient->facility->group_id;
+  //   //   if ( ! in_array($facility_id,$facility_id_arr)){
+  //   //     array_push($facility_id_arr,$facility_id);
+  //   //     return $facility_id;
+  //   //   }
+
+  //   //   // return null;
+  //   // });
+  //   dd($facility_id_arr);
+  //   dd(self::all());
+  //   $caseFollowUpCollection=new Collection();
+  //   foreach(MedicalCase::where('redcap',true)->get() as $medicalcase){
+  //     $followUp=MedicalCase::makeFollowUp($medicalcase);
+  //       // find the patient related to this followup
+  //     $caseFollowUpCollection->add($followUp);
+  //   }
+  //   return $caseFollowUpCollection;
+  // }
 
   /**
   * making a relationship to patient

@@ -1,0 +1,17 @@
+.scrollableDiv {
+  height: 250px;
+  overflow-y: scroll;
+}
+
+/* .facility {
+  height: 350px;
+  background-color: red;
+} */
+ul li {
+  display: block;
+}
+
+ul li:hover,
+ul li a:focus {
+  color: #d93909;
+}

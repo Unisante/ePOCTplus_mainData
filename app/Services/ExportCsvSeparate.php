@@ -575,108 +575,68 @@ class ExportCsvSeparate extends ExportCsv
             $formulations_data[] = $this->getAttributeList(Config::get('csv.identifiers.formulation'));
             $answers_data[] = $this->getAttributeList(Config::get('csv.identifiers.answer'));
         }
+        // get medical_case_answers
+        $this->addMedicalCaseAnswerData($medical_case_answers_data, $medical_case_answer);
 
-        foreach ($this->medical_cases as $medical_case) {
-            $patient = $medical_case->patient;
-            // get patients
-            $this->addPatientData($patients_data, $patient);
+        // get nodes
+        $node = $medical_case_answer->node;
+        $this->addNodeData($nodes_data, $node);
 
-            // get medical cases
-            $this->addMedicalCaseData($medical_cases_data, $medical_case);
+        // get answers
+        $answers = $node->answers;
+        $is_identifiable = $node->is_identifiable;
+        foreach ($answers as $answer) {
+          $this->addAnswerData($answers_data, $answer, $is_identifiable);
+        }
+      }
 
-            $medical_case_answers = $medical_case->medical_case_answers;
-            foreach ($medical_case_answers as $medical_case_answer) {
-                if (self::isSkippedMedicalCaseAnswer($medical_case_answer)) {
-                    continue;
-                }
-                // get medical_case_answers
-                $this->addMedicalCaseAnswerData($medical_case_answers_data, $medical_case_answer);
+      $version = $medical_case->version;
+      // get versions
+      $this->addVersionData($versions_data, $version);
 
-                // get nodes
-                $node = $medical_case_answer->node;
-                $this->addNodeData($nodes_data, $node);
+      $algorithm = $version->algorithm;
+      // get algorithms
+      $this->addAlgorithmData($algorithms_data, $algorithm);
 
-                // get answers
-                $answers = $node->answers;
-                $is_identifiable = $node->is_identifiable;
-                foreach ($answers as $answer) {
-                    $this->addAnswerData($answers_data, $answer, $is_identifiable);
-                }
-            }
+      $activities = $medical_case->activities;
+      foreach ($activities as $activity) {
+        // get activities
+        $this->addActivityData($activities_data, $activity);
+      }
 
-            $version = $medical_case->version;
-            // get versions
-            $this->addVersionData($versions_data, $version);
-
-            $algorithm = $version->algorithm;
-            // get algorithms
-            $this->addAlgorithmData($algorithms_data, $algorithm);
-
-            $activities = $medical_case->activities;
-            foreach ($activities as $activity) {
-                // get activities
-                $this->addActivityData($activities_data, $activity);
-            }
-
-            $diagnosis_references = $medical_case->diagnoses_references;
-            foreach ($diagnosis_references as $diagnosis_reference) {
-                if (self::isSkippedDiagnosisReference($diagnosis_reference)) {
-                    continue;
-                }
-
-                $diagnosis = $diagnosis_reference->diagnoses;
-                // get diagnosis references
-                $this->addDiagnosisReferenceData($diagnosis_references_data, $diagnosis_reference);
-                // get diagnoses
-                $this->addDiagnosisData($diagnoses_data, $diagnosis);
-
-                $drug_references = $diagnosis_reference->drug_references;
-                foreach ($drug_references as $drug_reference) {
-                    $drug = $drug_reference->drugs;
-                    // get drug references
-                    $this->addDrugReferenceData($drug_references_data, $drug_reference);
-                    // get drugs
-                    $this->addDrugData($drugs_data, $drug);
-
-                    $formulations = $drug->formulations;
-                    foreach ($formulations as $formulation) {
-                        // get formulations
-                        $this->addFormulationData($formulations_data, $formulation);
-                    }
-
-                    $additional_drugs = $drug->additional_drugs;
-                    foreach ($additional_drugs as $additional_drug) {
-                        // get additional drug
-                        $this->addAdditionalDrugData($additional_drugs_data, $additional_drug);
-                    }
-                }
-
-                $management_references = $diagnosis_reference->management_references;
-                foreach ($management_references as $management_reference) {
-                    $management = $management_reference->managements;
-                    // get management references
-                    $this->addManagementReferenceData($management_references_data, $management_reference);
-                    // get managements
-                    $this->addManagementData($managements_data, $management);
-                }
-            }
-
-            $custom_diagnoses = $medical_case->custom_diagnoses;
-            foreach ($custom_diagnoses as $custom_diagnosis) {
-                // get custom diagnoses
-                $this->AddCustomDiagnosisData($custom_diagnoses_data, $custom_diagnosis);
-            }
+      $diagnosis_references = $medical_case->diagnoses_references;
+      foreach ($diagnosis_references as $diagnosis_reference) {
+        if (self::isSkippedDiagnosisReference($diagnosis_reference)) {
+          continue;
         }
 
-        $answer_types = Cache::store('array')->rememberForever('answer_types', function () {
-            return AnswerType::all();
-        });
+<<<<<<< HEAD
+        $diagnosis = $diagnosis_reference->diagnoses;
+        // get diagnosis references
+        $this->addDiagnosisReferenceData($diagnosis_references_data, $diagnosis_reference);
+        // get diagnoses
+        $this->addDiagnosisData($diagnoses_data, $diagnosis);
 
-        foreach ($answer_types as $answer_type) {
-            // get answer type
-            $this->addAnswerTypeData($answer_types_data, $answer_type);
-        }
+        $drug_references = $diagnosis_reference->drug_references;
+        foreach ($drug_references as $drug_reference) {
+          $drug = $drug_reference->drugs;
+          // get drug references
+          $this->addDrugReferenceData($drug_references_data, $drug_reference);
+          // get drugs
+          $this->addDrugData($drugs_data, $drug);
 
+          $formulations = $drug->formulations;
+          foreach ($formulations as $formulation) {
+            // get formulations
+            $this->addFormulationData($formulations_data, $formulation);
+          }
+
+          $additional_drugs = $drug->additional_drugs;
+          foreach ($additional_drugs as $additional_drug) {
+            // get additional drug
+            $this->addAdditionalDrugData($additional_drugs_data, $additional_drug);
+          }
+=======
         return [
             Config::get('csv.file_names.patients') => $patients_data,
             Config::get('csv.file_names.medical_cases') => $medical_cases_data,
@@ -707,14 +667,73 @@ class ExportCsvSeparate extends ExportCsv
         $folder = storage_path('app/export/' . Config::get('csv.folder_separated'));
         if (!File::exists($folder)) {
             File::makeDirectory($folder);
+>>>>>>> 8bbd9f93499a7cd27a92456558b8e2c8111db6f7
         }
-        foreach ($file_names as $file_name) {
-            $file = fopen($folder . $file_name, "a+");
-            foreach ($data[$file_name] as $line) {
-                $attributes = $this->attributesToStr((array) $line);
-                fputcsv($file, $attributes);
-            }
+
+        $management_references = $diagnosis_reference->management_references;
+        foreach ($management_references as $management_reference) {
+          $management = $management_reference->managements;
+          // get management references
+          $this->addManagementReferenceData($management_references_data, $management_reference);
+          // get managements
+          $this->addManagementData($managements_data, $management);
         }
-        fclose($file);
+      }
+
+      $custom_diagnoses = $medical_case->custom_diagnoses;
+      foreach ($custom_diagnoses as $custom_diagnosis) {
+        // get custom diagnoses
+        $this->AddCustomDiagnosisData($custom_diagnoses_data, $custom_diagnosis);
+      }
     }
+
+    $answer_types = Cache::store('array')->rememberForever('answer_types', function () {
+      return AnswerType::all();
+    });
+
+    foreach ($answer_types as $answer_type) {
+      // get answer type
+      $this->addAnswerTypeData($answer_types_data, $answer_type);
+    }
+
+    return [
+      Config::get('csv.file_names.patients') => $patients_data,
+      Config::get('csv.file_names.medical_cases') => $medical_cases_data,
+      Config::get('csv.file_names.medical_case_answers') => $medical_case_answers_data,
+      Config::get('csv.file_names.nodes') => $nodes_data,
+      Config::get('csv.file_names.versions') => $versions_data,
+      Config::get('csv.file_names.algorithms') => $algorithms_data,
+      Config::get('csv.file_names.activities') => $activities_data,
+      Config::get('csv.file_names.diagnoses') => $diagnoses_data,
+      Config::get('csv.file_names.custom_diagnoses') => $custom_diagnoses_data,
+      Config::get('csv.file_names.diagnosis_references') => $diagnosis_references_data,
+      Config::get('csv.file_names.drugs') => $drugs_data,
+      Config::get('csv.file_names.additional_drugs') => $additional_drugs_data,
+      Config::get('csv.file_names.drug_references') => $drug_references_data,
+      Config::get('csv.file_names.managements') => $managements_data,
+      Config::get('csv.file_names.management_references') => $management_references_data,
+      Config::get('csv.file_names.answer_types') => $answer_types_data,
+      Config::get('csv.file_names.formulations') => $formulations_data,
+      Config::get('csv.file_names.answers') => $answers_data,
+    ];
+  }
+
+  public function export()
+  {
+    $data = $this->getDataFromMedicalCases();
+    $file_names = array_keys($data);
+
+    $folder = public_path(Config::get('csv.folder_separated'));
+    if (!File::exists($folder)) {
+      File::makeDirectory($folder);
+    }
+    foreach ($file_names as $file_name) {
+      $file = fopen($folder . $file_name, "a+");
+      foreach ($data[$file_name] as $line) {
+        $attributes = $this->attributesToStr((array) $line);
+        fputcsv($file, $attributes);
+      }
+    }
+    fclose($file);
+  }
 }

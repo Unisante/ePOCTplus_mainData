@@ -48,7 +48,7 @@ class Patient extends Model implements Auditable
     });
     return $duplicateArray;
   }
-  
+
   public function findByDuplicateKey($duplicateArray){
     $markedPatients=self::where([
       ['duplicate',1],
