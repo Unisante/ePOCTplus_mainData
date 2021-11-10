@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->job(new RedcapPush())->everyThirtyMinutes();
         $schedule->command('export:start')->dailyAt('03:00');
+        $schedule->command('update:versions')->dailyAt('02:00');
         //$schedule->command(MedicalCasesExport::class)->everyMinute();
     }
 
