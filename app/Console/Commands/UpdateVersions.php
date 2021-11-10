@@ -20,7 +20,7 @@ class UpdateVersions extends Command
      *
      * @var string
      */
-    protected $description = 'This command will update the config';
+    protected $description = 'This command will update the config with the latest version';
 
     /**
      * Create a new command instance.
