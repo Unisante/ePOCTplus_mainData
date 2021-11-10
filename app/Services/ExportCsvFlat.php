@@ -54,7 +54,7 @@ class ExportCsvFlat extends ExportCsv
             Config::get('csv.flat.identifiers.patient.dyn_pat_merged') => $patient->merged,
             Config::get('csv.flat.identifiers.patient.dyn_pat_status') => $patient->status,
             Config::get('csv.flat.identifiers.patient.dyn_pat_related_ids') => $patient->related_ids,
-            Config::get('csv.flat.identifiers.patient.dyn_pat_middle_name') => $patient->middle_name,
+            Config::get('csv.flat.identifiers.patient.dyn_pat_middle_name') => self::ValueWithPermission($patient->middle_name),
             Config::get('csv.flat.identifiers.patient.dyn_pat_other_id') => $patient->other_id,
         ];
     }

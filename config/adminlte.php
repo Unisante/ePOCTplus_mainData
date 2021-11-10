@@ -256,17 +256,17 @@ return [
         [
           'text' => 'Diagnosis List',
           'url'  => '/exports/diagnosis_list',
-          'can' =>  'Merge_Duplicates'
+          'can' =>  'Export'
         ],
         [
           'text' => 'Drug List',
           'url'  => '/exports/drug_list',
-          'can' =>  'Merge_Duplicates'
+          'can' =>  'Export'
         ],
         [
           'text' => 'Exports',
           'icon' => 'fas fa-fw fa-clone',
-          'can' =>  'Merge_Duplicates',
+          'can' =>  'Export',
           'url'  => '/exports/exportZip',
           // 'submenu' => [
           //   [
