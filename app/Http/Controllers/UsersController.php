@@ -175,12 +175,20 @@ class UsersController extends Controller
       'current_password' => 'required|string',
       'new_password' => 'required|string',
     ));
-    if (!(Hash::check($request->input('current_password'), Auth::user()->password))) {
-      return back()->with('error', 'Wrong current Password!');
+    $current_user = Auth::user();
+    $current_password = $request->input('current_password');
+    $new_password = $request->input('new_password');
+
+    if (!(Hash::check($request->input('current_password'), $current_user->password))) {
+      return back()->with('error', 'Wrong current password!');
     }
-     Auth::user()->password = Hash::make($request->input('new_password'));
-    if(Auth::user()->save()){
-      return redirect()->route('users.profile')->with('success','password has been saved Changed.');
+    if($current_password === $new_password){
+      return back()->with('error', 'Password cannot be the same!');
+    }
+
+    $current_user->password = Hash::make($request->input('new_password'));
+    if($current_user->save()){
+      return redirect()->route('users.profile')->with('success','Password has been changed!');
     }else{
       return back()->with('error', 'Something Went wrong');
     }

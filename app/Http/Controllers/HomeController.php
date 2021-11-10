@@ -24,6 +24,7 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth', ['except' => ['forgotPassword','makePassword','checkToken']]);
+        $this->middleware('2fa');
     }
 
     /**
@@ -41,6 +42,37 @@ class HomeController extends Controller
         'patientCount'=> Patient::all()->count(),
       );
       return view('home')->with($data);
+    }
+
+    public function reauthenticate(Request $request)
+    {
+      $user = Auth::user();
+      return view('google2fa.confirm', [
+        'user_id' => $user->id
+      ]);
+    }
+
+    public function reauthenticateConfirmed()
+    {
+      $user = Auth::user();
+
+      $google2fa = app('pragmarx.google2fa');
+      $user->google2fa_secret = $google2fa->generateSecretKey();
+      $user->save();
+
+      // generate the QR image
+      $QR_Image = $google2fa->getQRCodeInline(
+        config('app.name'),
+        $user->email,
+        $user->google2fa_secret
+      );
+
+      // Pass the QR barcode image to our view
+      return view('google2fa.register', [
+        'QR_Image' => $QR_Image, 
+        'secret' => $user->google2fa_secret,
+        'reauthenticating' => true
+      ]);
     }
 
     public function forgotPassword(Request $request){
