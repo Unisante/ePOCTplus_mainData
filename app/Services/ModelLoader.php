@@ -6,11 +6,14 @@ use DateTime;
 use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
 
-abstract class ModelLoader {
+abstract class ModelLoader
+{
     private $rawData;
 
-    protected function getKeys() { return $this->keyValuesFromConfig('keys'); }
-    protected function getValues() { return $this->keyValuesFromConfig('values'); }
+    protected function getKeys()
+    {return $this->keyValuesFromConfig('keys');}
+    protected function getValues()
+    {return $this->keyValuesFromConfig('values');}
 
     abstract protected function model();
     abstract protected function configName();
@@ -46,23 +49,27 @@ abstract class ModelLoader {
         }
     }
 
-    private function config() {
+    private function config()
+    {
         return Config::get('medal.case_json_properties')[$this->configName()];
     }
 
-    protected function valueFromConfig($category, $property) {
+    protected function valueFromConfig($category, $property)
+    {
         return $this->rawData[$this->config()[$category][$property]] ?? null;
     }
 
-    protected function languageValueFromConfig($property) {
+    protected function languageValueFromConfig($property)
+    {
         return $this->rawData[$property][Config::get('medal.global.language')] ?? null;
     }
 
-    protected function keyValuesFromConfig($category) {
+    protected function keyValuesFromConfig($category)
+    {
         $properties = array_keys($this->config()[$category] ?? []);
         return array_combine(
             $properties,
-            array_map(function($p) use ($category) {
+            array_map(function ($p) use ($category) {
                 $config = $this->config()[$category][$p];
                 $key = is_array($config) ? $config['key'] : $config;
 
@@ -102,7 +109,8 @@ abstract class ModelLoader {
      *
      * @return Model
      */
-    public function load() {
+    public function load()
+    {
         $record = $this->model()::firstOrCreate(
             $this->getKeys(),
             $this->getValues()

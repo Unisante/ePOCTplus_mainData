@@ -15,7 +15,7 @@ class FixDiagNullAgreedValue extends Command
      *
      * @var string
      */
-    protected $signature = 'rebuild:json {dry-run=0}';
+    protected $signature = 'json:rebuild {dry-run=0}';
 
     /**
      * The console command description.

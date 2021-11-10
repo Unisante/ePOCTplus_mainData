@@ -61,12 +61,12 @@ class SaveCaseService
         return $case;
     }
 
-    protected function getPatientConfigData($hf, $versionId)
+    public function getPatientConfigData($hf, $versionId)
     {
         return json_decode(Http::get(Config::get('medal.creator.url') . Config::get('medal.creator.medal_data_config_endpoint') . $versionId), true);
     }
 
-    protected function getVersionData($hf, $versionId)
+    public function getVersionData($hf, $versionId)
     {
         if (Config::get('medal.global.local_health_facility_management')) {
             $versionJson = $hf->version_json;
