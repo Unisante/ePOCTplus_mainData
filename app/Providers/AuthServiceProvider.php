@@ -39,8 +39,13 @@ class AuthServiceProvider extends ServiceProvider
                     $router->forTransientTokens();
                     $router->forPersonalAccessTokens();
                 });
+
+        Passport::tokensExpireIn(now()->addMinutes(1));
+        Passport::refreshTokensExpireIn(now()->addMinutes(2));
+        Passport::personalAccessTokensExpireIn(now()->addMinutes(1));
+
             // Here the routes to manage clients are guarded with additionnal middleware which requires the Manage_Devices permission
-        Route::group(['middleware'=>['web','auth','permission:Manage_Devices']], function(){ 
+        Route::group(['middleware'=>['web','auth','permission:Manage_Devices']], function(){
             Passport::routes(function ($router) {
                 $router->forClients();
             });
