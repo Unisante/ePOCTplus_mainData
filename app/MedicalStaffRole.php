@@ -8,7 +8,7 @@ class MedicalStaffRole extends Model
 {
     protected $fillable = [
         "label",
-        "alias",
+        "type",
     ];
     protected $guarded = [];
 }

@@ -22,6 +22,9 @@ class RoleSeeder extends Seeder
         $admin->givePermissionTo('Reset_User_Password');
         $admin->givePermissionTo('Reset_Own_Password');
         $admin->givePermissionTo('View_Audit_Trail');
+        $admin->givePermissionTo('Manage_Health_Facility');
+        $admin->givePermissionTo('Manage_Devices');
+        $admin->givePermissionTo('Manage_MedicalStaff');
         // create Data manager
         $data_manager=Role::firstOrCreate(['name'=>'Data Manager']);
         $data_manager->givePermissionTo('View_Patient');

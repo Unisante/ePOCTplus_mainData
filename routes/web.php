@@ -74,6 +74,11 @@ Route::group(['middleware' => ['auth']], function() {
     'update',
     'destroy'
   ]);
+  //Medical staff Management in the context of Health Facilities
+  Route::resource('medical-staff','MedicalStaffController');
+  Route::get('health-facilities/{health_facility}/manage-medical-staff',"HealthFacilityController@manageMedicalStaff");
+  Route::post('health-facilities/{health_facility}/assign-medical-staff/{medical_staff}',"HealthFacilityController@assignMedicalStaff");
+  Route::post('health-facilities/{health_facility}/unassign-medical-staff/{medical_staff}',"HealthFacilityController@unassignMedicalStaff");
   //Device Management in the context of Health Facilities
   Route::get('health-facilities/{health_facility}/manage-devices',"HealthFacilityController@manageDevices");
   Route::post('health-facilities/{health_facility}/assign-device/{device}',"HealthFacilityController@assignDevice");

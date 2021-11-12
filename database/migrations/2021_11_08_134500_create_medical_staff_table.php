@@ -19,7 +19,7 @@ class CreateMedicalStaffTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->bigInteger('medical_staff_role_id');
-            $table->bigInteger('health_facility_id');
+            $table->bigInteger('health_facility_id')->nullable();
         });
     }
 

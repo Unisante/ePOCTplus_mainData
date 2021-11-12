@@ -9,9 +9,11 @@ use App\Services\AlgorithmService;
 use Illuminate\Support\Facades\Auth;
 use App\Services\HealthFacilityService;
 use App\Http\Requests\HealthFacilityRequest;
+use App\Http\Requests\MedicalStaffRequest;
 use App\Http\Resources\Device as DeviceResource;
-
-
+use App\Http\Resources\MedicalStaff as MedicalStaffResource;
+use App\MedicalStaff;
+use Illuminate\Support\Facades\Log;
 
 class HealthFacilityController extends Controller
 {
@@ -121,6 +123,29 @@ class HealthFacilityController extends Controller
             "algorithms" => $algorithms,
             "healthFacility" => $healthFacility,
         ]);
+    }
+
+    public function manageMedicalStaff(HealthFacility $health_facility){
+        $this->authorize('manageMedicalStaff', $health_facility);
+        $medical_staff = MedicalStaffResource::collection($health_facility->medical_staff);
+        $unassigned_medical_staff = MedicalStaffResource::collection(MedicalStaff::whereNull('health_facility_id')->get());
+        return response()->json([
+            "health_facility" => $health_facility,
+            "medical_staff" => $medical_staff,
+            "unassigned_medical_staff" => $unassigned_medical_staff
+        ]);
+    }
+
+    public function assignMedicalStaff(HealthFacility $health_facility, MedicalStaff $medical_staff){
+        $this->authorize('assignMedicalStaff', [$health_facility, $medical_staff]);
+        $medical_staff = $this->healthFacilityService->assignMedicalStaff($health_facility, $medical_staff);
+        return response()->json(new MedicalStaffResource($medical_staff));
+    }
+
+    public function unassignMedicalStaff(HealthFacility $health_facility, MedicalStaff $medical_staff){
+        $this->authorize("unassignMedicalStaff", [$health_facility, $medical_staff]);
+        $medical_staff = $this->healthFacilityService->unassignMedicalStaff($health_facility, $medical_staff);
+        return response()->json(new MedicalStaffResource($medical_staff));
     }
 
     public function accesses(HealthFacility $healthFacility){

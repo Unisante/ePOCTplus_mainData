@@ -83,6 +83,11 @@ Vue.component(
     require('./components/Devices.vue').default
 );
 
+Vue.component(
+    'MedicalStaff',
+    require('./components/MedicalStaff.vue').default
+);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\User;
 use App\Device;
 use App\HealthFacility;
+use App\MedicalStaff;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -76,16 +77,24 @@ class HealthFacilityPolicy
         return $user->id == $healthFacility->user_id;
     }
 
-    public function assignDevice(User $user,HealthFacility $healthFacility, Device $device){
-        return $user->id == $device->user_id && $user->id == $healthFacility->user_id;
-    }
-
     public function manageDevices(User $user,HealthFacility $healthFacility){
         return $user->id == $healthFacility->user_id;
     }
 
+    public function assignDevice(User $user,HealthFacility $healthFacility, Device $device){
+        return $user->id == $device->user_id && $user->id == $healthFacility->user_id;
+    }
+
     public function unassignDevice(User $user,HealthFacility $healthFacility, Device $device){
         return $user->id == $device->user_id && $user->id == $healthFacility->user_id;
+    }
+
+    public function assignMedicalStaff(User $user, HealthFacility $health_facility, MedicalStaff $medical_staff){
+        return true; //TODO
+    }
+
+    public function unassignMedicalStaff(User $user, HealthFacility $health_facility, MedicalStaff $medical_staff){
+        return true; //TODO
     }
 
     public function manageAlgorithms(User $user,HealthFacility $healthFacility){
@@ -97,6 +106,10 @@ class HealthFacilityPolicy
     }
 
     public function assignVersion(User $user,HealthFacility $healthFacility){
+        return $user->id == $healthFacility->user_id;
+    }
+
+    public function manageMedicalStaff(User $user, HealthFacility $healthFacility){
         return $user->id == $healthFacility->user_id;
     }
 
