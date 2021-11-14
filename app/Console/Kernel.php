@@ -3,8 +3,8 @@
 namespace App\Console;
 
 use App\Jobs\RedcapPush;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
