@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Jobs\RedcapPush;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -25,7 +26,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->job(new RedcapPush())->everyThirtyMinutes();
+        // timci project does not use redcap
+        empty(Config::get('redcap.identifiers.api_url_followup'))?null:$schedule->job(new RedcapPush())->everyThirtyMinutes();
         $schedule->command('export:start')->dailyAt('03:00');
         $schedule->command('update:versions')->dailyAt('02:00');
         //$schedule->command(MedicalCasesExport::class)->everyMinute();
