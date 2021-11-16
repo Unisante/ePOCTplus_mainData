@@ -8,6 +8,7 @@ use App\Services\DeviceService;
 use App\Http\Requests\DeviceRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Device as DeviceResource;
+use Illuminate\Support\Facades\DB;
 
 class DeviceController extends Controller
 {
@@ -77,6 +78,10 @@ class DeviceController extends Controller
     public function destroy(Device $device)
     {
         $id = $this->deviceService->remove($device);
+
+        # Delete corresponding client
+        DB::table('oauth_clients')->where('name', '=', $device->name)->delete();
+        
         return response()->json([
             "message" => "Deleted",
             "id" => $id,
