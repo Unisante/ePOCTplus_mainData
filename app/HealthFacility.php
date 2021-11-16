@@ -92,6 +92,10 @@ class HealthFacility extends Model
     return $this->hasOne('App\VersionJson');
   }
 
+  public function medical_staff(){
+    return $this->hasMany(MedicalStaff::class);
+  }
+
   public function devices(){
     return $this->hasMany(Device::class);
   }

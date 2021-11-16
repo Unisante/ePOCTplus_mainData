@@ -9,6 +9,8 @@ class MedicalStaff extends Model
     protected $fillable = [
         "first_name",
         "last_name",
+        "medical_staff_role_id",
+        "health_facility_id"
     ];
     protected $guarded = [];
 

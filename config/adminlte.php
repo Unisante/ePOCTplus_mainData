@@ -216,12 +216,6 @@ return [
           'can' =>  'Merge_Duplicates'
         ],
         [
-          'text' => 'Manage Devices',
-          'url'  => '/devices',
-          'icon' => 'fas fa-tablet-alt',
-          'can' =>  'Manage_Devices'
-        ],
-        [
           'text' => 'Duplicates',
           'url'  => '/patients/duplicates',
           'icon' => 'fas fa-fw fa-users',
@@ -237,11 +231,19 @@ return [
             'text' => 'Health Facilities',
             'url'  => '/health-facilities',
             'icon' => 'fas fa-fw fa-cart-plus',
+            'can' =>  'Manage_Health_Facilities'
         ],
         [
             'text' => 'Devices',
             'url' => '/devices',
             'icon' => 'fas fa-fw fa-tablet-alt',
+            'can' =>  'Manage_Devices'
+        ],
+        [
+            'text' => 'Medical staff',
+            'url' => '/medical-staff',
+            'icon' => 'fas fa-fw fa-users',
+            'can' =>  'Manage_Medical_Staff'
         ],
         [
             'text' => 'Patient list',

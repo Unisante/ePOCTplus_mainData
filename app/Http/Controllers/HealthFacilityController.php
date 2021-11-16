@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Device;
 use App\HealthFacility;
-use Illuminate\Http\Request;
 use App\Services\AlgorithmService;
 use Illuminate\Support\Facades\Auth;
 use App\Services\HealthFacilityService;
 use App\Http\Requests\HealthFacilityRequest;
 use App\Http\Resources\Device as DeviceResource;
-
-
+use App\Http\Resources\MedicalStaff as MedicalStaffResource;
+use App\MedicalStaff;
 
 class HealthFacilityController extends Controller
 {
@@ -21,10 +20,10 @@ class HealthFacilityController extends Controller
     public function __construct(HealthFacilityService $healthFacilityService, 
                                 AlgorithmService $algorithmService)
     {
-        $this->authorizeResource(HealthFacility::class);
         $this->healthFacilityService = $healthFacilityService;
         $this->algorithmService = $algorithmService;
     }
+
     /**
      * Return an index of the resources owned by the user
      *
@@ -32,7 +31,7 @@ class HealthFacilityController extends Controller
      */
     public function index()
     {
-        $healthFacilities =  Auth::user()->healthFacilities;
+        $healthFacilities = HealthFacility::all();
         foreach($healthFacilities as $hf){
             if ($hf->version_json == null){
                 error_log("is null");
@@ -91,9 +90,8 @@ class HealthFacilityController extends Controller
     }
 
     public function manageDevices(HealthFacility $healthFacility){
-        $this->authorize('manageDevices',$healthFacility);
         $devices = DeviceResource::collection($healthFacility->devices);
-        $unassignedDevices = DeviceResource::collection(Auth::user()->unassignedDevices());
+        $unassignedDevices = DeviceResource::collection(Device::where('health_facility_id', '=', null)->get());
         return response()->json([
             "devices" => $devices->values(),
             "unassignedDevices" => $unassignedDevices->values(),
@@ -102,20 +100,17 @@ class HealthFacilityController extends Controller
     }
 
     public function assignDevice(HealthFacility $healthFacility,Device $device){
-        $this->authorize('assignDevice',[$healthFacility,$device]);
         $device = $this->healthFacilityService->assignDevice($healthFacility,$device);
         return response()->json(new DeviceResource($device));
     }
 
     public function unassignDevice(HealthFacility $healthFacility,Device $device){
-        $this->authorize("unassignDevice",[$healthFacility,$device]);
         $device = $this->healthFacilityService->unassignDevice($healthFacility,$device);
         return response()->json(new DeviceResource($device));
     }
 
 
     public function manageAlgorithms(HealthFacility $healthFacility){
-        $this->authorize('manageAlgorithms',$healthFacility);
         $algorithms = $this->algorithmService->getAlgorithmsMetadata();
         return response()->json([
             "algorithms" => $algorithms,
@@ -123,8 +118,27 @@ class HealthFacilityController extends Controller
         ]);
     }
 
+    public function manageMedicalStaff(HealthFacility $health_facility){
+        $medical_staff = MedicalStaffResource::collection($health_facility->medical_staff);
+        $unassigned_medical_staff = MedicalStaffResource::collection(MedicalStaff::whereNull('health_facility_id')->get());
+        return response()->json([
+            "health_facility" => $health_facility,
+            "medical_staff" => $medical_staff,
+            "unassigned_medical_staff" => $unassigned_medical_staff
+        ]);
+    }
+
+    public function assignMedicalStaff(HealthFacility $health_facility, MedicalStaff $medical_staff){
+        $medical_staff = $this->healthFacilityService->assignMedicalStaff($health_facility, $medical_staff);
+        return response()->json(new MedicalStaffResource($medical_staff));
+    }
+
+    public function unassignMedicalStaff(HealthFacility $health_facility, MedicalStaff $medical_staff){
+        $medical_staff = $this->healthFacilityService->unassignMedicalStaff($health_facility, $medical_staff);
+        return response()->json(new MedicalStaffResource($medical_staff));
+    }
+
     public function accesses(HealthFacility $healthFacility){
-        $this->authorize('accesses',$healthFacility);
         $currentAccess = $this->algorithmService->getCurrentAccess($healthFacility);
         $archivedAccesses = $this->algorithmService->getArchivedAccesses($healthFacility);
         return response()->json([
@@ -139,15 +153,12 @@ class HealthFacilityController extends Controller
     }
 
     public function assignVersion(HealthFacility $healthFacility,$versionID){
-        $this->authorize('assignVersion',$healthFacility);
         $versionJSON = $this->algorithmService->assignVersionToHealthFacility($healthFacility,$versionID);
         return response()->json([
             "message" => "Version Assigned",
             "id" => $versionID,
         ]);
-        
     }
-
 
     private function addDefaultValues(HealthFacility $healthFacility){
         $healthFacility->group_id = 1;

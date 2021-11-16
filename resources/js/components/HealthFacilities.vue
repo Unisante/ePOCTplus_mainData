@@ -11,8 +11,8 @@
             :resources_data.sync="health_facilities"
             :custom_actions="custom_actions"
             @devices="manageDevices"
-            @algorithms="manageAlgorithms">
-            @medicalstaff="manageMedicalStaff"></health-facility-index>
+            @algorithms="manageAlgorithms"
+            @medical_staff="manageMedicalStaff"></health-facility-index>
         </div>
     </div>
     <basic-modal :show.sync="showDevices">
@@ -32,9 +32,20 @@
         </template>
         <template v-slot:body>
             <algorithm-manager :algorithms="algorithms"
-                            :assign_base_url="actionURL + '/assign-version'"
-                            :versions_route="versionsRoute"
-                            :algorithms_accesses_route="actionURL + '/accesses'"></algorithm-manager>
+                               :assign_base_url="actionURL + '/assign-version'"
+                               :versions_route="versionsRoute"
+                               :algorithms_accesses_route="actionURL + '/accesses'"></algorithm-manager>
+        </template>
+    </basic-modal>
+    <basic-modal :show.sync="showMedicalStaff">
+        <template v-slot:header>
+            <h5>Medical staff from Health Facility {{selectedHealthFacility.name}}</h5>
+        </template>
+        <template v-slot:body>
+        <medical-staff-manager :medical_staff="medical_staff"
+                               :assign_base_url="actionURL"
+                               :medical_staff_route="medical_staff_route"
+                               :unassigned_medical_staff="unassigned_medical_staff"></medical-staff-manager>
         </template>
     </basic-modal>
 </div>
@@ -45,6 +56,7 @@ import BasicModal from "./basic/BasicModal.vue"
 import ActionButton from "./basic/ActionButton.vue"
 import DeviceManager from "./DeviceManager.vue"
 import AlgorithmManager from "./AlgorithmManager.vue"
+import MedicalStaffManager from "./MedicalStaffManager.vue"
 import HealthFacilityIndex from "./resources/HealthFacilityIndex.vue"
 
 export default {
@@ -55,6 +67,7 @@ export default {
         "ActionButton": ActionButton,
         "DeviceManager": DeviceManager,
         "AlgorithmManager": AlgorithmManager,
+        "MedicalStaffManager": MedicalStaffManager,
         "HealthFacilityIndex": HealthFacilityIndex,
     },
 
@@ -71,9 +84,12 @@ export default {
             versionsRoute : this.health_facilities_route + "/versions",
             showDevices :false,
             showAlgorithms: false,
+            showMedicalStaff: false,
             devices: [],
             algorithms: [],
+            medical_staff: [],
             unassignedDevices: [],
+            unassigned_medical_staff: [],
             healthFacilities: [],
             selectedHealthFacility: {},
             assignmentURL: "",
@@ -104,6 +120,7 @@ export default {
     props : {
         health_facilities_route : String,
         devices_route: String,
+        medical_staff_route: String,
         health_facilities: Array,
     },
 
@@ -142,6 +159,18 @@ export default {
         },
 
         manageMedicalStaff: function(id){
+            var url = this.health_facilities_route + "/" + id + "/manage-medical-staff"
+            axios.get(url)
+              .then((response) => {
+                this.actionURL = this.health_facilities_route + "/" + id
+                this.selectedHealthFacility = response.data.health_facility
+                this.medical_staff = response.data.medical_staff
+                this.unassigned_medical_staff = response.data.unassigned_medical_staff
+                this.showMedicalStaff = true
+              })
+              .catch((error) => {
+                this.$toasted.global.error_notification("Error:" + error)
+              });
         }
     }
 }

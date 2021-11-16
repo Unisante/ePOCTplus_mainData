@@ -16,8 +16,9 @@ class DeviceController extends Controller
 
     public function __construct(DeviceService $deviceService)
     {
-        $this->authorizeResource(Device::class);
         $this->deviceService = $deviceService;
+        $this->middleware('can:Manage_Devices');
+
     }
     /**
      * Display a listing of the resource.
@@ -26,7 +27,7 @@ class DeviceController extends Controller
      */
     public function index()
     {
-        $devices = DeviceResource::collection(Auth::user()->devices);
+        $devices = DeviceResource::collection(Device::all());
         return view('devices.index',['devices' => $devices->toJson(),]);
     }
 
