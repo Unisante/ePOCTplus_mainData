@@ -27,8 +27,8 @@ class PermissionTableSeeder extends Seeder
         'Delete_Case',
         'View_Audit_Trail',
         'Manage_Devices',
-        'Manage_Medical_Staff', //TODO add new migration
-        'Manage_Health_Facility' //TODO add new migration
+        'Manage_Medical_Staff',
+        'Manage_Health_Facilities'
      ];
 
      foreach($permissions as $permission){

@@ -17,9 +17,8 @@ class MedicalStaffController extends Controller
 
     public function __construct(MedicalStaffService $medicalStaffService)
     {
-        //TODO authorize resource (not working properly)
-        //$this->authorizeResource(MedicalStaff::class);
         $this->medicalStaffService = $medicalStaffService;
+        $this->middleware('can:Manage_Medical_Staff');
     }
 
     /**
@@ -37,7 +36,6 @@ class MedicalStaffController extends Controller
         Cache::forget('health_facilities');
         Cache::forget('roles');
 
-        Log::debug(json_encode($medical_staff_roles));
         return view('medicalStaff.index', [
             'medical_staff' => $medical_staff->toJson(),
             'medical_staff_roles' => $medical_staff_roles->toJson()

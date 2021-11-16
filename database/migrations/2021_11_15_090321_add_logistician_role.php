@@ -48,7 +48,7 @@ class AddLogisticianRole extends Migration
         ]);
 
         # Add permissions
-        $this->addPermissionToRole('Manage_Health_Facility', $logistician_id);
+        $this->addPermissionToRole('Manage_Health_Facilities', $logistician_id);
         $this->addPermissionToRole('Manage_Devices', $logistician_id);
         $this->addPermissionToRole('Manage_Medical_Staff', $logistician_id);
         $this->addPermissionToRole('Reset_User_Password', $logistician_id);

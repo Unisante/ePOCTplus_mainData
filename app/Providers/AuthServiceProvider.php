@@ -3,10 +3,7 @@
 namespace App\Providers;
 
 use Route;
-use App\Device;
-use App\Policies\DevicePolicy;
 use Laravel\Passport\Passport;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -16,11 +13,7 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
-        'App\Device' => 'App\Policies\DevicePolicy',
-        'App\HealthFacility' => 'App\Policies\HealthFacilityPolicy',
-    ];
+    protected $policies = [];
 
     /**
      * Register any authentication / authorization services.
@@ -40,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
                     $router->forPersonalAccessTokens();
                 });
             // Here the routes to manage clients are guarded with additionnal middleware which requires the Manage_Devices permission
-        Route::group(['middleware'=>['web','auth','permission:Manage_Devices']], function(){ 
+        Route::group(['middleware'=>['web','auth']], function(){ 
             Passport::routes(function ($router) {
                 $router->forClients();
             });

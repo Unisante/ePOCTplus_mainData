@@ -23,7 +23,7 @@ class RoleSeeder extends Seeder
         $admin->givePermissionTo('Reset_User_Password');
         $admin->givePermissionTo('Reset_Own_Password');
         $admin->givePermissionTo('View_Audit_Trail');
-        $admin->givePermissionTo('Manage_Health_Facility');
+        $admin->givePermissionTo('Manage_Health_Facilities');
         $admin->givePermissionTo('Manage_Devices');
         $admin->givePermissionTo('Manage_Medical_Staff');
 
@@ -48,7 +48,7 @@ class RoleSeeder extends Seeder
 
         // create logistician role
         $logistician=Role::firstOrCreate(['name'=>'Logistician']);
-        $logistician->givePermissionTo('Manage_Health_Facility');
+        $logistician->givePermissionTo('Manage_Health_Facilities');
         $logistician->givePermissionTo('Manage_Devices');
         $logistician->givePermissionTo('Manage_Medical_Staff');
         $logistician->givePermissionTo('Reset_User_Password');

@@ -231,7 +231,7 @@ return [
             'text' => 'Health Facilities',
             'url'  => '/health-facilities',
             'icon' => 'fas fa-fw fa-cart-plus',
-            'can' =>  'Manage_Health_Facility'
+            'can' =>  'Manage_Health_Facilities'
         ],
         [
             'text' => 'Devices',
