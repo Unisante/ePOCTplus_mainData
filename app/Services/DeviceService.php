@@ -55,8 +55,10 @@ class DeviceService {
         $device->fill($validatedRequest)->save();
         $clientRepository = app('Laravel\Passport\ClientRepository');
         $client = $clientRepository->findForUser($device->oauth_client_id,Auth::user()->id);
-        $redirectURL = $device->redirect;
-        $clientRepository->update($client,$validatedRequest['name'],$redirectURL);
+        if($client !== null){
+            $redirectURL = $device->redirect;
+            $clientRepository->update($client,$validatedRequest['name'],$redirectURL);
+        }
         return $device;
     }
 
@@ -67,7 +69,9 @@ class DeviceService {
         $device->delete();
         $clientRepository = app('Laravel\Passport\ClientRepository');
         $client = $clientRepository->findForUser($device->oauth_client_id,Auth::user()->id);
-        $clientRepository->delete($client);
+        if($client !== null){
+            $clientRepository->delete($client);
+        }
         return $id;
     }
 
