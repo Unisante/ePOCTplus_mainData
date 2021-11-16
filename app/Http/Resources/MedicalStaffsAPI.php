@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Config;
 
 class MedicalStaffsAPI extends JsonResource
 {
@@ -22,6 +23,8 @@ class MedicalStaffsAPI extends JsonResource
             'health_facility_id' => $this->health_facility_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'algo_language' => Config::get('medal.creator.language'),
+            'app_language' => Config::get('medal.creator.language')
         ];
     }
 }
