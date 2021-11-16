@@ -3,13 +3,16 @@
 
 namespace App\Services;
 
+use App\Http\Resources\MedicalStaffsAPI;
+use App\MedicalStaff;
+use App\MedicalStaffRole;
 use Exception;
 use App\Device;
 use App\HealthFacility;
+use Illuminate\Support\Collection;
 use Lcobucci\JWT\Parser;
 use Laravel\Passport\Token;
 use Illuminate\Support\Facades\Log;
-use App\Http\Requests\DeviceRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 
@@ -102,11 +105,30 @@ class DeviceService {
         if ($healthFacility == null) {
             throw new Exception("Device is not associated with any Health Facilities");
         }
-        $pinCode = $healthFacility->pin_code;
-        $hubIP = $healthFacility->local_data_ip;
+
+        $medicalStaffs = MedicalStaff::where('health_facility_id', $healthFacility->id)->get();
+
+        $AllMedicalStaffRoleLabel = new Collection();
+        MedicalStaffRole::all()->each(function($medicalStaffRole) use (&$AllMedicalStaffRoleLabel){
+            $AllMedicalStaffRoleLabel->add($medicalStaffRole->label);
+        });
+
         return array(
-            "pin_code" => $pinCode,
-            "hub_ip" => $hubIP,
+            "id" => $healthFacility->id,
+            "name" => $healthFacility->name,
+            "created_at" => $healthFacility->created_at,
+            "updated_at" => $healthFacility->updated_at,
+            "local_data_ip" => $healthFacility->local_data_ip,
+            "main_data_ip" => Config::get('medal-data.global.ip'),
+            "architecture" => $healthFacility->architecture,
+            "pin_code" => $healthFacility->pin_code,
+            "latitude" => $healthFacility->lat,
+            "longitude" => $healthFacility->long,
+            "country" => $healthFacility->country,
+            "area" => $healthFacility->area,
+            "study_id" => Config::get('medal-data.global.study_id'),
+            "medical_staffs" => MedicalStaffsAPI::collection($medicalStaffs),
+            "medical_staff_roles" => $AllMedicalStaffRoleLabel,
         );
     }
 

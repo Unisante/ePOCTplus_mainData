@@ -19,7 +19,7 @@ class MedicalStaff extends Model
     }
 
     public function medicalStaffRole(){
-        return $this->belongsTo('App/MedicalStaffRole');
+        return $this->belongsTo('App\MedicalStaffRole');
     }
 
 }

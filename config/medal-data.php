@@ -10,6 +10,7 @@ return [
   'global' => [
     'study_id' =>env('STUDY_ID'),
     'language' =>env('JSON_LANGUAGE'),
+    'ip' => env('MEDAL_DATA_IP')
   ],
 
 ];
