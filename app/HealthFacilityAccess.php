@@ -9,4 +9,9 @@ class HealthFacilityAccess extends Model
     protected $attributes = [
         'access' => true,
     ];
+
+    protected $fillable = [
+        "medal_r_json_version",
+        "creator_version_id",
+    ];
 }
