@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Config;
 class AlgorithmService {
 
     /**
-     * Fetches the algorithms metadata from medal-creator and stores the data in the database for potential later use 
+     * Fetches the algorithms metadata from medal-creator and stores the data in the database for potential later use
      */
     public function getAlgorithmsMetadata(){
         $url = Config::get('medal.creator.url') . Config::get('medal.creator.algorithms_endpoint');
@@ -110,11 +110,22 @@ class AlgorithmService {
         $healthFacility = HealthFacility::where('id',$device->health_facility_id)->first();
         if ($healthFacility == null){
             throw new Exception("Device is not assigned to any Health Facility");
-        } 
+        }
         if ($healthFacility->versionJson == null){
             throw new Exception("No Version is assigned to the associated Health Facility");
         }
         return json_decode($healthFacility->versionJson->json);
     }
-    
+
+    public function getAlgorithmEmergencyContentJsonForDevice(Device $device){
+        $healthFacility = HealthFacility::where('id',$device->health_facility_id)->first();
+        if ($healthFacility == null){
+            throw new Exception("Device is not assigned to any Health Facility");
+        }
+        if ($healthFacility->versionJson == null){
+            throw new Exception("No Version is assigned to the associated Health Facility");
+        }
+        return json_decode($healthFacility->versionJson->emergency_content);
+    }
+
 }

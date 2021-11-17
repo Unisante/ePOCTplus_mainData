@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Storage;
 Route::middleware(['auth:api','device.resolve'])->prefix('/v1')->group(function(){
   Route::get('/health-facility-info','Api\AuthDeviceController@healthFacilityInfo');
   Route::get('/algorithm','Api\AuthDeviceController@algorithm');
+  Route::get('/emergency-content','Api\AuthDeviceController@emergencyContent');
   Route::post('/device-info','Api\AuthDeviceController@storeDeviceInfo');
   route::get('/test','Api\AuthDeviceController@test');
 });

@@ -16,7 +16,7 @@ class AuthDeviceController extends Controller
     protected $deviceService;
     protected $algorithmService;
 
-    public function __construct(DeviceService $deviceService,AlgorithmService $algorithmService)
+    public function __construct(DeviceService $deviceService, AlgorithmService $algorithmService)
     {
         $this->deviceService = $deviceService;
         $this->algorithmService = $algorithmService;
@@ -39,4 +39,12 @@ class AuthDeviceController extends Controller
             "json" => $alg,
         ]);
     }
+
+    public function emergencyContent(Request $request,Device $device) {
+        $emergencyContent = $this->algorithmService->getAlgorithmEmergencyContentJsonForDevice($device);
+        return response()->json([
+            "json" => $emergencyContent,
+        ]);
+    }
+
 }
