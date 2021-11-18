@@ -32,11 +32,13 @@ class AlgorithmService {
     }
 
     public function assignVersionToHealthFacility(HealthFacility $healthFacility, $chosenAlgorithmID, $versionID) {
-        $url = Config::get('medal.creator.url') . Config::get('medal.creator.versions_endpoint') . "/" . $versionID;
-        // ex : https://medalc.unisante.ch/api/v1/algorithms/1/emergency_content?json_version=-1
-        $urlAlgorithm = Config::get('medal.creator.url') . Config::get('medal.creator.algorithms_endpoint') . "/" . $chosenAlgorithmID . "/emergency_content?json_version=-1";
-        $version = json_decode(Http::get($url,[]),true);
-        $emergencyContent = json_decode(Http::post($urlAlgorithm,[]),true);
+        $url = Config::get('medal.creator.url') . Config::get('medal.creator.versions_endpoint') .
+               "/" . $versionID;
+        $urlAlgorithm = Config::get('medal.creator.url') . Config::get('medal.creator.algorithms_endpoint') .
+                        "/" . $chosenAlgorithmID . "/emergency_content";
+
+        $version = json_decode(Http::get($url, []),true);
+        $emergencyContent = json_decode(Http::post($urlAlgorithm, [], ["emergency_content_version" => -1]),true);
         $requiredFields = ['medal_r_json','name','id','is_arm_control','medal_r_json_version'];
         foreach($requiredFields as $field){
             if ($version[$field] === null){
