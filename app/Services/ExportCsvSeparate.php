@@ -704,7 +704,7 @@ class ExportCsvSeparate extends ExportCsv
         $data = $this->getDataFromMedicalCases();
         $file_names = array_keys($data);
 
-        $folder = public_path(Config::get('csv.folder_separated'));
+        $folder = storage_path('app/export/' . Config::get('csv.folder_separated'));
         if (!File::exists($folder)) {
             File::makeDirectory($folder);
         }
