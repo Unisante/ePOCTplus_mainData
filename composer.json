@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.6 | ^8.0",
+        "barryvdh/laravel-dompdf": "^0.9.0",
         "doctrine/dbal": "2.9.2",
         "fideloper/proxy": "^4.0",
         "intervention/image": "^2.5",
@@ -22,6 +23,7 @@
         "madnest/madzipper": "^1.0",
         "owen-it/laravel-auditing": "^10.0",
         "paragonie/random_compat": "2.*",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^3.11",
         "yajra/laravel-datatables-oracle": "^9.9"
     },
