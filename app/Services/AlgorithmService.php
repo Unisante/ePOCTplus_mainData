@@ -31,7 +31,7 @@ class AlgorithmService {
         return json_decode($response);
     }
 
-    public function assignVersionToHealthFacility(HealthFacility $healthFacility,$versionID){
+    public function assignVersionToHealthFacility(HealthFacility $healthFacility, $chosenAlgorithmID, $versionID) {
         $url = Config::get('medal.creator.url') . Config::get('medal.creator.versions_endpoint') . "/" . $versionID;
         $version = json_decode(Http::get($url,[]),true);
         $requiredFields = ['medal_r_json','name','id','is_arm_control','medal_r_json_version'];
@@ -40,8 +40,8 @@ class AlgorithmService {
                 throw new Exception("Response from creator does not contain required field: $field");
             }
         }
-        $this->assignVersion($healthFacility,$version);
-        $this->updateAccesses($healthFacility,$version);
+        $this->assignVersion($healthFacility, $version);
+        $this->updateAccesses($healthFacility, $chosenAlgorithmID, $version);
     }
 
     public function assignVersion(HealthFacility $healthFacility,$version){
@@ -79,17 +79,17 @@ class AlgorithmService {
                                      where('access',true)->first();
     }
 
-    private function updateAccesses(HealthFacility $healthFacility,$version){
+    private function updateAccesses(HealthFacility $healthFacility, $chosenAlgorithmID, $version){
         $access = HealthFacilityAccess::where('health_facility_id',$healthFacility->id)->
                                         where('access',true)->
                                         first();
         if ($access != null){
             $this->archiveAccess($access);
         }
-        $this->newAccess($healthFacility,$version);
+        $this->newAccess($healthFacility, $chosenAlgorithmID, $version);
     }
 
-    private function newAccess(HealthFacility $healthFacility,$version){
+    private function newAccess(HealthFacility $healthFacility, $chosenAlgorithmID, $version){
         $access = new HealthFacilityAccess();
         $access->access = true;
         $access->creator_version_id = $version['id'];
@@ -97,6 +97,7 @@ class AlgorithmService {
         $access->medal_r_json_version = $version['medal_r_json_version'];
         $access->is_arm_control = $version['is_arm_control'];
         $access->health_facility_id = $healthFacility->id;
+        $access->medal_c_algorithm_id = $chosenAlgorithmID;
         $access->save();
     }
 

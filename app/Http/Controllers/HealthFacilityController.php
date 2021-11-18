@@ -17,7 +17,7 @@ class HealthFacilityController extends Controller
     protected $healthFacilityService;
     protected $algorithmService;
 
-    public function __construct(HealthFacilityService $healthFacilityService, 
+    public function __construct(HealthFacilityService $healthFacilityService,
                                 AlgorithmService $algorithmService)
     {
         $this->healthFacilityService = $healthFacilityService;
@@ -152,8 +152,8 @@ class HealthFacilityController extends Controller
         return response()->json($versions);
     }
 
-    public function assignVersion(HealthFacility $healthFacility,$versionID){
-        $versionJSON = $this->algorithmService->assignVersionToHealthFacility($healthFacility,$versionID);
+    public function assignVersion(HealthFacility $healthFacility, $chosenAlgorithmID ,$versionID){
+        $this->algorithmService->assignVersionToHealthFacility($healthFacility, $chosenAlgorithmID, $versionID);
         return response()->json([
             "message" => "Version Assigned",
             "id" => $versionID,

@@ -24,16 +24,16 @@
                         </div>
                         <div class="col">
                             <div v-if="loading" class="spinner-border text-success" role="status">
-                              
+
                             </div>
-                             
+
                         </div>
                     </div>
                 </div>
-                
-               
+
+
             </div>
-            
+
             <div class="card">
                 <div class="container">
                     <div class="row p-2 gy-2">
@@ -48,7 +48,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
     <div class="card">
         <div class="card-header">
@@ -62,8 +62,8 @@
             :data="archivedAccesses"></index>
         </div>
     </div>
-    
-    
+
+
 </div>
 </template>
 
@@ -149,7 +149,7 @@ export default {
 
         assign(){
             this.loading = true
-            var url = this.assign_base_url + "/" + this.chosenVersionID
+            var url = this.assign_base_url + "/" + this.chosenAlgorithmID + "/" + this.chosenVersionID
             axios.post(url)
               .then((response) => {
                 this.$emit('assign-success',response)
