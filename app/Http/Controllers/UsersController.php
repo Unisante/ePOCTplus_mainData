@@ -1,5 +1,7 @@
 <?php
 namespace App\Http\Controllers;
+
+use App\Jobs\Generate2faJob;
 use Illuminate\Support\Facades\Session;
 use App\User;
 use App\PasswordReset;
@@ -13,6 +15,7 @@ use DB;
 use Illuminate\Support\Str;
 use App\Jobs\RegisterUserJob;
 use App\Jobs\ResetAccountPasswordJob;
+use Illuminate\Support\Facades\Log;
 
 class UsersController extends Controller
 {
@@ -78,15 +81,29 @@ class UsersController extends Controller
       $user->email=$email;
       $user->password=Hash::make($random_password);
       $user->syncRoles($request->input('role'));
-      $user->save();
       $saveCode=PasswordReset::saveReset($user,$random_password);
-      if($saveCode){
-        $body = 'Your account has been set in Main Data with the default password';
-        dispatch(new ResetAccountPasswordJob($body,$email,$user->name,$random_password));
-        return back()->with('success', 'Email has been sent to '.$user->name);
-      }else{
+      if(!$saveCode){
         return back()->with('error', 'Something Went wrong');
       }
+
+      # Generate new 2fa secret
+      $google2fa = app('pragmarx.google2fa');
+      $secret = $google2fa->generateSecretKey();
+      $user->google2fa_secret = $secret;
+      $user->save();
+
+      # Send it by mail
+      try{
+        $email_body = 'Your account has been set in Main Data with the default password';
+        dispatch(new ResetAccountPasswordJob($email_body, $email, $user->name, $random_password));
+
+        $email_body = 'A new two-factor authentication code has been generated for your account.';
+        dispatch(new Generate2faJob($email_body, $user->email, $user->name, $secret));
+      }catch(\Exception $e){
+        Log::error('Could not send an email to ' . $user->email);
+      }
+
+      return back()->with('success', 'Email has been sent to ' . $user->name);
     }
   }
 
@@ -170,6 +187,7 @@ class UsersController extends Controller
     $currentUser=Auth::user();
     return view('users.showPassword')->with('user',$currentUser);
   }
+
   public function changePassword(Request $request){
     $request->validate(array(
       'current_password' => 'required|string',

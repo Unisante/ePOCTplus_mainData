@@ -15,6 +15,7 @@ Auth::routes();
 Route::get('/', function () {
     return redirect(route('login'));
 });
+Route::get('abort-authentication', '\App\Http\Controllers\Auth\LoginController@abortAuthentication');
 
 // for registration
 Route::post('/2fa', function () {

@@ -11,7 +11,7 @@
         <div class="col-md-8">
             <div class="card card-body" >
                 <div class="card-header">
-                  <span>Register</span>
+                  <span>Enter one time password</span>
                 </div>
                 <div class="card-body" >
                     <form class="form-horizontal" method="POST" action="{{ route('2fa') }}">
@@ -28,6 +28,8 @@
                                     <button type="submit" class="btn btn-primary" >
                                         Login
                                     </button>
+                                    <br>
+                                    <a href="abort-authentication">Abort authentication</a>
                                 </div>
                             </div>
                         </form>
