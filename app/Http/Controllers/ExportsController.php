@@ -8,9 +8,7 @@ use App\Drug;
 use App\Formulation;
 use App\DiagnosisReference;
 use App\DrugReference;
-use Illuminate\Http\Request;
 use App\Exports\PatientExport;
-use App\Exports\DataSheet;
 use App\Exports\DiagnosisReferenceExport;
 use App\Exports\AnswerExport;
 use App\Exports\Medical_CaseExport;
@@ -28,7 +26,6 @@ use App\Exports\NodeExport;
 use App\Exports\AnswerTypeExport;
 use App\Exports\VersionExport;
 use Excel;
-use Illuminate\Support\Facades\DB;
 use App\MedicalCaseAnswer;
 
 class ExportsController extends Controller

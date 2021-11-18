@@ -85,6 +85,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('health-facilities/{health_facility}/accesses',"HealthFacilityController@accesses");
     Route::get('health-facilities/versions/{algorithm_id}',"HealthFacilityController@versions");
     Route::post('health-facilities/{health_facility}/assign-version/{algorithm_id}/{version_id}',"HealthFacilityController@assignVersion");
+    //Sticker Management in the contet of Health Facilities
+    Route::get('generate-stickers', 'StickerController@downloadView');
   });
   // Devices
   Route::resource('devices','DeviceController');

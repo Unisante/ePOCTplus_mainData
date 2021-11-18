@@ -12,7 +12,8 @@
             :custom_actions="custom_actions"
             @devices="manageDevices"
             @algorithms="manageAlgorithms"
-            @medical_staff="manageMedicalStaff"></health-facility-index>
+            @medical_staff="manageMedicalStaff"
+            @stickers="manageStickers"></health-facility-index>
         </div>
     </div>
     <basic-modal :show.sync="showDevices">
@@ -48,6 +49,15 @@
                                :unassigned_medical_staff="unassigned_medical_staff"></medical-staff-manager>
         </template>
     </basic-modal>
+    <basic-modal :show.sync="showStickers">
+        <template v-slot:header>
+            <h5>Generate stickers for Health Facility {{selectedHealthFacility.name}}</h5>
+        </template>
+        <template v-slot:body>
+        <sticker-manager :health_facilities_route="health_facilities_route"
+                         :health_facility_id="health_facility_id"></sticker-manager>
+        </template>
+    </basic-modal>
 </div>
 </template>
 
@@ -57,6 +67,7 @@ import ActionButton from "./basic/ActionButton.vue"
 import DeviceManager from "./DeviceManager.vue"
 import AlgorithmManager from "./AlgorithmManager.vue"
 import MedicalStaffManager from "./MedicalStaffManager.vue"
+import StickerManager from "./StickerManager.vue"
 import HealthFacilityIndex from "./resources/HealthFacilityIndex.vue"
 
 export default {
@@ -68,6 +79,7 @@ export default {
         "DeviceManager": DeviceManager,
         "AlgorithmManager": AlgorithmManager,
         "MedicalStaffManager": MedicalStaffManager,
+        "StickerManager": StickerManager,
         "HealthFacilityIndex": HealthFacilityIndex,
     },
 
@@ -85,6 +97,7 @@ export default {
             showDevices :false,
             showAlgorithms: false,
             showMedicalStaff: false,
+            showStickers: false,
             devices: [],
             algorithms: [],
             medical_staff: [],
@@ -110,6 +123,11 @@ export default {
                     event: 'medical_staff',
                     color: 'blue',
                 },
+                {
+                    label: "Stickers",
+                    event: 'stickers',
+                    color: 'yellow',
+                }
             ],
             default_actions : [
                 ['view','edit','delete']               
@@ -171,6 +189,11 @@ export default {
               .catch((error) => {
                 this.$toasted.global.error_notification("Error:" + error)
               });
+        },
+
+        manageStickers: function(id){
+            this.health_facility_id = id
+            this.showStickers = true
         }
     }
 }

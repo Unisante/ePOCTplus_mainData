@@ -11,6 +11,9 @@ use App\Http\Requests\HealthFacilityRequest;
 use App\Http\Resources\Device as DeviceResource;
 use App\Http\Resources\MedicalStaff as MedicalStaffResource;
 use App\MedicalStaff;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use PDF;
 
 class HealthFacilityController extends Controller
 {
