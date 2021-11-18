@@ -33,36 +33,41 @@ class AlgorithmService {
 
     public function assignVersionToHealthFacility(HealthFacility $healthFacility, $chosenAlgorithmID, $versionID) {
         $url = Config::get('medal.creator.url') . Config::get('medal.creator.versions_endpoint') . "/" . $versionID;
+        // ex : https://medalc.unisante.ch/api/v1/algorithms/1/emergency_content?json_version=-1
+        $urlAlgorithm = Config::get('medal.creator.url') . Config::get('medal.creator.algorithms_endpoint') . "/" . $chosenAlgorithmID . "/emergency_content?json_version=-1";
         $version = json_decode(Http::get($url,[]),true);
+        $emergencyContent = json_decode(Http::post($urlAlgorithm,[]),true);
         $requiredFields = ['medal_r_json','name','id','is_arm_control','medal_r_json_version'];
         foreach($requiredFields as $field){
             if ($version[$field] === null){
                 throw new Exception("Response from creator does not contain required field: $field");
             }
         }
-        $this->assignVersion($healthFacility, $version);
+        $this->assignVersion($healthFacility, $version, $emergencyContent);
         $this->updateAccesses($healthFacility, $chosenAlgorithmID, $version);
     }
 
-    public function assignVersion(HealthFacility $healthFacility,$version){
+    public function assignVersion(HealthFacility $healthFacility, $version, $emergencyContent){
         $versionJson = VersionJson::where('health_facility_id',$healthFacility->id)->first();
         if ($versionJson == null){
-            $this->addVersion($healthFacility,$version);
+            $this->addVersion($healthFacility, $version, $emergencyContent);
         }else{
-            $this->updateVersion($versionJson,$version);
+            $this->updateVersion($versionJson, $version, $emergencyContent);
         }
     }
 
 
-    public function updateVersion(VersionJson $versionJson,$version){
+    public function updateVersion(VersionJson $versionJson, $version, $emergencyContent){
         $versionJson->json = json_encode($version["medal_r_json"]);
+        $versionJson->emergency_content = json_encode($emergencyContent);
         $versionJson->save();
     }
 
-    public function addVersion(HealthFacility $healthFacility,$version){
+    public function addVersion(HealthFacility $healthFacility, $version, $emergencyContent){
         $versionJson = new VersionJson();
         $versionJson->health_facility_id = $healthFacility->id;
         $versionJson->json = json_encode($version["medal_r_json"]);
+        $versionJson->emergency_content = json_encode($emergencyContent);
         $versionJson->save();
         $healthFacility->version_json_id = $versionJson->id;
         $healthFacility->save();
