@@ -20,6 +20,7 @@ class Http {
         ));
 
         $response = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         $err = curl_error($curl);
         curl_close($curl);
 
@@ -27,7 +28,7 @@ class Http {
             throw new Exception("Unable to complete HTTP GET request to $url");
         }
 
-        return $response;
+        return ['code' => $httpcode, 'content' => $response];
     }
 
     public static function post($url, $params = [], Array $body) {
@@ -47,6 +48,7 @@ class Http {
 
 
         $response = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         $err = curl_error($curl);
 
         curl_close($curl);
@@ -55,7 +57,7 @@ class Http {
             throw new Exception("Unable to complete HTTP POST request to $url");
         }
 
-        return $response;
+        return ['code' => $httpcode, 'content' => $response];
     }
 
     protected static function makeParams($params) {

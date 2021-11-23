@@ -35,16 +35,12 @@ class AuthDeviceController extends Controller
 
     public function algorithm(Request $request,Device $device){
         $alg = $this->algorithmService->getAlgorithmJsonForDevice($device);
-        return response()->json([
-            "json" => $alg,
-        ]);
+        return response()->json($alg);
     }
 
     public function emergencyContent(Request $request,Device $device) {
         $emergencyContent = $this->algorithmService->getAlgorithmEmergencyContentJsonForDevice($device);
-        return response()->json([
-            "json" => $emergencyContent,
-        ]);
+        return response()->json($emergencyContent);
     }
 
 }
