@@ -136,6 +136,12 @@ class HealthFacilityController extends Controller
         return response()->json(new MedicalStaffResource($medical_staff));
     }
 
+    public function manageStickers(HealthFacility $health_facility){
+        return response()->json([
+            "health_facility" => $health_facility
+        ]);
+    }
+
     public function unassignMedicalStaff(HealthFacility $health_facility, MedicalStaff $medical_staff){
         $medical_staff = $this->healthFacilityService->unassignMedicalStaff($health_facility, $medical_staff);
         return response()->json(new MedicalStaffResource($medical_staff));

@@ -55,7 +55,8 @@
         </template>
         <template v-slot:body>
         <sticker-manager :health_facilities_route="health_facilities_route"
-                         :health_facility_id="health_facility_id"></sticker-manager>
+                         :health_facility_id="health_facility_id"
+                         :health_facility_name="health_facility_name"></sticker-manager>
         </template>
     </basic-modal>
 </div>
@@ -192,8 +193,17 @@ export default {
         },
 
         manageStickers: function(id){
-            this.health_facility_id = id
-            this.showStickers = true
+            var url = this.health_facilities_route + "/" + id + "/manage-stickers"
+            axios.get(url)
+              .then((response) => {
+                  this.selectedHealthFacility = response.data.health_facility
+                this.health_facility_name = response.data.health_facility.name
+                this.health_facility_id = id
+                this.showStickers = true
+              })
+              .catch((error) => {
+                this.$toasted.global.error_notification("Error:" + error)
+              });
         }
     }
 }

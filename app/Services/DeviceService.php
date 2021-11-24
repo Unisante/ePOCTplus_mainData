@@ -54,7 +54,6 @@ class DeviceService {
 
     public function update($validatedRequest,Device $device): Device{
         //Update the device and then update the OAuth client (only name and device type matter here)
-        $validatedRequest = $this->updateRedirect($validatedRequest);
         $device->fill($validatedRequest)->save();
         $clientRepository = app('Laravel\Passport\ClientRepository');
         $client = $clientRepository->findForUser($device->oauth_client_id,Auth::user()->id);
@@ -146,7 +145,6 @@ class DeviceService {
         }
         $device->fill($validatedDeviceInfoRequest)->save();
     }
-
 
     /**
      * Returns the Redirect URL associated with a specific device
