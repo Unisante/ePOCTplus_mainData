@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\HealthFacility;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
@@ -23,10 +24,10 @@ class HealthFacilityRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(HealthFacility $health_facility)
     {
         $rules = [
-            'name' => 'required|string | unique:App\HealthFacility,name,'.Auth::user()->id,
+            'name' => 'required|string | unique:App\HealthFacility,name,' . $this->id,
             'country' => 'nullable|string',
             'area' => 'nullable|string',
             'pin_code' => 'nullable|integer',
