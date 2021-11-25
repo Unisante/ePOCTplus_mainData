@@ -113,7 +113,7 @@ class DeviceService {
 
         $AllMedicalStaffRoleLabel = new Collection();
         MedicalStaffRole::all()->each(function($medicalStaffRole) use (&$AllMedicalStaffRoleLabel){
-            $AllMedicalStaffRoleLabel->add($medicalStaffRole->label);
+            $AllMedicalStaffRoleLabel->add($medicalStaffRole->type);
         });
 
         return array(
@@ -123,13 +123,12 @@ class DeviceService {
             "updated_at" => $healthFacility->updated_at,
             "local_data_ip" => $healthFacility->local_data_ip,
             "main_data_ip" => Config::get('medal-data.global.ip'),
-            "architecture" => $healthFacility->architecture,
+            "architecture" => $healthFacility->hf_mode,
             "pin_code" => $healthFacility->pin_code,
             "latitude" => $healthFacility->lat,
             "longitude" => $healthFacility->long,
             "country" => $healthFacility->country,
             "area" => $healthFacility->area,
-            "study_id" => Config::get('medal-data.global.study_id'),
             "medical_staffs" => MedicalStaffsAPI::collection($medicalStaffs),
             "medical_staff_roles" => $AllMedicalStaffRoleLabel,
         );
