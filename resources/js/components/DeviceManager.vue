@@ -110,7 +110,6 @@ export default {
                 this.$toasted.global.success_notification("Device Successfully Unassigned from Health Facility")
             }).catch((error) =>{
                 this.$emit("unassign-failure",error)
-                console.log(error)
                 this.$toasted.global.error_notification("Something went wrong...")
             })
         }

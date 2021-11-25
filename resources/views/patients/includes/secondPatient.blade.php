@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between"> <span>First name:</span><span class="border-bottom" id="sp_first_name">{{$second_patient->first_name}}</span></div>
     <div class="d-flex justify-content-between"> <span>last name:</span><span class="border-bottom" id="sp_second_name">{{$second_patient->last_name}}</span></div>
     <div class="d-flex justify-content-between"> <span>Number of medical cases:</span> <span class="border-bottom"
-        id="sp_cases_count">{{$second_patient->medicalCases()->count()}}</span></div>
+        id="sp_cases_count">{{$second_patient->medical_cases()->count()}}</span></div>
   </div>
 </div>
 @else

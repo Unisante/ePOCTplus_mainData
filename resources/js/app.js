@@ -13,6 +13,9 @@ import Vue from 'vue';
 
 export const eventBus = new Vue()
 
+/**
+ * Notification plugin used
+ */
 import Toasted from 'vue-toasted';
  
 Vue.use(Toasted)
@@ -61,16 +64,6 @@ Vue.toasted.register('success_notification',message => {
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-Vue.component('pulse-loader', require('vue-spinner/src/PulseLoader.vue'));
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-
-
-
-Vue.component(
-    'TestingComponent',
-    require('./components/basic/TestingComponent.vue').default
-);
 
 
 Vue.component(

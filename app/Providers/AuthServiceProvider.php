@@ -2,12 +2,10 @@
 
 namespace App\Providers;
 
-use Route;
-use App\Device;
-use App\Policies\DevicePolicy;
-use Laravel\Passport\Passport;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Route;
+use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -16,7 +14,10 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $policies = [];
+    protected $policies = [
+        'App\Device' => 'App\Policies\DevicePolicy',
+        'App\HealthFacility' => 'App\Policies\HealthFacilityPolicy',
+    ];
 
     /**
      * Register any authentication / authorization services.
@@ -30,17 +31,17 @@ class AuthServiceProvider extends ServiceProvider
         //
         //All other passport routes
         Passport::routes(function ($router) {
-                    $router->forAuthorization();
-                    $router->forAccessTokens();
-                    $router->forTransientTokens();
-                    $router->forPersonalAccessTokens();
-                });
+            $router->forAuthorization();
+            $router->forAccessTokens();
+            $router->forTransientTokens();
+            $router->forPersonalAccessTokens();
+        });
 
-//        Passport::tokensExpireIn(now()->addMinutes(1));
-//        Passport::refreshTokensExpireIn(now()->addMinutes(2));
-//        Passport::personalAccessTokensExpireIn(now()->addMinutes(1));
+        //Passport::tokensExpireIn(now()->addMinutes(1));
+        //Passport::refreshTokensExpireIn(now()->addMinutes(2));
+        //Passport::personalAccessTokensExpireIn(now()->addMinutes(1));
 
-            // Here the routes to manage clients are guarded with additionnal middleware which requires the Manage_Devices permission
+        // Here the routes to manage clients are guarded with additionnal middleware which requires the Manage_Devices permission
         Route::group(['middleware'=>['web','auth','permission:Manage_Devices']], function(){
             Passport::routes(function ($router) {
                 $router->forClients();

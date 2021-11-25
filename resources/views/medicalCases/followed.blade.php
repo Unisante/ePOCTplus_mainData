@@ -1,6 +1,8 @@
 @extends('adminlte::page')
 
-<link href="{{ asset('css/datatable.css') }}" rel="stylesheet">
+<link href="{{ asset('css/followup.css') }}" rel="stylesheet">
+<script src="{{ asset('js/followup.js') }}" defer></script>
+<script src="{{ asset('js/chart.min.js') }}" defer></script>
 
 @section('content')
 <div class="container-fluid">
@@ -9,10 +11,10 @@
       <div class="card">
         <div class="card-header d-flex ">
           <span>
-            <h3>Follow-ups In Redcap</h3>
+            <h3>Follow-ups In MedAl- Data</h3>
           </span>
         </div>
-        <div class="card-body">
+        <div class="card-body facility">
           @if (session('status'))
           <div class="alert alert-success" role="alert">
             {{ session('status') }}
@@ -20,39 +22,30 @@
           @endif
           @include('layouts.datatable')
           <div class="row">
-            <div class="col-md-10 offset-md-1">
-              @if(count($followed)>0)
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">SN</th>
-                    <th scope="col">consultation_ID</th>
-                    <th scope="col">patient_id</th>
-                    <th scope="col">facility_id</th>
-                    <th scope="col">consultation date</th>
-                    <th scope="col">village_name</th>
-                    {{-- <th scope="col">Actions</th> --}}
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach($followed as $followup)
-                  <tr>
-                    <th scope="row">{{ $loop->index+1 }}</th>
-                    <td>{{$followup->getConsultationId()}}</td>
-                    <td>{{$followup->getPatientId()}}</td>
-                    <td>{{$followup->getFacilityId()}}</td>
-                    <td>{{$followup->getConsultationDate()}}</td>
-                    <td>{{$followup->getVillage()}}</td>
-                    {{-- <td>Actions</td> --}}
-                  </tr>
-                  @endforeach
-                </tbody>
-                @else
-                <span>
-                  <h3>No follow ups made yet</h3>
-                </span>
-                @endif
+            <div class="col-md-8">
+              <h2 id="facility_title"></h2>
+              <canvas id="facility">
+              </canvas>
             </div>
+            <div class="col-md-4">
+              <div class="scrollableDiv">
+
+                @if(count($facilities)>0)
+                <ul class="list-group" id="facilities">
+                  @foreach($facilities as $facility)
+                  <li class="list-group-item" id="{{$facility->group_id}}">{{$facility->name}}</li>
+                  @endforeach
+                </ul>
+                @endif
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div id="sent"><h3></h3></div>
+              <div id="not_sent"><h3></h3></div>
+            </div>
+
           </div>
         </div>
       </div>

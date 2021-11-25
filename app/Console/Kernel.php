@@ -2,7 +2,9 @@
 
 namespace App\Console;
 
+use App\Jobs\RedcapPush;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -24,6 +26,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        // timci project does not use redcap
+        empty(Config::get('redcap.identifiers.api_url_followup'))?null:$schedule->job(new RedcapPush())->everyThirtyMinutes();
+        $schedule->command('export:start')->dailyAt('03:00');
+        $schedule->command('update:versions')->dailyAt('02:00');
+        //$schedule->command(MedicalCasesExport::class)->everyMinute();
         $schedule->command("HealthFacilitiesAlgo:update")->hourly();
         $schedule->command('passport:purge')->hourly();
     }
@@ -35,7 +42,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

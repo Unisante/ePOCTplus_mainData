@@ -40,7 +40,7 @@ class AuthDeviceController extends Controller
         if ($json_version < $alg["json_version"] || $json_version == null) {
             return response()->json($alg["algo"]);
         } else {
-            return response("", 204);
+            return response()->noContent();
         }
     }
 

@@ -49,7 +49,7 @@
                     <td>{{$patient->middle_name}}</td>
                     <td>{{$patient->last_name}}</td>
                     <td>{{$patient->birthdate}}</td>
-                    <td>{{$patient->facility->facility_name}}</td>
+                    <td>{{$patient->facility_name}}</td>
                     @if($patient->merged)
                     <td>Merged</td>
                     @else

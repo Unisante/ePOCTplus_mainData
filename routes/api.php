@@ -1,5 +1,8 @@
 <?php
 
+use App\Jobs\ProcessUploadZip;
+use Illuminate\Support\Facades\Config;
+use Carbon\Carbon;
 use App\Jobs\SaveCase;
 use App\HealthFacility;
 use App\Jobs\RedcapPush;
@@ -12,6 +15,7 @@ use Spatie\TemporaryDirectory;
 use Madnest\Madzipper\Madzipper;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,11 +32,25 @@ use Illuminate\Support\Facades\Storage;
 //});
 
 Route::middleware(['auth:api','device.resolve'])->prefix('/v1')->group(function(){
-  Route::get('/health-facility-info','Api\AuthDeviceController@healthFacilityInfo');
-  Route::get('/algorithm','Api\AuthDeviceController@algorithm');
-  Route::get('/emergency-content','Api\AuthDeviceController@emergencyContent');
-  Route::post('/device-info','Api\AuthDeviceController@storeDeviceInfo');
-  route::get('/test','Api\AuthDeviceController@test');
+    Route::get('/health-facility-info','Api\AuthDeviceController@healthFacilityInfo');
+    Route::get('/algorithm','Api\AuthDeviceController@algorithm');
+    Route::get('/emergency-content','Api\AuthDeviceController@emergencyContent');
+    Route::post('/device-info','Api\AuthDeviceController@storeDeviceInfo');
+    route::get('/test','Api\AuthDeviceController@test');
+    Route::post('sync_medical_cases', function(Request $request) {
+        if (!$request->hasFile('file')) {
+            return response('Missing attached file', 400);
+        }
+
+        $path = $request->file('file')->store(Config::get('medal.storage.cases_zip_dir'));
+
+        if ($path === false) {
+            return response('Unable to save file', 500);
+        }
+
+        ProcessUploadZip::dispatch($path);
+        return response('Zip file received');
+    });
 });
 
 
@@ -62,87 +80,19 @@ Route::get('medical_case_answers', function(Request $request){
     return MedicalCaseAnswer::all();
 });
 
-// Route::post('sync_medical_cases','syncMedicalsController@syncMedicalCases');
-
-
-//DEBUG Routes
-
-Route::post('add_storage_file',function(Request $request){
-  if($request->file){
-    $file=Storage::putFile('temporary_files', $request->file);
-    return Storage::disk('local')->listContents();
-    //return response()->json(['data_received'=> true,'status'=>200]);
+Route::post('sync_medical_cases', function(Request $request) {
+  if (!$request->hasFile('file')) {
+    return response('Missing attached file', 400);
   }
-  return response()->json(['data_received'=> false,'status'=>400]);
-});
 
+  $path = $request->file('file')->store(Config::get('medal.storage.cases_zip_dir'));
 
-Route::post('list_storage_files',function(Request $request){
-  return Storage::disk('local')->listContents("temporary_files");
-});
-
-
-Route::get('get_storage_file/{filename}',function(Request $request, $filename){
-  return Storage::disk('local')->get("temporary_files/" . $filename);
-});
-
-
-Route::post('list_medical_zip',function(Request $request){
-  return Storage::disk('local')->listContents("medical_cases_zip");
-});
-
-Route::get('get_medical_zip/{filename}',function(Request $request, $filename){
-  return Storage::disk('local')->get("medical_cases_zip/" . $filename);
-});
-
-
-//END OF DEBUG Routes
-
-Route::post('sync_medical_cases_trial',function(Request $request){
-  if($request->file){
-    $file=Storage::putFile('medical_cases_zip', $request->file);
-    $unparsed_path = base_path().'/storage/app/unparsed_medical_cases';
-    $parsed_folder='parsed_medical_cases';
-    $failed_folder='failed_medical_cases';
-    $zipper=new Madzipper();
-    $zipper->make($request->file('file'))->extractTo($unparsed_path);
-    $filename=basename($file);
-    Storage::makeDirectory($parsed_folder);
-    Storage::makeDirectory($failed_folder);
-    foreach(Storage::allFiles('unparsed_medical_cases') as $filename){
-      $individualData = json_decode(Storage::get($filename), true);
-      ini_set('maximum_execution_time',300);
-        dispatch(new SaveCase($individualData,$filename));
-    }
-    if(strpos(env("STUDY_ID"), "Dynamic")!== false){
-      dispatch(new RedcapPush());
-    }
-    return response()->json(['data_received'=> true,'status'=>200]);
+  if ($path === false) {
+    return response('Unable to save file', 500);
   }
-  return response()->json(['data_received'=> false,'status'=>400]);
-});
 
-Route::post('sync_medical_cases',function(Request $request){
-  if($request->file){
-    //save the zip file and find out the name of the saved zip file.
-    Storage::makeDirectory('medical_cases_zip');
-    $file=Storage::putFile('medical_cases_zip', $request->file);
-    // return $file;
-    $parsed_folder='parsed_medical_cases';
-    $failed_folder='failed_medical_cases';
-    Storage::makeDirectory('failed_cases_zip');
-    Storage::makeDirectory('extracted_cases_zip');
-    Storage::makeDirectory('unparsed_medical_cases');
-    Storage::makeDirectory($parsed_folder);
-    Storage::makeDirectory($failed_folder);
-    error_log('we are in the route');
-    dispatch(new SaveZipCasesJob($file));
-    if(strpos(env("STUDY_ID"), "Dynamic")!== false){
-      dispatch(new RedcapPush());
-    }
-    return response()->json(['data_received'=> true,'message'=>'Zip File received','status'=>200]);
-  }
-  return response()->json(['data_received'=> false,'message'=>'No Zip File received','status'=>400]);
+  ProcessUploadZip::dispatch($path);
+  return response('Zip file received');
 });
 
 Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
@@ -155,12 +105,30 @@ Route::get('latest_sync/{health_facility_id}',function($health_facility_id){
     );
   }
   $facility=HealthFacility::where('group_id',$health_facility_id)->first();
+  $nb_of_cases_synced=0;
+  $latest_sync_time=Carbon::createFromFormat('Y-m-d H:i:s', '1970-01-01 00:00:00');
+  $cases_today=0;
+  $facility->patients->each(function($patient) use (&$nb_of_cases_synced,&$latest_sync_time, &$cases_today){
+    $nb_of_cases_synced=$nb_of_cases_synced + $patient->medical_cases->count();
+    if($patient->medical_cases->last()->created_at->toDateString() > $latest_sync_time ){
+      $latest_sync_time=$patient->medical_cases->last()->created_at;
+    }
+    $patient->medical_cases->each(function($case) use (&$cases_today){
+      if($case->created_at->format('d-m-y') == Carbon::now()->format('d-m-y')){
+        $cases_today = $cases_today + 1;
+      }
+    });
+  });
+  // json_log is not yet used.So its commented
   return response()->json([
-    "health_facility_id"=>$facility->group_id,
-    "facility_name"=>$facility->facility_name,
-    "nb_of_cases_synced"=>$facility->medical_cases->count(),
-    "timestamp_json_log"=>$facility->log_cases->sortByDesc('created_at')->pluck('created_at')->first(),
-    "total_nb_of_json_log"=>$facility->log_cases->count(),
+    "Health_facility_id"=>$facility->group_id,
+    "Facility_name"=>$facility->name,
+    "cases_synced_today"=>$cases_today,
+    "Total_cases_synced"=>$nb_of_cases_synced,
+    "Latest_sync_date"=>$latest_sync_time->format('d-m-y'),
+    "Latest_sync_time"=>$latest_sync_time->format('H:i:s'),
+    // "timestamp_json_log"=>$facility->log_cases->sortByDesc('created_at')->pluck('created_at')->first(),
+    // "total_nb_of_json_log"=>$facility->log_cases->count(),
   ]);
 });
 
