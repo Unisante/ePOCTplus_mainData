@@ -30,7 +30,7 @@ class StickerController extends Controller
                 'uid' => $uuid
             ];
             $qr_code = QrCode::size(100)->generate(json_encode($qr_content));
-            $qr_code_html = '<img src="data:image/svg+xml;base64,'.base64_encode($qr_code).'"  width="73.7" height="73.7" style="float:left" />';
+            $qr_code_html = '<img src="data:image/svg+xml;base64,'.base64_encode($qr_code).'"  width="90" height="90" style="float:left" />';
             $uuids_qr_codes[] = [$uuid, $qr_code_html];
         }
 
@@ -44,6 +44,7 @@ class StickerController extends Controller
         $n_stickers = $request->n_stickers;
         $group_id = $request->group_id;
         $study_id = Config::get('app.study_id');
+        $facility_name = $request->facility_name;
 
         $uuids_qr_codes = $this->generateQrCodeAndUUIDs($n_stickers, $study_id, $group_id);
 
@@ -56,7 +57,7 @@ class StickerController extends Controller
         ])->render();
         $pdf = PDF::loadHTML($html);
         $pdf = $pdf->setPaper(self::PDF_SIZE, self::PDF_TYPE);
-        $download = $pdf->download('pdfview.pdf');
+        $download = $pdf->download('Stickers ' . $facility_name . ' ' . Carbon::now()->format('Y-m-d') . '.pdf');
         return $download;
     }
 }

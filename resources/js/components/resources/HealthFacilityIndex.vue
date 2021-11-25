@@ -36,6 +36,10 @@ export default {
         return {
             columns: [
                 {
+                    label: "Id",
+                    keyword: "id"
+                },
+                {
                     label: "Name",
                     keyword: "name",
                 },
@@ -109,6 +113,11 @@ export default {
                 },
             ],
             details: [
+                {
+                    label : "Id",
+                    keyword: "id",
+                    type: "text",
+                },
                 {
                     label : "Name",
                     keyword: "name",

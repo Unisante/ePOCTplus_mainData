@@ -37,7 +37,8 @@ export default {
 
     props: {
         health_facilities_route: String,
-        health_facility_id: String,
+        health_facility_id: Number,
+        health_facility_name: String
     },
 
     methods: {
@@ -57,7 +58,8 @@ export default {
                 return;
             }
             var id = this.health_facility_id
-            window.location.replace('generate-stickers?n_stickers=' + n_stickers + '&group_id=' + id);
+            var name = this.health_facility_name
+            window.location.replace('generate-stickers?n_stickers=' + n_stickers + '&group_id=' + id + '&facility_name=' + name);
         }
     }
 }
