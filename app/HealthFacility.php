@@ -96,7 +96,7 @@ class HealthFacility extends Model
   }
 
     public function healthFacilityAccess(){
-        return $this->hasOne('App\HealthFacilityAccess');
+        return $this->hasOne('App\HealthFacilityAccess')->where("access", true);
     }
 
   public function medical_staff(){
