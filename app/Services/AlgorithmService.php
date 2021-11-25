@@ -161,7 +161,11 @@ class AlgorithmService {
         if ($healthFacility->versionJson == null){
             throw new Exception("No Version is assigned to the associated Health Facility");
         }
-        return json_decode($healthFacility->versionJson->json);
+        $jsonVersion = $healthFacility->HealthFacilityAccess->medal_r_json_version;
+        return [
+            "algo" => json_decode($healthFacility->versionJson->json),
+            "json_version" => $jsonVersion,
+            ];
     }
 
     public function getAlgorithmEmergencyContentJsonForDevice(Device $device){
@@ -172,7 +176,11 @@ class AlgorithmService {
         if ($healthFacility->versionJson == null){
             throw new Exception("No Version is assigned to the associated Health Facility");
         }
-        return json_decode($healthFacility->versionJson->emergency_content);
+        $jsonVersion = $healthFacility->versionJson->emergency_content_version;
+        return [
+            "emergency_content" => json_decode($healthFacility->versionJson->emergency_content),
+            "json_version" => $jsonVersion,
+        ];
     }
 
 }
