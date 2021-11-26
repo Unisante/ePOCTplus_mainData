@@ -27,7 +27,7 @@ class HealthFacilityRequest extends FormRequest
     public function rules(HealthFacility $health_facility)
     {
         $rules = [
-            'name' => 'required|string | unique:App\HealthFacility,name,' . $this->id,
+            'name' => 'required|string | unique:App\HealthFacility,name',
             'country' => 'nullable|string',
             'area' => 'nullable|string',
             'pin_code' => 'nullable|integer',

@@ -11,9 +11,7 @@ use App\Http\Requests\HealthFacilityRequest;
 use App\Http\Resources\Device as DeviceResource;
 use App\Http\Resources\MedicalStaff as MedicalStaffResource;
 use App\MedicalStaff;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use PDF;
+use Illuminate\Validation\Rule;
 
 class HealthFacilityController extends Controller
 {
@@ -71,6 +69,16 @@ class HealthFacilityController extends Controller
      */
     public function update(HealthFacilityRequest $request, HealthFacility $healthFacility)
     {
+        $validated = $request->validate([
+            'name' => 'required|string | unique:App\HealthFacility,name,' . $healthFacility->id,
+            'country' => 'nullable|string',
+            'area' => 'nullable|string',
+            'pin_code' => 'nullable|integer',
+            'hf_mode' => [Rule::in(['standalone','client-server'])],
+            'local_data_ip' => 'nullable|string|ip',
+            'lat' => 'numeric | between:-90,90',
+            'long' => 'numeric | between:-180,180',
+        ]);
         $validated = $request->validated();
         $healthFacility->fill($validated)->save();
         return response()->json($healthFacility);
