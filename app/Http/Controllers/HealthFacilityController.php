@@ -52,7 +52,16 @@ class HealthFacilityController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(HealthFacilityRequest $request){
-        $validated = $request->validated();
+        $validated = $request->validate([
+            'name' => 'required|string  | unique:App\HealthFacility,name',
+            'country' => 'nullable|string',
+            'area' => 'nullable|string',
+            'pin_code' => 'nullable|integer',
+            'hf_mode' => [Rule::in(['standalone','client-server'])],
+            'local_data_ip' => 'nullable|string|ip',
+            'lat' => 'numeric | between:-90,90',
+            'long' => 'numeric | between:-180,180',
+        ]);
         $healthFacility = new HealthFacility($validated);
         $healthFacility->user_id = Auth::user()->id;
         $this->addDefaultValues($healthFacility);
@@ -70,7 +79,7 @@ class HealthFacilityController extends Controller
     public function update(HealthFacilityRequest $request, HealthFacility $healthFacility)
     {
         $validated = $request->validate([
-            'name' => 'required|string | unique:App\HealthFacility,name,' . $healthFacility->id,
+            'name' => 'required|string  | unique:App\HealthFacility,name,' . $healthFacility->id,
             'country' => 'nullable|string',
             'area' => 'nullable|string',
             'pin_code' => 'nullable|integer',
@@ -79,7 +88,6 @@ class HealthFacilityController extends Controller
             'lat' => 'numeric | between:-90,90',
             'long' => 'numeric | between:-180,180',
         ]);
-        $validated = $request->validated();
         $healthFacility->fill($validated)->save();
         return response()->json($healthFacility);
     }
