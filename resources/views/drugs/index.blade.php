@@ -41,8 +41,16 @@
                     <td>{{$drug->case_id}}</td>
                     <td>{{$drug->diagnosis_label}}</td>
                     <td>{{$drug->drug_label}}</td>
+                    @if($drug->formulation && $drug->formulation->medication_form)
                     <td>{{$drug->formulation->medication_form}}</td>
+                    @else
+                    <td></td>
+                    @endif
+                    @if($drug->formulation && $drug->formulation->description)
                     <td>{{$drug->formulation->description}}</td>
+                    @else
+                    <td></td>
+                    @endif
                   </tr>
                   @endforeach
                 </tbody>

@@ -36,7 +36,7 @@
                   @foreach($facilities as $facility)
                   <tr>
                     <th scope="row">{{ $loop->index+1 }}</th>
-                    <td>{{$facility->facility_name}}</td>
+                    <td>{{$facility->name}}</td>
                     <td>{{$facility->number_cases}}</td>
                     <td>{{$facility->number_patients}}</td>
                     <td>{{$facility->last_case_time}}</td>

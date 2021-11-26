@@ -33,14 +33,26 @@ class AuthDeviceController extends Controller
         return response()->json(new DeviceResource($device));
     }
 
-    public function algorithm(Request $request,Device $device){
+    public function algorithm(Request $request, Device $device) {
+        $json_version = (int)$request->get("json_version");
         $alg = $this->algorithmService->getAlgorithmJsonForDevice($device);
-        return response()->json($alg);
+
+        if ($json_version < $alg["json_version"] || $json_version == null) {
+            return response()->json($alg["algo"]);
+        } else {
+            return response()->noContent();
+        }
     }
 
     public function emergencyContent(Request $request,Device $device) {
+        $json_version = (int)$request->get("json_version");
         $emergencyContent = $this->algorithmService->getAlgorithmEmergencyContentJsonForDevice($device);
-        return response()->json($emergencyContent);
+
+        if ($json_version < $emergencyContent["json_version"] || $json_version == null) {
+            return response()->json($emergencyContent["emergency_content"]);
+        } else {
+            return response("", 204);
+        }
     }
 
 }

@@ -14,7 +14,7 @@ class AddColumnZipNameToJsonJogs extends Migration
     public function up()
     {
         Schema::table('json_logs', function (Blueprint $table) {
-          $table->string('zip_name');
+          $table->string('zip_name')->nullable();
         });
     }
 

@@ -19,7 +19,7 @@ class MedicalStaffsAPI extends JsonResource
             'id' => $this->id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
-            'role' => $this->medicalStaffRole->label,
+            'role' => $this->medicalStaffRole->type,
             'health_facility_id' => $this->health_facility_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

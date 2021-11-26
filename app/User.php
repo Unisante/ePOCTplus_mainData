@@ -7,8 +7,6 @@ use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use OwenIt\Auditing\Contracts\Auditable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements Auditable
@@ -21,7 +19,7 @@ class User extends Authenticatable implements Auditable
   * @var array
   */
   protected $fillable = [
-    'name', 'email', 'password',
+    'name', 'email', 'password', 'google2fa_secret',
   ];
 
   /**
@@ -30,7 +28,7 @@ class User extends Authenticatable implements Auditable
   * @var array
   */
   protected $hidden = [
-    'password', 'remember_token',
+    'password', 'remember_token', 'google2fa_secret',
   ];
 
   /**
@@ -53,6 +51,27 @@ class User extends Authenticatable implements Auditable
       $this->notify(new ResetPasswordNotification($token));
   }
 
+  /**
+    * Ecrypt the user's google_2fa secret.
+    * @param  string  $value
+    * @return string
+    */
+    public function setGoogle2faSecretAttribute($value)
+    {
+      $this->attributes['google2fa_secret'] = encrypt($value);
+    }
+
+  /**
+    * Decrypt the user's google_2fa secret.
+    *
+    * @param  string  $value
+    * @return string
+    */
+    public function getGoogle2faSecretAttribute($value)
+    {
+      return decrypt($value);
+    }
+
 
 
   public function devices(){
@@ -66,5 +85,4 @@ class User extends Authenticatable implements Auditable
   public function healthFacilities(){
     return $this->hasMany(HealthFacility::class);
   }
-
 }

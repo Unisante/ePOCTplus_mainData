@@ -26,6 +26,9 @@ class AlgorithmService {
         return json_decode($response['content']);
     }
 
+    /**
+     * Fetches the version metadata from medal-creator for a specific algorithm id
+     */
     public function getVersionsMetadata($algorithmCreatorID){
         $url = Config::get('medal.creator.url') . Config::get('medal.creator.algorithms_endpoint') .  "/" .  $algorithmCreatorID . "/versions";
         $response = Http::get($url,[]);
@@ -109,12 +112,17 @@ class AlgorithmService {
         $healthFacility->save();
     }
 
-
+    /**
+     * Returns the list of previously used versions for the given $healthFacility
+     */
     public function getArchivedAccesses(HealthFacility $healthFacility){
         return HealthFacilityAccess::where('health_facility_id',$healthFacility->id)->
                                      where('access',false)->get();
     }
 
+    /**
+     * Returns the version currently used by the health facility $healthFacility
+     */
     public function getCurrentAccess(HealthFacility $healthFacility){
         return HealthFacilityAccess::where('health_facility_id',$healthFacility->id)->
                                      where('access',true)->first();
@@ -161,7 +169,11 @@ class AlgorithmService {
         if ($healthFacility->versionJson == null){
             throw new Exception("No Version is assigned to the associated Health Facility");
         }
-        return json_decode($healthFacility->versionJson->json);
+        $jsonVersion = $healthFacility->HealthFacilityAccess->medal_r_json_version;
+        return [
+            "algo" => json_decode($healthFacility->versionJson->json),
+            "json_version" => $jsonVersion,
+            ];
     }
 
     public function getAlgorithmEmergencyContentJsonForDevice(Device $device){
@@ -172,7 +184,11 @@ class AlgorithmService {
         if ($healthFacility->versionJson == null){
             throw new Exception("No Version is assigned to the associated Health Facility");
         }
-        return json_decode($healthFacility->versionJson->emergency_content);
+        $jsonVersion = $healthFacility->versionJson->emergency_content_version;
+        return [
+            "emergency_content" => json_decode($healthFacility->versionJson->emergency_content),
+            "json_version" => $jsonVersion,
+        ];
     }
 
 }

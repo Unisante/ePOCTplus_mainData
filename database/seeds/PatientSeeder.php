@@ -31,7 +31,7 @@ class PatientSeeder extends Seeder
             for($i=0 ; $i<rand(0,5);$i++){
                 $mc = $this->generate_medical_case($patient);
 
-                $patient->medicalCases->add($mc);
+                $patient->medical_cases->add($mc);
             }
         }
     }

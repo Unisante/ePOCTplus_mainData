@@ -196,29 +196,27 @@
                     <tr>
                       <td>Related Ids:</td>
                       <td>
-                        <label>{{$first_patient->related_ids}}
-                        {{-- <input type="radio" name="related_ids" value="{{$first_patient->related_ids}}" checked> --}}
-                        {{-- <span class="checkmark"></span> --}}
-                        </label>
-                        {{-- <label id="label_id">{{$first_patient->related_ids}}</label>
-                        <div class="check"></div> --}}
+                        <ul>
+                        @foreach ($first_patient->related_ids as $id )
+                          <li>{{$id}}</li>
+                        @endforeach
+                      </ul>
                       </td>
                       <td>
-                        <label >{{$second_patient->related_ids}}
-                        {{-- <input type="radio" name="related_ids" value="{{$second_patient->related_ids}}"> --}}
-                        {{-- <span class="checkmark"></span> --}}
-                        </label>
-                        {{-- <label id="label_id">{{$second_patient->related_ids}}</label>
-                        <div class="check"></div> --}}
+                        <ul>
+                        @foreach ($second_patient->related_ids as $id )
+                        <li>{{$id}}</li>
+                        @endforeach
+                        </ul>
                       </td>
                     </tr>
                     <tr>
                       <td>Number of medical Cases:</td>
                       <td>
-                        <label>{{$first_patient->medicalCases()->count()}}</label>
+                        <label>{{$first_patient->medical_cases()->count()}}</label>
                       </td>
                       <td>
-                        <label>{{$second_patient->medicalCases()->count()}}</label>
+                        <label>{{$second_patient->medical_cases()->count()}}</label>
                       </td>
                     </tr>
                 </tbody>
