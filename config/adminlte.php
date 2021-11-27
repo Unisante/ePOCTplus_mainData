@@ -192,35 +192,35 @@ return [
     */
 
     'menu' => [
-        // [
-        //   'text' => 'Follow-Up',
-        //   'icon' => 'fas fa-fw fa-clone',
-        //   'can' =>  'Merge_Duplicates',
-        //   'submenu' => [
-        //     [
-        //         'text' => 'Done',
-        //         'url'  => '/followUp/done',
-        //         'icon' => 'fas fa-fw fa-check-circle',
-        //     ],
-        //     [
-        //         'text' => 'Delayed',
-        //         'url'  => '/followUp/delayed',
-        //         'icon' => 'fas fa-fw fa-pencil-alt',
-        //     ],
-        //   ],
-        // ],
+        [
+          'text' => 'Duplicates',
+          'icon' => 'fas fa-fw fa-clone',
+          'can' =>  'Merge_Duplicates',
+          'submenu' => [
+            [
+                'text' => 'Patients',
+                'url'  => '/patients/duplicates',
+                'icon' => 'fas fa-fw fa-check-circle',
+            ],
+            [
+                'text' => 'Medical Cases',
+                'url'  => '/patients/duplicates',
+                'icon' => 'fas fa-fw fa-pencil-alt',
+            ],
+          ],
+        ],
         [
           'text' => 'Follow-Up',
           'url'  => '/followUp',
           'icon' => 'fas fa-fw fa-check-circle',
           'can' =>  'Merge_Duplicates'
         ],
-        [
-          'text' => 'Duplicates',
-          'url'  => '/patients/duplicates',
-          'icon' => 'fas fa-fw fa-users',
-          'can' =>  'Merge_Duplicates'
-        ],
+        // [
+        //   'text' => 'Duplicates',
+        //   'url'  => '/patients/duplicates',
+        //   'icon' => 'fas fa-fw fa-users',
+        //   'can' =>  'Merge_Duplicates'
+        // ],
         [
           'text' => 'Facilities',
           'url'  => '/facilities/index',
