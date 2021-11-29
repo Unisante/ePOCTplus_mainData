@@ -82,7 +82,7 @@
   </div>
 </div>
 
-@include('healthFacilities.modals');
+@include('healthFacilities.modals')
 
 <script>
   const viewFacility = function (facility) {
