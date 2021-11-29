@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class HealthFacilityRequest extends FormRequest
 {
@@ -30,7 +30,7 @@ class HealthFacilityRequest extends FormRequest
             'country' => 'nullable|string',
             'area' => 'nullable|string',
             'pin_code' => 'nullable|integer',
-            'hf_mode' => [Rule::in(['standalone','client-server'])],
+            'hf_mode' => [Rule::in(['standalone', 'client-server'])],
             'local_data_ip' => 'nullable|string|ip',
             'lat' => 'numeric | between:-90,90',
             'long' => 'numeric | between:-180,180',

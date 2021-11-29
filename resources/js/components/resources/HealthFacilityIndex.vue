@@ -31,7 +31,6 @@ export default {
     mounted() {
     },
 
-
     data() {
         return {
             columns: [

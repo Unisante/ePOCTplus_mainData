@@ -24,7 +24,7 @@
     @else
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     @endif
-	
+
     @yield('meta_tags')
 
     @if(config('adminlte.use_ico_only'))
@@ -48,22 +48,22 @@
         <meta name="msapplication-TileColor" content="#ffffff">
         <meta name="msapplication-TileImage" content="{{ asset('favicon/ms-icon-144x144.png') }}">
     @endif
+    @if(! config('adminlte.enabled_laravel_mix'))
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+
+    @include('adminlte::plugins', ['type' => 'js'])
+
+    @yield('adminlte_js')
+    @else
+    <script src="{{ mix('js/app.js') }}"></script>
+    @endif
 </head>
 <body class="@yield('classes_body')" @yield('body_data')>
 
 @yield('body')
 
-@if(! config('adminlte.enabled_laravel_mix'))
-<script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
-
-@include('adminlte::plugins', ['type' => 'js'])
-
-@yield('adminlte_js')
-@else
-<script src="{{ mix('js/app.js') }}"></script>
-@endif
 
 </body>
 </html>

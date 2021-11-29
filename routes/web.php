@@ -77,9 +77,10 @@ Route::group(['middleware' => ['auth']], function () {
             'destroy',
         ]);
         //Device Management in the context of Health Facilities
-        Route::get('health-facilities/{health_facility}/manage-devices', "HealthFacilityController@manageDevices");
-        Route::post('health-facilities/{health_facility}/assign-device/{device}', "HealthFacilityController@assignDevice");
-        Route::post('health-facilities/{health_facility}/unassign-device/{device}', "HealthFacilityController@unassignDevice");
+        Route::get('new', "HealthFacilityController@new");
+        Route::post('health-facilities/{health_facility}/manage-devices', "HealthFacilityController@manageDevices")->name('health-facilities.manage-device');
+        Route::post('health-facilities/{health_facility}/assign-device/{device}', "HealthFacilityController@assignDevice")->name('health-facilities.assign-device');
+        Route::post('health-facilities/{health_facility}/unassign-device/{device}', "HealthFacilityController@unassignDevice")->name('health-facilities.unassign-device');
         //Algorithms Management in the context of Health Facilities
         Route::get('health-facilities/{health_facility}/manage-algorithms', "HealthFacilityController@manageAlgorithms");
         Route::get('health-facilities/{health_facility}/accesses', "HealthFacilityController@accesses");
