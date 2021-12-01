@@ -4,7 +4,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">
-          <h5>Showing Health Facility test</h5>
+          <h5>Showing Health Facility&nbsp;</h5>
+          <h5 id="facility_name_title"></h5>
         </h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -137,7 +138,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">
-          <h5>Editing Health Facility</h5>
+          <h5>Editing Health Facility&nbsp;</h5>
+          <h5 id="edit_name_title"></h5>
         </h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>

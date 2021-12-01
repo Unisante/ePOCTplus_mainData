@@ -87,6 +87,7 @@
 <script>
   const viewFacility = function (facility) {
     $("#facility_name").text(facility.name);
+    $("#facility_name_title").text(facility.name);
     $("#facility_country").text(facility.country);
     $("#facility_area").text(facility.area);
     $("#facility_long").text(facility.long);
@@ -98,6 +99,7 @@
   };
 
   const viewDevice = function (device) {
+    $(".modal-backdrop").remove();
     $("#device_name_title").text(device.name);
     $("#device_name").text(device.name);
     $("#device_type_label").text(device.type_label);
@@ -115,6 +117,7 @@
 
   const editDevice = function (data) {
     $("#edit_health_facility_form").prop('action', data.route);
+    $("#edit_name_title").text(data.name);
     $("#edit_name").val(data.name);
     $("#edit_country").val(data.country);
     $("#edit_area").val(data.area);
@@ -184,13 +187,15 @@
         success: function (response) {
           devices_props = ["name", "type", "oauth_client_id", "health_facility_name", "last_seen", "actions"];
           $('#selectDevices').attr("data-facility", JSON.stringify(data.facility));
+          $("#device_facility_name").text(response.healthFacility.name);
           $.each(response.unassignedDevices, function(i, unassignedDevice) {
             $('#selectDevices').append(
               $('<option>')
-              .val(unassignedDevice.id)
-              .html(unassignedDevice.name)
+                .val(unassignedDevice.id)
+                .html(unassignedDevice.name)
             );
-            });
+          });
+
           if (response.devices.length > 0) {
             $.each(response.devices, function(i, device) {
               var tr = $('<tr>');
@@ -272,7 +277,7 @@
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
           $(".alert-danger").remove();
-          $('.modal-body').before(
+          $('#manage_device_modal .modal-body').before(
             $('<div/>')
               .addClass("alert alert-danger alert-dismissible fade show")
               .append("<span/>")
