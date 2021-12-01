@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Device;
-use Illuminate\Http\Request;
 use App\Services\DeviceService;
 use App\Http\Requests\DeviceRequest;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Device as DeviceResource;
 use Illuminate\Support\Facades\DB;
 

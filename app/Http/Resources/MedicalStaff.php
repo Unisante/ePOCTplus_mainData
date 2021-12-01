@@ -18,15 +18,22 @@ class MedicalStaff extends JsonResource
     public function toArray($request)
     {
         // Retrieve all roles and cache the result.
-            $roles_label = [];
-            MedicalStaffRole::all()->each(function($role) use (&$roles_label){
-                $roles_label[$role->id] = $role->label;
-            });
+        $medical_staff_roles = Cache::store('array')->rememberForever('medical_staff_roles', function () {
+            return MedicalStaffRole::all();
+        });
+        $roles_label = [];
+        $medical_staff_roles->each(function($role) use (&$roles_label){
+            $roles_label[$role->id] = $role->label;
+        });
+        
         // Retrieve all health facilities and cache result.
-            $health_facilities_label = [];
-            HealthFacility::all()->each(function($hf) use (&$health_facilities_label){
-                $health_facilities_label[$hf->id] = $hf->name;
-            });
+        $health_facilities = Cache::store('array')->rememberForever('health_facilities_db', function () {
+            return HealthFacility::all();
+        });
+        $health_facilities_label = [];
+        $health_facilities->each(function($hf) use (&$health_facilities_label){
+            $health_facilities_label[$hf->id] = $hf->name;
+        });
 
         return [
             'id' => $this->id,

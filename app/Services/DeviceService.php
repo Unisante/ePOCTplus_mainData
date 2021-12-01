@@ -24,10 +24,12 @@ class DeviceService {
      * that depend on the given $validatedRequest
      */
     public function add($validatedRequest): Device{
+        $user_id = $validatedRequest['user_id'] ?? Auth::user()->id;
+
         $validatedRequest = $this->updateRedirect($validatedRequest);
         $device = new Device($validatedRequest);
         //Set Parameters for Passport Client Creation
-        $userID = Auth::user()->id;
+        $userID = $user_id;
         $clientName = $device->name;
          //Redirect URL is the callback set for either reader or hub devices
         $redirectURL = $device->redirect;        //The following parameters make sure the client can only use the secure PKCE authorization flow
@@ -48,7 +50,7 @@ class DeviceService {
             $confidential
         );
         //Update the device information and link it to the client ID
-        $device->user_id = Auth::user()->id;
+        $device->user_id = $user_id;
         $device->oauth_client_id = $client->id;
         $device->oauth_client_secret = $client->secret;
         $device->save();
@@ -60,10 +62,12 @@ class DeviceService {
      * in parallel, updates the corresponding Oauth Client
      */
     public function update($validatedRequest,Device $device): Device{
+        $user_id = $validatedRequest['user_id'] ?? Auth::user()->id;
+
         //Update the device and then update the OAuth client (only name and device type matter here)
         $device->fill($validatedRequest)->save();
         $clientRepository = app('Laravel\Passport\ClientRepository');
-        $client = $clientRepository->findForUser($device->oauth_client_id,Auth::user()->id);
+        $client = $clientRepository->findForUser($device->oauth_client_id,$user_id);
         if($client !== null){
             $redirectURL = $device->redirect;
             $clientRepository->update($client,$validatedRequest['name'],$redirectURL);
@@ -75,11 +79,13 @@ class DeviceService {
      * Removes the $device and revokes access from the corresponding Oauth client
      */
     public function remove(Device $device){
+        $user_id = $validatedRequest['user_id'] ?? Auth::user()->id;
+
         //Remove the device and Revoke the associated OAuth client
         $id = $device->id;
         $device->delete();
         $clientRepository = app('Laravel\Passport\ClientRepository');
-        $client = $clientRepository->findForUser($device->oauth_client_id,Auth::user()->id);
+        $client = $clientRepository->findForUser($device->oauth_client_id,$user_id);
         if($client !== null){
             $clientRepository->delete($client);
         }
@@ -162,7 +168,7 @@ class DeviceService {
     /**
      * Returns the type of Grant for the device (hub->confidential->client-credentials reader->non-confidential->pkce)
      */
-    private function getConfidentialFlag($deviceType){
+    public function getConfidentialFlag($deviceType){
         $confidential = false;
         switch($deviceType){
             case "hub":

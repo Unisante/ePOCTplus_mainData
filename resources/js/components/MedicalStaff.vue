@@ -63,24 +63,7 @@ export default {
             medical_staff_roles: [],
             actionURL: "",
             selectedMedicalStaff: "",
-            columns: [
-                {
-                    label: "Name",
-                    keyword: "name",
-                },
-                {
-                    label: "Creation Data",
-                    keyword: "created_at",
-                },
-                {
-                    label: "Authentication ID",
-                    keyword: "oauth_client_id",
-                },
-                {
-                    label: "Health Facility ID",
-                    keyword: "health_facility_id",
-                }
-            ],
+            columns: [],
             actions : [
                 {
                     label: "View",
@@ -106,49 +89,7 @@ export default {
                     default: "",
                 },
             ],
-            details: [
-                {
-                    label: "Name",
-                    keyword: "name",
-                    type: "text",
-                },
-                {
-                    label: "Model",
-                    keyword: "model",
-                    type: "text",
-                },
-                {
-                    label: "Brand",
-                    keyword: "brand",
-                    type: "text",
-                },
-                {
-                    label: "Operating System",
-                    keyword: "os",
-                    type: "text",
-                },
-                {
-                    label: "Operating System Version",
-                    keyword: "os_version",
-                    type: "text",
-                },
-                {
-                    label: "MAC Address",
-                    keyword: "mac_address",
-                    type: "text",
-                },
-                {
-                    label: "Health Facility",
-                    keyword: "health_facility",
-                    type: "text",
-                },
-                {
-                    label: "Authentication ID",
-                    keyword: "oauth_client_id",
-                    type: "text",
-                },
-
-            ],
+            details: [],
         }
     },
 
