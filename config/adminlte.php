@@ -204,7 +204,7 @@ return [
             ],
             [
                 'text' => 'Medical Cases',
-                'url'  => '/patients/duplicates',
+                'url'  => '/medicalcases/duplicates',
                 'icon' => 'fas fa-fw fa-pencil-alt',
             ],
           ],

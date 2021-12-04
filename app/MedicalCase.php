@@ -11,6 +11,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Support\Collection;
 use Schema;
 use Illuminate\Support\Arr;
+// use Illuminate\Support\Collection;
 
 /**
  * Class MedicalCase
@@ -48,6 +49,40 @@ class MedicalCase extends Model implements Auditable
     return $caseFollowUpCollection;
   }
 
+  public function getAnsweredQuestions($case_id){
+    $case=$this::find($case_id);
+    $answers_answered=[];
+    $case->medical_case_answers->each(function($case_answer) use(&$answers_answered){
+      if ( $case_answer->answer || $case_answer->value ){
+        // array_push($answers_answered,$case_answer);
+        $answers_answered[$case_answer->node_id]=$case_answer;
+      }
+    });
+    return $answers_answered;
+  }
+
+  public function formatQuestions($case_answers,$common_case_answers){
+    // $common_case_answers=[];
+    $is_empty=empty($common_case_answers);
+    collect($case_answers)->each(function($case_answer)use (&$common_case_answers, &$is_empty){
+      // find the node
+      $question=$case_answer->node->label;
+      $common_case_answers[$case_answer->node_id]=["question"=>$question];
+
+      if($is_empty){
+        $case_answer->answer?
+        $common_case_answers[$case_answer->node_id]=["case_one"=>$case_answer->answer->label,]:
+        $common_case_answers[$case_answer->node_id]=["case_one"=>$case_answer->value,];
+      }else{
+        $case_answer->answer?
+        $common_case_answers[$case_answer->node_id]=["case_two"=>$case_answer->answer->label,]:
+        $common_case_answers[$case_answer->node_id]=["case_two"=>$case_answer->value,];
+      }
+    });
+    // dd($common_case_answers);
+    // dd("we are in the comparison");
+    return $common_case_answers;
+  }
   // public function listFacilities(){
   //   $cases=self::all();
   //   $facility_id_arr=[];

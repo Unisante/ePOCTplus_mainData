@@ -16,6 +16,7 @@ use Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use DB;
+use Carbon\Carbon;
 
 class MedicalCasesController extends Controller
 {
@@ -93,9 +94,19 @@ class MedicalCasesController extends Controller
    */
   public function compare($firstId, $secondId)
   {
+    $case= new MedicalCase();
+    $first_case_questions=$case->getAnsweredQuestions($firstId);
+    $second_case_questions=$case->getAnsweredQuestions($secondId);
+    $common_case_answers=$case->formatQuestions($first_case_questions,[]);
+    dd($common_case_answers);
+    $cases_list=$case->formatQuestions($second_case_questions,$common_case_answers);
+    dd($cases_list);
+
+    // dd($cases_list);
+
     $first_medical_case =  MedicalCase::find($firstId);
     $second_medical_case = MedicalCase::find($secondId);
-    $medical_case_info = self::comparison($first_medical_case, $second_medical_case);
+    $medical_case_info = $this->comparison($first_medical_case, $second_medical_case);
     // dd($medical_case_info);
     //medicase details for first medical case
     // $medical_case_info=self::detailFind($first_medical_case,"first_case");
@@ -289,18 +300,23 @@ class MedicalCasesController extends Controller
    */
   public function findDuplicates()
   {
-    $duplicates = MedicalCase::select('patient_id', 'version_id')
-      ->groupBy('patient_id', 'version_id')
-      ->havingRaw('COUNT(*) > 1')
-      ->get();
-    $catchEachDuplicate = array();
-    foreach ($duplicates as $duplicate) {
-      $medical_case = MedicalCase::where('patient_id', $duplicate->patient_id)->get();
-      array_push($catchEachDuplicate, $medical_case);
-    }
-    return view('medicalCases.showDuplicates')->with("catchEachDuplicate", $catchEachDuplicate);
+    $duplicate_array=[];
+    $all_patients=Patient::all();
+    $all_patients->each(function($patient) use (&$duplicate_array){
+      if ($patient->medical_cases()->count() > 1 ){
+        $cases=$patient->medical_cases;
+        foreach ($cases as $case){
+          $case->comparison_date=Carbon::createFromFormat('Y-m-d H:i:s', $case->consultation_date)->format('Y-m-d');
+        }
+        $cases->groupBy('comparison_date')->each(function(&$case_group)use (&$duplicate_array){
+          if ($case_group->count() > 1){
+            array_push($duplicate_array,$case_group);
+          }
+        });
+      }
+    });
+    return view('medicalCases.showDuplicates')->with("catchEachDuplicate", $duplicate_array);
   }
-
   /**
    * Search duplicates
    * @params $request
@@ -352,15 +368,6 @@ class MedicalCasesController extends Controller
   }
   public function showFacilities()
   {
-    // $facilities=HealthFacility::all();
-    // $facilities_to_show=[];
-    // foreach($facilities as $facility){
-    //   // ($facility->patient)
-    //   dd($facility);
-    // }
-    // dd($facilities);
-    // $allfollowed = new MedicalCase;
-    // dd($allfollowed->listFacilities());
     return view('medicalCases.followed')->with("facilities", $facilities=HealthFacility::all());
   }
 
@@ -384,23 +391,18 @@ class MedicalCasesController extends Controller
         }
       }
     }
-
-
-
     return response()->json([
       "facility"=>true,
       "data"=>[
         "redcap_sent"=> $count_redcap_sent,
         "redcap_unsent"=>$count_redcap_unsent,
-        // "fake_cases"=>1
       ]
     ]);
-
-
-
-    // dd($redcap_sent);
-    // return $id;
   }
+
+  // public function findDuplicates(){
+  //   return 'here';
+  // }
   public function medicalCaseIntoExcel()
   {
     return Excel::download(new MedicalCaseExport, 'medicalCases.xlsx');
