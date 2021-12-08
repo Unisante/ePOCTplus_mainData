@@ -92,10 +92,6 @@
             ],
             "description": "BaconQrCode is a QR code generator for PHP.",
             "homepage": "https://github.com/Bacon/BaconQrCode",
-            "support": {
-                "issues": "https://github.com/Bacon/BaconQrCode/issues",
-                "source": "https://github.com/Bacon/BaconQrCode/tree/2.0.4"
-            },
             "time": "2021-06-18T13:26:35+00:00"
         },
         {
@@ -152,10 +148,6 @@
                 "laravel",
                 "pdf"
             ],
-            "support": {
-                "issues": "https://github.com/barryvdh/laravel-dompdf/issues",
-                "source": "https://github.com/barryvdh/laravel-dompdf/tree/v0.9.0"
-            },
             "funding": [
                 {
                     "url": "https://github.com/barryvdh",
@@ -205,10 +197,6 @@
                 "enum",
                 "map"
             ],
-            "support": {
-                "issues": "https://github.com/DASPRiD/Enum/issues",
-                "source": "https://github.com/DASPRiD/Enum/tree/1.0.3"
-            },
             "time": "2020-10-02T16:03:48+00:00"
         },
         {
@@ -758,16 +746,16 @@
         },
         {
             "name": "dompdf/dompdf",
-            "version": "v1.1.0",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dompdf/dompdf.git",
-                "reference": "aa594c1cdbcdab04977fdd0fff669a017fb50ef4"
+                "reference": "de4aad040737a89fae2129cdeb0f79c45513128d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/aa594c1cdbcdab04977fdd0fff669a017fb50ef4",
-                "reference": "aa594c1cdbcdab04977fdd0fff669a017fb50ef4",
+                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/de4aad040737a89fae2129cdeb0f79c45513128d",
+                "reference": "de4aad040737a89fae2129cdeb0f79c45513128d",
                 "shasum": ""
             },
             "require": {
@@ -817,11 +805,7 @@
             ],
             "description": "DOMPDF is a CSS 2.1 compliant HTML to PDF converter",
             "homepage": "https://github.com/dompdf/dompdf",
-            "support": {
-                "issues": "https://github.com/dompdf/dompdf/issues",
-                "source": "https://github.com/dompdf/dompdf/tree/v1.1.0"
-            },
-            "time": "2021-11-16T18:39:01+00:00"
+            "time": "2021-11-24T00:45:04+00:00"
         },
         {
             "name": "dragonmantank/cron-expression",
@@ -1813,6 +1797,10 @@
                 "oauth",
                 "passport"
             ],
+            "support": {
+                "issues": "https://github.com/laravel/passport/issues",
+                "source": "https://github.com/laravel/passport"
+            },
             "time": "2020-12-04T09:37:12+00:00"
         },
         {
@@ -2001,7 +1989,7 @@
             ],
             "authors": [
                 {
-                    "name": "Luís Otávio Cobucci Oblonczyk",
+                    "name": "LuÃ­s OtÃ¡vio Cobucci Oblonczyk",
                     "email": "lcobucci@gmail.com",
                     "role": "Developer"
                 }
@@ -3420,10 +3408,6 @@
             ],
             "description": "A library to read, parse, export and make subsets of different types of font files.",
             "homepage": "https://github.com/PhenX/php-font-lib",
-            "support": {
-                "issues": "https://github.com/PhenX/php-font-lib/issues",
-                "source": "https://github.com/PhenX/php-font-lib/tree/0.5.2"
-            },
             "time": "2020-03-08T15:31:32+00:00"
         },
         {
@@ -3464,10 +3448,6 @@
             ],
             "description": "A library to read, parse and export to PDF SVG files.",
             "homepage": "https://github.com/PhenX/php-svg-lib",
-            "support": {
-                "issues": "https://github.com/PhenX/php-svg-lib/issues",
-                "source": "https://github.com/PhenX/php-svg-lib/tree/master"
-            },
             "time": "2019-09-11T20:02:13+00:00"
         },
         {
@@ -3744,7 +3724,7 @@
                     "role": "Developer"
                 },
                 {
-                    "name": "Hans-Jürgen Petrich",
+                    "name": "Hans-JÃ¼rgen Petrich",
                     "email": "petrich@tronic-media.com",
                     "role": "Developer"
                 },
@@ -4534,10 +4514,6 @@
                 "parser",
                 "stylesheet"
             ],
-            "support": {
-                "issues": "https://github.com/sabberworm/PHP-CSS-Parser/issues",
-                "source": "https://github.com/sabberworm/PHP-CSS-Parser/tree/8.3.1"
-            },
             "time": "2020-06-01T09:10:00+00:00"
         },
         {
@@ -4602,10 +4578,6 @@
                 "qrcode",
                 "wrapper"
             ],
-            "support": {
-                "issues": "https://github.com/SimpleSoftwareIO/simple-qrcode/issues",
-                "source": "https://github.com/SimpleSoftwareIO/simple-qrcode/tree/4.2.0"
-            },
             "time": "2021-02-08T20:43:55+00:00"
         },
         {
@@ -4880,7 +4852,7 @@
                     "email": "fabien@symfony.com"
                 },
                 {
-                    "name": "Jean-François Simon",
+                    "name": "Jean-FranÃ§ois Simon",
                     "email": "jeanfrancois.simon@sensiolabs.com"
                 },
                 {
@@ -7024,23 +6996,23 @@
     "packages-dev": [
         {
             "name": "barryvdh/laravel-debugbar",
-            "version": "v3.6.4",
+            "version": "v3.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-debugbar.git",
-                "reference": "3c2d678269ba60e178bcd93e36f6a91c36b727f1"
+                "reference": "70b89754913fd89fef16d0170a91dbc2a5cd633a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/3c2d678269ba60e178bcd93e36f6a91c36b727f1",
-                "reference": "3c2d678269ba60e178bcd93e36f6a91c36b727f1",
+                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/70b89754913fd89fef16d0170a91dbc2a5cd633a",
+                "reference": "70b89754913fd89fef16d0170a91dbc2a5cd633a",
                 "shasum": ""
             },
             "require": {
                 "illuminate/routing": "^6|^7|^8",
                 "illuminate/session": "^6|^7|^8",
                 "illuminate/support": "^6|^7|^8",
-                "maximebf/debugbar": "^1.17.2",
+                "maximebf/debugbar": "^1.16.3",
                 "php": ">=7.2",
                 "symfony/debug": "^4.3|^5",
                 "symfony/finder": "^4.3|^5"
@@ -7054,7 +7026,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.6-dev"
+                    "dev-master": "3.5-dev"
                 },
                 "laravel": {
                     "providers": [
@@ -7101,7 +7073,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-10-21T10:57:31+00:00"
+            "time": "2021-06-14T14:29:26+00:00"
         },
         {
             "name": "beyondcode/laravel-dump-server",
@@ -7462,21 +7434,21 @@
         },
         {
             "name": "maximebf/debugbar",
-            "version": "v1.17.3",
+            "version": "v1.17.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/maximebf/php-debugbar.git",
-                "reference": "e8ac3499af0ea5b440908e06cc0abe5898008b3c"
+                "reference": "0a3532556be0145603f8a9de23e76dc28eed7054"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maximebf/php-debugbar/zipball/e8ac3499af0ea5b440908e06cc0abe5898008b3c",
-                "reference": "e8ac3499af0ea5b440908e06cc0abe5898008b3c",
+                "url": "https://api.github.com/repos/maximebf/php-debugbar/zipball/0a3532556be0145603f8a9de23e76dc28eed7054",
+                "reference": "0a3532556be0145603f8a9de23e76dc28eed7054",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1|^8",
-                "psr/log": "^1|^2|^3",
+                "psr/log": "^1.0",
                 "symfony/var-dumper": "^2.6|^3|^4|^5"
             },
             "require-dev": {
@@ -7519,7 +7491,7 @@
                 "debug",
                 "debugbar"
             ],
-            "time": "2021-10-19T12:33:27+00:00"
+            "time": "2021-08-01T09:19:02+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -7560,7 +7532,7 @@
             ],
             "authors": [
                 {
-                    "name": "Pádraic Brady",
+                    "name": "PÃ¡draic Brady",
                     "email": "padraic.brady@gmail.com",
                     "homepage": "http://blog.astrumfutura.com"
                 },
