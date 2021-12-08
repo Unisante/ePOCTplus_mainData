@@ -37,7 +37,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Passport::tokensExpireIn(now()->addMinutes(1));
-        Passport::refreshTokensExpireIn(now()->addMinutes(1));
+        Passport::refreshTokensExpireIn(now()->addMinutes(5));
         //Passport::personalAccessTokensExpireIn(now()->addMinutes(1));
 
         // Here the routes to manage clients are guarded with additionnal middleware which requires the Manage_Devices permission
