@@ -91,9 +91,12 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('health-facilities/{health_facility}/accesses',"HealthFacilityController@accesses");
         Route::get('health-facilities/versions/{algorithm_id}',"HealthFacilityController@versions");
         Route::post('health-facilities/{health_facility}/assign-version/{algorithm_id}/{version_id}',"HealthFacilityController@assignVersion");
-        //Sticker Management in the contet of Health Facilities
+        // Sticker Management in the contet of Health Facilities
         Route::get('health-facilities/{health_facility}/manage-stickers',"HealthFacilityController@manageStickers");
         Route::get('generate-stickers', 'StickerController@downloadView');
+        // Token management
+        Route::get('devices/{devices}/manage-tokens',"DeviceController@manageTokens");
+        Route::get('devices/{devices}/revoke-tokens', 'DeviceController@revokeTokens');
     });
     // Devices
     Route::resource('devices','DeviceController');

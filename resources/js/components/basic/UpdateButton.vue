@@ -37,7 +37,7 @@
                 }).catch(error=>{
                     this.$emit("edit-error",error.response.data)
                 })
-            }         
+            }
         }
     }
 </script>

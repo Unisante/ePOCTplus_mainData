@@ -21,6 +21,42 @@ class DeviceController extends Controller
         $this->middleware('can:Manage_Devices');
 
     }
+
+    public function manageTokens($id)
+    {
+        $device = Device::find($id);
+        $user = Auth::user();
+        $tokens = $user->tokens;
+
+        $tokens = $tokens->filter(function ($token, $key) use ($device) {
+            return $token->client_id == $device->oauth_client_id && $token->revoked == false;
+        });
+
+        return response()->json([
+            "nbTokens" => $tokens->count(),
+            "deviceName" => $device->name
+        ]);
+    }
+
+    public function revokeTokens($id)
+    {
+        $device = Device::find($id);
+        $user = Auth::user();
+        $tokens = $user->tokens;
+
+        $tokens = $tokens->filter(function ($token, $key) use ($device) {
+            return $token->client_id == $device->oauth_client_id;
+        });
+
+        foreach ($tokens as $token) {
+            $this->revokeAccessAndRefreshTokens($token->id);
+        }
+
+        return response()->json([
+            "message" => "revoked tokens",
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -66,14 +102,23 @@ class DeviceController extends Controller
      */
     public function destroy(Device $device)
     {
-        $id = $this->deviceService->remove($device);
 
-        # Delete corresponding client
-        DB::table('oauth_clients')->where('name', '=', $device->name)->delete();
-        
+
+//        // Delete corresponding client
+//        $id = $this->deviceService->remove($device);
+//        DB::table('oauth_clients')->where('name', '=', $device->name)->delete();
+
+
         return response()->json([
             "message" => "Deleted",
-            "id" => $id,
-        ]);
+        ], 401);
+    }
+
+    private function revokeAccessAndRefreshTokens($tokenId) {
+        $tokenRepository = app('Laravel\Passport\TokenRepository');
+        $refreshTokenRepository = app('Laravel\Passport\RefreshTokenRepository');
+
+        $tokenRepository->revokeAccessToken($tokenId);
+        $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($tokenId);
     }
 }
