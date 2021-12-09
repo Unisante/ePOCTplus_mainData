@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Console\Commands;
+
 use App\Device;
 use App\HealthFacility;
 use App\MedicalStaff;
@@ -8,31 +10,54 @@ use App\Services\HealthFacilityService;
 use App\Services\Http;
 use App\Services\MedicalStaffService;
 use App\User;
-use Illuminate\Database\Migrations\Migration;
+use Exception;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
-class RetrieveMedalcData extends Migration
+class RetrieveMedalcData extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'medalc:retrieve_data';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'This command overwrites health facility, device and medical staff tables and retrieves data from medal-c.';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
      * Returns JSON data from medal-c
      */
-    public function getMedalCData(){
+    private function getMedalCData(){
         $study_id = str_replace(' ', '%20', trim(Config::get('app.study_id')));
         $url = Config::get('medal.creator.url') . Config::get('medal.creator.get_from_study') . $study_id;
         try{
             $response = Http::get($url);
             return json_decode($response['content']);
         }catch(Exception $e){
-            $output = new ConsoleOutput();
-            $output->writeln('<error>Could not retrieve data at url ' . $url . ':</error> ' . $e);
+            $this->error('Could not retrieve data at url ' . $url . ': ' . $e);
         }
     }
 
-    public static function getHealthFacilityData($data){
+    private static function getHealthFacilityData($data){
         return [
             'id' => $data->id,
             'long' => $data->longitude,
@@ -48,15 +73,15 @@ class RetrieveMedalcData extends Migration
         ];
     }
 
-    public static function getDevicesData($data){
+    private static function getDevicesData($data){
         return $data->devices;
     }
 
-    public static function getMedicalStaffsData($data){
+    private static function getMedicalStaffsData($data){
         return $data->medical_staffs;
     }
 
-    public static function addHealthFacilityToDB($health_facility_data){
+    private static function addHealthFacilityToDB($health_facility_data){
         $health_facility = new HealthFacility();
         $health_facility->id = $health_facility_data['id'];
         $health_facility->long = $health_facility_data['long'] ?? 0.0;
@@ -73,7 +98,7 @@ class RetrieveMedalcData extends Migration
         return $health_facility;
     }
 
-    public static function addDeviceToDB($health_facility_service, $device_service, $health_facility, $device_data, $user_id){
+    private static function addDeviceToDB($health_facility_service, $device_service, $health_facility, $device_data, $user_id){
         $device_request = [
             'id' => $device_data->id,
             'name' => $device_data->name ?? 'device',
@@ -103,7 +128,7 @@ class RetrieveMedalcData extends Migration
         });
     }
 
-    public static function addMedicalStaffToDB($medical_staff_service, $health_facility, $medical_staff_data){
+    private static function addMedicalStaffToDB($medical_staff_service, $health_facility, $medical_staff_data){
         $medical_staff_request = [
             'id' => $medical_staff_data->id,
             'first_name' => $medical_staff_data->first_name,
@@ -116,11 +141,11 @@ class RetrieveMedalcData extends Migration
     }
 
     /**
-     * Run the migrations.
+     * Execute the console command.
      *
-     * @return void
+     * @return mixed
      */
-    public function up()
+    public function handle()
     {
         # Get admin user id
         $user = DB::table('users')->where('email', '=', 'guest@dynamic.com')->first();
@@ -175,15 +200,6 @@ class RetrieveMedalcData extends Migration
                 self::addMedicalStaffToDB($medical_staff_service, $health_facility, $medical_staff_data);
             }
         }
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        //
+        $this->info('Data successfully retrieved.');
     }
 }
