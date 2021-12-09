@@ -62,7 +62,8 @@ class SaveCaseService
 
     public function getPatientConfigData($hf, $versionId)
     {
-        return json_decode(Http::get(Config::get('medal.creator.url') . Config::get('medal.creator.medal_data_config_endpoint') . $versionId), true);
+        $data = Http::get(Config::get('medal.creator.url') . Config::get('medal.creator.medal_data_config_endpoint') . $versionId);
+        return json_decode($data['content'], true);
     }
 
     public function getVersionData($hf, $versionId)
@@ -77,7 +78,8 @@ class SaveCaseService
 
             return json_decode($versionJson->json, true);
         } else {
-            return json_decode(Http::get(Config::get('medal.urls.creator_algorithm_url') . $versionId), true);
+            $data = Http::get(Config::get('medal.urls.creator_algorithm_url') . $versionId);
+            return json_decode($data['content'], true);
         }
     }
 
@@ -107,7 +109,7 @@ class SaveCaseService
                 throw new UnexpectedValueException("Health facility with group_id $groupId not found in database");
             } else {
                 $data = Http::get(Config::get('medal.urls.creator_health_facility_url') . $groupId);
-                $hfData = json_decode($data, true);
+                $hfData = json_decode($data['content'], true);
                 $hf = (new HealthFacilityLoader($hfData))->load();
             }
         }
