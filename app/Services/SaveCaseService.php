@@ -49,8 +49,9 @@ class SaveCaseService
             $config = PatientConfig::where('version_id', $version->id)->first();
         } else {
             $data = $this->getVersionData($hf, $versionId);
-            $configData = $this->getPatientConfigData($hf, $versionId);
-            $version = $this->updateVersion($data);
+            $versionData = $data['medal_r_json'];
+            $configData = $this->getPatientConfigData($versionId);
+            $version = $this->updateVersion($versionData);
             $config = $this->updateConfig($configData, $version);
         }
 
@@ -60,7 +61,7 @@ class SaveCaseService
         return $case;
     }
 
-    public function getPatientConfigData($hf, $versionId)
+    public function getPatientConfigData($versionId)
     {
         $data = Http::get(Config::get('medal.creator.url') . Config::get('medal.creator.medal_data_config_endpoint') . $versionId);
         return json_decode($data['content'], true);
