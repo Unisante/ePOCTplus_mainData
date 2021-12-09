@@ -87,7 +87,7 @@ class AlgorithmService
 
     public function updateVersion(VersionJson $versionJson, $version)
     {
-        $versionJson->json = json_encode($version);
+        $versionJson->json = json_encode(['medal_r_json' => $version]);
         $versionJson->save();
     }
 
@@ -112,7 +112,7 @@ class AlgorithmService
     {
         $versionJson = new VersionJson();
         $versionJson->health_facility_id = $healthFacility->id;
-        $versionJson->json = json_encode($version);
+        $versionJson->json = json_encode(['medal_r_json' => $version]);
         $versionJson->save();
         $healthFacility->version_json_id = $versionJson->id;
         $healthFacility->save();
