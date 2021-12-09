@@ -247,7 +247,7 @@ class SaveCaseService
         // Activities
         if ($caseData['activities']) {
             foreach ($caseData['activities'] as $activityData) {
-                self::checkHasProperties($activityData, ['step', 'clinician', 'mac_address']);
+                self::checkHasProperties($activityData, ['step', 'clinician']);
                 (new ActivityLoader($activityData, $medicalCase))->load();
             }
         }
