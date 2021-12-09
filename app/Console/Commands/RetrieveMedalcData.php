@@ -198,8 +198,8 @@ class RetrieveMedalcData extends Command
                 self::addMedicalStaffToDB($medical_staff_service, $health_facility, $medical_staff_data);
             }
 
-            #Add hub device for client_server health facilities
-            if ($health_facility->hf_mode == 'client_server') {
+            #Add hub device for client-server health facilities
+            if ($health_facility->hf_mode == 'client-server') {
                 $hub_data = new stdClass();
                 $hub_data->name = $health_facility->name . ' Hub';
                 $hub_data->type = 'hub';

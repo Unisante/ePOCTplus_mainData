@@ -91,7 +91,7 @@ export default {
                     options: [
                         {
                             label: "Client Server",
-                            value: "client_server",
+                            value: "client-server",
                         },
                         {
                             label: "Standalone",
