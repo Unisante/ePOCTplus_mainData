@@ -69,7 +69,8 @@ class SaveCaseService
     public function getVersionData($hf, $versionId)
     {
         if (Config::get('medal.global.local_health_facility_management')) {
-            $versionJson = $hf->version_json;
+
+            $versionJson = $hf->versionJson;
 
             if ($versionJson === null) {
                 throw new UnexpectedValueException("Health facility $hf->group_id has no associated version");

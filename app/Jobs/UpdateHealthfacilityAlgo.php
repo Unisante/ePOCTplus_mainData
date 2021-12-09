@@ -32,7 +32,7 @@ class UpdateHealthfacilityAlgo implements ShouldQueue
     public function __construct(HealthFacility $healthFacility)
     {
         $this->healthFacility = $healthFacility;
-        $this->algorithmService =  new AlgorithmService();
+        $this->algorithmService = new AlgorithmService();
     }
 
     /**
@@ -43,7 +43,7 @@ class UpdateHealthfacilityAlgo implements ShouldQueue
     public function handle()
     {
         try {
-            Log::info("Update HF : " .$this->healthFacility->id);
+            Log::info("Update HF : " . $this->healthFacility->id);
             /*
              * Récupération de l'algorithm
              *      - envoi du json_version pour optenir la dernier version.
@@ -56,12 +56,12 @@ class UpdateHealthfacilityAlgo implements ShouldQueue
             }
 
             $url = Config::get('medal.creator.url') . Config::get('medal.creator.versions_endpoint') .
-                "/" . $this->healthFacility->healthFacilityAccess->creator_version_id;
+            "/" . $this->healthFacility->healthFacilityAccess->creator_version_id;
             $version = Http::get($url,
                 ["json_version" => $this->healthFacility->healthFacilityAccess->medal_r_json_version]);
 
             switch ($version['code']) {
-                case "200" :
+                case "200":
                     $versionDecoded = json_decode($version['content'], true);
                     $this->algorithmService->updateVersion($versionJson,
                         $versionDecoded);
@@ -71,11 +71,11 @@ class UpdateHealthfacilityAlgo implements ShouldQueue
                     Log::info("Algorithm updated");
                     break;
 
-                case "204" :
+                case "204":
                     Log::info("Algorithm is up-to-date");
-                    break ;
+                    break;
 
-                default :
+                default:
                     Log::error("HTTP error code" . $version['code'] . "not expected");
                     break;
             }
@@ -86,21 +86,21 @@ class UpdateHealthfacilityAlgo implements ShouldQueue
              *      - Si on est à jours on reçoit un 204 si non un 200 avec le json
              */
             $urlAlgorithm = Config::get('medal.creator.url') .
-                Config::get('medal.creator.algorithms_endpoint') .
-                "/" . $this->healthFacility->healthFacilityAccess->medal_c_algorithm_id . "/emergency_content";
-            $emergencyContent =Http::post($urlAlgorithm, [],
+            Config::get('medal.creator.algorithms_endpoint') .
+            "/" . $this->healthFacility->healthFacilityAccess->medal_c_algorithm_id . "/emergency_content";
+            $emergencyContent = Http::post($urlAlgorithm, [],
                 ["emergency_content_version" => $versionJson->emergency_content_version]);
 
             switch ($emergencyContent['code']) {
-                case "200" :
+                case "200":
                     $this->algorithmService->updateVersionEmergencyContent($versionJson,
                         json_decode($emergencyContent['content'], true));
-                        Log::info("Emergency content updated");
+                    Log::info("Emergency content updated");
                     break;
-                case "204" :
+                case "204":
                     Log::info("Emergency_content is up-to-date");
-                    break ;
-                default :
+                    break;
+                default:
                     Log::error("HTTP error code" . $version['code'] . "not expected");
                     break;
             }
