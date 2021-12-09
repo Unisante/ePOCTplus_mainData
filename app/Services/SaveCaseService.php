@@ -49,9 +49,8 @@ class SaveCaseService
             $config = PatientConfig::where('version_id', $version->id)->first();
         } else {
             $data = $this->getVersionData($hf, $versionId);
-            $versionData = $data['medal_r_json'];
             $configData = $this->getPatientConfigData($hf, $versionId);
-            $version = $this->updateVersion($versionData);
+            $version = $this->updateVersion($data);
             $config = $this->updateConfig($configData, $version);
         }
 
