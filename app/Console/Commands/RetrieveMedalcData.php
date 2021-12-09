@@ -87,6 +87,8 @@ class RetrieveMedalcData extends Command
 
     private static function addHealthFacilityToDB($health_facility_data)
     {
+        dd($health_facility_data);
+
         $health_facility = new HealthFacility();
         $health_facility->id = $health_facility_data['id'];
         $health_facility->group_id = $health_facility_data['group_id'];
