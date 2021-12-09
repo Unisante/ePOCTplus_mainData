@@ -52,7 +52,14 @@ return [
           'values' => [
             'step' => 'step',
             'clinician' => 'clinician',
-            'mac_address' => 'mac_address'
+            'mac_address' => [
+                'key' => 'mac_address',
+                'modifiers' => ['optional']
+            ],
+            'device_id' => [
+              'key' => 'device_id',
+              'modifiers' => ['optional']
+            ],
           ],
         ],
         'version' => [
