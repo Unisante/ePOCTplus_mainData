@@ -87,7 +87,6 @@ class RetrieveMedalcData extends Command
     private static function addHealthFacilityToDB($health_facility_data)
     {
         $health_facility = new HealthFacility();
-        $health_facility->id = $health_facility_data['id'];
         $health_facility->group_id = $health_facility_data['id'];
         $health_facility->long = $health_facility_data['long'] ?? 0.0;
         $health_facility->lat = $health_facility_data['lat'] ?? 0.0;
@@ -200,7 +199,7 @@ class RetrieveMedalcData extends Command
             }
 
             #Add hub device for client_server health facilities
-            if ($health_facility->hf_mode == 'client_server') {
+            if ($health_facility->hf_mode == 'client-server') {
                 $hub_data = new stdClass();
                 $hub_data->name = $health_facility->name . ' Hub';
                 $hub_data->type = 'hub';
