@@ -199,7 +199,7 @@ class RetrieveMedalcData extends Command
             }
 
             #Add hub device for client_server health facilities
-            if ($health_facility->hf_mode == 'client-server') {
+            if ($health_facility->hf_mode == 'client_server') {
                 $hub_data = new stdClass();
                 $hub_data->name = $health_facility->name . ' Hub';
                 $hub_data->type = 'hub';
