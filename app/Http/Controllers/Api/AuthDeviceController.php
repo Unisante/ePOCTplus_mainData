@@ -41,7 +41,7 @@ class AuthDeviceController extends Controller
         $alg = $this->algorithmService->getAlgorithmJsonForDevice($device);
 
         if ($json_version < $alg["json_version"] || $json_version == null) {
-            return response()->json($alg["algo"]['medal_r_json']);
+            return response()->json($alg["algo"]->medal_r_json);
         } else {
             return response()->noContent();
         }
