@@ -15,7 +15,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use stdClass;
 
 class RetrieveMedalcData extends Command
 {
@@ -46,20 +46,18 @@ class RetrieveMedalcData extends Command
     /**
      * Returns JSON data from medal-c
      */
-    private function getMedalCData()
-    {
+    private function getMedalCData(){
         $study_id = str_replace(' ', '%20', trim(Config::get('app.study_id')));
         $url = Config::get('medal.creator.url') . Config::get('medal.creator.get_from_study') . $study_id;
-        try {
+        try{
             $response = Http::get($url);
             return json_decode($response['content']);
-        } catch (Exception $e) {
+        }catch(Exception $e){
             $this->error('Could not retrieve data at url ' . $url . ': ' . $e);
         }
     }
 
-    private static function getHealthFacilityData($data)
-    {
+    private static function getHealthFacilityData($data){
         return [
             'id' => $data->id,
             'long' => $data->longitude,
@@ -71,25 +69,21 @@ class RetrieveMedalcData extends Command
             'country' => $data->country,
             'area' => $data->area,
             'local_data_ip' => $data->local_data_ip,
-            'pin_code' => $data->pin_code,
+            'pin_code' => $data->pin_code
         ];
     }
 
-    private static function getDevicesData($data)
-    {
+    private static function getDevicesData($data){
         return $data->devices;
     }
 
-    private static function getMedicalStaffsData($data)
-    {
+    private static function getMedicalStaffsData($data){
         return $data->medical_staffs;
     }
 
-    private static function addHealthFacilityToDB($health_facility_data)
-    {
+    private static function addHealthFacilityToDB($health_facility_data){
         $health_facility = new HealthFacility();
         $health_facility->id = $health_facility_data['id'];
-        $health_facility->group_id = $health_facility_data['id'];
         $health_facility->long = $health_facility_data['long'] ?? 0.0;
         $health_facility->lat = $health_facility_data['lat'] ?? 0.0;
         $health_facility->hf_mode = $health_facility_data['hf_mode'];
@@ -104,46 +98,41 @@ class RetrieveMedalcData extends Command
         return $health_facility;
     }
 
-    private static function addDeviceToDB($health_facility_service, $device_service, $health_facility, $device_data, $user_id)
-    {
+    private static function addDeviceToDB($health_facility_service, $device_service, $health_facility, $device_data, $user_id){
         $device_request = [
-            'id' => $device_data->id,
+            'id' => $device_data->id ?? null,
             'name' => $device_data->name ?? 'device',
             'type' => $device_data->type ?? 'reader',
-            'mac_address' => $device_data->mac_address,
-            'model' => $device_data->model,
-            'brand' => $device_data->brand,
-            'os' => $device_data->os,
-            'os_version' => $device_data->os_version,
-            'redirect' => 'type' == 'reader'
-            ? Config::get('medal.authentication.reader_callback_url')
-            : null,
-            'status' => $device_data->status == 'active' ? 1 : 0,
-            'health_facility_id' => $health_facility->id,
+            'mac_address' => $device_data->mac_address ?? null,
+            'model' => $device_data->model ?? null,
+            'brand' => $device_data->brand ?? null,
+            'os' => $device_data->os ?? null,
+            'os_version' => $device_data->os_version ?? null,
+            'redirect' => Config::get('medal.authentication.reader_callback_url'),
+            'status' => ($device_data->status ?? null) == 'active' ? 1 : 0,
+            'health_facility_id' => $health_facility->id ?? null,
             'last_seen' => null,
 
-            'user_id' => $user_id,
+            'user_id' => $user_id
         ];
 
         $device = $device_service->add($device_request);
         $health_facility_service->assignDevice($health_facility, $device);
     }
 
-    private static function getMedicalStaffRoleId($role_name)
-    {
-        return Cache::store('array')->rememberForever('migration_role_id_' . $role_name, function () use ($role_name) {
+    private static function getMedicalStaffRoleId($role_name){
+        return Cache::store('array')->rememberForever('migration_role_id_' . $role_name, function () use ($role_name){
             return DB::table('medical_staff_roles')->where('type', '=', $role_name)->first()->id;
         });
     }
 
-    private static function addMedicalStaffToDB($medical_staff_service, $health_facility, $medical_staff_data)
-    {
+    private static function addMedicalStaffToDB($medical_staff_service, $health_facility, $medical_staff_data){
         $medical_staff_request = [
             'id' => $medical_staff_data->id,
             'first_name' => $medical_staff_data->first_name,
             'last_name' => $medical_staff_data->last_name,
             'medical_staff_role_id' => self::getMedicalStaffRoleId($medical_staff_data->role),
-            'health_facility_id' => $health_facility->id,
+            'health_facility_id' => $health_facility->id
         ];
 
         $medical_staff_service->add($medical_staff_request);
@@ -157,16 +146,9 @@ class RetrieveMedalcData extends Command
     public function handle()
     {
         # Get admin user id
-        $user = DB::table('users')->where('email', '=', 'guest@dynamic.com')->first();
-        if ($user == null) {
-            $user = DB::table('users')->where('email', '=', 'admin@dynamic.com')->first();
-            if ($user == null) {
-                $user = User::firstOrCreate([
-                    'name' => 'Guest',
-                    'email' => 'guest@dynamic.com',
-                    'password' => Hash::make('guest'),
-                ]);
-            }
+        $user = DB::table('users')->where('email', '=', 'admin@dynamic.com')->first();
+        if($user == null){
+            $this->error('Could not store data: user admin@dynamic.com does not exist.');
         }
         $user_id = $user->id;
 
@@ -175,23 +157,23 @@ class RetrieveMedalcData extends Command
         $medical_staff_service = new MedicalStaffService();
 
         # Reset data tables
-        foreach (Device::all() as $device) {
+        foreach(Device::all() as $device){
             $device->delete();
             DB::table('oauth_clients')->where('id', '=', $device->oauth_client_id)->delete();
         }
 
-        foreach (MedicalStaff::all() as $medical_staff) {
+        foreach(MedicalStaff::all() as $medical_staff){
             $medical_staff_service->remove($medical_staff);
         }
 
-        foreach (HealthFacility::all() as $health_facility) {
+        foreach(HealthFacility::all() as $health_facility){
             $health_facility->delete();
         }
 
         # Populate data tables
         $datas = $this->getMedalCData();
 
-        foreach ($datas as $data) {
+        foreach($datas as $data){
             $health_facility_data = self::getHealthFacilityData($data);
             $devices_data = self::getDevicesData($data);
             $medical_staffs_data = self::getMedicalStaffsData($data);
@@ -200,13 +182,22 @@ class RetrieveMedalcData extends Command
             $health_facility = self::addHealthFacilityToDB($health_facility_data);
 
             # Add all devices related to that health facility
-            foreach ($devices_data as $device_data) {
+            foreach($devices_data as $device_data){
                 self::addDeviceToDB($health_facility_service, $device_service, $health_facility, $device_data, $user_id);
             }
 
             # Add all medical staff related to that health facility
-            foreach ($medical_staffs_data as $medical_staff_data) {
+            foreach($medical_staffs_data as $medical_staff_data){
                 self::addMedicalStaffToDB($medical_staff_service, $health_facility, $medical_staff_data);
+            }
+
+            #Add hub device for client_server health facilities
+            if($health_facility->hf_mode == 'client_server'){
+                $hub_data = new stdClass();
+                $hub_data->name = $health_facility->name . ' Hub';
+                $hub_data->type = 'hub';
+                $hub_data->status = 'active';
+                self::addDeviceToDb($health_facility_service, $device_service, $health_facility, $hub_data, $user_id);
             }
         }
         $this->info('Data successfully retrieved.');
