@@ -37,7 +37,7 @@
                 }).catch(error=>{
                     this.$emit("delete-error",error)
                 })
-            }         
+            }
         }
     }
 </script>

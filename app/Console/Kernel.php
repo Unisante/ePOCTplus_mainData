@@ -31,6 +31,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('export:start')->dailyAt('03:00');
         $schedule->command('update:versions')->dailyAt('02:00');
         //$schedule->command(MedicalCasesExport::class)->everyMinute();
+        $schedule->command("HealthFacilitiesAlgo:update")->hourly();
+        $schedule->command('passport:purge')->hourly();
     }
 
     /**
