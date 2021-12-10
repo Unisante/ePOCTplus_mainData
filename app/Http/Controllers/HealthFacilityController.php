@@ -52,7 +52,7 @@ class HealthFacilityController extends Controller
             'area' => 'nullable|string',
             'pin_code' => 'nullable|integer',
             'hf_mode' => [Rule::in(['standalone', 'client_server'])],
-            'local_data_ip' => 'nullable|string|ip',
+            'local_data_ip' => 'nullable|string',
             'lat' => 'numeric | between:-90,90',
             'long' => 'numeric | between:-180,180',
         ]);
@@ -78,7 +78,7 @@ class HealthFacilityController extends Controller
             'area' => 'nullable|string',
             'pin_code' => 'nullable|integer',
             'hf_mode' => [Rule::in(['standalone', 'client_server'])],
-            'local_data_ip' => 'nullable|string|ip',
+            'local_data_ip' => 'nullable|string',
             'lat' => 'numeric | between:-90,90',
             'long' => 'numeric | between:-180,180',
         ]);
