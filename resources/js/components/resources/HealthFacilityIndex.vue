@@ -37,7 +37,7 @@ export default {
             columns: [
                 {
                     label: "Id",
-                    keyword: "id"
+                    keyword: "group_id"
                 },
                 {
                     label: "Name",
