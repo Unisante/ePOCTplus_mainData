@@ -96,7 +96,7 @@ class HealthFacility extends Model
 
     public function versionJson()
     {
-        return $this->hasOne('App\VersionJson', 'health_facility_id', 'group_id');
+        return $this->hasOne('App\VersionJson');
     }
 
     public function healthFacilityAccess()
