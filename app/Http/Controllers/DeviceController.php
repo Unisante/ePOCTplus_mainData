@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Device;
-use Illuminate\Http\Request;
 use App\Services\DeviceService;
 use App\Http\Requests\DeviceRequest;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Device as DeviceResource;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DeviceController extends Controller
 {
@@ -16,9 +16,46 @@ class DeviceController extends Controller
 
     public function __construct(DeviceService $deviceService)
     {
-        $this->authorizeResource(Device::class);
         $this->deviceService = $deviceService;
+        $this->middleware('can:Manage_Devices');
+
     }
+
+    public function manageTokens($id)
+    {
+        $device = Device::find($id);
+        $user = Auth::user();
+        $tokens = $user->tokens;
+
+        $tokens = $tokens->filter(function ($token, $key) use ($device) {
+            return $token->client_id == $device->oauth_client_id && $token->revoked == false;
+        });
+
+        return response()->json([
+            "nbTokens" => $tokens->count(),
+            "deviceName" => $device->name
+        ]);
+    }
+
+    public function revokeTokens($id)
+    {
+        $device = Device::find($id);
+        $user = Auth::user();
+        $tokens = $user->tokens;
+
+        $tokens = $tokens->filter(function ($token, $key) use ($device) {
+            return $token->client_id == $device->oauth_client_id;
+        });
+
+        foreach ($tokens as $token) {
+            $this->revokeAccessAndRefreshTokens($token->id);
+        }
+
+        return response()->json([
+            "message" => "revoked tokens",
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -26,7 +63,7 @@ class DeviceController extends Controller
      */
     public function index()
     {
-        $devices = DeviceResource::collection(Auth::user()->devices);
+        $devices = DeviceResource::collection(Device::all());
         return view('devices.index',['devices' => $devices->toJson(),]);
     }
     /**
@@ -64,10 +101,23 @@ class DeviceController extends Controller
      */
     public function destroy(Device $device)
     {
-        $id = $this->deviceService->remove($device);
+
+
+//        // Delete corresponding client
+//        $id = $this->deviceService->remove($device);
+//        DB::table('oauth_clients')->where('name', '=', $device->name)->delete();
+
+
         return response()->json([
             "message" => "Deleted",
-            "id" => $id,
-        ]);
+        ], 401);
+    }
+
+    private function revokeAccessAndRefreshTokens($tokenId) {
+        $tokenRepository = app('Laravel\Passport\TokenRepository');
+        $refreshTokenRepository = app('Laravel\Passport\RefreshTokenRepository');
+
+        $tokenRepository->revokeAccessToken($tokenId);
+        $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($tokenId);
     }
 }

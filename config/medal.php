@@ -14,6 +14,7 @@ return [
         'health_facility_endpoint' => env('CREATOR_HEALTH_FACILITY_ENDPOINT', '/api/v1/health_facilities'),
         'medal_data_config_endpoint' => env('CREATOR_MEDAL_DATA_CONFIG_ENDPOINT', "/api/v1/versions/medal_data_config?version_id="),
         'versions_endpoint' => env('CREATOR_VERSIONS_ENDPOINT', '/api/v1/versions'),
+        'get_from_study' => env('CREATOR_GET_FROM_STUDY', '/api/v1/health_facilities/get_from_study?study_label='),
         'study_id' => env('STUDY_ID', 'Dynamic Tanzania'),
         'language' => env('LANGUAGE', 'en'),
     ],
@@ -51,7 +52,14 @@ return [
           'values' => [
             'step' => 'step',
             'clinician' => 'clinician',
-            'mac_address' => 'mac_address'
+            'mac_address' => [
+                'key' => 'mac_address',
+                'modifiers' => ['optional']
+            ],
+            'device_id' => [
+              'key' => 'device_id',
+              'modifiers' => ['optional']
+            ],
           ],
         ],
         'version' => [

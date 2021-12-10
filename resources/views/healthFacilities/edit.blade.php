@@ -3,7 +3,7 @@
 <link href="{{ asset('css/datatable.css') }}" rel="stylesheet">
 
 @section('content')
- 
+
 @component('layouts.components.edit',['instance' => $facility,
                                       'name' => 'Health Facility',
                                       'url' => 'health-facilities',
@@ -22,7 +22,7 @@
                                                     'Architecture' => ['keyword' => 'hf_mode',
                                                                         'type' => 'dropdown',
                                                                         'options' => ['standalone',
-                                                                                    'client-server',
+                                                                                    'client_server',
                                                                                     ],
                                                                         ],
                                                     'Latitude' => ['keyword' => 'lat',

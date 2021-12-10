@@ -8,11 +8,28 @@
         </div>
         <div class="card-body">
             <div class="card">
-                <device-index :resources_route="devices_route" :resources_data.sync="devices"
+                <device-index
+                    :resources_route="devices_route"
+                    :resources_data.sync="devices"
+                    :custom_actions="custom_actions"
+                    @tokens="manageTokens"
                 ></device-index>
             </div>
         </div>
     </div>
+    <basic-modal :show.sync="showTokensModal">
+        <template v-slot:header>
+            <h5>Tokens</h5>
+        </template>
+        <template v-slot:body>
+            <token-manager
+                :devices_route="devices_route"
+                :device_id="device_id"
+                :device_name="device_name"
+                :nb_tokens="nb_tokens">
+            </token-manager>
+        </template>
+    </basic-modal>
 </div>
 </template>
 
@@ -26,11 +43,13 @@ import CreateForm from "./basic/CreateForm.vue"
 import EditForm from "./basic/EditForm.vue"
 import ShowDetails from "./basic/ShowDetails.vue"
 import DeviceIndex from "./resources/DeviceIndex.vue"
+import TokenManager from "./TokenManager";
 
 export default {
     name: "Devices",
 
     components: {
+        TokenManager,
         "DynamicForm": DynamicForm,
         "Index": Index,
         "BasicModal": BasicModal,
@@ -56,6 +75,7 @@ export default {
             showEditModal: false,
             showViewModal: false,
             showDeleteModal: false,
+            showTokensModal :false,
             devices: [],
             actionURL: "",
             selectedDevice: "",
@@ -89,9 +109,16 @@ export default {
                     color: "yellow",
                 },
                 {
-                    label: "Delete",
+                    label: "delete",
                     event: "delete",
                     color: "red",
+                },
+            ],
+            custom_actions : [
+                {
+                    label: "Tokens",
+                    event: "tokens",
+                    color: "blue",
                 },
             ],
             inputs : [
@@ -156,6 +183,20 @@ export default {
 
 
     methods : {
+        manageTokens : function (id) {
+            var url = this.devices_route + "/" + id + "/manage-tokens"
+            axios.get(url)
+                .then((response) => {
+                    this.device_id = id
+                    this.nb_tokens = response.data.nbTokens
+                    this.device_name = response.data.deviceName
+                    this.showTokensModal = true
+                })
+                .catch((error) => {
+                    this.$toasted.global.error_notification("Error:" + error)
+                });
+        },
+
         createSuccess : function(device){
             this.$toasted.global.success_notification("Device Successfully created")
             this.showCreateModal = false
@@ -178,8 +219,7 @@ export default {
         destroySuccess: function(response){
             var id = response['id']
             this.removeDevice(id)
-            this.$toasted.global.success_notification("Device Successfully Deleted")
-
+            this.$toasted.global.error_notification("Device Successfully Deleted")
         },
         destroyFailure: function(error) {
             this.$toasted.global.error_notification("An error occurred...")

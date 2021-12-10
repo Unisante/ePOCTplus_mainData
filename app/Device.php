@@ -16,6 +16,7 @@ class Device extends Model
         "os_version",
         "status",
         "redirect",
+        "oauth_client_id",
     ];
     protected $guarded = [];
 
