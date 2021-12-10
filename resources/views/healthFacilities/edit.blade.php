@@ -22,7 +22,7 @@
                                                     'Architecture' => ['keyword' => 'hf_mode',
                                                                         'type' => 'dropdown',
                                                                         'options' => ['standalone',
-                                                                                    'client-server',
+                                                                                    'client_server',
                                                                                     ],
                                                                         ],
                                                     'Latitude' => ['keyword' => 'lat',
