@@ -156,6 +156,7 @@ class RetrieveMedalcData extends Command
         $user = DB::table('users')->where('email', '=', 'admin@dynamic.com')->first();
         if ($user == null) {
             $this->error('Could not store data: user admin@dynamic.com does not exist.');
+            return;
         }
         $user_id = $user->id;
 
