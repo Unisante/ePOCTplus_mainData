@@ -197,7 +197,7 @@ export default {
               .then((response) => {
                   this.selectedHealthFacility = response.data.health_facility
                 this.health_facility_name = response.data.health_facility.name
-                this.health_facility_id = id
+                this.health_facility_id = response.data.health_facility.group_id
                 this.showStickers = true
               })
               .catch((error) => {
