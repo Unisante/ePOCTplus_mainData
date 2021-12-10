@@ -27,17 +27,17 @@ Route::post('/user/password/reset', 'HomeController@forgotPassword')->name('Home
 Route::get('/check_password_reset_token/{id}', 'HomeController@checkToken')->name('HomeController@checkToken');
 Route::post('/reset_user_password', 'HomeController@makePassword')->name('HomeController@makePassword');
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth', '2fa']], function () {
     # Roles and users
-  Route::resource('roles', 'RolesController');
-  Route::resource('users','UsersController');
-  Route::get('/user/profile',['as'=>'users.profile','uses'=>'UsersController@profile']);
-  Route::get('/user/password','UsersController@showChangePassword');
-  Route::post('/user/password','UsersController@changePassword')->name('UsersController@changePassword');
-  Route::post('/user/reset/{id}','UsersController@resetPassword')->name('UsersController@resetPassword');
-  Route::get('/home', 'HomeController@index')->name('home');
-  Route::get('roles/removeRole/{id}','RolesController@removeRolePermissionShow');
-  Route::post('role/removePerm/{id}','RolesController@removeRolePermission');
+    Route::resource('roles', 'RolesController');
+    Route::resource('users', 'UsersController');
+    Route::get('/user/profile', ['as' => 'users.profile', 'uses' => 'UsersController@profile']);
+    Route::get('/user/password', 'UsersController@showChangePassword');
+    Route::post('/user/password', 'UsersController@changePassword')->name('UsersController@changePassword');
+    Route::post('/user/reset/{id}', 'UsersController@resetPassword')->name('UsersController@resetPassword');
+    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('roles/removeRole/{id}', 'RolesController@removeRolePermissionShow');
+    Route::post('role/removePerm/{id}', 'RolesController@removeRolePermission');
 
     //for patient
     Route::get('/patients', 'PatientsController@index')->name('Patients.index');;
@@ -79,29 +79,29 @@ Route::group(['middleware' => ['auth']], function () {
         ]);
 
         //Medical staff Management in the context of Health Facilities
-        Route::get('health-facilities/{health_facility}/manage-medical-staff',"HealthFacilityController@manageMedicalStaff");
-        Route::post('health-facilities/{health_facility}/assign-medical-staff/{medical_staff}',"HealthFacilityController@assignMedicalStaff");
-        Route::post('health-facilities/{health_facility}/unassign-medical-staff/{medical_staff}',"HealthFacilityController@unassignMedicalStaff");
+        Route::get('health-facilities/{health_facility}/manage-medical-staff', "HealthFacilityController@manageMedicalStaff");
+        Route::post('health-facilities/{health_facility}/assign-medical-staff/{medical_staff}', "HealthFacilityController@assignMedicalStaff");
+        Route::post('health-facilities/{health_facility}/unassign-medical-staff/{medical_staff}', "HealthFacilityController@unassignMedicalStaff");
         //Device Management in the context of Health Facilities
-        Route::get('health-facilities/{health_facility}/manage-devices',"HealthFacilityController@manageDevices");
-        Route::post('health-facilities/{health_facility}/assign-device/{device}',"HealthFacilityController@assignDevice");
-        Route::post('health-facilities/{health_facility}/unassign-device/{device}',"HealthFacilityController@unassignDevice");
+        Route::get('health-facilities/{health_facility}/manage-devices', "HealthFacilityController@manageDevices");
+        Route::post('health-facilities/{health_facility}/assign-device/{device}', "HealthFacilityController@assignDevice");
+        Route::post('health-facilities/{health_facility}/unassign-device/{device}', "HealthFacilityController@unassignDevice");
         //Algorithms Management in the context of Health Facilities
-        Route::get('health-facilities/{health_facility}/manage-algorithms',"HealthFacilityController@manageAlgorithms");
-        Route::get('health-facilities/{health_facility}/accesses',"HealthFacilityController@accesses");
-        Route::get('health-facilities/versions/{algorithm_id}',"HealthFacilityController@versions");
-        Route::post('health-facilities/{health_facility}/assign-version/{algorithm_id}/{version_id}',"HealthFacilityController@assignVersion");
+        Route::get('health-facilities/{health_facility}/manage-algorithms', "HealthFacilityController@manageAlgorithms");
+        Route::get('health-facilities/{health_facility}/accesses', "HealthFacilityController@accesses");
+        Route::get('health-facilities/versions/{algorithm_id}', "HealthFacilityController@versions");
+        Route::post('health-facilities/{health_facility}/assign-version/{algorithm_id}/{version_id}', "HealthFacilityController@assignVersion");
         // Sticker Management in the contet of Health Facilities
-        Route::get('health-facilities/{health_facility}/manage-stickers',"HealthFacilityController@manageStickers");
+        Route::get('health-facilities/{health_facility}/manage-stickers', "HealthFacilityController@manageStickers");
         Route::get('generate-stickers', 'StickerController@downloadView');
         // Token management
-        Route::get('devices/{devices}/manage-tokens',"DeviceController@manageTokens");
+        Route::get('devices/{devices}/manage-tokens', "DeviceController@manageTokens");
         Route::get('devices/{devices}/revoke-tokens', 'DeviceController@revokeTokens');
     });
     // Devices
-    Route::resource('devices','DeviceController');
+    Route::resource('devices', 'DeviceController');
     // Medical Staff
-    Route::resource('medical-staff','MedicalStaffController');
+    Route::resource('medical-staff', 'MedicalStaffController');
 
     //for downloading exports
     // Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('MedicalCasesController.medicalCaseIntoExcel');
