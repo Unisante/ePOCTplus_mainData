@@ -178,48 +178,36 @@ class RetrieveMedalcData extends Command
             $health_facility->delete();
         }
 
-        $study_ids = [
-            "Dynamic Rwanda",
-            "Dynamic Tanzania",
-            "TIMCI Kenya",
-            "TIMCI India",
-            "TIMCI Senegal",
-            "TIMCI Tanzania",
-        ];
-
         # Populate data tables
-        foreach ($study_ids as $study_id) {
 
-            // $study_id = str_replace(' ', '%20', trim(Config::get('app.study_id')));
-            $study_id = str_replace(' ', '%20', trim($study_id));
-            $datas = $this->getMedalCData($study_id);
+        $study_id = str_replace(' ', '%20', trim(Config::get('app.study_id')));
+        $datas = $this->getMedalCData($study_id);
 
-            foreach ($datas as $data) {
-                $health_facility_data = self::getHealthFacilityData($data);
-                $devices_data = self::getDevicesData($data);
-                $medical_staffs_data = self::getMedicalStaffsData($data);
+        foreach ($datas as $data) {
+            $health_facility_data = self::getHealthFacilityData($data);
+            $devices_data = self::getDevicesData($data);
+            $medical_staffs_data = self::getMedicalStaffsData($data);
 
-                # Add new health facility
-                $health_facility = self::addHealthFacilityToDB($health_facility_data);
+            # Add new health facility
+            $health_facility = self::addHealthFacilityToDB($health_facility_data);
 
-                # Add all devices related to that health facility
-                foreach ($devices_data as $device_data) {
-                    self::addDeviceToDB($health_facility_service, $device_service, $health_facility, $device_data, $user_id);
-                }
+            # Add all devices related to that health facility
+            foreach ($devices_data as $device_data) {
+                self::addDeviceToDB($health_facility_service, $device_service, $health_facility, $device_data, $user_id);
+            }
 
-                # Add all medical staff related to that health facility
-                foreach ($medical_staffs_data as $medical_staff_data) {
-                    self::addMedicalStaffToDB($medical_staff_service, $health_facility, $medical_staff_data);
-                }
+            # Add all medical staff related to that health facility
+            foreach ($medical_staffs_data as $medical_staff_data) {
+                self::addMedicalStaffToDB($medical_staff_service, $health_facility, $medical_staff_data);
+            }
 
-                #Add hub device for client_server health facilities
-                if ($health_facility->hf_mode == 'client_server') {
-                    $hub_data = new stdClass();
-                    $hub_data->name = $health_facility->name . ' Hub';
-                    $hub_data->type = 'hub';
-                    $hub_data->status = 'active';
-                    self::addDeviceToDb($health_facility_service, $device_service, $health_facility, $hub_data, $user_id);
-                }
+            #Add hub device for client_server health facilities
+            if ($health_facility->hf_mode == 'client_server') {
+                $hub_data = new stdClass();
+                $hub_data->name = $health_facility->name . ' Hub';
+                $hub_data->type = 'hub';
+                $hub_data->status = 'active';
+                self::addDeviceToDb($health_facility_service, $device_service, $health_facility, $hub_data, $user_id);
             }
         }
         $this->info('Data successfully retrieved.');
