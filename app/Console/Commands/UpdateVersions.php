@@ -43,7 +43,7 @@ class UpdateVersions extends Command
         Version::all()->each(function ($version) use ($saveCaseService) {
             $data = $saveCaseService->getVersionData('', $version->medal_c_id);
             $versionData = $data['medal_r_json'];
-            $configData = $saveCaseService->getPatientConfigData('', $version->medal_c_id);
+            $configData = $saveCaseService->getPatientConfigData($version->medal_c_id);
             $version = $saveCaseService->updateVersion($versionData);
             $saveCaseService->updateConfig($configData, $version);
         });

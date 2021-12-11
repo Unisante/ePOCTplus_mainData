@@ -6,11 +6,11 @@
         </template>
         <template v-slot:body>
             <slot></slot>
-            
+
         </template>
         <template v-slot:footer>
             <action-button title="Cancel" classTitle="btn btn-primary" @clicked="hide"></action-button>
-            <delete-button title="Delete" classTitle="btn btn-danger" 
+            <delete-button title="Delete" classTitle="btn btn-danger"
                            :url="url"
                            @delete-success="success"
                            @delete-error="error"></delete-button>
@@ -31,7 +31,7 @@ export default {
         "DeleteButton": DeleteButton,
         "ActionButton": ActionButton,
     },
-    
+
     data() {
         return {
 
@@ -54,6 +54,7 @@ export default {
         },
         error: function(error) {
             this.$emit('delete-error',error)
+            this.$toasted.global.error_notification("An error occurred:" + error)
             this.hide()
         }
     },

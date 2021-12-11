@@ -43,7 +43,7 @@
                 <tbody>
                   @foreach($patients as $patient)
                   <tr>
-                    <td scope="row">{{ $loop->index }}</td>
+                    <td scope="row">{{ $patient->id }}</td>
                     <td>{{$patient->local_patient_id}}</td>
                     <td>{{$patient->first_name}}</td>
                     <td>{{$patient->middle_name}}</td>

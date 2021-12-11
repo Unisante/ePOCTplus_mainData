@@ -1,85 +1,118 @@
 <?php
 
-
 namespace App\Services;
 
-use Exception;
-use App\Device;
 use App\Algorithm;
-use App\VersionJson;
-use App\Services\Http;
+use App\Device;
 use App\HealthFacility;
 use App\HealthFacilityAccess;
-use Illuminate\Support\Facades\Auth;
+use App\Services\Http;
+use App\VersionJson;
+use Exception;
 use Illuminate\Support\Facades\Config;
 
-
-class AlgorithmService {
+class AlgorithmService
+{
 
     /**
-     * Fetches the algorithms metadata from medal-creator 
+     * Fetches the algorithms metadata from medal-creator and stores the data in the database for potential later use
      */
-    public function getAlgorithmsMetadata(){
+    public function getAlgorithmsMetadata()
+    {
         $url = Config::get('medal.creator.url') . Config::get('medal.creator.algorithms_endpoint');
-        $response = Http::get($url,[]);
-        return json_decode($response);
+        $response = Http::get($url, []);
+        return json_decode($response['content']);
     }
 
     /**
      * Fetches the version metadata from medal-creator for a specific algorithm id
      */
-    public function getVersionsMetadata($algorithmCreatorID){
-        $url = Config::get('medal.creator.url') . Config::get('medal.creator.algorithms_endpoint') .  "/" .  $algorithmCreatorID . "/versions";
-        $response = Http::get($url,[]);
-        return json_decode($response);
+    public function getVersionsMetadata($algorithmCreatorID)
+    {
+        $url = Config::get('medal.creator.url') . Config::get('medal.creator.algorithms_endpoint') . "/" . $algorithmCreatorID . "/versions";
+        $response = Http::get($url, []);
+        return json_decode($response['content']);
     }
 
-    /**
-     * Fetches the version indexed by versionID from the creator, checks the validity of all fields,
-     * assigns the version to the health facility and store the json in the appropriate table
-     * The accesses table is also updated
-     */
-    public function assignVersionToHealthFacility(HealthFacility $healthFacility,$versionID){
-        $url = Config::get('medal.creator.url') . Config::get('medal.creator.versions_endpoint') . "/" . $versionID;
-        $version = json_decode(Http::get($url,[]),true);
-        $requiredFields = ['medal_r_json','name','id','medal_r_json_version'];
-        foreach($requiredFields as $field){
-            if ($version[$field] === null){
-                throw new Exception("Response from creator does not contain required field: $field");
-            }
+    public function assignVersionToHealthFacility(HealthFacility $healthFacility, $chosenAlgorithmID, $versionID)
+    {
+        /*
+         * Récupération de l'algorithm
+         *  - envoi du json_version pour optenir la dernier version.
+         *  - Si on est à jours on reçoit un 204 si non un 200 avec le json
+         *  - Si on a pas d'algorithm en DB alors on passe -1 pour obtenir la dernier version
+         */
+        $url = Config::get('medal.creator.url') . Config::get('medal.creator.versions_endpoint') .
+            "/" . $versionID;
+        $version = Http::get($url, ["json_version" => $healthFacility->medal_r_json_version ?? -1]);
+        $version = json_decode($version['content'], true);
+
+        /*
+         * Récupération du emergency content lié à l'algorithm
+         *  - envoi du emergency_content_version pour optenir la dernier version.
+         *  - Si on est à jours on reçoit un 204 si non un 200 avec le json
+         *  - Si on a pas de emergency_content en DB alors on passe -1 pour obtenir la dernier version
+         */
+        $urlAlgorithm = Config::get('medal.creator.url') . Config::get('medal.creator.algorithms_endpoint') .
+            "/" . $chosenAlgorithmID . "/emergency_content";
+        $versionJson = VersionJson::where('health_facility_id', $healthFacility->id)->first();
+        $emergencyContent = Http::post($urlAlgorithm, [],
+            ["emergency_content_version" => -1]);
+        $emergencyContent = json_decode($emergencyContent['content'], true);
+
+        $this->assignVersion($healthFacility, $version);
+        $this->assignEmergencyContent($healthFacility, $emergencyContent);
+        $this->updateAccesses($healthFacility, $chosenAlgorithmID, $version);
+    }
+
+    private function assignVersion(HealthFacility $healthFacility, $version)
+    {
+        $versionJson = VersionJson::where('health_facility_id', $healthFacility->id)->first();
+        if ($versionJson == null) {
+            $this->addVersion($healthFacility, $version);
+        } else {
+            $this->updateVersion($versionJson, $version);
         }
-        $this->assignVersion($healthFacility,$version);
-        $this->updateAccesses($healthFacility,$version);
     }
 
-    /**
-     * Checks if the health facility already has a version assigned to it and if so updates the json with the new one
-     * present in the $version array, otherwise it creates a new row for it in the version_jsons table
-     */
-    public function assignVersion(HealthFacility $healthFacility,$version){
-        $versionJson = VersionJson::where('health_facility_id',$healthFacility->id)->first();
-        if ($versionJson == null){
-            $this->addVersion($healthFacility,$version);
-        }else{
-            $this->updateVersion($versionJson,$version);
+    private function assignEmergencyContent(HealthFacility $healthFacility, $emergencyContent)
+    {
+        $versionJson = VersionJson::where('health_facility_id', $healthFacility->id)->first();
+        if ($versionJson == null) {
+            $this->addVersionEmergencyContent($healthFacility, $emergencyContent);
+        } else {
+            $this->updateVersionEmergencyContent($versionJson, $emergencyContent);
         }
     }
 
-    /**
-     * Updates the json of $versionJson with the one present in $version
-     */
-    public function updateVersion(VersionJson $versionJson,$version){
-        $versionJson->json = json_encode($version);
+    public function updateVersion(VersionJson $versionJson, $version)
+    {
+        $versionJson->json = json_encode(['medal_r_json' => $version['medal_r_json']]);
         $versionJson->save();
     }
 
-    /**
-     * adds a new row in the version_jsons table with the json from $version assigned to the health facility $healthFacility
-     */
-    public function addVersion(HealthFacility $healthFacility,$version){
+    public function updateVersionEmergencyContent(VersionJson $versionJson, $emergencyContent)
+    {
+        $versionJson->emergency_content = json_encode($emergencyContent);
+        $versionJson->emergency_content_version = $emergencyContent["emergency_content_version"];
+        $versionJson->save();
+    }
+
+    public function addVersionEmergencyContent(HealthFacility $healthFacility, $emergencyContent)
+    {
+        $versionJson = new VersionJson();
+        $versionJson->emergency_content = json_encode($emergencyContent);
+        $versionJson->emergency_content_version = $emergencyContent["emergency_content_version"];
+        $versionJson->save();
+        $healthFacility->version_json_id = $versionJson->id;
+        $healthFacility->save();
+    }
+
+    public function addVersion(HealthFacility $healthFacility, $version)
+    {
         $versionJson = new VersionJson();
         $versionJson->health_facility_id = $healthFacility->id;
-        $versionJson->json = json_encode($version);
+        $versionJson->json = json_encode(['medal_r_json' => $version['medal_r_json']]);
         $versionJson->save();
         $healthFacility->version_json_id = $versionJson->id;
         $healthFacility->save();
@@ -88,66 +121,88 @@ class AlgorithmService {
     /**
      * Returns the list of previously used versions for the given $healthFacility
      */
-    public function getArchivedAccesses(HealthFacility $healthFacility){
-        return HealthFacilityAccess::where('health_facility_id',$healthFacility->id)->
-                                     where('access',false)->get();
+    public function getArchivedAccesses(HealthFacility $healthFacility)
+    {
+        return HealthFacilityAccess::where('health_facility_id', $healthFacility->id)->
+            where('access', false)->get();
     }
 
     /**
      * Returns the version currently used by the health facility $healthFacility
      */
-    public function getCurrentAccess(HealthFacility $healthFacility){
-        return HealthFacilityAccess::where('health_facility_id',$healthFacility->id)->
-                                     where('access',true)->first();
-    }
-    /**
-     * Updates the list of versions used for $healthFacility with the new version stored in $version
-     */
-    private function updateAccesses(HealthFacility $healthFacility,$version){
-        $access = HealthFacilityAccess::where('health_facility_id',$healthFacility->id)->
-                                        where('access',true)->
-                                        first();
-        if ($access != null){
-            $this->archiveAccess($access);
-        }
-        $this->newAccess($healthFacility,$version);
+    public function getCurrentAccess(HealthFacility $healthFacility)
+    {
+        return HealthFacilityAccess::where('health_facility_id', $healthFacility->id)->
+            where('access', true)->first();
     }
 
-    /**
-     * Creates a new version entry in the accesses table for the $healthFacility
-     */
-    private function newAccess(HealthFacility $healthFacility,$version){
+    public function updateHealthFacilityAccessJsonVersion(HealthFacilityAccess $facilityAccess, $json_version)
+    {
+        $facilityAccess->medal_r_json_version = $json_version;
+        $facilityAccess->save();
+    }
+
+    private function updateAccesses(HealthFacility $healthFacility, $chosenAlgorithmID, $version)
+    {
+        $access = HealthFacilityAccess::where('health_facility_id', $healthFacility->id)->
+            where('access', true)->
+            first();
+        if ($access != null) {
+            $this->archiveAccess($access);
+        }
+        $this->newAccess($healthFacility, $chosenAlgorithmID, $version);
+    }
+
+    private function newAccess(HealthFacility $healthFacility, $chosenAlgorithmID, $version)
+    {
         $access = new HealthFacilityAccess();
         $access->access = true;
         $access->creator_version_id = $version['id'];
         $access->version_name = $version['name'];
         $access->medal_r_json_version = $version['medal_r_json_version'];
+        $access->is_arm_control = $version['is_arm_control'];
         $access->health_facility_id = $healthFacility->id;
+        $access->medal_c_algorithm_id = $chosenAlgorithmID;
         $access->save();
     }
 
-    /**
-     * Sets the version $access to archived by updating the access flag and setting 
-     * the timestamp for the end date to the current datetime
-     */
-    private function archiveAccess(HealthFacilityAccess $access){
-        $access->access= false;
+    private function archiveAccess(HealthFacilityAccess $access)
+    {
+        $access->access = false;
         $access->end_date = now();
         $access->save();
     }
 
-    /**
-     * Returns the JSON of the algorithm version assigned to the given device $device
-     */
-    public function getAlgorithmJsonForDevice(Device $device){
-        $healthFacility = HealthFacility::where('id',$device->health_facility_id)->first();
-        if ($healthFacility == null){
+    public function getAlgorithmJsonForDevice(Device $device)
+    {
+        $healthFacility = HealthFacility::where('id', $device->health_facility_id)->first();
+        if ($healthFacility == null) {
             throw new Exception("Device is not assigned to any Health Facility");
-        } 
-        if ($healthFacility->version_json == null){
+        }
+        if ($healthFacility->versionJson == null) {
             throw new Exception("No Version is assigned to the associated Health Facility");
         }
-        return json_decode($healthFacility->version_json->json);
+        $jsonVersion = $healthFacility->HealthFacilityAccess->medal_r_json_version;
+        return [
+            "algo" => json_decode($healthFacility->versionJson->json),
+            "json_version" => $jsonVersion,
+        ];
     }
-    
+
+    public function getAlgorithmEmergencyContentJsonForDevice(Device $device)
+    {
+        $healthFacility = HealthFacility::where('id', $device->health_facility_id)->first();
+        if ($healthFacility == null) {
+            throw new Exception("Device is not assigned to any Health Facility");
+        }
+        if ($healthFacility->versionJson == null) {
+            throw new Exception("No Version is assigned to the associated Health Facility");
+        }
+        $jsonVersion = $healthFacility->versionJson->emergency_content_version;
+        return [
+            "emergency_content" => json_decode($healthFacility->versionJson->emergency_content),
+            "json_version" => $jsonVersion,
+        ];
+    }
+
 }

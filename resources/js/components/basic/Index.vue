@@ -8,12 +8,12 @@
             </tr>
         </thead>
         <tr v-for="object in data" :key="object.id">
-            <th v-for="column in columns" 
+            <th v-for="column in columns"
                                          :key="column.keyword">{{object[column.keyword]}}</th>
             <th v-if="actions.length > 0">
                 <div class="btn-group btn-group-sm" role="group">
                 <action-button v-for="action in actions" :key="action.event"
-                               :title="action.label" 
+                               :title="action.label"
                                @clicked="fireAction(object.id,action.event)"
                                :classTitle="colorToClass(action.color)"></action-button>
                 </div>
@@ -21,7 +21,7 @@
         </tr>
     </table>
 </table>
-    
+
 </template>
 
 <script>
