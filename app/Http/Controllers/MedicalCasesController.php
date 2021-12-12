@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use DB;
 use Carbon\Carbon;
+use App\Jobs\RemoveFollowUp;
 
 class MedicalCasesController extends Controller
 {
@@ -315,11 +316,12 @@ class MedicalCasesController extends Controller
     $validated = $request->validate([
         'medicalc_id' => 'required',
     ]);
-    $medical_case= new MedicalCase();
-    $message=$medical_case->removeFollowUp((int)$request->input('medicalc_id'));
+    $medicalCase = MedicalCase::find((int)$request->input('medicalc_id'));
+    // $message=$medical_case->removeFollowUp((int)$request->input('medicalc_id'));
+    dispatch(new RemoveFollowUp($medicalCase));
     return redirect()->action(
         'MedicalCasesController@findDuplicates'
-    )->with('status', $message);
+    )->with('status', "Follow Up for '{$medicalCase->local_medical_case_id}' is Queued for removal in redcap");
   }
 
   /**

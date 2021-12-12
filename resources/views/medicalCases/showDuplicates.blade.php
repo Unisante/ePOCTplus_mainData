@@ -65,7 +65,8 @@
                   <th scope="col">Consultation Date</th>
                   {{-- <th scope="col">caregiver Phone</th> --}}
                   {{-- <th scope="col">Refer Followup consultation</th> --}}
-                  <th scope="col">Actions</th>
+                  <th scope="col">Mark</th>
+                  <th scope="col">Flag</th>
                 </thead>
                 <tbody>
                   @foreach($catchEachDuplicate as $relativeDuplicates)
@@ -81,6 +82,8 @@
                       {{-- <td>Not yet done</td> --}}
                       <td>
                         <input type="checkbox" class="messageCheckbox" value="{{$duplicate->id}}">
+                        </td>
+                        <td>
                         <a  class="btn btn-outline-primary" data-toggle="modal" data-target="#markRow" onclick="takeCaseId({{$duplicate->id}})">Mark Duplicate</a>
                       </td>
                       {{-- <td>
