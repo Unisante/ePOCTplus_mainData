@@ -35,7 +35,7 @@ class PatientsController extends Controller
       'facility'
     ])->orderBy('created_at')->get();
     $patients->each(function($patient){
-      $patient->facility_name = 
+      $patient->facility_name =
         ($patient->facility && $patient->facility->name)
         ? $patient->facility->name
         : '';
@@ -83,7 +83,7 @@ class PatientsController extends Controller
     // dd($duplicateArray);
     $duplicateArray=$patient->findByDuplicateKey($duplicateArray);
     $duplicateArray=$patient->checkForPairs($duplicateArray);
-    $duplicateArray = $this->hideDuplicateArray($duplicateArray);
+    // $duplicateArray = $this->hideDuplicateArray($duplicateArray);
     return view('patients.showDuplicates')->with("catchEachDuplicate",$duplicateArray);
   }
 
@@ -378,4 +378,11 @@ class PatientsController extends Controller
     }
     return $casesNotToUpdate;
   }
+
+  // public function hideDuplicateArray($duplicateArray){
+  //   // dd($duplicateArray);
+  //   foreach($duplicateArray as $duplicateGroup){
+  //     dd($duplicateGroup);
+  //   }
+  // }
 }

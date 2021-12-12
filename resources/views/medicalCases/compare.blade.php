@@ -30,7 +30,7 @@
                     <div class="question card">
                       <span><strong>Question</strong>: {{$case['question_label']}}</span>
                       <div class="dropdown-divider"></div>
-                      <span><strong>Stage</strong>: {{$case['question_stage']}}</span>
+                      {{-- <span><strong>Stage</strong>: {{$case['question_stage']}}</span> --}}
                     </div>
                   </div>
                 </div>
