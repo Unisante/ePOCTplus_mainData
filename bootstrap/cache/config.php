@@ -883,7 +883,7 @@
   ),
   'database' => 
   array (
-    'default' => 'postgres',
+    'default' => 'postgres-local',
     'connections' => 
     array (
       'sqlite' => 
@@ -1677,7 +1677,7 @@
     ),
     'failed' => 
     array (
-      'database' => 'postgres',
+      'database' => 'postgres-local',
       'table' => 'failed_jobs',
     ),
   ),
@@ -1976,7 +1976,7 @@
     array (
       'database' => 
       array (
-        'connection' => 'postgres',
+        'connection' => 'postgres-local',
       ),
     ),
   ),

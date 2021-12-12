@@ -68,7 +68,7 @@ class MedicalCase extends Model implements Auditable
   public function removeFollowUp($id){
     $case= $this->find($id);
     $project = new RedCapProject(Config::get('redcap.identifiers.api_url_followup'), Config::get('redcap.identifiers.api_token_followup'));
-    $case_id=(array)"0534c96a-b60c-44ea-b8de-380082cf3cef";
+    $case_id=(array)$case->local_medical_case_id;
     try {
         $project->deleteRecords($case_id);
         $message= "Case Id '{$case_id[0]}' Has been removed from Redcap Folloup";
