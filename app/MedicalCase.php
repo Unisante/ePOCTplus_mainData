@@ -11,6 +11,10 @@ use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Support\Collection;
 use Schema;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
+use IU\PHPCap\RedCapProject;
+use App\Exceptions\RedCapApiServiceException;
+use IU\PHPCap\PhpCapException;
 // use Illuminate\Support\Collection;
 
 /**
@@ -61,52 +65,21 @@ class MedicalCase extends Model implements Auditable
     return $answers_answered;
   }
 
-  public function formatQuestions($case_answers,$common_case_answers){
-    // $common_case_answers=[];
-    $is_empty=empty($common_case_answers);
-    collect($case_answers)->each(function($case_answer)use (&$common_case_answers, &$is_empty){
-      // find the node
-      $question=$case_answer->node->label;
-      $common_case_answers[$case_answer->node_id]=["question"=>$question];
-
-      if($is_empty){
-        $case_answer->answer?
-        $common_case_answers[$case_answer->node_id]=["case_one"=>$case_answer->answer->label,]:
-        $common_case_answers[$case_answer->node_id]=["case_one"=>$case_answer->value,];
-      }else{
-        $case_answer->answer?
-        $common_case_answers[$case_answer->node_id]=["case_two"=>$case_answer->answer->label,]:
-        $common_case_answers[$case_answer->node_id]=["case_two"=>$case_answer->value,];
-      }
-    });
-    // dd($common_case_answers);
-    // dd("we are in the comparison");
-    return $common_case_answers;
+  public function removeFollowUp($id){
+    $case= $this->find($id);
+    $project = new RedCapProject(Config::get('redcap.identifiers.api_url_followup'), Config::get('redcap.identifiers.api_token_followup'));
+    $case_id=(array)"0534c96a-b60c-44ea-b8de-380082cf3cef";
+    try {
+        $project->deleteRecords($case_id);
+        $message= "Case Id '{$case_id[0]}' Has been removed from Redcap Folloup";
+    } catch (PhpCapException $e) {
+        // return  new RedCapApiServiceException("Failed to remove Record : '{$case->local_medical_case_id}'", 0, $e);
+        $message= "Case Id '{$case_id[0]}' Has Not been removed from Redcap Folloup, May be its not in redcap Or Network Issues";
+    }
+    $case->duplicate=1;
+    $case->save();
+    return $message;
   }
-  // public function listFacilities(){
-  //   $cases=self::all();
-  //   $facility_id_arr=[];
-  //   dd($cases->load("patient"));
-  //   // $facility_id_arr=$cases->each(function($case)use($facility_id_arr){
-  //   //   // dd($facility_id_arr);
-  //   //   $facility_id=$case->patient->facility->group_id;
-  //   //   if ( ! in_array($facility_id,$facility_id_arr)){
-  //   //     array_push($facility_id_arr,$facility_id);
-  //   //     return $facility_id;
-  //   //   }
-
-  //   //   // return null;
-  //   // });
-  //   dd($facility_id_arr);
-  //   dd(self::all());
-  //   $caseFollowUpCollection=new Collection();
-  //   foreach(MedicalCase::where('redcap',true)->get() as $medicalcase){
-  //     $followUp=MedicalCase::makeFollowUp($medicalcase);
-  //       // find the patient related to this followup
-  //     $caseFollowUpCollection->add($followUp);
-  //   }
-  //   return $caseFollowUpCollection;
-  // }
 
   /**
   * making a relationship to patient

@@ -22,6 +22,12 @@
         </span>
       </div>
     </div>
+    <div class="card-header ">
+        <div class="d-flex justify-content-between">
+          <span class="font-weight-bold text-white">Medical Case Id: </span>
+          <span class="border-bottom text-white">{{$first_medical_case->local_medical_case_id}}</span>
+        </div>
+      </div>
   </div>
 </div>
 @else

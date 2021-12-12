@@ -59,9 +59,10 @@ Route::group(['middleware' => ['auth', '2fa']], function () {
     Route::get('/medicalcases/duplicates', 'MedicalCasesController@findDuplicates');
     Route::post('/medicalCases/duplicates/search', 'MedicalCasesController@searchDuplicates')->name('MedicalCasesController@searchDuplicates');
     Route::post('/medicalCases/duplicates/delete', 'MedicalCasesController@destroy')->name('MedicalCasesController@destroy');
+    Route::post('/medicalCases/remove_follow_up', 'MedicalCasesController@deduplicate_redcap')->name('MedicalCasesController@deduplicate_redcap');
     Route::get('/followUp/delayed', 'MedicalCasesController@followUpDelayed');
     Route::get('/followUp', 'MedicalCasesController@showFacilities');
-    Route::get('/followUp/show/{id}', 'MedicalCasesController@showFacility')->name('MedicalCasesController.showFacility');;
+    Route::get('/followUp/show/{id}', 'MedicalCasesController@showFacility')->name('MedicalCasesController.showFacility');
     //for questions
     Route::get('/questions', 'QuestionsController@index')->name('QuestionsController.index');
     Route::get('/question/{id}', 'QuestionsController@show')->name('QuestionsController@show');

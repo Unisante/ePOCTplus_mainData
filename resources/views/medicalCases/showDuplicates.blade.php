@@ -17,22 +17,22 @@
           @endif
           <div class="row justify-content-center">
             @include('layouts.compareModal')
-            <div class="modal" tabindex="-1" id="deleteRow" role="dialog">
+            <div class="modal" tabindex="-1" id="markRow" role="dialog">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title">Delete Row</h5>
+                    <h5 class="modal-title">Mark Medical Case</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
                   <div class="modal-body">
-                    <p id="display">You want to delete MedicalCase id <span id="setId1"></span> ?</p>
+                    <p id="display">You want to mark this MedicalCase?.This will inturn remove its follow up from Redcap  </p>
                   </div>
                   <div class="modal-footer">
-                    <form action="{{route('MedicalCasesController@destroy')}}" method="POST">
+                    <form action="{{route('MedicalCasesController@deduplicate_redcap')}}" method="POST">
                       @csrf
-                      <input id="medicalc_id" type="text" name="medicalc_id"  hidden>
+                      <input id="medicalcase_id" type="text" name="medicalc_id"  hidden>
                       <button type="submit" class="btn btn-primary" >Save changes</button>
                     </form>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -81,7 +81,7 @@
                       {{-- <td>Not yet done</td> --}}
                       <td>
                         <input type="checkbox" class="messageCheckbox" value="{{$duplicate->id}}">
-                        <a  class="btn btn-outline-primary" >Mark Duplicate</a>
+                        <a  class="btn btn-outline-primary" data-toggle="modal" data-target="#markRow" onclick="takeCaseId({{$duplicate->id}})">Mark Duplicate</a>
                       </td>
                       {{-- <td>
                         <input type="checkbox" class="messageCheckbox" value="{{$duplicate->id}}">

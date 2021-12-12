@@ -109,64 +109,71 @@
       array (
         'text' => 'Health Facilities',
         'url' => '/health-facilities',
-        'icon' => 'fas fa-fw fa-hospital',
+        'icon' => 'fas fa-fw fa-cart-plus',
         'can' => 'Manage_Health_Facilities',
       ),
       4 => 
       array (
         'text' => 'Devices',
         'url' => '/devices',
-        'icon' => 'fas fa-fw fa-tablet',
+        'icon' => 'fas fa-fw fa-tablet-alt',
         'can' => 'Manage_Devices',
       ),
       5 => 
+      array (
+        'text' => 'Medical staff',
+        'url' => '/medical-staff',
+        'icon' => 'fas fa-fw fa-users',
+        'can' => 'Manage_Medical_Staff',
+      ),
+      6 => 
       array (
         'text' => 'Patient list',
         'url' => '/patients',
         'icon' => 'fas fa-fw fa-list',
         'can' => 'View_Patient',
       ),
-      6 => 
+      7 => 
       array (
         'text' => 'Medical Cases',
         'url' => '/medicalcases',
         'icon' => 'fas fa-fw fa-file',
         'can' => 'View_Case',
       ),
-      7 => 
+      8 => 
       array (
         'text' => 'Diagnosis List',
         'url' => '/exports/diagnosis_list',
         'can' => 'Export',
       ),
-      8 => 
+      9 => 
       array (
         'text' => 'Drug List',
         'url' => '/exports/drug_list',
         'can' => 'Export',
       ),
-      9 => 
+      10 => 
       array (
         'text' => 'Exports',
         'icon' => 'fas fa-fw fa-clone',
         'can' => 'Export',
         'url' => '/exports/exportZip',
       ),
-      10 => 
+      11 => 
       array (
         'text' => 'profile',
         'url' => '/user/profile',
         'icon' => 'fas fa-fw fa-user',
         'can' => 'Reset_Own_Password',
       ),
-      11 => 
+      12 => 
       array (
         'text' => 'change_password',
         'url' => '/user/password',
         'icon' => 'fas fa-fw fa-lock',
         'can' => 'Reset_Own_Password',
       ),
-      12 => 
+      13 => 
       array (
         'text' => 'Admin Corner',
         'icon' => 'fas fa-fw fa-cog',
@@ -294,29 +301,6 @@
         ),
       ),
     ),
-    'iframe' => 
-    array (
-      'default_tab' => 
-      array (
-        'url' => NULL,
-        'title' => NULL,
-      ),
-      'buttons' => 
-      array (
-        'close' => true,
-        'close_all' => true,
-        'close_all_other' => true,
-        'scroll_left' => true,
-        'scroll_right' => true,
-        'fullscreen' => true,
-      ),
-      'options' => 
-      array (
-        'loading_screen' => 1000,
-        'auto_show_new_tab' => true,
-        'use_navbar_items' => true,
-      ),
-    ),
     'livewire' => false,
   ),
   'app' => 
@@ -332,6 +316,7 @@
     'faker_locale' => 'en_US',
     'key' => 'base64:w+P1wsLjhuN5+ONbi8TyA6hRRXUejo/KQZjlWvpHUVQ=',
     'cipher' => 'AES-256-CBC',
+    'study_id' => 'TIMCI Tanzania',
     'providers' => 
     array (
       0 => 'Illuminate\\Auth\\AuthServiceProvider',
@@ -361,12 +346,13 @@
       24 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
       25 => 'Madnest\\Madzipper\\MadzipperServiceProvider',
       26 => 'Intervention\\Image\\ImageServiceProvider',
-      27 => 'PragmaRX\\Google2FALaravel\\ServiceProvider',
-      28 => 'App\\Providers\\AppServiceProvider',
-      29 => 'App\\Providers\\AuthServiceProvider',
-      30 => 'App\\Providers\\EventServiceProvider',
-      31 => 'OwenIt\\Auditing\\AuditingServiceProvider',
-      32 => 'App\\Providers\\RouteServiceProvider',
+      27 => 'Barryvdh\\DomPDF\\ServiceProvider',
+      28 => 'PragmaRX\\Google2FALaravel\\ServiceProvider',
+      29 => 'App\\Providers\\AppServiceProvider',
+      30 => 'App\\Providers\\AuthServiceProvider',
+      31 => 'App\\Providers\\EventServiceProvider',
+      32 => 'OwenIt\\Auditing\\AuditingServiceProvider',
+      33 => 'App\\Providers\\RouteServiceProvider',
     ),
     'aliases' => 
     array (
@@ -407,6 +393,7 @@
       'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
       'Madzipper' => 'Madnest\\Madzipper\\Madzipper',
       'Image' => 'Intervention\\Image\\Facades\\Image',
+      'PDF' => 'Barryvdh\\DomPDF\\Facade',
       'Google2FA' => 'PragmaRX\\Google2FALaravel\\Facade',
     ),
   ),
@@ -922,6 +909,20 @@
         'strict' => true,
         'engine' => NULL,
       ),
+      'postgres-local' => 
+      array (
+        'driver' => 'pgsql',
+        'host' => '127.0.0.1',
+        'port' => '5432',
+        'database' => 'liwi_main_data',
+        'username' => 'dynamic',
+        'password' => 'dynamo123',
+        'charset' => 'utf8',
+        'prefix' => '',
+        'prefix_indexes' => true,
+        'schema' => 'public',
+        'sslmode' => 'prefer',
+      ),
       'postgres' => 
       array (
         'driver' => 'pgsql',
@@ -1116,7 +1117,7 @@
   array (
     'driver' => 'smtp',
     'host' => 'smtp.gmail.com',
-    'port' => '465',
+    'port' => '587',
     'from' => 
     array (
       'address' => 'timciifakara@gmail.com',
@@ -1153,6 +1154,7 @@
       'health_facility_endpoint' => '/api/v1/health_facilities',
       'medal_data_config_endpoint' => '/api/v1/versions/medal_data_config?version_id=',
       'versions_endpoint' => '/api/v1/versions',
+      'get_from_study' => '/api/v1/health_facilities/get_from_study?study_label=',
       'study_id' => 'TIMCI Tanzania',
       'language' => 'en',
     ),
@@ -1196,7 +1198,22 @@
         array (
           'step' => 'step',
           'clinician' => 'clinician',
-          'mac_address' => 'mac_address',
+          'mac_address' => 
+          array (
+            'key' => 'mac_address',
+            'modifiers' => 
+            array (
+              0 => 'optional',
+            ),
+          ),
+          'device_id' => 
+          array (
+            'key' => 'device_id',
+            'modifiers' => 
+            array (
+              0 => 'optional',
+            ),
+          ),
         ),
       ),
       'version' => 
@@ -1554,6 +1571,21 @@
       ),
     ),
   ),
+  'medal-data' => 
+  array (
+    'urls' => 
+    array (
+      'creator_algorithm_url' => 'https://medalc.unisante.ch/api/v1/versions/',
+      'creator_health_facility_url' => 'https://medalc.unisante.ch/api/v1/health_facilities/',
+      'creator_patient_url' => 'https://medalc.unisante.ch/api/v1/versions/medal_data_config',
+    ),
+    'global' => 
+    array (
+      'study_id' => 'TIMCI Tanzania',
+      'language' => 'en',
+      'ip' => NULL,
+    ),
+  ),
   'permission' => 
   array (
     'models' => 
@@ -1653,8 +1685,8 @@
   array (
     'identifiers' => 
     array (
-      'api_url_followup' => 'https://redcap.ihi.or.tz/api/',
-      'api_token_followup' => 'D9B380589E1277EA1DF0C59158016B3C',
+      'api_url_followup' => 'https://redcapdynamic.ihi.or.tz/api/',
+      'api_token_followup' => '4E69760119012EFD1B9FBC704CDFBCE2',
       'api_url_patient' => 'https://redcap.ihi.or.tz/api/',
       'api_token_patient' => '91D6C0EB77CC58FC26184EFFD7146CEC',
       'api_url_medical_case' => '',
@@ -1906,6 +1938,29 @@
     'route_domain' => NULL,
     'theme' => 'auto',
     'debug_backtrace_limit' => 50,
+  ),
+  'dompdf' => 
+  array (
+    'show_warnings' => false,
+    'orientation' => 'portrait',
+    'defines' => 
+    array (
+      'font_dir' => 'D:\\Ifakara Health Institute\\DYNAMIC\\liwi-main-data\\storage\\fonts/',
+      'font_cache' => 'D:\\Ifakara Health Institute\\DYNAMIC\\liwi-main-data\\storage\\fonts/',
+      'temp_dir' => 'C:\\Users\\imtebene\\AppData\\Local\\Temp',
+      'chroot' => 'D:\\Ifakara Health Institute\\DYNAMIC\\liwi-main-data',
+      'enable_font_subsetting' => false,
+      'pdf_backend' => 'CPDF',
+      'default_media_type' => 'screen',
+      'default_paper_size' => 'a4',
+      'default_font' => 'serif',
+      'dpi' => 96,
+      'enable_php' => false,
+      'enable_javascript' => true,
+      'enable_remote' => true,
+      'font_height_ratio' => 1.1,
+      'enable_html5_parser' => false,
+    ),
   ),
   'passport' => 
   array (
