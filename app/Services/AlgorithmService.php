@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Algorithm;
 use App\Device;
 use App\HealthFacility;
 use App\HealthFacilityAccess;
+use App\Jobs\MakeHttpRequest;
 use App\Services\Http;
 use App\VersionJson;
 use Exception;
@@ -36,36 +36,10 @@ class AlgorithmService
 
     public function assignVersionToHealthFacility(HealthFacility $healthFacility, $chosenAlgorithmID, $versionID)
     {
-        /*
-         * Récupération de l'algorithm
-         *  - envoi du json_version pour optenir la dernier version.
-         *  - Si on est à jours on reçoit un 204 si non un 200 avec le json
-         *  - Si on a pas d'algorithm en DB alors on passe -1 pour obtenir la dernier version
-         */
-        $url = Config::get('medal.creator.url') . Config::get('medal.creator.versions_endpoint') .
-            "/" . $versionID;
-        $version = Http::get($url, ["json_version" => $healthFacility->medal_r_json_version ?? -1]);
-        $version = json_decode($version['content'], true);
-
-        /*
-         * Récupération du emergency content lié à l'algorithm
-         *  - envoi du emergency_content_version pour optenir la dernier version.
-         *  - Si on est à jours on reçoit un 204 si non un 200 avec le json
-         *  - Si on a pas de emergency_content en DB alors on passe -1 pour obtenir la dernier version
-         */
-        $urlAlgorithm = Config::get('medal.creator.url') . Config::get('medal.creator.algorithms_endpoint') .
-            "/" . $chosenAlgorithmID . "/emergency_content";
-        $versionJson = VersionJson::where('health_facility_id', $healthFacility->id)->first();
-        $emergencyContent = Http::post($urlAlgorithm, [],
-            ["emergency_content_version" => -1]);
-        $emergencyContent = json_decode($emergencyContent['content'], true);
-
-        $this->assignVersion($healthFacility, $version);
-        $this->assignEmergencyContent($healthFacility, $emergencyContent);
-        $this->updateAccesses($healthFacility, $chosenAlgorithmID, $version);
+        MakeHttpRequest::dispatch($healthFacility, $chosenAlgorithmID, $versionID);
     }
 
-    private function assignVersion(HealthFacility $healthFacility, $version)
+    public function assignVersion(HealthFacility $healthFacility, $version)
     {
         $versionJson = VersionJson::where('health_facility_id', $healthFacility->id)->first();
         if ($versionJson == null) {
@@ -75,7 +49,7 @@ class AlgorithmService
         }
     }
 
-    private function assignEmergencyContent(HealthFacility $healthFacility, $emergencyContent)
+    public function assignEmergencyContent(HealthFacility $healthFacility, $emergencyContent)
     {
         $versionJson = VersionJson::where('health_facility_id', $healthFacility->id)->first();
         if ($versionJson == null) {
@@ -142,7 +116,7 @@ class AlgorithmService
         $facilityAccess->save();
     }
 
-    private function updateAccesses(HealthFacility $healthFacility, $chosenAlgorithmID, $version)
+    public function updateAccesses(HealthFacility $healthFacility, $chosenAlgorithmID, $version)
     {
         $access = HealthFacilityAccess::where('health_facility_id', $healthFacility->id)->
             where('access', true)->
