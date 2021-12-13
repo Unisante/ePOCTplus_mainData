@@ -115,7 +115,7 @@ export default {
             details: [
                 {
                     label : "Id",
-                    keyword: "id",
+                    keyword: "group_id",
                     type: "text",
                 },
                 {
