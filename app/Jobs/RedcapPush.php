@@ -51,7 +51,7 @@ class RedcapPush implements ShouldQueue
         //   }
         // });
 
-        MedicalCase::where('redcap', false)->where('duplicate',false)->get()->each(function ($medicalcase) use (&$caseFollowUpArray) {
+        MedicalCase::where('redcap', false)->where('duplicate', false)->get()->each(function ($medicalcase) use (&$caseFollowUpArray) {
             $followUp = MedicalCase::makeFollowUp($medicalcase);
             //if($followUp != null){
             $caseFollowUpArray[] = $followUp;
@@ -206,7 +206,7 @@ class RedcapPush implements ShouldQueue
             curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data, '', '&'));
             $output = curl_exec($ch);
-            Log::debug('output', ['output' => $output]);
+            Log::info('output', ['output' => $output]);
             curl_close($ch);
             return json_decode($output);
         }

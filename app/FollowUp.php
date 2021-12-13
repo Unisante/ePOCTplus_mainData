@@ -4,7 +4,6 @@ namespace App;
 use App\Node;
 use App\Patient;
 use App\PatientConfig;
-use Illuminate\Support\Facades\Log;
 
 class FollowUp
 {
@@ -216,13 +215,10 @@ class FollowUp
 
     private function findCaseAnswer($medal_c_id)
     {
-        Log::debug("medal_c_id" . $medal_c_id);
         $node = Node::where('medal_c_id', $medal_c_id)->first();
         if ($node == null) {
             return null;
         }
-        Log::debug("node" . $node);
-        Log::debug("return" . $this->case->medical_case_answers()->where('node_id', $node->id)->first());
         return $this->case->medical_case_answers()->where('node_id', $node->id)->first();
     }
 
