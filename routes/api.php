@@ -43,7 +43,7 @@ Route::middleware(['auth:api', 'device.resolve'])->prefix('/v1')->group(function
         }
 
         ProcessUploadZip::dispatch($path);
-        return response('Zip file received', 200);
+        return response('Zip file received', 400);
     });
 });
 
