@@ -57,6 +57,7 @@ class DrugLoader extends ModelLoader
     }
 
     /**
+     *
      * Create a Drug instance based on the data that was provided
      *
      * @return Drug

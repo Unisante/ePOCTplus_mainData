@@ -129,7 +129,7 @@ abstract class ExportCsv extends ExportService
         $this->to_date = $to_date;
         $this->chunk_key = $chunk_key;
 
-        parent::__construct($this->getFilteredMedicalCases($medical_cases));
+        // parent::__construct($this->getFilteredMedicalCases($medical_cases));
     }
 
     /**
