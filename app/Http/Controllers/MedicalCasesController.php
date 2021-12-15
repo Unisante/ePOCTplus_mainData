@@ -291,7 +291,9 @@ class MedicalCasesController extends Controller
   public function findDuplicates()
   {
     // rethink the mindset,cupture all medical cases withing the last 20 days and make the filter
-    $medicalCases=MedicalCase::all()->filter(function($case){
+    // 'id','local_medical_case_id','
+    dd(MedicalCase::where('duplicate',false)->get(['id','local_medical_case_id','patient_id','consultation_date']));
+    $medicalCases=MedicalCase::where('duplicate',false)->get()->filter(function($case){
         $case->comparison_date=Carbon::createFromFormat('Y-m-d H:i:s', $case->consultation_date)->format('Y-m-d');
         $case->hf = $case->patient->facility->name;
         return Carbon::now()->diffInDays($case->consultation_date) <= 20;
