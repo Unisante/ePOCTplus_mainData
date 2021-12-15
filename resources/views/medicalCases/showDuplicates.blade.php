@@ -63,6 +63,7 @@
                   <th scope="col">local_medical_case_id</th>
                   <th scope="col">local_patient_id</th>
                   <th scope="col">Consultation Date</th>
+                  <th scope="col">HF</th>
                   {{-- <th scope="col">caregiver Phone</th> --}}
                   {{-- <th scope="col">Refer Followup consultation</th> --}}
                   <th scope="col">Mark</th>
@@ -78,6 +79,7 @@
                       <td>{{$duplicate->local_medical_case_id}}</td>
                       <td>{{$duplicate->patient->local_patient_id}}</td>
                       <td>{{$duplicate->consultation_date}}</td>
+                      <td>{{$duplicate->hf}}</td>
                       {{-- <td>{{$duplicate->created_at}}</td> --}}
                       {{-- <td>Not yet done</td> --}}
                       <td>
