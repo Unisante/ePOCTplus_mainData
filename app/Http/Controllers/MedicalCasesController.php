@@ -290,26 +290,18 @@ class MedicalCasesController extends Controller
    */
   public function findDuplicates()
   {
-    $duplicate_array=[];
-    $all_patients=Patient::all();
-    $all_patients->each(function($patient) use (&$duplicate_array){
-      if ($patient->medical_cases()->count() > 1 ){
-        $cases=$patient->medical_cases;
-        foreach ($cases as $case){
-          $case->comparison_date=Carbon::createFromFormat('Y-m-d H:i:s', $case->consultation_date)->format('Y-m-d');
-        }
-        $cases->groupBy('comparison_date')->each(function(&$case_group)use (&$duplicate_array){
-        $case_group =$case_group->filter( function($case) {
-            return $case->duplicate==False;
-        });
-          if ($case_group->count() > 1){
-            array_push($duplicate_array,$case_group);
-          }
-        });
-      }
+    // rethink the mindset,cupture all medical cases withing the last 20 days and make the filter
+    $medicalCases=MedicalCase::all()->filter(function($case){
+        $case->comparison_date=Carbon::createFromFormat('Y-m-d H:i:s', $case->consultation_date)->format('Y-m-d');
+        $case->hf = $case->patient->facility->name;
+        return Carbon::now()->diffInDays($case->consultation_date) <= 20;
     });
-
-    return view('medicalCases.showDuplicates')->with("catchEachDuplicate", $duplicate_array);
+    $medicalCases = $medicalCases->groupBy(function ($item, $key) {
+        return $item['comparison_date'].$item['patient_id'];
+    })->filter(function($case_group){
+        return $case_group->count() > 1;
+    });
+    return view('medicalCases.showDuplicates')->with("catchEachDuplicate", $medicalCases);
   }
 
   public function deduplicate_redcap(Request $request){
