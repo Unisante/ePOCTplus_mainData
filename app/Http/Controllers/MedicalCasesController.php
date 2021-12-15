@@ -293,6 +293,7 @@ class MedicalCasesController extends Controller
     // rethink the mindset,cupture all medical cases withing the last 20 days and make the filter
     $medicalCases=MedicalCase::all()->filter(function($case){
         $case->comparison_date=Carbon::createFromFormat('Y-m-d H:i:s', $case->consultation_date)->format('Y-m-d');
+        $case->hf = $case->patient->facility->name;
         return Carbon::now()->diffInDays($case->consultation_date) <= 20;
     });
     $medicalCases = $medicalCases->groupBy(function ($item, $key) {
