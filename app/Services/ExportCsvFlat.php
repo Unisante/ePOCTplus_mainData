@@ -95,10 +95,10 @@ class ExportCsvFlat extends ExportCsv
     protected static function getDeviceData($device)
     {
         return [
-            Config::get('csv.flat.identifiers.device.dyn_device_id') => $device->id,
-            Config::get('csv.flat.identifiers.device.dyn_device_name') => $device->name,
-            Config::get('csv.flat.identifiers.device.dyn_device_health_facility_id') => $device->health_facility_id,
-            Config::get('csv.flat.identifiers.device.dyn_device_last_seen') => $device->last_seen,
+            Config::get('csv.flat.identifiers.device.dyn_device_id') => $device->id ?? '',
+            Config::get('csv.flat.identifiers.device.dyn_device_name') => $device->name ?? '',
+            Config::get('csv.flat.identifiers.device.dyn_device_health_facility_id') => $device->health_facility_id ?? '',
+            Config::get('csv.flat.identifiers.device.dyn_device_last_seen') => $device->last_seen ?? '',
         ];
     }
 
@@ -348,9 +348,7 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function addDeviceData(&$data, $index, $device)
     {
-        if ($device) {
-            $data[$index] = array_merge($data[$index], $this->getDeviceData($device));
-        }
+        $data[$index] = array_merge($data[$index], $this->getDeviceData($device));
 
         if ($this->chunk_key == 1) {
             $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.device')));
