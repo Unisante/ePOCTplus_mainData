@@ -338,6 +338,13 @@ return [
                 'dyn_hfa_area' => 'health_facility_area',
             ],
 
+            'device' => [
+                'dyn_device_id' => 'id',
+                'dyn_device_name' => 'name',
+                'dyn_device_health_facility_id' => 'health_facility_id',
+                'dyn_device_last_seen' => 'last_seen',
+            ],
+
             'version' => [
                 'dyn_ver_id' => 'version_id',
                 'dyn_ver_medal_c_id' => 'version_medal_c_id',
