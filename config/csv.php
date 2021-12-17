@@ -330,6 +330,7 @@ return [
 
             'health_facility' => [
                 'dyn_hfa_id' => 'health_facility_id',
+                'dyn_hfa_group_id' => 'health_facility_group_id',
                 'dyn_hfa_long' => 'health_facility_longitude',
                 'dyn_hfa_lat' => 'health_facility_latitude',
                 'dyn_hfa_hf_mode' => 'health_facility_hf_mode',
@@ -339,10 +340,10 @@ return [
             ],
 
             'device' => [
-                'dyn_device_id' => 'id',
-                'dyn_device_name' => 'name',
-                'dyn_device_health_facility_id' => 'health_facility_id',
-                'dyn_device_last_seen' => 'last_seen',
+                'dyn_device_id' => 'device_id',
+                'dyn_device_name' => 'device_name',
+                'dyn_device_health_facility_id' => 'device_health_facility_id',
+                'dyn_device_last_seen' => 'device_last_seen',
             ],
 
             'version' => [

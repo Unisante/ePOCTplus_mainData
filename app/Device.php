@@ -20,7 +20,8 @@ class Device extends Model
     ];
     protected $guarded = [];
 
-    public function health_facility(){
+    public function health_facility()
+    {
         return $this->belongsTo('App\HealthFacility');
     }
 

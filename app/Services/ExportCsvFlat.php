@@ -82,6 +82,7 @@ class ExportCsvFlat extends ExportCsv
     {
         return [
             Config::get('csv.flat.identifiers.health_facility.dyn_hfa_id') => $health_facility->id,
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_group_id') => $health_facility->group_id,
             Config::get('csv.flat.identifiers.health_facility.dyn_hfa_long') => $health_facility->long,
             Config::get('csv.flat.identifiers.health_facility.dyn_hfa_lat') => $health_facility->lat,
             Config::get('csv.flat.identifiers.health_facility.dyn_hfa_hf_mode') => $health_facility->hf_mode,
@@ -94,10 +95,10 @@ class ExportCsvFlat extends ExportCsv
     protected static function getDeviceData($device)
     {
         return [
-            Config::get('csv.flat.identifiers.health_facility.dyn_device_id') => $device->id,
-            Config::get('csv.flat.identifiers.health_facility.dyn_device_name') => $device->name,
-            Config::get('csv.flat.identifiers.health_facility.dyn_device_health_facility_id') => $device->health_facility_id,
-            Config::get('csv.flat.identifiers.health_facility.dyn_device_last_seen') => $device->last_seen,
+            Config::get('csv.flat.identifiers.device.dyn_device_id') => $device->id,
+            Config::get('csv.flat.identifiers.device.dyn_device_name') => $device->name,
+            Config::get('csv.flat.identifiers.device.dyn_device_health_facility_id') => $device->health_facility_id,
+            Config::get('csv.flat.identifiers.device.dyn_device_last_seen') => $device->last_seen,
         ];
     }
 
@@ -347,7 +348,10 @@ class ExportCsvFlat extends ExportCsv
      */
     protected function addDeviceData(&$data, $index, $device)
     {
-        $data[$index] = array_merge($data[$index], $this->getDeviceData($device));
+        if ($device) {
+            $data[$index] = array_merge($data[$index], $this->getDeviceData($device));
+        }
+
         if ($this->chunk_key == 1) {
             $data[0] = array_merge($data[0], $this->getAttributeList(Config::get('csv.flat.identifiers.device')));
         }
@@ -690,12 +694,13 @@ class ExportCsvFlat extends ExportCsv
             $this->addPatientData($data, $index, $patient, $medical_case->consultation_date);
 
             $health_facility = $medical_case->patient->facility;
+
             // get health facility
             $this->addHealthFacilityData($data, $index, $health_facility);
 
-            $device = $health_facility->device;
+            $device = $health_facility->devices;
             // get device
-            $this->addDeviceData($data, $index, $device);
+            $this->addDeviceData($data, $index, $device->first());
 
             $version = $medical_case->version;
             // get version data
