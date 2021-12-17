@@ -98,6 +98,7 @@ class ExportCsvFlat extends ExportCsv
             Config::get('csv.flat.identifiers.device.dyn_device_id') => $device->id ?? '',
             Config::get('csv.flat.identifiers.device.dyn_device_name') => $device->name ?? '',
             Config::get('csv.flat.identifiers.device.dyn_device_health_facility_id') => $device->health_facility_id ?? '',
+            Config::get('csv.flat.identifiers.device.dyn_device_mac_address') => $device->mac_address ?? '',
             Config::get('csv.flat.identifiers.device.dyn_device_last_seen') => $device->last_seen ?? '',
         ];
     }

@@ -343,6 +343,7 @@ return [
                 'dyn_device_id' => 'device_id',
                 'dyn_device_name' => 'device_name',
                 'dyn_device_health_facility_id' => 'device_health_facility_id',
+                'dyn_device_mac_address' => 'device_mac_address',
                 'dyn_device_last_seen' => 'device_last_seen',
             ],
 
