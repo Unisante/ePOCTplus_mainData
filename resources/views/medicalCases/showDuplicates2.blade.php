@@ -70,32 +70,8 @@
                   <th scope="col">Flag</th>
                 </thead>
                 <tbody>
-                  @foreach($catchEachDuplicate as $relativeDuplicates)
-                  <tr class="table-secondary"><td>For The {{ $loop->index + 1 }}'s Duplicate<td></tr>
-                    @foreach($relativeDuplicates as $duplicate)
-                    <tr>
-                      <th scope="row">{{ $loop->index + 1 }}</th>
-                      {{-- <td>{{$duplicate->id}}</td> --}}
-                      <td>{{$duplicate->local_medical_case_id}}</td>
-                      <td>{{$duplicate->patient->local_patient_id}}</td>
-                      <td>{{$duplicate->consultation_date}}</td>
-                      <td>{{$duplicate->hf}}</td>
-                      {{-- <td>{{$duplicate->created_at}}</td> --}}
-                      {{-- <td>Not yet done</td> --}}
-                      <td>
-                        <input type="checkbox" class="messageCheckbox" value="{{$duplicate->id}}">
-                        </td>
-                        <td>
-                        <a  class="btn btn-outline-primary" data-toggle="modal" data-target="#markRow" onclick="takeCaseId({{$duplicate->id}})">Mark Duplicate</a>
-                      </td>
-                      {{-- <td>
-                        <input type="checkbox" class="messageCheckbox" value="{{$duplicate->id}}">
-                        <a  class="btn btn-outline-dark" data-toggle="modal" data-target="#deleteRow" onclick="takeId({{$duplicate->id}})">Drop This Row</a>
-                      </td> --}}
-                    </tr>
-                    @endforeach
-                    @endforeach
-                  </tbody>
+                    
+                </tbody>
                 </table>
                 @else
                 <h2>There are no Duplicates</h2>

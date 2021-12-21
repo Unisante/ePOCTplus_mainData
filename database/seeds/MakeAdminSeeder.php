@@ -13,7 +13,7 @@ class MakeAdminSeeder extends Seeder
     public function run()
     {
       $username='MainData';
-      $email='pmtebene2@gmail.com';
+      $email='admin@maindata.com';
       $password ='Dynamic123';
       $role = 'Administrator';
       if(User::where([['name',$username],['email',$email]])->doesntExist()){
