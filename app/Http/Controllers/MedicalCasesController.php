@@ -291,16 +291,17 @@ class MedicalCasesController extends Controller
   public function findDuplicates()
   {
     $case_columns=['id','local_medical_case_id','patient_id','consultation_date'];
-    $medicalCases=MedicalCase::where('duplicate',false)->get($case_columns)->filter(function($case){
-        $case->comparison_date=Carbon::createFromFormat('Y-m-d H:i:s', $case->consultation_date)->format('Y-m-d');
-        $case->hf = $case->patient->facility->name;
-        return Carbon::now()->diffInDays($case->consultation_date) <= 25;
-    });
-    $medicalCases = $medicalCases->groupBy(function ($item, $key) {
-        return $item['comparison_date'].$item['patient_id'];
-    })->filter(function($case_group){
-        return $case_group->count() > 1;
-    });
+    // $medicalCases=MedicalCase::where('duplicate',false)->get($case_columns)->filter(function($case){
+    //     $case->comparison_date=Carbon::createFromFormat('Y-m-d H:i:s', $case->consultation_date)->format('Y-m-d');
+    //     $case->hf = $case->patient->facility->name;
+    //     return Carbon::now()->diffInDays($case->consultation_date) <= 25;
+    // });
+    // $medicalCases = $medicalCases->groupBy(function ($item, $key) {
+    //     return $item['comparison_date'].$item['patient_id'];
+    // })->filter(function($case_group){
+    //     return $case_group->count() > 1;
+    // });
+    $medicalCases=MedicalCase::where('duplicate',false)->get($case_columns);
     return view('medicalCases.showDuplicates2')->with("catchEachDuplicate", $medicalCases);
   }
   public function findDuplicates2(){
