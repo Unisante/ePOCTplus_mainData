@@ -39,7 +39,7 @@
                   @delete-failure="destroyFailure">
                   Are you sure you want to delete this {{resource_name}}?
                   </delete-modal>
-    
+
     <basic-modal id="showResource" :show.sync="showViewModal">
         <template v-slot:header>
             <h5>Showing {{resource_name}} {{selectedResource.name}}</h5>
@@ -62,7 +62,7 @@
                @edit-success="editSuccess"
                @edit-failure="editFailure"></edit-form>
         </template>
-        
+
     </basic-modal>
 </div>
 </template>
@@ -234,7 +234,7 @@ export default {
     },
 
     computed: {
-        
+
         resources : {
             get() {
                 return this.resources_data

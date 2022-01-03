@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\HealthFacility;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
@@ -23,18 +24,8 @@ class HealthFacilityRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(HealthFacility $health_facility)
     {
-        $rules = [
-            'name' => 'required|string | unique:App\HealthFacility,name',
-            'country' => 'nullable|string',
-            'area' => 'nullable|string',
-            'pin_code' => 'nullable|integer',
-            'hf_mode' => [Rule::in(['standalone','client-server'])],
-            'local_data_ip' => 'nullable|string|ip',
-            'lat' => 'numeric | between:-90,90',
-            'long' => 'numeric | between:-180,180',
-        ];
-        return $rules;
+        return [];
     }
 }

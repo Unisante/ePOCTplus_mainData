@@ -27,7 +27,7 @@ return [
         'answers' => 'answers.csv',
     ],
 
-    'folder_separated' => '/separated/',
+    'folder_separated' => 'separated/',
 
     'identifiers' => [
         'patient' => [
@@ -258,7 +258,7 @@ return [
     ],
 
     'flat' => [
-        'folder' => '/answers/',
+        'folder' => 'answers/',
 
         'identifiers' => [
             'patient' => [

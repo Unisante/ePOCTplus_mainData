@@ -28,7 +28,8 @@ Route::post('/user/password/reset', 'HomeController@forgotPassword')->name('Home
 Route::get('/check_password_reset_token/{id}', 'HomeController@checkToken')->name('HomeController@checkToken');
 Route::post('/reset_user_password', 'HomeController@makePassword')->name('HomeController@makePassword');
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth', '2fa']], function () {
+    # Roles and users
     Route::resource('roles', 'RolesController');
     Route::resource('users', 'UsersController');
     Route::get('/user/profile', ['as' => 'users.profile', 'uses' => 'UsersController@profile']);
@@ -57,11 +58,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/medicalCases/{medicalCaseId}/question/{questionId}/update', 'MedicalCaseAnswersController@update')->name('MedicalCaseAnswersController.update');
     Route::get('/medicalCase/changes/{id}', 'MedicalCasesController@showCaseChanges')->name('MedicalCasesController.showCaseChanges');
     Route::get('/medicalcases/duplicates', 'MedicalCasesController@findDuplicates');
+    Route::get('/medicalcases/duplicate2', 'MedicalCasesController@findDuplicates2');
     Route::post('/medicalCases/duplicates/search', 'MedicalCasesController@searchDuplicates')->name('MedicalCasesController@searchDuplicates');
     Route::post('/medicalCases/duplicates/delete', 'MedicalCasesController@destroy')->name('MedicalCasesController@destroy');
+    Route::post('/medicalCases/remove_follow_up', 'MedicalCasesController@deduplicate_redcap')->name('MedicalCasesController@deduplicate_redcap');
     Route::get('/followUp/delayed', 'MedicalCasesController@followUpDelayed');
     Route::get('/followUp', 'MedicalCasesController@showFacilities');
-    Route::get('/followUp/show/{id}', 'MedicalCasesController@showFacility')->name('MedicalCasesController.showFacility');;
+    Route::get('/followUp/show/{id}', 'MedicalCasesController@showFacility')->name('MedicalCasesController.showFacility');
     //for questions
     Route::get('/questions', 'QuestionsController@index')->name('QuestionsController.index');
     Route::get('/question/{id}', 'QuestionsController@show')->name('QuestionsController@show');
@@ -77,6 +80,11 @@ Route::group(['middleware' => ['auth']], function () {
             'update',
             'destroy',
         ]);
+
+        //Medical staff Management in the context of Health Facilities
+        Route::get('health-facilities/{health_facility}/manage-medical-staff', "HealthFacilityController@manageMedicalStaff");
+        Route::post('health-facilities/{health_facility}/assign-medical-staff/{medical_staff}', "HealthFacilityController@assignMedicalStaff");
+        Route::post('health-facilities/{health_facility}/unassign-medical-staff/{medical_staff}', "HealthFacilityController@unassignMedicalStaff");
         //Device Management in the context of Health Facilities
         Route::get('health-facilities/{health_facility}/manage-devices', "HealthFacilityController@manageDevices");
         Route::post('health-facilities/{health_facility}/assign-device/{device}', "HealthFacilityController@assignDevice");
@@ -85,17 +93,18 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('health-facilities/{health_facility}/manage-algorithms', "HealthFacilityController@manageAlgorithms");
         Route::get('health-facilities/{health_facility}/accesses', "HealthFacilityController@accesses");
         Route::get('health-facilities/versions/{algorithm_id}', "HealthFacilityController@versions");
-        Route::post('health-facilities/{health_facility}/assign-version/{version_id}', "HealthFacilityController@assignVersion");
+        Route::post('health-facilities/{health_facility}/assign-version/{algorithm_id}/{version_id}', "HealthFacilityController@assignVersion");
+        // Sticker Management in the contet of Health Facilities
+        Route::get('health-facilities/{health_facility}/manage-stickers', "HealthFacilityController@manageStickers");
+        Route::get('generate-stickers', 'StickerController@downloadView');
+        // Token management
+        Route::get('devices/{devices}/manage-tokens', "DeviceController@manageTokens");
+        Route::get('devices/{devices}/revoke-tokens', 'DeviceController@revokeTokens');
     });
-    //for Devices
-    Route::group(['middleware' => ['permission:Manage_Health_Facilities']], function () {
-        Route::resource('devices', 'DeviceController')->only([
-            'index',
-            'store',
-            'update',
-            'destroy',
-        ]);
-    });
+    // Devices
+    Route::resource('devices', 'DeviceController');
+    // Medical Staff
+    Route::resource('medical-staff', 'MedicalStaffController');
 
     //for downloading exports
     // Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('MedicalCasesController.medicalCaseIntoExcel');

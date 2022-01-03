@@ -36,6 +36,10 @@ export default {
         return {
             columns: [
                 {
+                    label: "Id",
+                    keyword: "group_id"
+                },
+                {
                     label: "Name",
                     keyword: "name",
                 },
@@ -87,7 +91,7 @@ export default {
                     options: [
                         {
                             label: "Client Server",
-                            value: "client-server",
+                            value: "client_server",
                         },
                         {
                             label: "Standalone",
@@ -109,6 +113,11 @@ export default {
                 },
             ],
             details: [
+                {
+                    label : "Id",
+                    keyword: "group_id",
+                    type: "text",
+                },
                 {
                     label : "Name",
                     keyword: "name",

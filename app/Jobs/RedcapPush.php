@@ -51,7 +51,7 @@ class RedcapPush implements ShouldQueue
         //   }
         // });
 
-        MedicalCase::where('redcap', false)->get()->each(function ($medicalcase) use (&$caseFollowUpArray) {
+        MedicalCase::where('redcap', false)->where('duplicate', false)->get()->each(function ($medicalcase) use (&$caseFollowUpArray) {
             $followUp = MedicalCase::makeFollowUp($medicalcase);
             //if($followUp != null){
             $caseFollowUpArray[] = $followUp;
@@ -182,10 +182,6 @@ class RedcapPush implements ShouldQueue
                     Config::get('redcap.identifiers.followup.dyn_fup_followup_status') => 1,
                     // Config::get('redcap.identifiers.followup.identification_complete') => 2,
                 ];
-                // Log::info('output',  ['data' => $datas]);
-                // if(in_array('', $datas[$followup->getConsultationId()], true) || in_array(null , $datas[$followup->getConsultationId()], true)){
-                //   $datas[$followup->getConsultationId()][Config::get('redcap.identifiers.followup.identification_complete')]=0;
-                // }
             }
             $data = array(
                 'token' => Config::get('redcap.identifiers.api_token_followup'),
@@ -210,7 +206,7 @@ class RedcapPush implements ShouldQueue
             curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data, '', '&'));
             $output = curl_exec($ch);
-            Log::debug('output', ['output' => $output]);
+            Log::info('output', ['output' => $output]);
             curl_close($ch);
             return json_decode($output);
         }
@@ -250,4 +246,5 @@ class RedcapPush implements ShouldQueue
         curl_close($ch);
         return $ids_refactored;
     }
+
 }

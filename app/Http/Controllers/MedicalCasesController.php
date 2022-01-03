@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Services\RedCapApiService;
 use App\MedicalCase;
 use App\Answer;
 use App\Node;
@@ -16,6 +16,8 @@ use Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use DB;
+use Carbon\Carbon;
+use App\Jobs\RemoveFollowUp;
 
 class MedicalCasesController extends Controller
 {
@@ -93,14 +95,10 @@ class MedicalCasesController extends Controller
    */
   public function compare($firstId, $secondId)
   {
+
     $first_medical_case =  MedicalCase::find($firstId);
     $second_medical_case = MedicalCase::find($secondId);
-    $medical_case_info = self::comparison($first_medical_case, $second_medical_case);
-    // dd($medical_case_info);
-    //medicase details for first medical case
-    // $medical_case_info=self::detailFind($first_medical_case,"first_case");
-    //medicase details for second medical case
-    // $medical_case_info=self::detailFind($second_medical_case,"second_case",$medical_case_info);
+    $medical_case_info = $this->comparison($first_medical_case, $second_medical_case);
     $data = array(
       'first_medical_case' => $first_medical_case,
       'second_medical_case' => $second_medical_case,
@@ -133,7 +131,7 @@ class MedicalCasesController extends Controller
     foreach ($common_questions_id as $question_id) {
       $first_case_answer = $first_medical_case->medical_case_answers->where('node_id', $question_id)->first();
       $first_answer = $first_case_answer->value;
-      if ($first_case_answer->answer) {
+      if ($first_case_answer->answer ) {
         $first_answer = $first_case_answer->answer->label;
       }
       $second_case_answer = $second_medical_case->medical_case_answers->where('node_id', $question_id)->first();
@@ -186,6 +184,9 @@ class MedicalCasesController extends Controller
       }
     }
     $all_questions = array_merge($common_questions, $uncommon_questions);
+    $all_questions = array_filter($all_questions, function($question) {
+        return !(empty($question["first_answer"]) && empty($question["second_answer"]));
+    });
     return $all_questions;
   }
 
@@ -289,16 +290,45 @@ class MedicalCasesController extends Controller
    */
   public function findDuplicates()
   {
-    $duplicates = MedicalCase::select('patient_id', 'version_id')
-      ->groupBy('patient_id', 'version_id')
-      ->havingRaw('COUNT(*) > 1')
-      ->get();
-    $catchEachDuplicate = array();
-    foreach ($duplicates as $duplicate) {
-      $medical_case = MedicalCase::where('patient_id', $duplicate->patient_id)->get();
-      array_push($catchEachDuplicate, $medical_case);
-    }
-    return view('medicalCases.showDuplicates')->with("catchEachDuplicate", $catchEachDuplicate);
+    $case_columns=['id','local_medical_case_id','patient_id','consultation_date'];
+    // $medicalCases=MedicalCase::where('duplicate',false)->get($case_columns)->filter(function($case){
+    //     $case->comparison_date=Carbon::createFromFormat('Y-m-d H:i:s', $case->consultation_date)->format('Y-m-d');
+    //     $case->hf = $case->patient->facility->name;
+    //     return Carbon::now()->diffInDays($case->consultation_date) <= 25;
+    // });
+    // $medicalCases = $medicalCases->groupBy(function ($item, $key) {
+    //     return $item['comparison_date'].$item['patient_id'];
+    // })->filter(function($case_group){
+    //     return $case_group->count() > 1;
+    // });
+    $medicalCases=MedicalCase::where('duplicate',false)->get($case_columns);
+    return view('medicalCases.showDuplicates2')->with("catchEachDuplicate", $medicalCases);
+  }
+  public function findDuplicates2(){
+    $case_columns=['id','local_medical_case_id','patient_id','consultation_date'];
+    $medicalCases=MedicalCase::where('duplicate',false)->get($case_columns)->filter(function($case){
+        $case->comparison_date=Carbon::createFromFormat('Y-m-d H:i:s', $case->consultation_date)->format('Y-m-d');
+        $case->hf = $case->patient->facility->name;
+        return Carbon::now()->diffInDays($case->consultation_date) <= 25;
+    });
+    $medicalCases = $medicalCases->groupBy(function ($item, $key) {
+        return $item['comparison_date'].$item['patient_id'];
+    })->filter(function($case_group){
+        return $case_group->count() > 1;
+    });
+
+    return response()->json(["mcs"=>array_values($medicalCases->toArray())]);
+  }
+
+  public function deduplicate_redcap(Request $request){
+    $validated = $request->validate([
+        'medicalc_id' => 'required',
+    ]);
+    $medicalCase = MedicalCase::find((int)$request->input('medicalc_id'));
+    dispatch(new RemoveFollowUp($medicalCase));
+    return redirect()->action(
+        'MedicalCasesController@findDuplicates'
+    )->with('status', "Follow Up for '{$medicalCase->local_medical_case_id}' is Queued for removal in redcap");
   }
 
   /**
@@ -352,15 +382,6 @@ class MedicalCasesController extends Controller
   }
   public function showFacilities()
   {
-    // $facilities=HealthFacility::all();
-    // $facilities_to_show=[];
-    // foreach($facilities as $facility){
-    //   // ($facility->patient)
-    //   dd($facility);
-    // }
-    // dd($facilities);
-    // $allfollowed = new MedicalCase;
-    // dd($allfollowed->listFacilities());
     return view('medicalCases.followed')->with("facilities", $facilities=HealthFacility::all());
   }
 
@@ -384,23 +405,18 @@ class MedicalCasesController extends Controller
         }
       }
     }
-
-
-
     return response()->json([
       "facility"=>true,
       "data"=>[
         "redcap_sent"=> $count_redcap_sent,
         "redcap_unsent"=>$count_redcap_unsent,
-        // "fake_cases"=>1
       ]
     ]);
-
-
-
-    // dd($redcap_sent);
-    // return $id;
   }
+
+  // public function findDuplicates(){
+  //   return 'here';
+  // }
   public function medicalCaseIntoExcel()
   {
     return Excel::download(new MedicalCaseExport, 'medicalCases.xlsx');

@@ -5,9 +5,9 @@ namespace App\Services;
 use App\Drug;
 use App\Services\ModelLoader;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Log;
 
-class DrugLoader extends ModelLoader {
+class DrugLoader extends ModelLoader
+{
     protected $drugData;
     protected $diagnosis;
     protected $duration;
@@ -19,7 +19,8 @@ class DrugLoader extends ModelLoader {
      * @param Diagnosis $diagnosis
      * @param string $duration
      */
-    public function __construct($drugData, $diagnosis = null, $duration = null) {
+    public function __construct($drugData, $diagnosis = null, $duration = null)
+    {
         parent::__construct($drugData);
         $this->drugData = $drugData;
         $this->diagnosis = $diagnosis;
@@ -36,9 +37,9 @@ class DrugLoader extends ModelLoader {
     protected function getValues()
     {
         if (is_array($this->duration)) {
-          $duration = $this->duration[Config::get('medal.global.language')];
+            $duration = $this->duration[Config::get('medal.global.language')];
         } else {
-          $duration = $this->duration;
+            $duration = $this->duration;
         }
         return array_merge(parent::getValues(), [
             'duration' => $duration,
@@ -53,5 +54,21 @@ class DrugLoader extends ModelLoader {
     protected function configName()
     {
         return 'drug';
+    }
+
+    /**
+     *
+     * Create a Drug instance based on the data that was provided
+     *
+     * @return Drug
+     */
+    public function load()
+    {
+        $record = $this->model()::updateOrCreate(
+            $this->getKeys(),
+            $this->getValues()
+        );
+        $record->save();
+        return $record;
     }
 }

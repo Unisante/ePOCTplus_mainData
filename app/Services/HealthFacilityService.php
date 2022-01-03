@@ -5,12 +5,7 @@ namespace App\Services;
 
 use App\Device;
 use App\HealthFacility;
-use Lcobucci\JWT\Parser;
-use Laravel\Passport\Token;
-use Illuminate\Support\Facades\Log;
-use App\Http\Requests\DeviceRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
+use App\MedicalStaff;
 
 
 class HealthFacilityService {
@@ -31,6 +26,18 @@ class HealthFacilityService {
         $device->health_facility_id = null;
         $device->save();
         return $device;
+    }
+
+    public function assignMedicalStaff(HealthFacility $health_facility, MedicalStaff $medical_staff){
+        $medical_staff->health_facility_id = $health_facility->id;
+        $medical_staff->save();
+        return $medical_staff;
+    }
+
+    public function unassignMedicalStaff(HealthFacility $health_facility, MedicalStaff $medical_staff){
+        $medical_staff->health_facility_id = null;
+        $medical_staff->save();
+        return $medical_staff;
     }
 
     

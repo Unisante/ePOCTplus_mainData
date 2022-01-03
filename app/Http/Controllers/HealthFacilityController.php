@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Device;
 use App\HealthFacility;
-use Illuminate\Http\Request;
-use App\Services\AlgorithmService;
-use Illuminate\Support\Facades\Auth;
-use App\Services\HealthFacilityService;
 use App\Http\Requests\HealthFacilityRequest;
 use App\Http\Resources\Device as DeviceResource;
-
-
+use App\Http\Resources\MedicalStaff as MedicalStaffResource;
+use App\MedicalStaff;
+use App\Services\AlgorithmService;
+use App\Services\HealthFacilityService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class HealthFacilityController extends Controller
 {
@@ -19,12 +19,11 @@ class HealthFacilityController extends Controller
     protected $algorithmService;
 
     public function __construct(HealthFacilityService $healthFacilityService,
-                                AlgorithmService $algorithmService)
-    {
-        $this->authorizeResource(HealthFacility::class);
+        AlgorithmService $algorithmService) {
         $this->healthFacilityService = $healthFacilityService;
         $this->algorithmService = $algorithmService;
     }
+
     /**
      * Return an index of the resources owned by the user
      *
@@ -32,9 +31,10 @@ class HealthFacilityController extends Controller
      */
     public function index()
     {
-        $healthFacilities =  Auth::user()->healthFacilities;
-        return view("healthFacilities.index",[
-            "healthFacilities" => $healthFacilities
+        $healthFacilities = HealthFacility::all();
+
+        return view("healthFacilities.index", [
+            "healthFacilities" => $healthFacilities,
         ]);
     }
 
@@ -44,8 +44,18 @@ class HealthFacilityController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(HealthFacilityRequest $request){
-        $validated = $request->validated();
+    public function store(HealthFacilityRequest $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string  | unique:App\HealthFacility,name',
+            'country' => 'nullable|string',
+            'area' => 'nullable|string',
+            'pin_code' => 'nullable|integer',
+            'hf_mode' => [Rule::in(['standalone', 'client_server'])],
+            'local_data_ip' => 'nullable|string',
+            'lat' => 'numeric | between:-90,90',
+            'long' => 'numeric | between:-180,180',
+        ]);
         $healthFacility = new HealthFacility($validated);
         $healthFacility->user_id = Auth::user()->id;
         $this->addDefaultValues($healthFacility);
@@ -62,7 +72,16 @@ class HealthFacilityController extends Controller
      */
     public function update(HealthFacilityRequest $request, HealthFacility $healthFacility)
     {
-        $validated = $request->validated();
+        $validated = $request->validate([
+            'name' => 'required|string  | unique:App\HealthFacility,name,' . $healthFacility->id,
+            'country' => 'nullable|string',
+            'area' => 'nullable|string',
+            'pin_code' => 'nullable|integer',
+            'hf_mode' => [Rule::in(['standalone', 'client_server'])],
+            'local_data_ip' => 'nullable|string',
+            'lat' => 'numeric | between:-90,90',
+            'long' => 'numeric | between:-180,180',
+        ]);
         $healthFacility->fill($validated)->save();
         return response()->json($healthFacility);
     }
@@ -83,13 +102,10 @@ class HealthFacilityController extends Controller
         ]);
     }
 
-    /**
-     * Returns the resolved health facility as well as all the device assigned to it and the devices that are not assigned to any HF
-     */
-    public function manageDevices(HealthFacility $healthFacility){
-        $this->authorize('manageDevices',$healthFacility);
+    public function manageDevices(HealthFacility $healthFacility)
+    {
         $devices = DeviceResource::collection($healthFacility->devices);
-        $unassignedDevices = DeviceResource::collection(Auth::user()->unassignedDevices());
+        $unassignedDevices = DeviceResource::collection(Device::where('health_facility_id', '=', null)->get());
         return response()->json([
             "devices" => $devices->values(),
             "unassignedDevices" => $unassignedDevices->values(),
@@ -97,23 +113,20 @@ class HealthFacilityController extends Controller
         ]);
     }
 
-    //Assigns a device to the health facility
-    public function assignDevice(HealthFacility $healthFacility,Device $device){
-        $this->authorize('assignDevice',[$healthFacility,$device]);
-        $device = $this->healthFacilityService->assignDevice($healthFacility,$device);
+    public function assignDevice(HealthFacility $healthFacility, Device $device)
+    {
+        $device = $this->healthFacilityService->assignDevice($healthFacility, $device);
         return response()->json(new DeviceResource($device));
     }
 
-    //Unassign a device from the health facility
-    public function unassignDevice(HealthFacility $healthFacility,Device $device){
-        $this->authorize("unassignDevice",[$healthFacility,$device]);
-        $device = $this->healthFacilityService->unassignDevice($healthFacility,$device);
+    public function unassignDevice(HealthFacility $healthFacility, Device $device)
+    {
+        $device = $this->healthFacilityService->unassignDevice($healthFacility, $device);
         return response()->json(new DeviceResource($device));
     }
 
-    //Returns the list of algorithms available at medal-creator as well as the given health facility
-    public function manageAlgorithms(HealthFacility $healthFacility){
-        $this->authorize('manageAlgorithms',$healthFacility);
+    public function manageAlgorithms(HealthFacility $healthFacility)
+    {
         $algorithms = $this->algorithmService->getAlgorithmsMetadata();
         return response()->json([
             "algorithms" => $algorithms,
@@ -121,9 +134,38 @@ class HealthFacilityController extends Controller
         ]);
     }
 
-    //Returns the algorithm version currently used by the health facility and the list of previously used versions
-    public function accesses(HealthFacility $healthFacility){
-        $this->authorize('accesses',$healthFacility);
+    public function manageMedicalStaff(HealthFacility $health_facility)
+    {
+        $medical_staff = MedicalStaffResource::collection($health_facility->medical_staff);
+        $unassigned_medical_staff = MedicalStaffResource::collection(MedicalStaff::whereNull('health_facility_id')->get());
+        return response()->json([
+            "health_facility" => $health_facility,
+            "medical_staff" => $medical_staff,
+            "unassigned_medical_staff" => $unassigned_medical_staff,
+        ]);
+    }
+
+    public function assignMedicalStaff(HealthFacility $health_facility, MedicalStaff $medical_staff)
+    {
+        $medical_staff = $this->healthFacilityService->assignMedicalStaff($health_facility, $medical_staff);
+        return response()->json(new MedicalStaffResource($medical_staff));
+    }
+
+    public function manageStickers(HealthFacility $health_facility)
+    {
+        return response()->json([
+            "health_facility" => $health_facility,
+        ]);
+    }
+
+    public function unassignMedicalStaff(HealthFacility $health_facility, MedicalStaff $medical_staff)
+    {
+        $medical_staff = $this->healthFacilityService->unassignMedicalStaff($health_facility, $medical_staff);
+        return response()->json(new MedicalStaffResource($medical_staff));
+    }
+
+    public function accesses(HealthFacility $healthFacility)
+    {
         $currentAccess = $this->algorithmService->getCurrentAccess($healthFacility);
         $archivedAccesses = $this->algorithmService->getArchivedAccesses($healthFacility);
         return response()->json([
@@ -132,25 +174,23 @@ class HealthFacilityController extends Controller
         ]);
     }
 
-    //Fetches the list of versions for a specific algorithm from the medal-creator and returns it
-    public function versions($algorithmCreatorID){
+    public function versions($algorithmCreatorID)
+    {
         $versions = $this->algorithmService->getVersionsMetadata($algorithmCreatorID);
         return response()->json($versions);
     }
 
-    //Fetches the version indexed by versionID from the medal-creator and assigns it to the resolved health facility
-    public function assignVersion(HealthFacility $healthFacility,$versionID){
-        $this->authorize('assignVersion',$healthFacility);
-        $versionJSON = $this->algorithmService->assignVersionToHealthFacility($healthFacility,$versionID);
+    public function assignVersion(HealthFacility $healthFacility, $chosenAlgorithmID, $versionID)
+    {
+        $this->algorithmService->assignVersionToHealthFacility($healthFacility, $chosenAlgorithmID, $versionID);
         return response()->json([
             "message" => "Version Assigned",
             "id" => $versionID,
         ]);
-
     }
 
-    //Since the original health_facilities table was created with bad non-null column, this assigns default values to them
-    private function addDefaultValues(HealthFacility $healthFacility){
+    private function addDefaultValues(HealthFacility $healthFacility)
+    {
         $healthFacility->group_id = 1;
         $healthFacility->facility_name = "not used anymore";
     }

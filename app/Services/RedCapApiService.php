@@ -142,7 +142,6 @@ class RedCapApiService
     }
   }
 
-
   /**
    * @param MedicalCase $medicalCases
    * @throws RedCapApiServiceException

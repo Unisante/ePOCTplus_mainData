@@ -13,9 +13,9 @@ class MakeAdminSeeder extends Seeder
     public function run()
     {
       $username='MainData';
-      $email='dynamicifakara@gmail.com';
+      $email='admin@maindata.com';
       $password ='Dynamic123';
-      $role = 'ADMIN';
+      $role = 'Administrator';
       if(User::where([['name',$username],['email',$email]])->doesntExist()){
         $user=new User;
         $user->name=$username;

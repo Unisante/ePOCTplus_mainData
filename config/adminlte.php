@@ -192,35 +192,35 @@ return [
     */
 
     'menu' => [
-        // [
-        //   'text' => 'Follow-Up',
-        //   'icon' => 'fas fa-fw fa-clone',
-        //   'can' =>  'Merge_Duplicates',
-        //   'submenu' => [
-        //     [
-        //         'text' => 'Done',
-        //         'url'  => '/followUp/done',
-        //         'icon' => 'fas fa-fw fa-check-circle',
-        //     ],
-        //     [
-        //         'text' => 'Delayed',
-        //         'url'  => '/followUp/delayed',
-        //         'icon' => 'fas fa-fw fa-pencil-alt',
-        //     ],
-        //   ],
-        // ],
+        [
+          'text' => 'Duplicates',
+          'icon' => 'fas fa-fw fa-clone',
+          'can' =>  'Merge_Duplicates',
+          'submenu' => [
+            [
+                'text' => 'Patients',
+                'url'  => '/patients/duplicates',
+                'icon' => 'fas fa-fw fa-check-circle',
+            ],
+            [
+                'text' => 'Medical Cases',
+                'url'  => '/medicalcases/duplicates',
+                'icon' => 'fas fa-fw fa-pencil-alt',
+            ],
+          ],
+        ],
         [
           'text' => 'Follow-Up',
           'url'  => '/followUp',
           'icon' => 'fas fa-fw fa-check-circle',
           'can' =>  'Merge_Duplicates'
         ],
-        [
-          'text' => 'Duplicates',
-          'url'  => '/patients/duplicates',
-          'icon' => 'fas fa-fw fa-users',
-          'can' =>  'Merge_Duplicates'
-        ],
+        // [
+        //   'text' => 'Duplicates',
+        //   'url'  => '/patients/duplicates',
+        //   'icon' => 'fas fa-fw fa-users',
+        //   'can' =>  'Merge_Duplicates'
+        // ],
         [
           'text' => 'Facilities',
           'url'  => '/facilities/index',
@@ -230,14 +230,20 @@ return [
         [
             'text' => 'Health Facilities',
             'url'  => '/health-facilities',
-            'icon' => 'fas fa-fw fa-hospital',
-            'can' => 'Manage_Health_Facilities',
+            'icon' => 'fas fa-fw fa-cart-plus',
+            'can' =>  'Manage_Health_Facilities'
         ],
         [
             'text' => 'Devices',
             'url' => '/devices',
-            'icon' => 'fas fa-fw fa-tablet',
-            'can' => 'Manage_Devices'
+            'icon' => 'fas fa-fw fa-tablet-alt',
+            'can' =>  'Manage_Devices'
+        ],
+        [
+            'text' => 'Medical staff',
+            'url' => '/medical-staff',
+            'icon' => 'fas fa-fw fa-users',
+            'can' =>  'Manage_Medical_Staff'
         ],
         [
             'text' => 'Patient list',

@@ -50,7 +50,7 @@ class SaveCaseService
         } else {
             $data = $this->getVersionData($hf, $versionId);
             $versionData = $data['medal_r_json'];
-            $configData = $this->getPatientConfigData($hf, $versionId);
+            $configData = $this->getPatientConfigData($versionId);
             $version = $this->updateVersion($versionData);
             $config = $this->updateConfig($configData, $version);
         }
@@ -61,15 +61,17 @@ class SaveCaseService
         return $case;
     }
 
-    public function getPatientConfigData($hf, $versionId)
+    public function getPatientConfigData($versionId)
     {
-        return json_decode(Http::get(Config::get('medal.creator.url') . Config::get('medal.creator.medal_data_config_endpoint') . $versionId), true);
+        $data = Http::get(Config::get('medal.creator.url') . Config::get('medal.creator.medal_data_config_endpoint') . $versionId);
+        return json_decode($data['content'], true);
     }
 
     public function getVersionData($hf, $versionId)
     {
         if (Config::get('medal.global.local_health_facility_management')) {
-            $versionJson = $hf->version_json;
+
+            $versionJson = $hf->versionJson;
 
             if ($versionJson === null) {
                 throw new UnexpectedValueException("Health facility $hf->group_id has no associated version");
@@ -77,7 +79,8 @@ class SaveCaseService
 
             return json_decode($versionJson->json, true);
         } else {
-            return json_decode(Http::get(Config::get('medal.urls.creator_algorithm_url') . $versionId), true);
+            $data = Http::get(Config::get('medal.urls.creator_algorithm_url') . $versionId);
+            return json_decode($data['content'], true);
         }
     }
 
@@ -107,7 +110,7 @@ class SaveCaseService
                 throw new UnexpectedValueException("Health facility with group_id $groupId not found in database");
             } else {
                 $data = Http::get(Config::get('medal.urls.creator_health_facility_url') . $groupId);
-                $hfData = json_decode($data, true);
+                $hfData = json_decode($data['content'], true);
                 $hf = (new HealthFacilityLoader($hfData))->load();
             }
         }
@@ -244,7 +247,7 @@ class SaveCaseService
         // Activities
         if ($caseData['activities']) {
             foreach ($caseData['activities'] as $activityData) {
-                self::checkHasProperties($activityData, ['step', 'clinician', 'mac_address']);
+                self::checkHasProperties($activityData, ['step', 'clinician']);
                 (new ActivityLoader($activityData, $medicalCase))->load();
             }
         }

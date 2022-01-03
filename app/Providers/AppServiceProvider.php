@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use DOMDocument;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\UrlGenerator;
 use Laravel\Passport\Passport;

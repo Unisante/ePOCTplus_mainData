@@ -14,3 +14,4 @@ yarn-error.log
 /storage/medicalCases/*
 /storage/*
 .vscode/launch.json
+/bootstrap/cache/config.php

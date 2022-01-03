@@ -27,11 +27,12 @@ class ExportFlat implements ShouldQueue
     {
         Log::info('Starting flat export');
         $export_file = storage_path('app/export/export_flat.zip');
+        $toDate = new DateTime();
         if (File::exists($export_file)) {
             $lastmodified_file = File::lastModified($export_file);
             $lastmodified = DateTime::createFromFormat("U", $lastmodified_file);
-            if ((new DateTime())->diff($lastmodified)->h < 20) {
-                Log::info('Flat export already done today, skipping');
+            if ($toDate->diff($lastmodified)->h < 5 && $toDate->diff($lastmodified)->d < 1) {
+                Log::info('Flat export already done in the last 5 hours, skipping');
                 return;
             }
         }
@@ -40,7 +41,6 @@ class ExportFlat implements ShouldQueue
         $extract_file_name = Config::get('csv.public_extract_name_flat');
         $file_from_public = storage_path('app/export/' . $extract_file_name . '.zip');
         $fromDate = new DateTime('2020-01-01');
-        $toDate = new DateTime();
         $zipper = new \Madnest\Madzipper\Madzipper;
         $zipper->make($file_from_public);
 

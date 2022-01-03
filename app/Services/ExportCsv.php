@@ -63,15 +63,16 @@ abstract class ExportCsv extends ExportService
         }
 
         // patient's name may discard a medical case.
-        $patient_discarded_names = Config::get('csv.patient_discarded_names');
-        foreach ($patient_discarded_names as $discarded_name) {
-            $first_name = trim(strtolower($medical_case->patient->first_name));
-            $last_name = trim(strtolower($medical_case->patient->last_name));
+        // For now, we want to export everything
+        // $patient_discarded_names = Config::get('csv.patient_discarded_names');
+        // foreach ($patient_discarded_names as $discarded_name) {
+        //     $first_name = trim(strtolower($medical_case->patient->first_name));
+        //     $last_name = trim(strtolower($medical_case->patient->last_name));
 
-            if (str_contains($first_name, $discarded_name) || str_contains($last_name, $discarded_name)) {
-                return true;
-            }
-        }
+        //     if (str_contains($first_name, $discarded_name) || str_contains($last_name, $discarded_name)) {
+        //         return true;
+        //     }
+        // }
 
         return false;
     }
@@ -128,7 +129,7 @@ abstract class ExportCsv extends ExportService
         $this->to_date = $to_date;
         $this->chunk_key = $chunk_key;
 
-        parent::__construct($this->getFilteredMedicalCases($medical_cases));
+        // parent::__construct($this->getFilteredMedicalCases($medical_cases));
     }
 
     /**
