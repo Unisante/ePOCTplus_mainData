@@ -11,6 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 
 class MakeHttpRequest implements ShouldQueue
 {
@@ -52,6 +53,8 @@ class MakeHttpRequest implements ShouldQueue
         $version = Http::get($url, ["json_version" => $this->healthFacility->medal_r_json_version ?? -1]);
         $version = json_decode($version['content'], true);
 
+        Log::info("Sucessfully fetched " . $version['id'] . " - " . $version['name'] . " - " . $version['medal_r_json_version'] . " algorithm");
+
         /*
          * Récupération du emergency content lié à l'algorithm
          *  - envoi du emergency_content_version pour optenir la dernier version.
@@ -68,5 +71,6 @@ class MakeHttpRequest implements ShouldQueue
         $algorithmService->assignVersion($this->healthFacility, $version);
         $algorithmService->assignEmergencyContent($this->healthFacility, $emergencyContent);
         $algorithmService->updateAccesses($this->healthFacility, $this->chosenAlgorithmID, $version);
+        Log::info("Assignation done");
     }
 }

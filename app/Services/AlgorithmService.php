@@ -10,6 +10,7 @@ use App\Services\Http;
 use App\VersionJson;
 use Exception;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 
 class AlgorithmService
 {
@@ -44,8 +45,10 @@ class AlgorithmService
         $versionJson = VersionJson::where('health_facility_id', $healthFacility->id)->first();
         if ($versionJson == null) {
             $this->addVersion($healthFacility, $version);
+            Log::info("Adding version");
         } else {
             $this->updateVersion($versionJson, $version);
+            Log::info("Updating version");
         }
     }
 
@@ -138,6 +141,7 @@ class AlgorithmService
         $access->health_facility_id = $healthFacility->id;
         $access->medal_c_algorithm_id = $chosenAlgorithmID;
         $access->save();
+        Log::info("Successfully created Access " . $access->id);
     }
 
     private function archiveAccess(HealthFacilityAccess $access)
