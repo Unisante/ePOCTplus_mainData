@@ -16,8 +16,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         '\App\Console\Commands\StartExport',
-        '\App\Console\Commands\UpdateHealthFacilitiesAlgorithms',
         '\App\Console\Commands\UpdateVersions',
+        '\App\Console\Commands\UpdateHealthFacilitiesAlgorithms',
     ];
 
     /**
@@ -29,12 +29,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // timci project does not use redcap
-        empty(Config::get('redcap.identifiers.api_url_followup')) ? null : $schedule->job(new RedcapPush())->everyThirtyMinutes();
-        $schedule->command('export:start')->dailyAt('03:00');
+        empty(Config::get('redcap.identifiers.api_url_followup')) ? null : $schedule->job(new RedcapPush())->everyThirtyMinutes()->withoutOverlapping(10);
+        $schedule->command('export:start')->dailyAt('03:00')->withoutOverlapping(10);
         //$schedule->command(MedicalCasesExport::class)->everyMinute();
-        $schedule->command('update:versions')->hourly();
-        $schedule->command("HealthFacilitiesAlgo:update")->hourly();
-        $schedule->command('passport:purge')->hourly();
+        $schedule->command('update:versions')->hourly()->withoutOverlapping(10);
+        $schedule->command("HealthFacilitiesAlgo:update")->hourly()->withoutOverlapping(10);
+        $schedule->command('passport:purge')->hourly()->withoutOverlapping(10);
     }
 
     /**
