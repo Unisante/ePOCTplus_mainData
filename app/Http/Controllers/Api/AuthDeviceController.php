@@ -9,6 +9,7 @@ use App\Http\Resources\Device as DeviceResource;
 use App\Services\AlgorithmService;
 use App\Services\DeviceService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AuthDeviceController extends Controller
 {
