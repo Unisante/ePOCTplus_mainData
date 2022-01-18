@@ -50,9 +50,13 @@ class MakeHttpRequest implements ShouldQueue
          */
         $url = Config::get('medal.creator.url') . Config::get('medal.creator.versions_endpoint') .
         "/" . $this->versionID;
-        $version = Http::get($url, ["json_version" => $this->healthFacility->medal_r_json_version ?? -1]);
+        $version = Http::get($url, ["json_version" => optional($this->healthFacility->healthFacilityAccess)->medal_r_json_version ?? -1]);
+        Log::info($url . "  ===> " . $version['code']);
         $version = json_decode($version['content'], true);
 
+        Log::info("chosenAlgorithmID " . $this->chosenAlgorithmID);
+        Log::info("versionID " . $this->versionID);
+        Log::info("medal_r_json_version " . optional($this->healthFacility->healthFacilityAccess)->medal_r_json_version);
         Log::info("Sucessfully fetched " . $version['id'] . " - " . $version['name'] . " - " . $version['medal_r_json_version'] . " algorithm");
 
         /*

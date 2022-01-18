@@ -64,6 +64,12 @@ class AlgorithmService
 
     public function updateVersion(VersionJson $versionJson, $version)
     {
+        // If we are up to date, nothing to do
+        if (!$version['medal_r_json']) {
+            return;
+            Log::info("Version is up to date");
+        }
+
         $versionJson->json = json_encode(['medal_r_json' => $version['medal_r_json']]);
         $versionJson->save();
     }
@@ -121,13 +127,22 @@ class AlgorithmService
 
     public function updateAccesses(HealthFacility $healthFacility, $chosenAlgorithmID, $version)
     {
-        $access = HealthFacilityAccess::where('health_facility_id', $healthFacility->id)->
-            where('access', true)->
-            first();
+        // If we are up to date, nothing to do
+        if (!$version['id']) {
+            return;
+            Log::info("Access is already up to date");
+        }
+
+        $access = HealthFacilityAccess::where('health_facility_id', $healthFacility->id)
+            ->where('access', true)
+            ->first();
+
         if ($access != null) {
             $this->archiveAccess($access);
         }
+
         $this->newAccess($healthFacility, $chosenAlgorithmID, $version);
+
     }
 
     private function newAccess(HealthFacility $healthFacility, $chosenAlgorithmID, $version)
