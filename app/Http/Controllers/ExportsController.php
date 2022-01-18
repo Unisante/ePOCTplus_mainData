@@ -51,7 +51,7 @@ class ExportsController extends Controller
         ini_set('max_execution_time', '300');
         ini_set('default_socket_timeout', '300');
 
-        if (Patient::all()->count() == 0) {
+        if (Patient::count() == 0) {
             return back()->withErrors("We currently do not have records in the database.");
         }
 
