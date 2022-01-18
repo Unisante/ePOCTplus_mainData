@@ -57,6 +57,7 @@ class MakeHttpRequest implements ShouldQueue
         Log::info("chosenAlgorithmID " . $this->chosenAlgorithmID);
         Log::info("versionID " . $this->versionID);
         Log::info("medal_r_json_version " . optional($this->healthFacility->healthFacilityAccess)->medal_r_json_version);
+
         if ($version) {
             Log::info("Sucessfully fetched " . $version['id'] . " - " . $version['name'] . " - " . $version['medal_r_json_version'] . " algorithm");
         }

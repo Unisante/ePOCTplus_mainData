@@ -65,9 +65,9 @@ class AlgorithmService
     public function updateVersion(VersionJson $versionJson, $version)
     {
         // If we are up to date, nothing to do
-        if (!$version['medal_r_json']) {
-            return;
+        if (!$version) {
             Log::info("Version is up to date");
+            return;
         }
 
         $versionJson->json = json_encode(['medal_r_json' => $version['medal_r_json']]);
