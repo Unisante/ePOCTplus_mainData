@@ -128,9 +128,9 @@ class AlgorithmService
     public function updateAccesses(HealthFacility $healthFacility, $chosenAlgorithmID, $version)
     {
         // If we are up to date, nothing to do
-        if (!$version['id']) {
-            return;
+        if (!$version) {
             Log::info("Access is already up to date");
+            return;
         }
 
         $access = HealthFacilityAccess::where('health_facility_id', $healthFacility->id)
