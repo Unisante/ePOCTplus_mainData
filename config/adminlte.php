@@ -194,7 +194,7 @@ return [
     'menu' => [
         [
             'text' => 'Follow-Up',
-            'url' => '/follow-up',
+            'url' => '/followUp',
             'icon' => 'fas fa-fw fa-check-circle',
             'can' => 'Access_Follow_Up_Panel',
         ],
