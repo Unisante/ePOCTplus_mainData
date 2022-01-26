@@ -67,9 +67,9 @@ Route::group(['middleware' => ['auth', '2fa']], function () {
     Route::post('/medicalCases/remove_follow_up', 'MedicalCasesController@deduplicate_redcap')->name('medical-cases.deduplicate_redcap');
 
     //for followup
-    Route::get('/follow-up/delayed', 'MedicalCasesController@followUpDelayed')->name('follow-up.delayed');
-    Route::get('/follow-up', 'MedicalCasesController@showFacilities')->name('follow-up.showFacilities');
-    Route::get('/follow-up/show/{id}', 'MedicalCasesController@showFacility')->name('follow-up.showFacility');
+    Route::get('/followUp/delayed', 'MedicalCasesController@followUpDelayed');
+    Route::get('/followUp', 'MedicalCasesController@showFacilities');
+    Route::get('/followUp/show/{id}', 'MedicalCasesController@showFacility')->name('MedicalCasesController.showFacility');
 
     //for questions
     Route::resource('questions', 'QuestionsController')->only([
@@ -94,32 +94,38 @@ Route::group(['middleware' => ['auth', '2fa']], function () {
     ]);
 
     //for health facilities
-    Route::resource('health-facilities', 'HealthFacilityController')->only([
-        'index', 'store', 'update', 'destroy',
-    ]);
-    //Medical staff Management in the context of Health Facilities
-    Route::resource('medical-staff', 'MedicalStaffController');
-    Route::get('health-facilities/{health_facility}/manage-medical-staff', "HealthFacilityController@manageMedicalStaff");
-    Route::post('health-facilities/{health_facility}/assign-medical-staff/{medical_staff}', "HealthFacilityController@assignMedicalStaff");
-    Route::post('health-facilities/{health_facility}/unassign-medical-staff/{medical_staff}', "HealthFacilityController@unassignMedicalStaff");
-    //Device Management in the context of Health Facilities
-    Route::resource('devices', 'DeviceController');
-    Route::get('health-facilities/{health_facility}/manage-devices', "HealthFacilityController@manageDevices");
-    Route::post('health-facilities/{health_facility}/assign-device/{device}', "HealthFacilityController@assignDevice");
-    Route::post('health-facilities/{health_facility}/unassign-device/{device}', "HealthFacilityController@unassignDevice");
-    //Algorithms Management in the context of Health Facilities
-    Route::post('health-facilities/{health_facility}/assign-version/{version_id}', "HealthFacilityController@assignVersion");
-    // Sticker Management in the contet of Health Facilities
-    Route::get('health-facilities/{health_facility}/manage-stickers', "HealthFacilityController@manageStickers");
-    Route::get('generate-stickers', 'StickerController@downloadView');
-    // Token management
-    Route::get('devices/{devices}/manage-tokens', "DeviceController@manageTokens");
-    Route::get('devices/{devices}/revoke-tokens', 'DeviceController@revokeTokens');
+    Route::group(['middleware' => ['permission:Manage_Health_Facilities']], function () {
+        Route::resource('health-facilities', 'HealthFacilityController')->only([
+            'index', 'store', 'update', 'destroy',
+        ]);
+        //Medical staff Management in the context of Health Facilities
+        Route::get('health-facilities/{health_facility}/manage-medical-staff', "HealthFacilityController@manageMedicalStaff");
+        Route::post('health-facilities/{health_facility}/assign-medical-staff/{medical_staff}', "HealthFacilityController@assignMedicalStaff");
+        Route::post('health-facilities/{health_facility}/unassign-medical-staff/{medical_staff}', "HealthFacilityController@unassignMedicalStaff");
+        //Device Management in the context of Health Facilities
+        Route::get('health-facilities/{health_facility}/manage-devices', "HealthFacilityController@manageDevices");
+        Route::post('health-facilities/{health_facility}/assign-device/{device}', "HealthFacilityController@assignDevice");
+        Route::post('health-facilities/{health_facility}/unassign-device/{device}', "HealthFacilityController@unassignDevice");
+        //Algorithms Management in the context of Health Facilities
+        Route::get('health-facilities/{health_facility}/manage-algorithms', "HealthFacilityController@manageAlgorithms");
+        Route::get('health-facilities/{health_facility}/accesses', "HealthFacilityController@accesses");
+        Route::get('health-facilities/versions/{algorithm_id}', "HealthFacilityController@versions");
+        Route::post('health-facilities/{health_facility}/assign-version/{algorithm_id}/{version_id}', "HealthFacilityController@assignVersion");
+        // Sticker Management in the contet of Health Facilities
+        Route::get('health-facilities/{health_facility}/manage-stickers', "HealthFacilityController@manageStickers");
+        Route::get('generate-stickers', 'StickerController@downloadView');
+        // Token management
+        Route::get('devices/{devices}/manage-tokens', "DeviceController@manageTokens");
+        Route::get('devices/{devices}/revoke-tokens', 'DeviceController@revokeTokens');
+    });
 
     //for Devices
     Route::resource('devices', 'DeviceController')->only([
         'index', 'store', 'update', 'destroy',
     ]);
+
+    // Medical Staff
+    Route::resource('medical-staff', 'MedicalStaffController');
 
     //for downloading exports
     // Route::get('/export-medicalCase-excel','MedicalCasesController@medicalCaseIntoExcel')->name('medical-cases.medicalCaseIntoExcel');

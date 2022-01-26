@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Device;
 use App\HealthFacility;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
@@ -15,8 +15,9 @@ class HealthFacilityPolicy
     /**
      * Called before any other authorize method.
      */
-    public function before(User $user, $ability){
-        if($user->isAdministrator()){
+    public function before(User $user, $ability)
+    {
+        if ($user->isAdministrator()) {
             return true;
         }
     }
@@ -30,8 +31,8 @@ class HealthFacilityPolicy
     public function viewAny(User $user)
     {
         return $user->can('View_Health_Facilities') || $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to view health facilities.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to view health facilities.');
     }
 
     /**
@@ -44,8 +45,8 @@ class HealthFacilityPolicy
     public function view(User $user, HealthFacility $healthFacility)
     {
         return $user->can('View_Health_Facilities') || $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to view this health facility.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to view this health facility.');
     }
 
     /**
@@ -57,8 +58,8 @@ class HealthFacilityPolicy
     public function create(User $user)
     {
         return $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to create health facilities.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to create health facilities.');
     }
 
     /**
@@ -71,8 +72,8 @@ class HealthFacilityPolicy
     public function update(User $user, HealthFacility $healthFacility)
     {
         return $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to update health facilities.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to update health facilities.');
     }
 
     /**
@@ -85,8 +86,8 @@ class HealthFacilityPolicy
     public function delete(User $user, HealthFacility $healthFacility)
     {
         return $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to delete health facilities.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to delete health facilities.');
     }
 
     /**
@@ -99,8 +100,8 @@ class HealthFacilityPolicy
     public function devices(User $user, HealthFacility $healthFacility)
     {
         return $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to view health facilities\' devices.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to view health facilities\' devices.');
     }
 
     /**
@@ -110,11 +111,11 @@ class HealthFacilityPolicy
      * @param  \App\HealthFacility  $healthFacility
      * @return mixed
      */
-    public function assignDevice(User $user,HealthFacility $healthFacility, Device $device)
+    public function assignDevice(User $user, HealthFacility $healthFacility, Device $device)
     {
         return $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to assign devices to health facilities.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to assign devices to health facilities.');
     }
 
     /**
@@ -124,11 +125,11 @@ class HealthFacilityPolicy
      * @param  \App\HealthFacility  $healthFacility
      * @return mixed
      */
-    public function manageDevices(User $user,HealthFacility $healthFacility)
+    public function manageDevices(User $user, HealthFacility $healthFacility)
     {
         return $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to manage health facilities\' devices.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to manage health facilities\' devices.');
     }
 
     /**
@@ -138,11 +139,11 @@ class HealthFacilityPolicy
      * @param  \App\HealthFacility  $healthFacility
      * @return mixed
      */
-    public function unassignDevice(User $user,HealthFacility $healthFacility, Device $device)
+    public function unassignDevice(User $user, HealthFacility $healthFacility, Device $device)
     {
         return $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to unassign devices to health facilities.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to unassign devices to health facilities.');
     }
 
     /**
@@ -152,11 +153,11 @@ class HealthFacilityPolicy
      * @param  \App\HealthFacility  $healthFacility
      * @return mixed
      */
-    public function manageAlgorithms(User $user,HealthFacility $healthFacility)
+    public function manageAlgorithms(User $user, HealthFacility $healthFacility)
     {
         return $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to manage health facilities\' algorithms.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to manage health facilities\' algorithms.');
     }
 
     /**
@@ -169,8 +170,8 @@ class HealthFacilityPolicy
     public function accesses(User $user, HealthFacility $healthFacility)
     {
         return $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to view health facilities\' accesses.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to view health facilities\' accesses.');
     }
 
     /**
@@ -183,8 +184,8 @@ class HealthFacilityPolicy
     public function versions(User $user, HealthFacility $healthFacility)
     {
         return $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to view health facilities\' versions.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to view health facilities\' versions.');
     }
 
     /**
@@ -194,11 +195,11 @@ class HealthFacilityPolicy
      * @param  \App\HealthFacility  $healthFacility
      * @return mixed
      */
-    public function assignVersion(User $user,HealthFacility $healthFacility)
+    public function assignVersion(User $user, HealthFacility $healthFacility)
     {
         return $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to assign versions to health facilities.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to assign versions to health facilities.');
     }
 
     /**
@@ -211,8 +212,8 @@ class HealthFacilityPolicy
     public function restore(User $user, HealthFacility $healthFacility)
     {
         return $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to restore health facilities.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to restore health facilities.');
     }
 
     /**
@@ -225,7 +226,35 @@ class HealthFacilityPolicy
     public function forceDelete(User $user, HealthFacility $healthFacility)
     {
         return $user->can('Manage_Health_Facilities')
-            ? Response::allow()
-            : Response::deny('You are not autorized to force delete health facilities.');
+        ? Response::allow()
+        : Response::deny('You are not autorized to force delete health facilities.');
+    }
+
+    /**
+     * Determine whether the user can assign the medical staff.
+     *
+     * @param  \App\HealthFacility  $user
+     * @param  \App\MedicalStaff  $medicalStaff
+     * @return mixed
+     */
+    public function assignMedicalStaff(HealthFacility $user, MedicalStaff $medicalStaff)
+    {
+        return $user->can('Manage_Medical_Staff')
+        ? Response::allow()
+        : Response::deny('You are not authorized to force delete medical staff.');
+    }
+
+    /**
+     * Determine whether the user can unassign the medical staff.
+     *
+     * @param  \App\HealthFacility  $user
+     * @param  \App\MedicalStaff  $medicalStaff
+     * @return mixed
+     */
+    public function unassignMedicalStaff(HealthFacility $user, MedicalStaff $medicalStaff)
+    {
+        return $user->can('Manage_Medical_Staff')
+        ? Response::allow()
+        : Response::deny('You are not authorized to force delete medical staff.');
     }
 }
