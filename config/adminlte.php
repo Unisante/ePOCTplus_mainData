@@ -12,7 +12,7 @@ return [
     | For more detailed instructions you can look here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/#61-title
     |
-    */
+     */
 
     'title' => 'ePOCT+  Main data',
     'title_prefix' => '',
@@ -28,7 +28,7 @@ return [
     | For more detailed instructions you can look here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/#62-favicon
     |
-    */
+     */
 
     'use_ico_only' => false,
     'use_full_favicon' => false,
@@ -43,7 +43,7 @@ return [
     | For more detailed instructions you can look here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/#63-logo
     |
-    */
+     */
 
     'logo' => '<b>ePOCT+</b>Main data',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
@@ -63,7 +63,7 @@ return [
     | For more detailed instructions you can look here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/#64-layout
     |
-    */
+     */
 
     'layout_topnav' => null,
     'layout_boxed' => null,
@@ -81,7 +81,7 @@ return [
     | For more detailed instructions you can look here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/#65-classes
     |
-    */
+     */
 
     'classes_body' => '',
     'classes_brand' => '',
@@ -104,7 +104,7 @@ return [
     | For more detailed instructions you can look here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/#66-sidebar
     |
-    */
+     */
 
     'sidebar_mini' => true,
     'sidebar_collapse' => false,
@@ -116,7 +116,7 @@ return [
     'sidebar_nav_accordion' => true,
     'sidebar_nav_animation_speed' => 300,
 
-    'layout_fixed_sidebar'=>true,
+    'layout_fixed_sidebar' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -128,7 +128,7 @@ return [
     | For more detailed instructions you can look here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/#67-control-sidebar-right-sidebar
     |
-    */
+     */
 
     'right_sidebar' => false,
     'right_sidebar_icon' => 'fas fa-cogs',
@@ -148,7 +148,7 @@ return [
     | For more detailed instructions you can look here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/#68-urls
     |
-    */
+     */
 
     'use_route_url' => false,
 
@@ -175,7 +175,7 @@ return [
     | For more detailed instructions you can look here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/#69-laravel-mix
     |
-    */
+     */
 
     'enabled_laravel_mix' => false,
 
@@ -189,208 +189,195 @@ return [
     | For more detailed instructions you can look here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/#610-menu
     |
-    */
+     */
 
     'menu' => [
         [
-          'text' => 'Duplicates',
-          'icon' => 'fas fa-fw fa-clone',
-          'can' =>  'Merge_Duplicates',
-          'submenu' => [
-            [
-                'text' => 'Patients',
-                'url'  => '/patients/duplicates',
-                'icon' => 'fas fa-fw fa-check-circle',
-            ],
-            [
-                'text' => 'Medical Cases',
-                'url'  => '/medicalcases/duplicates',
-                'icon' => 'fas fa-fw fa-pencil-alt',
-            ],
-          ],
+            'text' => 'Follow-Up',
+            'url' => '/follow-up',
+            'icon' => 'fas fa-fw fa-check-circle',
+            'can' => 'Access_Follow_Up_Panel',
         ],
         [
-          'text' => 'Follow-Up',
-          'url'  => '/followUp',
-          'icon' => 'fas fa-fw fa-check-circle',
-          'can' =>  'Merge_Duplicates'
+            'text' => 'Duplicates',
+            'url' => '/patients/duplicates',
+            'icon' => 'fas fa-fw fa-users',
+            'can' => 'Access_Duplicates_Panel',
         ],
-        // [
-        //   'text' => 'Duplicates',
-        //   'url'  => '/patients/duplicates',
-        //   'icon' => 'fas fa-fw fa-users',
-        //   'can' =>  'Merge_Duplicates'
-        // ],
         [
-          'text' => 'Facilities',
-          'url'  => '/facilities/index',
-          'icon' => 'fas fa-fw fa-cart-plus',
-          'can' =>  'View_Patient'
+            'text' => 'Facilities',
+            'url' => '/facilities',
+            'icon' => 'fas fa-fw fa-cart-plus',
+            'can' => 'Access_Facilities_Panel',
         ],
         [
             'text' => 'Health Facilities',
-            'url'  => '/health-facilities',
-            'icon' => 'fas fa-fw fa-cart-plus',
-            'can' =>  'Manage_Health_Facilities'
+            'url' => '/health-facilities',
+            'icon' => 'fas fa-fw fa-hospital',
+            'can' => 'Access_Health_Facilities_Panel',
         ],
         [
             'text' => 'Devices',
             'url' => '/devices',
-            'icon' => 'fas fa-fw fa-tablet-alt',
-            'can' =>  'Manage_Devices'
+            'icon' => 'fas fa-fw fa-tablet',
+            'can' => 'Access_Devices_Panel',
         ],
         [
-            'text' => 'Medical staff',
+            'text' => 'Medical Staff',
             'url' => '/medical-staff',
             'icon' => 'fas fa-fw fa-users',
-            'can' =>  'Manage_Medical_Staff'
+            'can' => 'Access_Medical_Staff_Panel',
         ],
         [
-            'text' => 'Patient list',
-            'url'  => '/patients',
+            'text' => 'Patients',
+            'url' => '/patients',
             'icon' => 'fas fa-fw fa-list',
-            'can' =>  'View_Patient'
+            'can' => 'Access_Patients_Panel',
         ],
 
         [
             'text' => 'Medical Cases',
-            'url'  => '/medicalcases',
+            'url' => '/medical-cases',
             'icon' => 'fas fa-fw fa-file',
-            'can' =>  'View_Case'
+            'can' => 'Access_Medical_Cases_Panel',
         ],
 
         [
-          'text' => 'Diagnosis List',
-          'url'  => '/exports/diagnosis_list',
-          'can' =>  'Export'
+            'text' => 'Diagnoses',
+            'url' => '/exports/diagnosis_list',
+            'can' => 'Access_Diagnoses_Panel',
         ],
         [
-          'text' => 'Drug List',
-          'url'  => '/exports/drug_list',
-          'can' =>  'Export'
+            'text' => 'Drugs',
+            'url' => '/exports/drug_list',
+            'can' => 'Access_Drugs_Panel',
         ],
         [
-          'text' => 'Exports',
-          'icon' => 'fas fa-fw fa-clone',
-          'can' =>  'Export',
-          'url'  => '/exports/exportZip',
-          // 'submenu' => [
-          //   [
-          //       'text' => 'Patients',
-          //       'url'  => '/export/patients',
-          //   ],
-          //   [
-          //       'text' => 'Medical Cases',
-          //       'url'  => '/export/medicalcases',
-          //   ],
-          //   [
-          //     'text'=>'Case Answers',
-          //     'url'=>'/export/cases_answers'
-          //   ],
-          //   [
-          //     'text' => 'Answers',
-          //     'url'  => '/export/answers',
-          //   ],
-          //   [
-          //       'text' => 'Diagnosis References',
-          //       'url'  => '/export/diagnosis_references',
-          //   ],
-          //   [
-          //     'text' => 'Custom Diagnoses',
-          //     'url'  => '/export/custom_diagnoses',
-          //   ],
-          //   [
-          //       'text' => 'Drug references',
-          //       'url'  => '/export/drug_references',
-          //   ],
-          //   [
-          //     'text' => 'Additional Drugs',
-          //     'url'  => '/export/additional_drugs',
-          //   ],
-          //   [
-          //       'text' => 'Management References',
-          //       'url'  => '/export/management_references',
-          //   ],
+            'text' => 'Exports',
+            'icon' => 'fas fa-fw fa-clone',
+            'can' => 'Access_Export_Panel',
+            'url' => '/exports/exportZip',
+            // 'submenu' => [
+            //   [
+            //       'text' => 'Patients',
+            //       'url'  => '/export/patients',
+            //   ],
+            //   [
+            //       'text' => 'Medical Cases',
+            //       'url'  => '/export/medicalcases',
+            //   ],
+            //   [
+            //     'text'=>'Case Answers',
+            //     'url'=>'/export/cases_answers'
+            //   ],
+            //   [
+            //     'text' => 'Answers',
+            //     'url'  => '/export/answers',
+            //   ],
+            //   [
+            //       'text' => 'Diagnosis References',
+            //       'url'  => '/export/diagnosis_references',
+            //   ],
+            //   [
+            //     'text' => 'Custom Diagnoses',
+            //     'url'  => '/export/custom_diagnoses',
+            //   ],
+            //   [
+            //       'text' => 'Drug references',
+            //       'url'  => '/export/drug_references',
+            //   ],
+            //   [
+            //     'text' => 'Additional Drugs',
+            //     'url'  => '/export/additional_drugs',
+            //   ],
+            //   [
+            //       'text' => 'Management References',
+            //       'url'  => '/export/management_references',
+            //   ],
 
+            //   [
+            //     'text' => 'Diagnoses',
+            //     'url'  => '/export/diagnoses',
+            //   ],
+            //   [
+            //       'text' => 'Drugs',
+            //       'url'  => '/export/drugs',
+            //   ],
+            //   [
+            //     'text' => 'Formulations',
+            //     'url'  => '/export/formulations',
+            //   ],
+            //   [
+            //       'text' => 'Managements',
+            //       'url'  => '/export/managements',
+            //   ],
 
-          //   [
-          //     'text' => 'Diagnoses',
-          //     'url'  => '/export/diagnoses',
-          //   ],
-          //   [
-          //       'text' => 'Drugs',
-          //       'url'  => '/export/drugs',
-          //   ],
-          //   [
-          //     'text' => 'Formulations',
-          //     'url'  => '/export/formulations',
-          //   ],
-          //   [
-          //       'text' => 'Managements',
-          //       'url'  => '/export/managements',
-          //   ],
+            //   [
+            //     'text' => 'Nodes',
+            //     'url'  => '/export/nodes',
+            //   ],
+            //   [
+            //       'text' => 'Answer Types',
+            //       'url'  => '/export/answer_types',
+            //   ],
+            //   [
+            //     'text' => 'Algorithms',
+            //     'url'  => '/export/algorithms',
+            //   ],
+            //   [
+            //       'text' => 'Algorithm Versions',
+            //       'url'  => '/export/algorithm_versions',
+            //   ],
 
-
-
-          //   [
-          //     'text' => 'Nodes',
-          //     'url'  => '/export/nodes',
-          //   ],
-          //   [
-          //       'text' => 'Answer Types',
-          //       'url'  => '/export/answer_types',
-          //   ],
-          //   [
-          //     'text' => 'Algorithms',
-          //     'url'  => '/export/algorithms',
-          //   ],
-          //   [
-          //       'text' => 'Algorithm Versions',
-          //       'url'  => '/export/algorithm_versions',
-          //   ],
-
-
-          // //   [
-          // //     'text' => 'Drug Results',
-          // //     'url'  => '/export/drug_analysis',
-          // // ],
-          // ],
+            // //   [
+            // //     'text' => 'Drug Results',
+            // //     'url'  => '/export/drug_analysis',
+            // // ],
+            // ],
         ],
-
+        [
+            'text' => 'Logs',
+            'url' => '/logs',
+            'icon' => 'fas fa-fw fa-file',
+            'can' => 'See_Logs',
+        ],
+        [
+            'text' => 'Audits',
+            'url' => '/audits',
+            'icon' => 'fas fa-fw fa-search',
+            'can' => 'See_Logs',
+        ],
         [
             'text' => 'profile',
-            'url'  => '/user/profile',
+            'url' => '/user/profile',
             'icon' => 'fas fa-fw fa-user',
-            'can' =>  'Reset_Own_Password'
+            'can' => 'Access_Profile_Panel',
         ],
         [
             'text' => 'change_password',
-            'url'  => '/user/password',
+            'url' => '/user/password',
             'icon' => 'fas fa-fw fa-lock',
-            'can' =>  'Reset_Own_Password'
+            'can' => 'Access_Reset_Own_Password_Panel',
         ],
         [
             'text' => 'Admin Corner',
             'icon' => 'fas fa-fw fa-cog',
-            'can' => 'Access_ADMIN_PANEL',
+            'can' => 'Access_Admin_Corner_Panel',
             'submenu' => [
                 [
                     'text' => 'Users Management',
-                    'url'  => '/users',
+                    'url' => '/users',
                     'icon' => 'fas fa-fw fa-users',
-                   //'can' => 'view users',
                 ],
-
 
                 [
                     'text' => 'Manage Roles',
-                    'url'  => '/roles',
+                    'url' => '/roles',
                     'icon' => 'fas fa-fw fa-pencil-alt',
-                   // 'can' => 'view users',
                 ],
+            ],
         ],
     ],
-],
 
     /*
     |--------------------------------------------------------------------------
@@ -402,7 +389,7 @@ return [
     | For more detailed instructions you can look here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/#611-menu-filters
     |
-    */
+     */
 
     'filters' => [
         JeroenNoten\LaravelAdminLte\Menu\Filters\HrefFilter::class,
@@ -424,7 +411,7 @@ return [
     | For more detailed instructions you can look here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/#611-plugins
     |
-    */
+     */
 
     'plugins' => [
         [

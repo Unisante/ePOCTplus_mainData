@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\User;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Laravel\Passport\Passport;
@@ -14,8 +16,14 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Device' => 'App\Policies\DevicePolicy',
+        'Spatie\Permission\Models\Role' => 'App\Policies\RolesPolicy',
+        'App\User' => 'App\Policies\UsersPolicy',
+        'App\Patient' => 'App\Policies\PatientsPolicy',
+        'App\MedicalCase' => 'App\Policies\MedicalCasesPolicy',
+        'App\Node' => 'App\Policies\QuestionsPolicy',
         'App\HealthFacility' => 'App\Policies\HealthFacilityPolicy',
+        'App\Device' => 'App\Policies\DevicePolicy',
+        'App\MedicalStaff' => 'App\Policies\MedicalStaffPolicy',
     ];
 
     /**

@@ -119,7 +119,7 @@
                   <div class="card-body">
                     @forelse( $files as $file)
                     <div class="col-md-10 mb-3">
-                      <a class="btn btn-outline-secondary" href="{{route('ExportsController.download',['file'=>$file->getFilename()])}}">
+                      <a class="btn btn-outline-secondary" href="{{route('exports.download',['file'=>$file->getFilename()])}}">
                         {{date('d/m/Y',$file->getMTime())}}
                         {{$file->getFilename()}}
                       </a>

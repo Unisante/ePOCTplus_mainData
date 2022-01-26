@@ -44,7 +44,7 @@
           </div>
           <div class="row justify-content-center mt-3">
             <div class="col-md-12">
-              {{-- <form action="{{route('MedicalCasesController@searchDuplicates')}}" method="POST" id="searchform" class="input-group mb-3">
+              {{-- <form action="{{route('medical-cases.searchDuplicates')}}" method="POST" id="searchform" class="input-group mb-3">
                 @csrf
                 <div class="input-group-prepend">
                   <button class="btn btn-outline-secondary" type="Submit">Search</button>

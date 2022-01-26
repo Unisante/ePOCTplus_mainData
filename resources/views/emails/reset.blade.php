@@ -8,7 +8,7 @@
                   <span>Please set the new password</span>
                 </div>
                 <div class="card-body">
-                    {{ Form::open(['route' => ['HomeController@makePassword']]) }}
+                    {{ Form::open(['route' => ['home.makePassword']]) }}
                       <div class="form-group row">
                         {{Form::label('password', 'Password', array('class' => 'col-md-4 col-form-label text-md-right'))}}
                         <div class="col-md-6">

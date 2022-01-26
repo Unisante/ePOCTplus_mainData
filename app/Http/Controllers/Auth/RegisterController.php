@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use DB;
-use Doctrine\Common\Cache\Psr6\InvalidArgument;
-use PharIo\Manifest\InvalidUrlException;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
@@ -37,6 +37,11 @@ class RegisterController extends Controller
      * @var string
      */
     protected $redirectTo = '/home';
+    protected function redirectTo()
+    {
+        Log::info("User registered.", ['user_name' => Auth::user()->name, 'user_id' => Auth::user()->id, 'user_email' => Auth::user()->email]);
+        return '/home';
+    }
 
     /**
      * Create a new controller instance.

@@ -10,8 +10,8 @@
         <div class="card-header d-flex">
           <span><h3>Patients</h3></span>
           <div class="ml-auto p-2">
-            {{-- <a href="{{route('PatientsController.patientIntoCsv')}}" class="btn btn-outline-dark">Export Csv</a>
-            <a href="{{route('PatientsController.patientIntoExcel')}}" class="btn btn-outline-dark"> Export Excel</a> --}}
+            {{-- <a href="{{route('patients.patientIntoCsv')}}" class="btn btn-outline-dark">Export Csv</a>
+            <a href="{{route('patients.patientIntoExcel')}}" class="btn btn-outline-dark"> Export Excel</a> --}}
           {{-- <button class="btn btn-outline-dark " onclick="comparePatients()"> Compare</button> --}}
           </div>
         </div>
@@ -55,7 +55,7 @@
                     @else
                     <td>Active</td>
                     @endif
-                    <td><a href="{{route('PatientsController.show',[$patient->id])}}" class="btn btn-outline-dark"> Show Patient</a></td>
+                    <td><a href="{{route('patients.show',[$patient->id])}}" class="btn btn-outline-dark"> Show Patient</a></td>
                   </tr>
                   @endforeach
                 </tbody>

@@ -61,6 +61,6 @@ class MedicalCasesExport extends Command
           ++$nbMedicalCase;
         });
       }
-      Log::info($nbMedicalCase . " medical case(s) dispatch for export");
+      Log::info($nbMedicalCase . " medical case(s) dispatch for export.");
     }
 }

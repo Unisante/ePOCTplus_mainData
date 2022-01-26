@@ -28,7 +28,7 @@
                     <p id="display">You want to delete patient id <span id="setId1"></span> ?</p>
                   </div>
                   <div class="modal-footer">
-                  <form action="{{route('PatientsController@destroy')}}" method="POST">
+                  <form action="{{route('patients.destroy', 0)}}" method="POST">
                       @csrf
                       <input id="patient_id" type="text" name="patient_id"  hidden>
                       <button type="submit" class="btn btn-primary" >Save changes</button>
@@ -41,7 +41,7 @@
           </div>
           <div class="row justify-content-center">
             <div class="col-md-12">
-              <form action="{{route('PatientsController@searchDuplicates')}}" method="POST" id="searchform" >
+              <form action="{{route('patients.searchDuplicates')}}" method="POST" id="searchform" >
                 @csrf
                 <div class="row">
                 {{-- <div class="col-md-4"></div> --}}

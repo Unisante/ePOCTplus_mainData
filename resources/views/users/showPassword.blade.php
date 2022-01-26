@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'AdminLTE')
+
 
 @section('content_header')
 @stop
@@ -38,7 +38,7 @@
     </div>
 
     <div class="col-md-8 offset-md-2">
-      <form action="{{route('UsersController@changePassword')}}" method="POST" id="passwordChange">
+      <form action="{{route('users.changePassword')}}" method="POST" id="passwordChange">
         {!! csrf_field() !!}
         <div class="form-group row">
           <label for="name" class="col-md-5 col-form-label text-md-right">Enter Current Password<span class="required"></span></label>

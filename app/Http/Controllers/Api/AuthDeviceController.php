@@ -9,6 +9,7 @@ use App\Http\Resources\Device as DeviceResource;
 use App\Services\AlgorithmService;
 use App\Services\DeviceService;
 use Illuminate\Http\Request;
+use ZipArchive;
 
 class AuthDeviceController extends Controller
 {
@@ -41,7 +42,13 @@ class AuthDeviceController extends Controller
         $alg = $this->algorithmService->getAlgorithmJsonForDevice($device);
 
         if ($json_version < $alg["json_version"] || $json_version == null) {
-            return response()->json($alg["algo"]->medal_r_json);
+            $zip = new ZipArchive();
+            $res = $zip->open('algo.zip', ZipArchive::CREATE);
+            if ($res === TRUE) {
+                $zip->addFromString('content.json', json_encode($alg["algo"]->medal_r_json));
+            }
+            $zip->close();
+            return response()->download("algo.zip")->deleteFileAfterSend();
         } else {
             return response()->noContent();
         }

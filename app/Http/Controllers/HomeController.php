@@ -10,6 +10,7 @@ use App\User;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 
@@ -33,7 +34,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-
         $data = array(
             'currentUser' => Auth::user(),
             'userCount' => User::count(),
@@ -41,6 +41,47 @@ class HomeController extends Controller
             'patientCount' => Patient::count(),
         );
         return view('home')->with($data);
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $email = Str::lower($request->email);
+        $userNotIn = User::where('email', $email)->doesntExist();
+        if ($userNotIn) {
+            $message = "Email doesn't exist in main data, please contact the admin.";
+            Log::error("Tried to send a request to change the password of user " . $request->email . ", but the given email does not exist.");
+            return Redirect::back()->with(['error' => $message]);
+        }
+
+        $random_password = Str::random(30);
+        while (PasswordReset::where('token', $random_password)->exists()) {
+            $random_password = Str::random(30);
+        }
+        $user = User::where('email', $email)->first();
+        $saveCode = PasswordReset::saveReset($user, $random_password);
+
+        if ($saveCode) {
+            $body = 'Click this link to reset your password';
+            dispatch(new ResetAccountPasswordJob($body, $email, $user->name, $random_password));
+            $message = "Email has been sent to you for password reset.";
+            Log::info("A request to change the password of user " . $request->email . " has been sent by email.");
+            return Redirect::back()->with(['success' => $message]);
+        }
+
+        $message = "Something went wrong.";
+        Log::error("Tried to send a request to change the password of user " . $request->email . ", but something went wrong.");
+        return Redirect::back()->with(['error' => $message]);
+    }
+
+    public function checkToken($id, Request $request)
+    {
+        $code_exist = PasswordReset::where('token', $id)->exists();
+        $request->session()->put('reset_token', $id);
+        if ($code_exist) {
+            return view('emails.reset')->with(['token' => $id]);
+        }
+
+        return view('errors.404');
     }
 
     public function reauthenticate(Request $request)
@@ -74,37 +115,6 @@ class HomeController extends Controller
         ]);
     }
 
-    public function forgotPassword(Request $request)
-    {
-        $email = Str::lower($request->email);
-        $userNotIn = User::where('email', $email)->doesntExist();
-        if ($userNotIn) {
-            $message = "Email doesn't exist in main data, please contact the admin";
-            return Redirect::back()->with(['error' => $message]);
-        }
-        $random_password = Str::random(30);
-        while (PasswordReset::where('token', $random_password)->exists()) {
-            $random_password = Str::random(30);
-        }
-        $user = User::where('email', $email)->first();
-        $saveCode = PasswordReset::saveReset($user, $random_password);
-
-        if ($saveCode) {
-            $body = 'Click this link to reset your password';
-            dispatch(new ResetAccountPasswordJob($body, $email, $user->name, $random_password));
-            $message = "Email has been sent to you for password reset";
-            return Redirect::back()->with(['success' => $message]);
-        }
-    }
-    public function checkToken($id, Request $request)
-    {
-        $code_exist = PasswordReset::where('token', $id)->exists();
-        $request->session()->put('reset_token', $id);
-        if ($code_exist) {
-            return view('emails.reset')->with(['token' => $id]);
-        }
-        return view('errors.404');
-    }
     public function makePassword(Request $request)
     {
         $token = $request->session()->get('reset_token');
@@ -118,15 +128,15 @@ class HomeController extends Controller
 
         if ($user) {
             $user_to_log = User::where('email', $code->email)->first();
+            Log::info("The password of user " . $code->email . " has been changed.");
             if (Auth::attempt(['email' => $user_to_log->email, 'password' => $user_to_log->password])) {
-                return redirect()->action(
-                    'HomeController@index'
-                );
+                return redirect()->action('HomeController@index');
             }
             return redirect('/');
-        } else {
-            $message = "Something went Wrong,please retry or contact the administrator for help";
-            return Redirect::back()->with(['error' => $message]);
         }
+
+        $message = "Something went wrong, please retry or contact the administrator for help.";
+        Log::error("Tried to change the password of user " . $user->email . ", but something went wrong.");
+        return Redirect::back()->with(['error' => $message]);
     }
 }

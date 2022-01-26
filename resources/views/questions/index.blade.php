@@ -30,7 +30,7 @@
                   <tr>
                     <td>{{$question->id}}</td>
                     <td>{{$question->label}}</td>
-                    <td><a href="{{route('QuestionsController@show',[$question->id])}}" class="btn btn-outline-dark"> Show question</a></td>
+                    <td><a href="{{route('questions.show',[$question->id])}}" class="btn btn-outline-dark"> Show question</a></td>
                   </tr>
                   @endforeach
                 </tbody>

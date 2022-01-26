@@ -25,6 +25,8 @@ return [
         'answer_types' => 'answer_types.csv',
         'formulations' => 'formulations.csv',
         'answers' => 'answers.csv',
+        'health_facilities' => 'health_facilities.csv',
+        'devices' => 'devices.csv',
     ],
 
     'folder_separated' => 'separated/',
@@ -255,6 +257,37 @@ return [
             'dyn_ans_created_at' => 'created_at',
             'dyn_ans_updated_at' => 'updated_at',
         ],
+
+        'health_facility' => [
+            'dyn_hf_id' => 'id',
+            'dyn_hf_group_id' => 'group_id',
+            'dyn_hf_name' => 'name',
+            'dyn_hf_long' => 'long',
+            'dyn_hf_lat' => 'lat',
+            'dyn_hf_hf_mode' => 'hf_mode',
+            'dyn_hf_country' => 'country',
+            'dyn_hf_area' => 'area',
+            'dyn_hf_version_json_id' => 'version_json_id',
+            'dyn_hf_created_at' => 'created_at',
+            'dyn_hf_updated_at' => 'updated_at',
+        ],
+        'device' => [
+            'dyn_device_id' => 'id',
+            'dyn_device_name' => 'name',
+            'dyn_device_type' => 'type',
+            'dyn_device_mac_address' => 'mac_address',
+            'dyn_device_model' => 'model',
+            'dyn_device_brand' => 'brand',
+            'dyn_device_os' => 'os',
+            'dyn_device_os_version' => 'os_version',
+            'dyn_device_redirect' => 'redirect',
+            'dyn_device_status' => 'status',
+            'dyn_device_user_id' => 'user_id',
+            'dyn_device_health_facility_id' => 'health_facility_id',
+            'dyn_device_last_seen' => 'last_seen',
+            'dyn_device_created_at' => 'created_at',
+            'dyn_device_updated_at' => 'updated_at',
+        ],
     ],
 
     'flat' => [
@@ -297,12 +330,21 @@ return [
 
             'health_facility' => [
                 'dyn_hfa_id' => 'health_facility_id',
+                'dyn_hfa_group_id' => 'health_facility_group_id',
                 'dyn_hfa_long' => 'health_facility_longitude',
                 'dyn_hfa_lat' => 'health_facility_latitude',
                 'dyn_hfa_hf_mode' => 'health_facility_hf_mode',
                 'dyn_hfa_name' => 'health_facility_name',
                 'dyn_hfa_country' => 'health_facility_country',
                 'dyn_hfa_area' => 'health_facility_area',
+            ],
+
+            'device' => [
+                'dyn_device_id' => 'device_id',
+                'dyn_device_name' => 'device_name',
+                'dyn_device_health_facility_id' => 'device_health_facility_id',
+                'dyn_device_mac_address' => 'device_mac_address',
+                'dyn_device_last_seen' => 'device_last_seen',
             ],
 
             'version' => [

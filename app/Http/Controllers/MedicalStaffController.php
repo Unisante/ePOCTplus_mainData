@@ -18,7 +18,7 @@ class MedicalStaffController extends Controller
     public function __construct(MedicalStaffService $medicalStaffService)
     {
         $this->medicalStaffService = $medicalStaffService;
-        $this->middleware('can:Manage_Medical_Staff');
+        $this->authorizeResource(MedicalStaff::class);
     }
 
     /**

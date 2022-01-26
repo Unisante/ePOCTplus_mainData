@@ -30,7 +30,7 @@
                     <p id="display">You want to mark this MedicalCase?.This will inturn remove its follow up from Redcap  </p>
                   </div>
                   <div class="modal-footer">
-                    <form action="{{route('MedicalCasesController@deduplicate_redcap')}}" method="POST">
+                    <form action="{{route('medical-cases.destroy')}}" method="POST">
                       @csrf
                       <input id="medicalcase_id" type="text" name="medicalc_id"  hidden>
                       <button type="submit" class="btn btn-primary" >Save changes</button>
@@ -43,8 +43,8 @@
             </div>
           </div>
           <div class="row justify-content-center mt-3">
-            <div class="col-md-12">
-              {{-- <form action="{{route('MedicalCasesController@searchDuplicates')}}" method="POST" id="searchform" class="input-group mb-3">
+            <div class="col-md-10">
+              <form action="{{route('medical-cases.searchDuplicates')}}" method="POST" id="searchform" class="input-group mb-3">
                 @csrf
                 <div class="input-group-prepend">
                   <button class="btn btn-outline-secondary" type="Submit">Search</button>

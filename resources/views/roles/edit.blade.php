@@ -29,18 +29,18 @@
   {{ method_field('patch') }}
   <input name="_method" type="hidden" value="PUT">
   <input name="do" id="addOrUpdate" type="hidden">
-  <div class="row">
+  <div class="row h-100">
     <div class="col-xs-12 col-sm-12 col-md-12">
       <div class="form-group">
         <strong>Name:</strong>
-        <input type="text" name="name" class="form-control" value="{{ old('name', optional($role)->name) }}"
+        <input type="text" name="name" class="form-control" value="{{ old('name', optional($role)->name) }}">
       </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
       <div class="form-group">
         <strong>Permission:</strong>
         <br/>
-        <select data-placeholder="Select Permissions" class="form-control tagsselector" name="permission[]" multiple="multiple">
+        <select data-placeholder="Select Permissions" class="form-control tagsselector h-100" name="permission[]" multiple="multiple" style="height: 475px!important;">
           @foreach($permission as $value)
           <option value="{{ $value->id }}"  {{ $role->permissions->contains($value->id) ? 'selected' : '' }}>{{ $value->name }}</option>
           <br/>
