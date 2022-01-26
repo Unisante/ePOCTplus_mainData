@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\HealthFacility;
 use App\Services\SaveCaseService;
 use App\Version;
 use Illuminate\Console\Command;
@@ -41,7 +42,11 @@ class UpdateVersions extends Command
     {
         $saveCaseService = new SaveCaseService;
         Version::all()->each(function ($version) use ($saveCaseService) {
-            $data = $saveCaseService->getVersionData('', $version->medal_c_id);
+            $hf = HealthFacility::find($version->health_facility_id);
+            if (!$hf) {
+                return true;
+            }
+            $data = $saveCaseService->getVersionData($hf, $version->medal_c_id);
             $versionData = $data['medal_r_json'];
             $configData = $saveCaseService->getPatientConfigData($version->medal_c_id);
             $version = $saveCaseService->updateVersion($versionData);

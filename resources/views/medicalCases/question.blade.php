@@ -7,7 +7,7 @@
   <div class="row justify-content-center">
     <div class="col-md-12">
       <div class="card">
-      <div class="card-header"><a href="{{route('MedicalCasesController.show',[$medicalCase->id])}}" class="btn btn-outline-dark"> Back</a></div>
+      <div class="card-header"><a href="{{route('medical-cases.show',[$medicalCase->id])}}" class="btn btn-outline-dark"> Back</a></div>
         <div class="card-body">
           @if (session('status'))
           <div class="alert alert-success" role="alert">
@@ -54,7 +54,7 @@
                       <span>No Description was given</span>
                       @endif
                     </div>
-                    {{ Form::open(['route' => ['MedicalCaseAnswersController.update',$medicalCase,$question->id]]) }}
+                    {{ Form::open(['route' => ['medical-cases.update',$medicalCase,$question->id]]) }}
                     <div class="input-group pl-3">
                       <div class="input-group-prepend">
                         {{Form::label('answer', 'Answer', array('class' => 'input-group-text'))}}

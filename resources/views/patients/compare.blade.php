@@ -6,7 +6,7 @@
   <div class="row justify-content-center">
     <div class="col-md-12">
       <div class="card">
-        <div class="card-header"><a href="{{route('Patients.index')}}" class="btn btn-outline-dark"> Back</a></div>
+        <div class="card-header"><a href="{{route('patients.index')}}" class="btn btn-outline-dark"> Back</a></div>
         <div class="card-body">
           @if (session('status'))
           <div class="alert alert-success" role="alert">

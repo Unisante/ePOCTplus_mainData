@@ -31,9 +31,9 @@ class MedicalCaseAnswersController extends Controller
     }else{
       redirect()->back()->with('status', 'Something went wrong.');
     }
-    return redirect()->action(
-      'MedicalCasesController@show',
-      ['id' => $medicalCaseId]
+    return redirect()->route(
+      'medical-cases.show',
+      [$medicalCaseId]
     )->with('status','Answer is updated!');
   }
 }

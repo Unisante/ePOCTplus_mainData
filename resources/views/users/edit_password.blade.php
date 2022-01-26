@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'AdminLTE')
+
 
 @section('content_header')
 @stop
@@ -16,7 +16,7 @@
 <h3 align="center">Change Password </h3>
       <div class="row col-sm-12 col-md-12 col-lg-12" style="background:white; margin: 10px">
       <form method="GET" action="/update_password">
-     
+
                            {{csrf_field()}}
 
                            <div class="form-group row">
@@ -45,11 +45,11 @@
                                 <button type="submit" class="btn btn-success">
                                     Save
                                 </button>
-</form>  
-      </div> 
+</form>
+      </div>
 
-     </div> 
-    
+     </div>
+
 
 
         @stop

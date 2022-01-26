@@ -376,6 +376,52 @@ class ExportCsvSeparate extends ExportCsv
     }
 
     /**
+     * @param  $health_facility
+     * @return Collection hf data
+     */
+    protected static function getHealthFacilityData($health_facility)
+    {
+        return [
+            Config::get('csv.identifiers.health_facility.dyn_hf_id') => $health_facility->id,
+            Config::get('csv.identifiers.health_facility.dyn_hf_group_id') => $health_facility->group_id,
+            Config::get('csv.identifiers.health_facility.dyn_hf_name') => $health_facility->name,
+            Config::get('csv.identifiers.health_facility.dyn_hf_long') => $health_facility->long,
+            Config::get('csv.identifiers.health_facility.dyn_hf_lat') => $health_facility->lat,
+            Config::get('csv.identifiers.health_facility.dyn_hf_hf_mode') => $health_facility->hf_mode,
+            Config::get('csv.identifiers.health_facility.dyn_hf_country') => $health_facility->country,
+            Config::get('csv.identifiers.health_facility.dyn_hf_area') => $health_facility->area,
+            Config::get('csv.identifiers.health_facility.dyn_hf_version_json_id') => $health_facility->version_json_id,
+            Config::get('csv.identifiers.health_facility.dyn_hf_created_at') => $health_facility->created_at,
+            Config::get('csv.identifiers.health_facility.dyn_hf_updated_at') => $health_facility->updated_at,
+        ];
+    }
+
+    /**
+     * @param  $device
+     * @return Collection hf data
+     */
+    protected static function getDeviceData($device)
+    {
+        return [
+            Config::get('csv.identifiers.device.dyn_device_id') => $device->id,
+            Config::get('csv.identifiers.device.dyn_device_name') => $device->name,
+            Config::get('csv.identifiers.device.dyn_device_type') => $device->type,
+            Config::get('csv.identifiers.device.dyn_device_mac_address') => $device->mac_address,
+            Config::get('csv.identifiers.device.dyn_device_model') => $device->model,
+            Config::get('csv.identifiers.device.dyn_device_brand') => $device->brand,
+            Config::get('csv.identifiers.device.dyn_device_os') => $device->os,
+            Config::get('csv.identifiers.device.dyn_device_os_version') => $device->os_version,
+            Config::get('csv.identifiers.device.dyn_device_redirect') => $device->redirect,
+            Config::get('csv.identifiers.device.dyn_device_status') => $device->status,
+            Config::get('csv.identifiers.device.dyn_device_user_id') => $device->user_id,
+            Config::get('csv.identifiers.device.dyn_device_health_facility_id') => $device->health_facility_id,
+            Config::get('csv.identifiers.device.dyn_device_last_seen') => $device->last_seen,
+            Config::get('csv.identifiers.device.dyn_device_created_at') => $device->created_at,
+            Config::get('csv.identifiers.device.dyn_device_updated_at') => $device->updated_at,
+        ];
+    }
+
+    /**
      *  Adds a patient to the data array
      */
     protected function addPatientData(&$data, $patient)
@@ -519,6 +565,22 @@ class ExportCsvSeparate extends ExportCsv
         $data[$answer->id] = self::getAnswerData($answer, $is_identifiable);
     }
 
+    /**
+     *
+     */
+    protected function addHealthFacilityData(&$data, $health_facility)
+    {
+        $data[$health_facility->id] = self::getHealthFacilityData($health_facility);
+    }
+
+    /**
+     *
+     */
+    protected function addDeviceData(&$data, $device)
+    {
+        $data[$device->id] = self::getDeviceData($device);
+    }
+
     protected static function isSkippedMedicalCaseAnswer($medical_case_answer)
     {
         return ($medical_case_answer->node->category == "background_calculation" && $medical_case_answer->node->display_format != 'Reference')
@@ -554,6 +616,8 @@ class ExportCsvSeparate extends ExportCsv
         $answer_types_data = [];
         $formulations_data = [];
         $answers_data = [];
+        $health_facility_data = [];
+        $device_data = [];
 
         if ($this->chunk_key == 1) {
             $patients_data[] = $this->getAttributeList(Config::get('csv.identifiers.patient'));
@@ -574,6 +638,8 @@ class ExportCsvSeparate extends ExportCsv
             $answer_types_data[] = $this->getAttributeList(Config::get('csv.identifiers.answer_type'));
             $formulations_data[] = $this->getAttributeList(Config::get('csv.identifiers.formulation'));
             $answers_data[] = $this->getAttributeList(Config::get('csv.identifiers.answer'));
+            $health_facility_data[] = $this->getAttributeList(Config::get('csv.identifiers.health_facility'));
+            $device_data[] = $this->getAttributeList(Config::get('csv.identifiers.device'));
         }
 
         foreach ($this->medical_cases as $medical_case) {
@@ -602,6 +668,16 @@ class ExportCsvSeparate extends ExportCsv
                 foreach ($answers as $answer) {
                     $this->addAnswerData($answers_data, $answer, $is_identifiable);
                 }
+            }
+
+            $health_facility = $medical_case->patient->facility;
+            // get health facility
+            $this->addHealthFacilityData($health_facility_data, $health_facility);
+
+            $devices = $health_facility->devices;
+            // get devices
+            foreach ($devices as $device) {
+                $this->addDeviceData($device_data, $device);
             }
 
             $version = $medical_case->version;
@@ -696,6 +772,8 @@ class ExportCsvSeparate extends ExportCsv
             Config::get('csv.file_names.answer_types') => $answer_types_data,
             Config::get('csv.file_names.formulations') => $formulations_data,
             Config::get('csv.file_names.answers') => $answers_data,
+            Config::get('csv.file_names.health_facilities') => $health_facility_data,
+            Config::get('csv.file_names.devices') => $device_data,
         ];
     }
 

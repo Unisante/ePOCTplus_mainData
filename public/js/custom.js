@@ -22,7 +22,7 @@ function compareMedicalCases() {
     }
   }
   if(checkedValue.length == 2){
-    location.href = `/medicalCases/compare/${checkedValue[0]}/${checkedValue[1]}`;
+    location.href = `/medical-cases/compare/${checkedValue[0]}/${checkedValue[1]}`;
   }else{
     $("#modalCheckBoxMedical").modal('show');
   }

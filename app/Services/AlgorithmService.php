@@ -10,6 +10,7 @@ use App\Services\Http;
 use App\VersionJson;
 use Exception;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 
 class AlgorithmService
 {
@@ -44,8 +45,10 @@ class AlgorithmService
         $versionJson = VersionJson::where('health_facility_id', $healthFacility->id)->first();
         if ($versionJson == null) {
             $this->addVersion($healthFacility, $version);
+            Log::info("Adding version");
         } else {
             $this->updateVersion($versionJson, $version);
+            Log::info("Updating version");
         }
     }
 
@@ -61,6 +64,12 @@ class AlgorithmService
 
     public function updateVersion(VersionJson $versionJson, $version)
     {
+        // If we are up to date, nothing to do
+        if (!$version) {
+            Log::info("Version is up to date");
+            return;
+        }
+
         $versionJson->json = json_encode(['medal_r_json' => $version['medal_r_json']]);
         $versionJson->save();
     }
@@ -118,13 +127,22 @@ class AlgorithmService
 
     public function updateAccesses(HealthFacility $healthFacility, $chosenAlgorithmID, $version)
     {
-        $access = HealthFacilityAccess::where('health_facility_id', $healthFacility->id)->
-            where('access', true)->
-            first();
+        // If we are up to date, nothing to do
+        if (!$version) {
+            Log::info("Access is already up to date");
+            return;
+        }
+
+        $access = HealthFacilityAccess::where('health_facility_id', $healthFacility->id)
+            ->where('access', true)
+            ->first();
+
         if ($access != null) {
             $this->archiveAccess($access);
         }
+
         $this->newAccess($healthFacility, $chosenAlgorithmID, $version);
+
     }
 
     private function newAccess(HealthFacility $healthFacility, $chosenAlgorithmID, $version)
@@ -138,6 +156,7 @@ class AlgorithmService
         $access->health_facility_id = $healthFacility->id;
         $access->medal_c_algorithm_id = $chosenAlgorithmID;
         $access->save();
+        Log::info("Successfully created Access " . $access->id);
     }
 
     private function archiveAccess(HealthFacilityAccess $access)

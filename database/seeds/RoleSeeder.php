@@ -1,13 +1,12 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use App\User;
-use Illuminate\Support\Facades\Hash;
 
 class RoleSeeder extends Seeder
 {
+
     /**
      * Run the database seeds.
      *
@@ -15,100 +14,158 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
+        // Delete all role data
+        foreach (Role::all() as $role) {
+            $role->delete();
+        }
+
+        // Delete all role's permissions
+        foreach (DB::table('role_has_permissions')->get() as $role_has_permission) {
+            $role_has_permission->delete();
+        }
+
         // create admin role
-        $admin=Role::firstOrCreate(['name'=>'Administrator']);
-        $admin->givePermissionTo('Access_ADMIN_PANEL');
-        $admin->givePermissionTo('Create_User');
-        $admin->givePermissionTo('Delete_User');
-        $admin->givePermissionTo('Reset_User_Password');
-        $admin->givePermissionTo('Reset_Own_Password');
-        $admin->givePermissionTo('View_Audit_Trail');
-        $admin->givePermissionTo('Manage_Health_Facilities');
-        $admin->givePermissionTo('Manage_Devices');
-        $admin->givePermissionTo('Manage_Medical_Staff');
+        $this->createUser('Administrator', [
+            'Access_Admin_Corner_Panel',
+            'Access_Reset_Own_Password_Panel',
+            'Access_Profile_Panel',
+            'See_Logs',
+            'Manage_Roles',
+            'Access_ADMIN_PANEL',
+            'Create_User',
+            'Delete_User',
+            // Admin has by default all other rights.
+        ]);
 
         // create data manager role
-        $admin->givePermissionTo('See_Sensitive_Data');
+        $this->createUser('Data Manager', [
+            'Access_Reset_Own_Password_Panel',
+            'Access_Profile_Panel',
+            'Access_Medical_Cases_Panel',
+            'Access_Patients_Panel',
+            'Access_Export_Panel',
+            'Access_Drugs_Panel',
+            'Access_Diagnoses_Panel',
+            'Access_Health_Facilities_Panel',
+            'Access_Facilities_Panel',
+            'Access_Devices_Panel',
+            'Access_Medical_Staff_Panel',
+            'Access_Duplicates_Panel',
+            'Access_Follow_Up_Panel',
 
-        // create data manager role
-        $data_manager=Role::firstOrCreate(['name'=>'Data Manager']);
-        $data_manager->givePermissionTo('View_Patient');
-        $data_manager->givePermissionTo('View_Case');
-        $data_manager->givePermissionTo('Edit_Patient');
-        $data_manager->givePermissionTo('Edit_Case');
-        $data_manager->givePermissionTo('Merge_Duplicates');
-        $data_manager->givePermissionTo('Export');
-        $data_manager->givePermissionTo('Delete_Patient');
-        $data_manager->givePermissionTo('Delete_Case');
-        $data_manager->givePermissionTo('Reset_User_Password');
-        $data_manager->givePermissionTo('Reset_Own_Password');
+            'Reset_Own_Password',
 
-        // create statictician role
-        $statistician=Role::firstOrCreate(['name'=>'Statistician']);
-        $data_manager->givePermissionTo('See_Sensitive_Data');
+            'Manage_Patients',
+            'Manage_Patients_Merge_Duplicates',
+            'Manage_Medical_Cases',
+            'View_Follow_Ups',
+            'View_Questions',
+            'Manage_Health_Facilities',
+            'Manage_Medical_Staff',
+            'Manage_Devices',
+
+            'Export',
+            'See_Sensitive_Data',
+        ]);
 
         // create project viewer role
-        $project_viewer=Role::firstOrCreate(['name'=>'Project Viewer']);
-        $project_viewer->givePermissionTo('View_Patient');
-        $project_viewer->givePermissionTo('View_Case');
-        $project_viewer->givePermissionTo('Export');
-        $project_viewer->givePermissionTo('Reset_User_Password');
-        $project_viewer->givePermissionTo('Reset_Own_Password');
+        $this->createUser('Project Viewer', [
+            'Access_Reset_Own_Password_Panel',
+            'Access_Profile_Panel',
+            'Access_Medical_Cases_Panel',
+            'Access_Patients_Panel',
+            'Access_Export_Panel',
 
-        // create statictician role
-        $statistician = Role::firstOrCreate(['name'=>'Statistician']);
-        $statistician->givePermissionTo('View_Patient');
-        $statistician->givePermissionTo('View_Case');
-        $statistician->givePermissionTo('Reset_User_Password');
-        $statistician->givePermissionTo('Reset_Own_Password');
-        $statistician->givePermissionTo('See_Sensitive_Data');
+            'Reset_Own_Password',
 
+            'View_Patients',
+            'View_Medical_Cases',
+            'View_Follow_Ups',
+            'View_Questions',
+            'View_Health_Facilities',
+            'View_Medical_Staff',
+            'View_Devices',
+
+            'Export',
+        ]);
+
+        // create statistician role
+        $this->createUser('Statistician', [
+            'Access_Reset_Own_Password_Panel',
+            'Access_Profile_Panel',
+            'Access_Medical_Cases_Panel',
+            'Access_Patients_Panel',
+            'Access_Export_Panel',
+
+            'Reset_Own_Password',
+
+            'View_Patients',
+            'View_Medical_Cases',
+
+            'Export',
+            'See_Sensitive_Data',
+        ]);
 
         // create logistician role
-        $logistician=Role::firstOrCreate(['name'=>'Logistician']);
-        $logistician->givePermissionTo('Manage_Health_Facilities');
-        $logistician->givePermissionTo('Manage_Devices');
-        $logistician->givePermissionTo('Manage_Medical_Staff');
-        $logistician->givePermissionTo('Reset_User_Password');
-        $logistician->givePermissionTo('Reset_Own_Password');
+        $this->createUser('Logistician', [
+            'Access_Reset_Own_Password_Panel',
+            'Access_Profile_Panel',
+            'Access_Health_Facilities_Panel',
+            'Access_Facilities_Panel',
+            'Access_Devices_Panel',
+            'Access_Medical_Staff_Panel',
+            'Access_Export_Panel',
 
-        // create admin user
-        $admin_user = User::firstOrCreate([
-          'name'=>'Admin',
-          'email'=>'admin@dynamic.com',
-          'password'=>Hash::make('admin')
-        ]);
-        $admin_user->assignRole($admin);
+            'Reset_Own_Password',
 
-        // create data manager user
-        $data_manager_user = User::firstOrCreate([
-          'name'=>'Data Manager',
-          'email'=>'datamanager@dynamic.com',
-          'password'=>Hash::make('datamanager')
-        ]);
-        $data_manager_user->assignRole($data_manager);
+            'Manage_Health_Facilities',
+            'Manage_Devices',
+            'Manage_Medical_Staff',
 
-        // create statistician user
-        $statistician_user = User::firstOrCreate([
-          'name'=>'statistician',
-          'email'=>'statistician@dynamic.com',
-          'password'=>Hash::make('statistician')
+            'Export',
+            'See_Sensitive_Data',
         ]);
-        $statistician_user->assignRole($statistician);
+    }
 
-        // create logistician role
-        $logistician = Role::firstOrCreate(['name'=>'Logistician']);
-        $logistician->givePermissionTo('Manage_Health_Facilities');
-        $logistician->givePermissionTo('Manage_Devices');
-        $logistician->givePermissionTo('Reset_User_Password');
-        $logistician->givePermissionTo('Reset_Own_Password');
-        $logistician->givePermissionTo('See_Sensitive_Data');
-        // create logistician user
-        $logistician_user = User::firstOrCreate([
-          'name'=>'logistician',
-          'email'=>'logistician@dynamic.com',
-          'password'=>Hash::make('logistician')
+    private function addPermissionToRole($permission_name, $role_id)
+    {
+        $permission = DB::table('permissions')->where('name', '=', $permission_name)->first();
+        if ($permission === null) {
+            $permission_id = DB::table('permissions')->insertGetId([
+                'name' => $permission_name,
+                'guard_name' => 'web',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        } else {
+            $permission_id = $permission->id;
+        }
+
+        DB::table('role_has_permissions')->insert([
+            'permission_id' => $permission_id,
+            'role_id' => $role_id,
         ]);
-        $logistician_user->assignRole($logistician);
+    }
+
+    private function createUser($name, $permission_names)
+    {
+        $role = DB::table('roles')->where('name', '=', $name)->first();
+        if ($role !== null) {
+            return;
+        }
+
+        # Add role if it does not exist
+        $user_id = DB::table('roles')->insertGetId([
+            'name' => $name,
+            'guard_name' => 'web',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        # Add permissions
+        foreach ($permission_names as $permission_name) {
+            $this->addPermissionToRole($permission_name, $user_id);
+        }
+        $this->command->info('Created role ' . $name . '.');
     }
 }

@@ -88,7 +88,7 @@ abstract class ExportCsv extends ExportService
     }
 
     /**
-     * @param DiagnosisReference diagnosis_reference, a diagnosis_reference
+     * @param DiagnosisReference diagnosis_reference, a diagnosis reference
      * @return boolean true if the diagnosis reference should be skipped, false otherwise
      */
     protected static function isSkippedDiagnosisReference($diagnosis_reference)
@@ -129,7 +129,7 @@ abstract class ExportCsv extends ExportService
         $this->to_date = $to_date;
         $this->chunk_key = $chunk_key;
 
-        // parent::__construct($this->getFilteredMedicalCases($medical_cases));
+        parent::__construct($medical_cases);
     }
 
     /**

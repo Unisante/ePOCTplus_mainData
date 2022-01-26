@@ -44,14 +44,14 @@ class ReloadFailedCases extends Command
         $fileCount = count($failedFiles);
         if ($fileCount == 0) {
             $this->info("No cases to reload");
-        } else {
-            $this->info("Reloading $fileCount files...");
+            return;
         }
 
+        $this->info("Reloading $fileCount files...");
         foreach($failedFiles as $failedJson) {
-            
             $filename = array_slice(explode('/', $failedJson), -1)[0];
             ProcessCaseJson::dispatch(env('JSON_FAILURE_DIR'), $filename);
         }
+        Log::info($fileCount . " failed case(s) reloaded.");
     }
 }

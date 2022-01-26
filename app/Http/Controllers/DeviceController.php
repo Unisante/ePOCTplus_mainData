@@ -6,6 +6,7 @@ use App\Device;
 use App\Services\DeviceService;
 use App\Http\Requests\DeviceRequest;
 use App\Http\Resources\Device as DeviceResource;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -17,7 +18,7 @@ class DeviceController extends Controller
     public function __construct(DeviceService $deviceService)
     {
         $this->deviceService = $deviceService;
-        $this->middleware('can:Manage_Devices');
+        $this->authorizeResource(Device::class);
 
     }
 
@@ -76,6 +77,7 @@ class DeviceController extends Controller
     {
         $validated = $request->validated();
         $device = $this->deviceService->add($validated);
+        Log::info("User with id " . Auth::user()->id . " created a new device.", ["device" => $device]);
         return response()->json(new DeviceResource($device));
     }
 
@@ -88,8 +90,10 @@ class DeviceController extends Controller
      */
     public function update(DeviceRequest $request, Device $device)
     {
+        $old_device = clone $device;
         $validated = $request->validated();
-        $device = $this->deviceService->update($validated,$device);
+        $device = $this->deviceService->update($validated, $device);
+        Log::info("User with id " . Auth::user()->id . " updated a device.", ["old_device" => $old_device, "new_device" => $device]);
         return response()->json(new DeviceResource($device));
     }
 

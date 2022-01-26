@@ -8,7 +8,7 @@
                   <span>Please set the email you use in Main Data</span>
                 </div>
                 <div class="card-body">
-                    {{ Form::open(['route' => ['HomeController@forgotPassword']]) }}
+                    {{ Form::open(['route' => ['home.forgotPassword']]) }}
                       <div class="form-group row">
                         {{Form::label('email', 'Email', array('class' => 'col-md-4 col-form-label text-md-right'))}}
                         <div class="col-md-6">
