@@ -62,9 +62,9 @@ class FixCreatedAtValue extends Command
 
         }
         if ($this->argument('dry-run') == 0) {
-            $this->info($i . ' patients updated to agreed');
+            $this->info($i . ' patients createdAt key updated');
         } else {
-            $this->info($i . ' patients would have been updated to agreed');
+            $this->info($i . ' patients createdAt key would have been updated');
         }
     }
 }
