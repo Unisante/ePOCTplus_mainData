@@ -50,13 +50,15 @@ class FixCreatedAtValue extends Command
             $data = json_decode(Storage::get($json, true), true);
 
             if ($data['patient']['created_at']) {
-                $data['patient']['createdAt'] = $data['patient']['created_at'];
-                $data['patient']['updatedAt'] = $data['patient']['updated_at'];
-                unset(['patient']['created_at']);
-                unset(['patient']['updated_at']);
-                $newJsonString = json_encode($data);
-                file_put_contents(storage_path("app/" . $json), $newJsonString);
-                Log::info("File " . $filename . " updated");
+                if ($this->argument('dry-run') == 0) {
+                    $data['patient']['createdAt'] = $data['patient']['created_at'];
+                    $data['patient']['updatedAt'] = $data['patient']['updated_at'];
+                    unset($data['patient']['created_at']);
+                    unset($data['patient']['updated_at']);
+                    $newJsonString = json_encode($data);
+                    file_put_contents(storage_path("app/" . $json), $newJsonString);
+                    Log::info("File " . $filename . " updated");
+                }
                 $i++;
             }
 
