@@ -40,7 +40,6 @@ class HomeController extends Controller
             'mdCases' => MedicalCase::count(),
             'patientCount' => Patient::count(),
         );
-
         return view('home')->with($data);
     }
 

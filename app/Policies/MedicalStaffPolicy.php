@@ -14,8 +14,9 @@ class MedicalStaffPolicy
     /**
      * Called before any other authorize method.
      */
-    public function before(User $user, $ability){
-        if($user->isAdministrator()){
+    public function before(User $user, $ability)
+    {
+        if ($user->isAdministrator()) {
             return true;
         }
     }
@@ -29,8 +30,8 @@ class MedicalStaffPolicy
     public function viewAny(User $user)
     {
         return $user->can('View_Medical_Staff') || $user->can('Manage_Medical_Staff')
-            ? Response::allow()
-            : Response::deny('You are not authorized to see medical staff.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to see medical staff.');
     }
 
     /**
@@ -43,8 +44,8 @@ class MedicalStaffPolicy
     public function view(User $user, MedicalStaff $medicalStaff)
     {
         return $user->can('View_Medical_Staff') || $user->can('Manage_Medical_Staff')
-            ? Response::allow()
-            : Response::deny('You are not authorized to see this medical staff.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to see this medical staff.');
     }
 
     /**
@@ -56,8 +57,8 @@ class MedicalStaffPolicy
     public function create(User $user)
     {
         return $user->can('Manage_Medical_Staff')
-            ? Response::allow()
-            : Response::deny('You are not authorized to create medical staff.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to create medical staff.');
     }
 
     /**
@@ -70,8 +71,8 @@ class MedicalStaffPolicy
     public function update(User $user, MedicalStaff $medicalStaff)
     {
         return $user->can('Manage_Medical_Staff')
-            ? Response::allow()
-            : Response::deny('You are not authorized to update medical staff.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to update medical staff.');
     }
 
     /**
@@ -84,8 +85,8 @@ class MedicalStaffPolicy
     public function delete(User $user, MedicalStaff $medicalStaff)
     {
         return $user->can('Manage_Medical_Staff')
-            ? Response::allow()
-            : Response::deny('You are not authorized to delete medical staff.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to delete medical staff.');
     }
 
     /**
@@ -98,8 +99,8 @@ class MedicalStaffPolicy
     public function restore(User $user, MedicalStaff $medicalStaff)
     {
         return $user->can('Manage_Medical_Staff')
-            ? Response::allow()
-            : Response::deny('You are not authorized to restore medical staff.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to restore medical staff.');
     }
 
     /**
@@ -112,7 +113,7 @@ class MedicalStaffPolicy
     public function forceDelete(User $user, MedicalStaff $medicalStaff)
     {
         return $user->can('Manage_Medical_Staff')
-            ? Response::allow()
-            : Response::deny('You are not authorized to force delete medical staff.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to force delete medical staff.');
     }
 }
