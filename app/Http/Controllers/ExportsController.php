@@ -47,7 +47,7 @@ class ExportsController extends Controller
 
     private static function checkGateAllows()
     {
-        if (!Auth::user()->isAdministrator() && !Gate::allows('export', Auth::user())) {
+        if (!Gate::allows('Export', Auth::user())) {
             abort(403, 'You are not authorized to export data.');
         }
     }
