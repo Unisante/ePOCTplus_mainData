@@ -16,7 +16,7 @@ class TranslateDb extends Command
      *
      * @var string
      */
-    protected $signature = 'db:translate {dry-run=0}';
+    protected $signature = 'db:translate {language} {dry-run=0}';
 
     /**
      * The console command description.
@@ -45,13 +45,14 @@ class TranslateDb extends Command
         if ($this->argument('dry-run') == 1) {
             $this->info('Dry Run');
         }
-        $language = $this->choice(
-            'Please choose a language?',
-            ['en', 'fr']
-        );
+        $language = $this->argument('language');
         if (!$language) {
-            return;
+            $language = $this->choice(
+                'Please choose a language?',
+                ['en', 'fr']
+            );
         }
+
         $this->info("Starting the translation");
         $this->info(MedicalCase::count() . " medical cases");
 
