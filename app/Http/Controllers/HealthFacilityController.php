@@ -117,7 +117,7 @@ class HealthFacilityController extends Controller
      */
     public function manageDevices(HealthFacility $healthFacility)
     {
-        Gate::authorize('manageDevices', HealthFacility::class);
+        Gate::authorize('manageDevices', $healthFacility);
 
         $devices = DeviceResource::collection($healthFacility->devices);
         $unassignedDevices = DeviceResource::collection(Device::where('health_facility_id', '=', null)->get());
@@ -145,7 +145,7 @@ class HealthFacilityController extends Controller
     //Returns the list of algorithms available at medal-creator as well as the given health facility
     public function manageAlgorithms(HealthFacility $healthFacility)
     {
-        Gate::authorize('manageAlgorithms', HealthFacility::class);
+        Gate::authorize('manageAlgorithms', $healthFacility);
 
         $algorithms = $this->algorithmService->getAlgorithmsMetadata();
         return response()->json([
@@ -167,7 +167,7 @@ class HealthFacilityController extends Controller
 
     public function assignMedicalStaff(HealthFacility $health_facility, MedicalStaff $medical_staff)
     {
-        Gate::authorize('assignMedicalStaff', HealthFacility::class);
+        Gate::authorize('assignMedicalStaff', $health_facility);
 
         $medical_staff = $this->healthFacilityService->assignMedicalStaff($health_facility, $medical_staff);
         return response()->json(new MedicalStaffResource($medical_staff));
@@ -175,7 +175,7 @@ class HealthFacilityController extends Controller
 
     public function unassignMedicalStaff(HealthFacility $health_facility, MedicalStaff $medical_staff)
     {
-        Gate::authorize('unassignMedicalStaff', HealthFacility::class);
+        Gate::authorize('unassignMedicalStaff', $health_facility);
 
         $medical_staff = $this->healthFacilityService->unassignMedicalStaff($health_facility, $medical_staff);
         return response()->json(new MedicalStaffResource($medical_staff));
@@ -184,7 +184,7 @@ class HealthFacilityController extends Controller
     //Returns the algorithm version currently used by the health facility and the list of previously used versions
     public function accesses(HealthFacility $healthFacility)
     {
-        Gate::authorize('accesses', HealthFacility::class);
+        Gate::authorize('accesses', $healthFacility);
 
         $currentAccess = $this->algorithmService->getCurrentAccess($healthFacility);
         $archivedAccesses = $this->algorithmService->getArchivedAccesses($healthFacility);
@@ -204,15 +204,13 @@ class HealthFacilityController extends Controller
     //Fetches the list of versions for a specific algorithm from the medal-creator and returns it
     public function versions($algorithmCreatorID)
     {
-        Gate::authorize('versions', HealthFacility::class);
-
         $versions = $this->algorithmService->getVersionsMetadata($algorithmCreatorID);
         return response()->json($versions);
     }
 
     public function assignVersion(HealthFacility $healthFacility, $chosenAlgorithmID, $versionID)
     {
-        Gate::authorize('assignVersion', HealthFacility::class);
+        Gate::authorize('assignVersion', $healthFacility);
 
         $this->algorithmService->assignVersionToHealthFacility($healthFacility, $chosenAlgorithmID, $versionID);
         Log::info("User with id " . Auth::user()->id . " assigned a new version to a health facility.", ["health_facility" => $healthFacility, "version_id" => $versionID]);

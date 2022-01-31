@@ -175,20 +175,6 @@ class HealthFacilityPolicy
     }
 
     /**
-     * Determine whether the user can view health facilities' versions.
-     *
-     * @param  \App\User  $user
-     * @param  \App\HealthFacility  $healthFacility
-     * @return mixed
-     */
-    public function versions(User $user, HealthFacility $healthFacility)
-    {
-        return $user->can('Manage_Health_Facilities')
-        ? Response::allow()
-        : Response::deny('You are not autorized to view health facilities\' versions.');
-    }
-
-    /**
      * Determine whether the user can assign versions to health facilities.
      *
      * @param  \App\User  $user
@@ -234,10 +220,10 @@ class HealthFacilityPolicy
      * Determine whether the user can assign the medical staff.
      *
      * @param  \App\User  $user
-     * @param  \App\MedicalStaff  $medicalStaff
+     * @param  \App\HealthFacility  $healthFacility
      * @return mixed
      */
-    public function assignMedicalStaff(User $user, MedicalStaff $medicalStaff)
+    public function assignMedicalStaff(User $user, HealthFacility $healthFacility)
     {
         return $user->can('Manage_Medical_Staff')
         ? Response::allow()
@@ -248,10 +234,10 @@ class HealthFacilityPolicy
      * Determine whether the user can unassign the medical staff.
      *
      * @param  \App\User  $user
-     * @param  \App\MedicalStaff  $medicalStaff
+     * @param  \App\HealthFacility  $healthFacility
      * @return mixed
      */
-    public function unassignMedicalStaff(User $user, MedicalStaff $medicalStaff)
+    public function unassignMedicalStaff(User $user, HealthFacility $healthFacility)
     {
         return $user->can('Manage_Medical_Staff')
         ? Response::allow()
