@@ -233,11 +233,11 @@ class HealthFacilityPolicy
     /**
      * Determine whether the user can assign the medical staff.
      *
-     * @param  \App\HealthFacility  $user
+     * @param  \App\User  $user
      * @param  \App\MedicalStaff  $medicalStaff
      * @return mixed
      */
-    public function assignMedicalStaff(HealthFacility $user, MedicalStaff $medicalStaff)
+    public function assignMedicalStaff(User $user, MedicalStaff $medicalStaff)
     {
         return $user->can('Manage_Medical_Staff')
         ? Response::allow()
@@ -247,11 +247,11 @@ class HealthFacilityPolicy
     /**
      * Determine whether the user can unassign the medical staff.
      *
-     * @param  \App\HealthFacility  $user
+     * @param  \App\User  $user
      * @param  \App\MedicalStaff  $medicalStaff
      * @return mixed
      */
-    public function unassignMedicalStaff(HealthFacility $user, MedicalStaff $medicalStaff)
+    public function unassignMedicalStaff(User $user, MedicalStaff $medicalStaff)
     {
         return $user->can('Manage_Medical_Staff')
         ? Response::allow()
