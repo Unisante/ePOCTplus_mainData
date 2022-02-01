@@ -6,6 +6,7 @@ use App\Answer;
 use App\Diagnosis;
 use App\Drug;
 use App\MedicalCase;
+use App\Node;
 use App\VersionJson;
 use Illuminate\Console\Command;
 
@@ -112,12 +113,12 @@ class TranslateDb extends Command
                         $translated_label = $final_diagnose['label'][$language];
 
                         if ($this->argument('dry-run') == 0) {
-                            Diagnosis::where('diagnostic_id', $medal_c_id)->each(function (Diagnosis $diagnosis) use ($translated_label) {
+                            Diagnosis::where('medal_c_id', $medal_c_id)->each(function (Diagnosis $diagnosis) use ($translated_label) {
                                 $diagnosis->update(['label' => $translated_label]);
                                 $this->info($diagnosis->id . " updated");
                             });
                         } else {
-                            Diagnosis::where('diagnostic_id', $medal_c_id)->each(function (Diagnosis $diagnosis) use ($translated_label) {
+                            Diagnosis::where('medal_c_id', $medal_c_id)->each(function (Diagnosis $diagnosis) use ($translated_label) {
                                 $this->info($diagnosis->label);
                                 $this->warn($translated_label);
                             });
@@ -138,13 +139,13 @@ class TranslateDb extends Command
                         $translated_label = $node['label'][$language];
 
                         if ($this->argument('dry-run') == 0) {
-                            Answer::where('medal_c_id', $medal_c_id)->each(function (Answer $answer) use ($translated_label) {
-                                $answer->update(['label' => $translated_label]);
-                                $this->info($answer->id . " updated");
+                            Node::where('medal_c_id', $medal_c_id)->each(function (Node $node) use ($translated_label) {
+                                $node->update(['label' => $translated_label]);
+                                $this->info($node->id . " updated");
                             });
                         } else {
-                            Answer::where('medal_c_id', $medal_c_id)->each(function (Answer $answer) use ($translated_label) {
-                                $this->info($answer->label);
+                            Node::where('medal_c_id', $medal_c_id)->each(function (Node $node) use ($translated_label) {
+                                $this->info($node->label);
                                 $this->warn($translated_label);
                             });
 
