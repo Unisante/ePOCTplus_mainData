@@ -6,6 +6,7 @@ use App\Answer;
 use App\Diagnosis;
 use App\Drug;
 use App\MedicalCase;
+use App\Node;
 use App\VersionJson;
 use Illuminate\Console\Command;
 
@@ -16,7 +17,7 @@ class TranslateDb extends Command
      *
      * @var string
      */
-    protected $signature = 'db:translate {dry-run=0}';
+    protected $signature = 'db:translate {language} {dry-run=0}';
 
     /**
      * The console command description.
@@ -45,13 +46,14 @@ class TranslateDb extends Command
         if ($this->argument('dry-run') == 1) {
             $this->info('Dry Run');
         }
-        $language = $this->choice(
-            'Please choose a language?',
-            ['en', 'fr']
-        );
+        $language = $this->argument('language');
         if (!$language) {
-            return;
+            $language = $this->choice(
+                'Please choose a language?',
+                ['en', 'fr']
+            );
         }
+
         $this->info("Starting the translation");
         $this->info(MedicalCase::count() . " medical cases");
 
@@ -111,12 +113,12 @@ class TranslateDb extends Command
                         $translated_label = $final_diagnose['label'][$language];
 
                         if ($this->argument('dry-run') == 0) {
-                            Diagnosis::where('diagnostic_id', $medal_c_id)->each(function (Diagnosis $diagnosis) use ($translated_label) {
+                            Diagnosis::where('medal_c_id', $medal_c_id)->each(function (Diagnosis $diagnosis) use ($translated_label) {
                                 $diagnosis->update(['label' => $translated_label]);
                                 $this->info($diagnosis->id . " updated");
                             });
                         } else {
-                            Diagnosis::where('diagnostic_id', $medal_c_id)->each(function (Diagnosis $diagnosis) use ($translated_label) {
+                            Diagnosis::where('medal_c_id', $medal_c_id)->each(function (Diagnosis $diagnosis) use ($translated_label) {
                                 $this->info($diagnosis->label);
                                 $this->warn($translated_label);
                             });
@@ -137,13 +139,13 @@ class TranslateDb extends Command
                         $translated_label = $node['label'][$language];
 
                         if ($this->argument('dry-run') == 0) {
-                            Answer::where('medal_c_id', $medal_c_id)->each(function (Answer $answer) use ($translated_label) {
-                                $answer->update(['label' => $translated_label]);
-                                $this->info($answer->id . " updated");
+                            Node::where('medal_c_id', $medal_c_id)->each(function (Node $node) use ($translated_label) {
+                                $node->update(['label' => $translated_label]);
+                                $this->info($node->id . " updated");
                             });
                         } else {
-                            Answer::where('medal_c_id', $medal_c_id)->each(function (Answer $answer) use ($translated_label) {
-                                $this->info($answer->label);
+                            Node::where('medal_c_id', $medal_c_id)->each(function (Node $node) use ($translated_label) {
+                                $this->info($node->label);
                                 $this->warn($translated_label);
                             });
 
@@ -151,6 +153,7 @@ class TranslateDb extends Command
                     }
 
                 }
+                $this->info("Processing answers");
                 if (array_key_exists('answers', $node)) {
                     foreach ($node['answers'] as $answer) {
                         if (array_key_exists('id', $node)) {
