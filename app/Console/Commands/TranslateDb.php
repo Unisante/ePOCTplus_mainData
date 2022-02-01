@@ -83,10 +83,12 @@ class TranslateDb extends Command
                         if ($translated_label != "" && $label != "") {
                             if ($this->argument('dry-run') == 0) {
                                 Drug::where('medal_c_id', $medal_c_id)->each(function (Drug $drug) use ($translated_label) {
-                                    $drug->update([
-                                        'label' => $translated_label,
-                                    ]);
-                                    $this->info($drug->id . " updated");
+                                    if ($drug->label != $translated_label) {
+                                        $drug->update([
+                                            'label' => $translated_label,
+                                        ]);
+                                        $this->info($drug->id . " updated");
+                                    }
                                 });
                             } else {
                                 Drug::where('medal_c_id', $medal_c_id)->each(function (Drug $drug) use ($translated_label) {
@@ -103,10 +105,12 @@ class TranslateDb extends Command
                             if ($translated_description != "" && $description != "") {
                                 if ($this->argument('dry-run') == 0) {
                                     Drug::where('medal_c_id', $medal_c_id)->each(function (Drug $drug) use ($translated_description) {
-                                        $drug->update([
-                                            'description' => $translated_description,
-                                        ]);
-                                        $this->info($drug->id . " updated");
+                                        if ($drug->description != $translated_description) {
+                                            $drug->update([
+                                                'description' => $translated_description,
+                                            ]);
+                                            $this->info($drug->id . " updated");
+                                        }
                                     });
                                 } else {
                                     Drug::where('medal_c_id', $medal_c_id)->each(function (Drug $drug) use ($translated_description) {
@@ -132,8 +136,10 @@ class TranslateDb extends Command
                         if ($translated_label != "" && $label != "") {
                             if ($this->argument('dry-run') == 0) {
                                 Diagnosis::where('medal_c_id', $medal_c_id)->each(function (Diagnosis $diagnosis) use ($translated_label) {
-                                    $diagnosis->update(['label' => $translated_label]);
-                                    $this->info($diagnosis->id . " updated");
+                                    if ($diagnosis->label != $translated_label) {
+                                        $diagnosis->update(['label' => $translated_label]);
+                                        $this->info($diagnosis->id . " updated");
+                                    }
                                 });
                             } else {
                                 Diagnosis::where('medal_c_id', $medal_c_id)->each(function (Diagnosis $diagnosis) use ($translated_label) {
@@ -159,8 +165,10 @@ class TranslateDb extends Command
                         if ($translated_label != "" && $label != "") {
                             if ($this->argument('dry-run') == 0) {
                                 Node::where('medal_c_id', $medal_c_id)->each(function (Node $node) use ($translated_label) {
-                                    $node->update(['label' => $translated_label]);
-                                    $this->info($node->id . " updated");
+                                    if ($node->label != $translated_label) {
+                                        $node->update(['label' => $translated_label]);
+                                        $this->info($node->id . " updated");
+                                    }
                                 });
                             } else {
                                 Node::where('medal_c_id', $medal_c_id)->each(function (Node $node) use ($translated_label) {
@@ -178,8 +186,10 @@ class TranslateDb extends Command
                             if ($translated_description != "" && $description != "") {
                                 if ($this->argument('dry-run') == 0) {
                                     Node::where('medal_c_id', $medal_c_id)->each(function (Node $node) use ($translated_description) {
-                                        $node->update(['description' => $translated_description]);
-                                        $this->info($node->id . " updated");
+                                        if ($node->description != $translated_description) {
+                                            $node->update(['description' => $translated_description]);
+                                            $this->info($node->id . " updated");
+                                        }
                                     });
                                 } else {
                                     Node::where('medal_c_id', $medal_c_id)->each(function (Node $node) use ($translated_description) {
@@ -204,8 +214,10 @@ class TranslateDb extends Command
                                 if ($translated_label != "" && $label != "") {
                                     if ($this->argument('dry-run') == 0) {
                                         Answer::where('medal_c_id', $medal_c_id)->each(function (Answer $answer) use ($translated_label) {
-                                            $answer->update(['label' => $translated_label]);
-                                            $this->info($answer->id . " updated");
+                                            if ($answer->description != $translated_label) {
+                                                $answer->update(['label' => $translated_label]);
+                                                $this->info($answer->id . " updated");
+                                            }
                                         });
                                     } else {
                                         Answer::where('medal_c_id', $medal_c_id)->each(function (Answer $answer) use ($translated_label) {
@@ -231,8 +243,10 @@ class TranslateDb extends Command
                         if ($translated_label != "" && $label != "") {
                             if ($this->argument('dry-run') == 0) {
                                 Diagnosis::where('diagnostic_id', $medal_c_id)->each(function (Diagnosis $diagnosis) use ($translated_label) {
-                                    $diagnosis->update(['label' => $translated_label]);
-                                    $this->info($diagnosis->id . " updated");
+                                    if ($diagnosis->description != $translated_label) {
+                                        $diagnosis->update(['label' => $translated_label]);
+                                        $this->info($diagnosis->id . " updated");
+                                    }
                                 });
                             } else {
                                 Diagnosis::where('diagnostic_id', $medal_c_id)->each(function (Diagnosis $diagnosis) use ($translated_label) {
