@@ -153,6 +153,7 @@ class TranslateDb extends Command
                     }
 
                 }
+                $this->info("Processing answers");
                 if (array_key_exists('answers', $node)) {
                     foreach ($node['answers'] as $answer) {
                         if (array_key_exists('id', $node)) {
