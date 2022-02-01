@@ -80,23 +80,38 @@ class TranslateDb extends Command
 
                     if (array_key_exists($language, $health_care['label'])) {
                         $translated_label = $health_care['label'][$language];
-                        $translated_description = $health_care['description'][$language];
 
                         if ($this->argument('dry-run') == 0) {
-                            Drug::where('medal_c_id', $medal_c_id)->each(function (Drug $drug) use ($translated_description, $translated_label) {
+                            Drug::where('medal_c_id', $medal_c_id)->each(function (Drug $drug) use ($translated_label) {
                                 $drug->update([
                                     'label' => $translated_label,
-                                    'description' => $translated_description,
                                 ]);
                                 $this->info($drug->id . " updated");
                             });
                         } else {
-                            Drug::where('medal_c_id', $medal_c_id)->each(function (Drug $drug) use ($translated_description, $translated_label) {
+                            Drug::where('medal_c_id', $medal_c_id)->each(function (Drug $drug) use ($translated_label) {
                                 $this->info($drug->label);
                                 $this->warn($translated_label);
-                                $this->info($drug->description);
-                                $this->warn($translated_description);
                             });
+                        }
+                    }
+                    if (array_key_exists('description', $health_care)) {
+                        if (array_key_exists($language, $health_care['description'])) {
+                            $translated_description = $health_care['description'][$language];
+
+                            if ($this->argument('dry-run') == 0) {
+                                Drug::where('medal_c_id', $medal_c_id)->each(function (Drug $drug) use ($translated_description) {
+                                    $drug->update([
+                                        'description' => $translated_description,
+                                    ]);
+                                    $this->info($drug->id . " updated");
+                                });
+                            } else {
+                                Drug::where('medal_c_id', $medal_c_id)->each(function (Drug $drug) use ($translated_description) {
+                                    $this->info($drug->description);
+                                    $this->warn($translated_description);
+                                });
+                            }
                         }
                     }
 
@@ -151,6 +166,24 @@ class TranslateDb extends Command
 
                         }
                     }
+                    if (array_key_exists('description', $node)) {
+                        if (array_key_exists($language, $node['description'])) {
+                            $translated_description = $node['description'][$language];
+
+                            if ($this->argument('dry-run') == 0) {
+                                Node::where('medal_c_id', $medal_c_id)->each(function (Node $node) use ($translated_description) {
+                                    $node->update(['description' => $translated_description]);
+                                    $this->info($node->id . " updated");
+                                });
+                            } else {
+                                Node::where('medal_c_id', $medal_c_id)->each(function (Node $node) use ($translated_description) {
+                                    $this->info($node->description);
+                                    $this->warn($translated_description);
+                                });
+
+                            }
+                        }
+                    }
 
                 }
                 $this->info("Processing answers");
@@ -158,7 +191,7 @@ class TranslateDb extends Command
                     foreach ($node['answers'] as $answer) {
                         if (array_key_exists('id', $answer)) {
                             $medal_c_id = $answer['id'];
-                            if (array_key_exists($language, $answer['label'])) {
+                            if (is_array($answer['label']) && array_key_exists($language, $answer['label'])) {
                                 $translated_label = $answer['label'][$language];
 
                                 if ($this->argument('dry-run') == 0) {
