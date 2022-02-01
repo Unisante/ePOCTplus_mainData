@@ -214,7 +214,7 @@ class TranslateDb extends Command
                                 if ($translated_label != "" && $label != "") {
                                     if ($this->argument('dry-run') == 0) {
                                         Answer::where('medal_c_id', $medal_c_id)->each(function (Answer $answer) use ($translated_label) {
-                                            if ($answer->description != $translated_label) {
+                                            if ($answer->label != $translated_label) {
                                                 $answer->update(['label' => $translated_label]);
                                                 $this->info($answer->id . " updated");
                                             }
@@ -243,7 +243,7 @@ class TranslateDb extends Command
                         if ($translated_label != "" && $label != "") {
                             if ($this->argument('dry-run') == 0) {
                                 Diagnosis::where('diagnostic_id', $medal_c_id)->each(function (Diagnosis $diagnosis) use ($translated_label) {
-                                    if ($diagnosis->description != $translated_label) {
+                                    if ($diagnosis->label != $translated_label) {
                                         $diagnosis->update(['label' => $translated_label]);
                                         $this->info($diagnosis->id . " updated");
                                     }
