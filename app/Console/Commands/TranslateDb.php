@@ -156,10 +156,10 @@ class TranslateDb extends Command
                 $this->info("Processing answers");
                 if (array_key_exists('answers', $node)) {
                     foreach ($node['answers'] as $answer) {
-                        if (array_key_exists('id', $node)) {
+                        if (array_key_exists('id', $answer)) {
                             $medal_c_id = $answer['id'];
-                            if (array_key_exists($language, $node['label'])) {
-                                $translated_label = $node['label'][$language];
+                            if (array_key_exists($language, $answer['label'])) {
+                                $translated_label = $answer['label'][$language];
 
                                 if ($this->argument('dry-run') == 0) {
                                     Answer::where('medal_c_id', $medal_c_id)->each(function (Answer $answer) use ($translated_label) {
