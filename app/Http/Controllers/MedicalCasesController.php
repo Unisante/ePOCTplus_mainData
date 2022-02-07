@@ -305,13 +305,13 @@ class MedicalCasesController extends Controller
         // })->filter(function($case_group){
         //     return $case_group->count() > 1;
         // });
-        $medicalCases = MedicalCase::where('duplicate', false)->get($case_columns);
+        $medicalCases = MedicalCase::select($case_columns)->where('duplicate', false)->get();
         return view('medicalCases.showDuplicates2')->with("catchEachDuplicate", $medicalCases);
     }
     public function findDuplicates2()
     {
         $case_columns = ['id', 'local_medical_case_id', 'patient_id', 'consultation_date'];
-        $medicalCases = MedicalCase::where('duplicate', false)->get($case_columns)->filter(function ($case) {
+        $medicalCases = MedicalCase::select($case_columns)->where('duplicate', false)->get()->filter(function ($case) {
             $case->comparison_date = Carbon::createFromFormat('Y-m-d H:i:s', $case->consultation_date)->format('Y-m-d');
             $case->hf = $case->patient->facility->name;
             return Carbon::now()->diffInDays($case->consultation_date) <= 25;

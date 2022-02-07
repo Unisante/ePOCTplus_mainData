@@ -243,6 +243,13 @@ return [
         ],
 
         [
+            'text' => 'Cases Duplicates',
+            'url' => '/medicalCases/duplicates',
+            'icon' => 'fas fa-fw fa-file',
+            'can' => 'Access_Medical_Cases_Panel',
+        ],
+
+        [
             'text' => 'Diagnoses',
             'url' => '/exports/diagnosis_list',
             'can' => 'Access_Diagnoses_Panel',
