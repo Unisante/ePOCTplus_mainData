@@ -21,6 +21,7 @@ Route::get('abort-authentication', '\App\Http\Controllers\Auth\LoginController@a
 Route::post('/2fa', function () {
     return redirect(URL()->previous());
 })->name('2fa')->middleware('2fa');
+
 Route::get('/complete-registration', 'Auth\RegisterController@completeRegistration');
 Route::get('/2fa', 'Auth\RegisterController@completeRegistration');
 
@@ -53,6 +54,9 @@ Route::group(['middleware' => ['auth', '2fa']], function () {
     ]);
 
     //for medical case
+    Route::get('/medical-cases/duplicates', 'MedicalCasesController@findDuplicates')->name('medical-cases.findDuplicates');
+    Route::get('/medical-cases/duplicate2', 'MedicalCasesController@findDuplicates2')->name('medical-cases.findDuplicates2');
+
     Route::resource('medical-cases', 'MedicalCasesController')->only([
         'index', 'show', 'destroy',
     ]);
@@ -60,8 +64,6 @@ Route::group(['middleware' => ['auth', '2fa']], function () {
     Route::get('/medical-cases/{medicalCaseId}/question/{questionId}', 'MedicalCasesController@medicalCaseQuestion')->name('medical-cases.medicalCaseQuestion');
     Route::post('/medical-cases/{medicalCaseId}/question/{questionId}/update', 'MedicalCaseAnswersController@update')->name('medical-cases.update');
     Route::get('/medical-cases/changes/{id}', 'MedicalCasesController@showCaseChanges')->name('medical-cases.showCaseChanges');
-    Route::get('/medical-cases/duplicates', 'MedicalCasesController@findDuplicates')->name('medical-cases.findDuplicates');
-    Route::get('/medicalcases/duplicate2', 'MedicalCasesController@findDuplicates2')->name('medical-cases.findDuplicates2');
     Route::post('/medical-cases/duplicates/search', 'MedicalCasesController@searchDuplicates')->name('medical-cases.searchDuplicates');
     Route::post('/medicalCases/duplicates/delete', 'MedicalCasesController@destroy')->name('medical-cases.destroy');
     Route::post('/medicalCases/remove_follow_up', 'MedicalCasesController@deduplicate_redcap')->name('medical-cases.deduplicate_redcap');

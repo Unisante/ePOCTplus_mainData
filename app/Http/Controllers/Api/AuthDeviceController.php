@@ -44,7 +44,7 @@ class AuthDeviceController extends Controller
         if ($json_version < $alg["json_version"] || $json_version == null) {
             $zip = new ZipArchive();
             $res = $zip->open('algo.zip', ZipArchive::CREATE);
-            if ($res === TRUE) {
+            if ($res === true) {
                 $zip->addFromString('content.json', json_encode($alg["algo"]->medal_r_json));
             }
             $zip->close();
@@ -60,10 +60,15 @@ class AuthDeviceController extends Controller
         $emergencyContent = $this->algorithmService->getAlgorithmEmergencyContentJsonForDevice($device);
 
         if ($json_version < $emergencyContent["json_version"] || $json_version == null) {
-            return response()->json($emergencyContent["emergency_content"]);
+            $zip = new ZipArchive();
+            $res = $zip->open('emergency.zip', ZipArchive::CREATE);
+            if ($res === true) {
+                $zip->addFromString('content.json', json_encode($emergencyContent["emergency_content"]));
+            }
+            $zip->close();
+            return response()->download("emergency.zip")->deleteFileAfterSend();
         } else {
-            return response("", 204);
+            return response()->noContent();
         }
     }
-
 }

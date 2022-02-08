@@ -199,12 +199,6 @@ return [
             'can' => 'Access_Follow_Up_Panel',
         ],
         [
-            'text' => 'Duplicates',
-            'url' => '/patients/duplicates',
-            'icon' => 'fas fa-fw fa-users',
-            'can' => 'Access_Duplicates_Panel',
-        ],
-        [
             'text' => 'Facilities',
             'url' => '/facilities',
             'icon' => 'fas fa-fw fa-cart-plus',
@@ -251,6 +245,25 @@ return [
             'text' => 'Drugs',
             'url' => '/exports/drug_list',
             'can' => 'Access_Drugs_Panel',
+        ],
+        [
+            'text' => 'Duplicates',
+            'icon' => 'fas fa-fw fa-file',
+            'can' => 'Access_Duplicates_Panel',
+            'submenu' => [
+                [
+                    'text' => 'Patients duplicates',
+                    'url' => '/patients/duplicates',
+                    'icon' => 'fas fa-fw fa-user',
+                    'can' => 'Access_Duplicates_Panel',
+                ],
+                [
+                    'text' => 'Cases duplicates',
+                    'icon' => 'fas fa-fw fa-file',
+                    'url' => '/medical-cases/duplicates',
+                    'can' => 'Access_Duplicates_Panel',
+                ],
+            ],
         ],
         [
             'text' => 'Exports',

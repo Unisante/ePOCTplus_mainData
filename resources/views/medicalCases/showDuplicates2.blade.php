@@ -30,7 +30,7 @@
                     <p id="display">You want to mark this MedicalCase?.This will inturn remove its follow up from Redcap  </p>
                   </div>
                   <div class="modal-footer">
-                    <form action="{{route('MedicalCasesController@deduplicate_redcap')}}" method="POST">
+                    <form action="{{route('medical-cases.deduplicate_redcap')}}" method="POST">
                       @csrf
                       <input id="medicalcase_id" type="text" name="medicalc_id"  hidden>
                       <button type="submit" class="btn btn-primary" >Save changes</button>
@@ -70,7 +70,7 @@
                   <th scope="col">Flag</th>
                 </thead>
                 <tbody>
-                    
+
                 </tbody>
                 </table>
                 @else
