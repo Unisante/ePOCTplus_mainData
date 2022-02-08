@@ -21,6 +21,7 @@ Route::get('abort-authentication', '\App\Http\Controllers\Auth\LoginController@a
 Route::post('/2fa', function () {
     return redirect(URL()->previous());
 })->name('2fa')->middleware('2fa');
+
 Route::get('/complete-registration', 'Auth\RegisterController@completeRegistration');
 Route::get('/2fa', 'Auth\RegisterController@completeRegistration');
 
