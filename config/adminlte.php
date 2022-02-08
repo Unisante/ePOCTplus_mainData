@@ -200,9 +200,22 @@ return [
         ],
         [
             'text' => 'Duplicates',
-            'url' => '/patients/duplicates',
-            'icon' => 'fas fa-fw fa-users',
+            'icon' => 'fas fa-fw fa-file',
             'can' => 'Access_Duplicates_Panel',
+            'submenu' => [
+                [
+                    'text' => 'Patients duplicates',
+                    'url' => '/patients/duplicates',
+                    'icon' => 'fas fa-fw fa-user',
+                    'can' => 'Access_Duplicates_Panel',
+                ],
+                [
+                    'text' => 'Cases duplicates',
+                    'icon' => 'fas fa-fw fa-file',
+                    'url' => '/medical-cases/duplicates',
+                    'can' => 'Access_Duplicates_Panel',
+                ],
+            ],
         ],
         [
             'text' => 'Facilities',
@@ -238,13 +251,6 @@ return [
         [
             'text' => 'Medical Cases',
             'url' => '/medical-cases',
-            'icon' => 'fas fa-fw fa-file',
-            'can' => 'Access_Medical_Cases_Panel',
-        ],
-
-        [
-            'text' => 'Cases Duplicates',
-            'url' => '/medical-cases/duplicates',
             'icon' => 'fas fa-fw fa-file',
             'can' => 'Access_Medical_Cases_Panel',
         ],
