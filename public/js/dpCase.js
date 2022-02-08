@@ -7,7 +7,7 @@ $(document).ready(function () {
     });
     $.ajax({
         type: "GET",
-        url: "/medicalcases/duplicate2",
+        url: "/medical-cases/duplicate2",
     }).done(function (result) {
         let cases = result.mcs;
         // console.log(typeof(cases))

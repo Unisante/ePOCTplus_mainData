@@ -244,7 +244,7 @@ return [
 
         [
             'text' => 'Cases Duplicates',
-            'url' => '/medicalCases/duplicates',
+            'url' => '/medical-cases/duplicates',
             'icon' => 'fas fa-fw fa-file',
             'can' => 'Access_Medical_Cases_Panel',
         ],
