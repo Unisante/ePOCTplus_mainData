@@ -45,9 +45,9 @@ class MedicalCasesController extends Controller
         ])->orderBy('created_at')->get();
         $medical_cases->each(function ($case) {
             $case->facility_name =
-            ($case->patient->facility && $case->patient->facility->name)
-            ? $case->patient->facility->name
-            : '';
+                ($case->patient->facility && $case->patient->facility->name)
+                ? $case->patient->facility->name
+                : '';
         });
         return view('medicalCases.index')->with('medicalCases', $medical_cases);
     }
@@ -296,10 +296,13 @@ class MedicalCasesController extends Controller
     }
     public function findDuplicates2()
     {
+        $today = Carbon::today();
+        $last6days = $today->subDays(6);
         $case_columns = ['id', 'local_medical_case_id', 'patient_id', 'consultation_date'];
         $medicalCases = MedicalCase::select($case_columns)
             ->where('duplicate', false)
             ->whereDate('consultation_date', '<=', Carbon::now())
+            ->whereDate('consultation_date', '>=', $last6days)
             ->get()
             ->each(function (MedicalCase $medicalCase) {
                 $medicalCase->hf = $medicalCase->patient->facility->name ?? '';
