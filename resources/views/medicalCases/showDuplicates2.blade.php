@@ -55,7 +55,6 @@
                   <option value="version_id">Version Id</option>
                 </select>
               </form> --}}
-              @if($catchEachDuplicate)
               <table class="table table-hover table-bordered">
                 <thead class="thead-light">
                   <th scope="col">Sn</th>
@@ -73,9 +72,6 @@
 
                 </tbody>
                 </table>
-                @else
-                <h2>There are no Duplicates</h2>
-                @endif
               </div>
             </div>
           </div>

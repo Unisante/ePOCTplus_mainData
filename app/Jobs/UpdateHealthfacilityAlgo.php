@@ -43,7 +43,6 @@ class UpdateHealthfacilityAlgo implements ShouldQueue
     public function handle()
     {
         try {
-            Log::info("Update HF : " . $this->healthFacility->id);
             /*
              * Récupération de l'algorithm
              *      - envoi du json_version pour optenir la dernier version.
@@ -51,7 +50,6 @@ class UpdateHealthfacilityAlgo implements ShouldQueue
              */
             $versionJson = VersionJson::where('health_facility_id', $this->healthFacility->id)->first();
             if ($versionJson == null) {
-                Log::error("can't update HF without version_jsons entry");
                 return null;
             }
 
@@ -68,11 +66,10 @@ class UpdateHealthfacilityAlgo implements ShouldQueue
                     $healthFacilityAccess = $this->healthFacility->healthFacilityAccess;
                     $this->algorithmService->updateHealthFacilityAccessJsonVersion($healthFacilityAccess,
                         $versionDecoded['medal_r_json_version']);
-                    Log::info("Algorithm updated");
+                    Log::info("Algorithm updated for hf {$this->healthFacility->id}");
                     break;
 
                 case "204":
-                    Log::info("Algorithm is up-to-date");
                     break;
 
                 default:
@@ -95,10 +92,9 @@ class UpdateHealthfacilityAlgo implements ShouldQueue
                 case "200":
                     $this->algorithmService->updateVersionEmergencyContent($versionJson,
                         json_decode($emergencyContent['content'], true));
-                    Log::info("Emergency content updated");
+                    Log::info("Emergency content updated for hf {$this->healthFacility->id}");
                     break;
                 case "204":
-                    Log::info("Emergency_content is up-to-date");
                     break;
                 default:
                     Log::error("HTTP error code" . $version['code'] . "not expected");

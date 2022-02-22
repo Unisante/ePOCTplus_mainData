@@ -30,8 +30,8 @@ class PatientsPolicy
     public function viewAny(User $user)
     {
         return $user->can('View_Patients') || $user->can('Manage_Patients')
-        ? Response::allow()
-        : Response::deny('You are not autorized to view patients.');
+            ? Response::allow()
+            : Response::deny('You are not autorized to view patients.');
     }
 
     /**
@@ -44,8 +44,8 @@ class PatientsPolicy
     public function view(User $user, Patient $patient)
     {
         return $user->can('View_Patients') || $user->can('Manage_Patients')
-        ? Response::allow()
-        : Response::deny('You are not autorized to view this patient.');
+            ? Response::allow()
+            : Response::deny('You are not autorized to view this patient.');
     }
 
     /**
@@ -57,8 +57,8 @@ class PatientsPolicy
     public function create(User $user)
     {
         return $user->can('Manage_Patients')
-        ? Response::allow()
-        : Response::deny('You are not autorized to create patients.');
+            ? Response::allow()
+            : Response::deny('You are not autorized to create patients.');
     }
 
     /**
@@ -71,8 +71,8 @@ class PatientsPolicy
     public function update(User $user, Patient $patient)
     {
         return $user->can('Manage_Patients')
-        ? Response::allow()
-        : Response::deny('You are not autorized to update patients.');
+            ? Response::allow()
+            : Response::deny('You are not autorized to update patients.');
     }
 
     /**
@@ -85,8 +85,8 @@ class PatientsPolicy
     public function delete(User $user, Patient $patient)
     {
         return $user->can('Manage_Patients')
-        ? Response::allow()
-        : Response::deny('You are not autorized to delete patients.');
+            ? Response::allow()
+            : Response::deny('You are not autorized to delete patients.');
     }
 
     /**
@@ -99,8 +99,8 @@ class PatientsPolicy
     public function restore(User $user, Patient $patient)
     {
         return $user->can('Manage_Patients')
-        ? Response::allow()
-        : Response::deny('You are not autorized to restore patients.');
+            ? Response::allow()
+            : Response::deny('You are not autorized to restore patients.');
     }
 
     /**
@@ -113,8 +113,8 @@ class PatientsPolicy
     public function forceDelete(User $user, Patient $patient)
     {
         return $user->can('Manage_Patients')
-        ? Response::allow()
-        : Response::deny('You are not autorized to force delete patients.');
+            ? Response::allow()
+            : Response::deny('You are not autorized to force delete patients.');
     }
 
     /**
@@ -126,8 +126,8 @@ class PatientsPolicy
     public function duplicate(User $user)
     {
         return $user->can('Manage_Patients_Merge_Duplicates')
-        ? Response::allow()
-        : Response::deny('You are not autorized to check patients\' duplicates.');
+            ? Response::allow()
+            : Response::deny('You are not autorized to check patients\' duplicates.');
     }
 
     /**
@@ -139,7 +139,7 @@ class PatientsPolicy
     public function merge(User $user)
     {
         return $user->can('Manage_Patients_Merge_Duplicates')
-        ? Response::allow()
-        : Response::deny('You are not autorized to merge patients.');
+            ? Response::allow()
+            : Response::deny('You are not autorized to merge patients.');
     }
 }

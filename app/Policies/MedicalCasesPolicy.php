@@ -14,8 +14,9 @@ class MedicalCasesPolicy
     /**
      * Called before any other authorize method.
      */
-    public function before(User $user, $ability){
-        if($user->isAdministrator()){
+    public function before(User $user, $ability)
+    {
+        if ($user->isAdministrator()) {
             return true;
         }
     }
@@ -29,8 +30,8 @@ class MedicalCasesPolicy
     public function viewAny(User $user)
     {
         return $user->can('View_Medical_Cases') || $user->can('Manage_Medical_Cases')
-            ? Response::allow()
-            : Response::deny('You are not authorized to view medical cases.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to view medical cases.');
     }
 
     /**
@@ -43,8 +44,8 @@ class MedicalCasesPolicy
     public function view(User $user, MedicalCase $medicalCase)
     {
         return $user->can('View_Medical_Cases') || $user->can('Manage_Medical_Cases')
-            ? Response::allow()
-            : Response::deny('You are not authorized to view this medical case.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to view this medical case.');
     }
 
     /**
@@ -56,8 +57,8 @@ class MedicalCasesPolicy
     public function create(User $user)
     {
         return $user->can('Manage_Medical_Cases')
-            ? Response::allow()
-            : Response::deny('You are not authorized to create medical cases.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to create medical cases.');
     }
 
     /**
@@ -70,8 +71,8 @@ class MedicalCasesPolicy
     public function update(User $user, MedicalCase $medicalCase)
     {
         return $user->can('Manage_Medical_Cases')
-            ? Response::allow()
-            : Response::deny('You are not authorized to update medical cases.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to update medical cases.');
     }
 
     /**
@@ -84,8 +85,8 @@ class MedicalCasesPolicy
     public function delete(User $user, MedicalCase $medicalCase)
     {
         return $user->can('Manage_Medical_Cases')
-            ? Response::allow()
-            : Response::deny('You are not authorized to delete medical cases.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to delete medical cases.');
     }
 
     /**
@@ -98,8 +99,8 @@ class MedicalCasesPolicy
     public function restore(User $user, MedicalCase $medicalCase)
     {
         return $user->can('Manage_Medical_Cases')
-            ? Response::allow()
-            : Response::deny('You are not authorized to restore medical cases.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to restore medical cases.');
     }
 
     /**
@@ -112,72 +113,72 @@ class MedicalCasesPolicy
     public function forceDelete(User $user, MedicalCase $medicalCase)
     {
         return $user->can('Manage_Medical_Cases')
-            ? Response::allow()
-            : Response::deny('You are not authorized to force delete medical cases.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to force delete medical cases.');
     }
 
     /**
      * Determine whether the user can compare medical cases.
-     * 
+     *
      * @param \App\User
      * @return mixed
      */
-    public function compare(User $user)
+    public function compare(User $user, MedicalCase $medicalCase)
     {
         return $user->can('View_Medical_Cases')
-            ? Response::allow()
-            : Response::deny('You are not authorized to compare medical cases.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to compare medical cases.');
     }
 
     /**
      * Determine whether the user can view medical cases' questions.
-     * 
+     *
      * @param \App\User
      * @return mixed
      */
     public function question(User $user)
     {
         return $user->can('View_Medical_Cases')
-            ? Response::allow()
-            : Response::deny('You are not authorized to view medical cases\' questions.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to view medical cases\' questions.');
     }
 
     /**
      * Determine whether the user can view medical cases' changes.
-     * 
+     *
      * @param \App\User
      * @return mixed
      */
     public function changes(User $user)
     {
         return $user->can('View_Medical_Cases')
-            ? Response::allow()
-            : Response::deny('You are not authorized to view medical cases\' changes.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to view medical cases\' changes.');
     }
 
     /**
      * Determine whether the user can view medical cases' duplicates.
-     * 
+     *
      * @param \App\User
      * @return mixed
      */
     public function duplicates(User $user)
     {
         return $user->can('View_Medical_Cases')
-            ? Response::allow()
-            : Response::deny('You are not authorized to view medical cases\' duplicates.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to view medical cases\' duplicates.');
     }
 
     /**
      * Determine whether the user can view medical cases' followups.
-     * 
+     *
      * @param \App\User
      * @return mixed
      */
     public function followUp(User $user)
     {
         return $user->can('View_Follow_Ups')
-            ? Response::allow()
-            : Response::deny('You are not authorized to view follow-ups.');
+        ? Response::allow()
+        : Response::deny('You are not authorized to view follow-ups.');
     }
 }

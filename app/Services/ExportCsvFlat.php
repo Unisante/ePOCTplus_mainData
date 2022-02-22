@@ -73,8 +73,8 @@ class ExportCsvFlat extends ExportCsv
             Config::get('csv.flat.identifiers.medical_case.dyn_mc_redcap') => $medical_case->redcap,
             Config::get('csv.flat.identifiers.medical_case.dyn_mc_consultation_month') => Carbon::parse($medical_case->consultation_date)->format('F'),
             Config::get('csv.flat.identifiers.medical_case.dyn_mc_consultation_day') => Carbon::parse($medical_case->consultation_date)->format('l'),
+            Config::get('csv.flat.identifiers.medical_case.dyn_mc_closedAt') => $medical_case->closedAt,
             Config::get('csv.flat.identifiers.medical_case.dyn_mc_force_close') => $medical_case->force_close,
-            Config::get('csv.flat.identifiers.medical_case.dyn_mc_force_close') => $medical_case->closedAt,
             Config::get('csv.flat.identifiers.medical_case.dyn_mc_mc_redcap_flag') => $medical_case->mc_redcap_flag,
         ];
     }
@@ -82,14 +82,14 @@ class ExportCsvFlat extends ExportCsv
     protected static function getHealthFacilityData($health_facility)
     {
         return [
-            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_id') => $health_facility->id,
-            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_group_id') => $health_facility->group_id,
-            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_long') => $health_facility->long,
-            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_lat') => $health_facility->lat,
-            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_hf_mode') => $health_facility->hf_mode,
-            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_name') => $health_facility->name,
-            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_country') => $health_facility->country,
-            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_area') => $health_facility->area,
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_id') => $health_facility->id ?? '',
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_group_id') => $health_facility->group_id ?? '',
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_long') => $health_facility->long ?? '',
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_lat') => $health_facility->lat ?? '',
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_hf_mode') => $health_facility->hf_mode ?? '',
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_name') => $health_facility->name ?? '',
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_country') => $health_facility->country ?? '',
+            Config::get('csv.flat.identifiers.health_facility.dyn_hfa_area') => $health_facility->area ?? '',
         ];
     }
 
