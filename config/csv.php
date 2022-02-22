@@ -324,7 +324,8 @@ return [
                 'dyn_mc_redcap' => 'medical_case_redcap',
                 'dyn_mc_consultation_month' => 'medical_case_consultation_month',
                 'dyn_mc_consultation_day' => 'medical_case_consultation_day',
-                'dyn_mc_force_close' => 'medical_case_close',
+                'dyn_mc_closedAt' => 'medical_case_closed_at',
+                'dyn_mc_force_close' => 'medical_case_force_close',
                 'dyn_mc_mc_redcap_flag' => 'medical_case_mc_redcap_flag',
             ],
 
