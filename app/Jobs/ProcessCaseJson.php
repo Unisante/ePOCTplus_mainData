@@ -46,8 +46,8 @@ class ProcessCaseJson implements ShouldQueue
         $timeZone = timezone_open(date_default_timezone_get());
         $UTCDateTime = date_create("now", timezone_open("Europe/London"));
         $timeShift = timezone_offset_get($timeZone, $UTCDateTime);
-        
-        if(isset($caseData['patient']['birth_date'])){
+
+        if (isset($caseData['patient']['birth_date'])) {
             $caseData['patient']['birth_date'] += $timeShift;
         }
 
@@ -64,8 +64,7 @@ class ProcessCaseJson implements ShouldQueue
 
             Log::info("Successfully saved case from JSON file: $this->filename");
             $this->moveToDir(Config::get('medal.storage.json_success_dir'));
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             Log::error("Error while attempting to save case from JSON file: $this->filename");
             Log::error("Run `php artisan cases:reload` to attempt to process failing cases");
@@ -75,7 +74,8 @@ class ProcessCaseJson implements ShouldQueue
         }
     }
 
-    private function moveToDir($dir) {
+    private function moveToDir($dir)
+    {
         if ($dir != $this->dir) {
             Storage::makeDirectory($dir);
             Storage::move("$this->dir/$this->filename", "$dir/$this->filename");
