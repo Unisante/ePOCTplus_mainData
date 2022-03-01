@@ -2,10 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\HealthFacility;
-use App\Services\SaveCaseService;
 use App\Version;
+use App\Services\Http;
 use Illuminate\Console\Command;
+use App\Services\SaveCaseService;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Config;
 
 class UpdateVersions extends Command
 {
@@ -42,11 +44,10 @@ class UpdateVersions extends Command
     {
         $saveCaseService = new SaveCaseService;
         Version::all()->each(function ($version) use ($saveCaseService) {
-            $hf = HealthFacility::find($version->health_facility_id);
-            if (!$hf) {
-                return true;
-            }
-            $data = $saveCaseService->getVersionData($hf, $version->medal_c_id);
+            Log::info('Updating Version ' . $version->medal_c_id);
+            $data = Http::get(Config::get('medal.urls.creator_algorithm_url') . $version->medal_c_id);
+            $data = json_decode($data['content'], true);
+
             $versionData = $data['medal_r_json'];
             $configData = $saveCaseService->getPatientConfigData($version->medal_c_id);
             $version = $saveCaseService->updateVersion($versionData);
