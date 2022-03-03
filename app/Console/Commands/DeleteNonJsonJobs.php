@@ -49,7 +49,8 @@ class DeleteNonJsonJobs extends Command
                 $payload = json_decode($job->payload, true);
                 if (array_key_exists('displayName', $payload) && strpos($payload['displayName'], 'ProcessCaseJson') !== false) {
                     if ($this->argument('dry-run') == 0) {
-                        $job->delete();
+                        $current_job = DB::table('jobs')->find($job->id);
+                        $current_job->delete();
                     }
                     $i++;
                 }
