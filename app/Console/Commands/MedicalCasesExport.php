@@ -40,27 +40,27 @@ class MedicalCasesExport extends Command
      */
     public function handle()
     {
-      $limited = $this->option('limited');
-      $nbMedicalCase = 0;
-      if ($limited) {
-        MedicalCase::where('mc_redcap_flag',false)
-          ->whereNotNull('closedAt')
-          ->orderBy('closedAt', 'desc')
-          ->limit($limited)
-          ->get()
-          ->each(function ($medicalCase) use (&$nbMedicalCase) {
-            dispatch(new PushMedicalCase($medicalCase));
-            ++$nbMedicalCase;
-        });
-      } else {
-        MedicalCase::where('mc_redcap_flag',false)
-          ->orderBy('closedAt', 'desc')
-          ->get()
-          ->each(function ($medicalCase) use (&$nbMedicalCase) {
-          dispatch(new PushMedicalCase($medicalCase));
-          ++$nbMedicalCase;
-        });
-      }
-      Log::info($nbMedicalCase . " medical case(s) dispatch for export.");
+        $limited = $this->option('limited');
+        $nbMedicalCase = 0;
+        if ($limited) {
+            MedicalCase::where('mc_redcap_flag', false)
+                ->whereNotNull('closedAt')
+                ->orderBy('closedAt', 'desc')
+                ->limit($limited)
+                ->get()
+                ->each(function ($medicalCase) use (&$nbMedicalCase) {
+                    dispatch((new PushMedicalCase($medicalCase))->onQueue("high"));
+                    ++$nbMedicalCase;
+                });
+        } else {
+            MedicalCase::where('mc_redcap_flag', false)
+                ->orderBy('closedAt', 'desc')
+                ->get()
+                ->each(function ($medicalCase) use (&$nbMedicalCase) {
+                    dispatch((new PushMedicalCase($medicalCase))->onQueue("high"));
+                    ++$nbMedicalCase;
+                });
+        }
+        Log::info($nbMedicalCase . " medical case(s) dispatch for export.");
     }
 }

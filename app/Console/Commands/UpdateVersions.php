@@ -44,10 +44,8 @@ class UpdateVersions extends Command
     {
         $saveCaseService = new SaveCaseService;
         Version::all()->each(function ($version) use ($saveCaseService) {
-            Log::info('Updating Version ' . $version->medal_c_id);
             $data = Http::get(Config::get('medal.urls.creator_algorithm_url') . $version->medal_c_id);
             $data = json_decode($data['content'], true);
-
             $versionData = $data['medal_r_json'];
             $configData = $saveCaseService->getPatientConfigData($version->medal_c_id);
             $version = $saveCaseService->updateVersion($versionData);

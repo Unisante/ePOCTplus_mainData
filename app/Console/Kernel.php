@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
         // timci project does not use redcap
         empty(Config::get('redcap.identifiers.api_url_followup')) ? null : $schedule->job(new RedcapPush())->everyThirtyMinutes()->withoutOverlapping(10);
         $schedule->command('export:start')->dailyAt('03:20');
-        //$schedule->command(MedicalCasesExport::class)->everyMinute();
+
         $schedule->command('update:versions')->hourly()->withoutOverlapping(10);
         $schedule->command("HealthFacilitiesAlgo:update")->hourly()->withoutOverlapping(10);
         $schedule->command('passport:purge')->hourly()->withoutOverlapping(10);

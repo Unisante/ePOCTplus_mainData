@@ -39,32 +39,32 @@ class Generate2faSecretKeys extends Command
      */
     public function handle()
     {
-        if(!$this->option('force')){
+        if (!$this->option('force')) {
             $this->info('A new secret will be generated for all accounts that are not currently using two-factor authentication.');
             $confirm = $this->confirm('Do you wish to continue?');
-            if(!$confirm){
+            if (!$confirm) {
                 return;
             }
         }
 
         // get list of emails that do not have any key.
         $users = User::whereNull('google2fa_secret')->get();
-        if(count($users) == 0){
+        if (count($users) == 0) {
             $this->info('All user have valid secrets.');
             return;
         }
 
         $google2fa = app('pragmarx.google2fa');
-        foreach($users as $user){
+        foreach ($users as $user) {
             $secret = $google2fa->generateSecretKey();
             $user->google2fa_secret = $secret;
 
-            if($this->option('send_email')){
-                try{
+            if ($this->option('send_email')) {
+                try {
                     $email_body = 'A new two-factor authentication code has been generated for your account.';
-                    dispatch(new Generate2faJob($email_body, $user->email, $user->name, $secret));
+                    dispatch((new Generate2faJob($email_body, $user->email, $user->name, $secret))->onQueue("high"));
                     $this->info('An email has been sent to ' . $user->email);
-                }catch(\Exception $e){
+                } catch (\Exception $e) {
                     $this->error('Could not send an email to ' . $user->email);
                 }
             }

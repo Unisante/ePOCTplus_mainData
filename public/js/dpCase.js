@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    console.log("ready!");
     $.ajaxSetup({
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -10,14 +9,10 @@ $(document).ready(function () {
         url: "/medical-cases/duplicate2",
     }).done(function (result) {
         let cases = result.mcs;
-        // console.log(typeof(cases))
         result.mcs.forEach(dpGroupParent);
     });
 
     function dpGroupParent(children, index) {
-        console.log(index);
-        // console.log(group)
-        // markup = "<tr><td> + information + </td></tr>"
         markup = `<tr class='table-secondary'><td>For The ${
             index + 1
         }'s Duplicate<td></tr>`;
@@ -26,7 +21,6 @@ $(document).ready(function () {
         children.forEach(dpGroupChild);
     }
     function dpGroupChild(child, index) {
-        // console.log(child.facility)
         markup = `
         <tr>
         <th scope="row">${index + 1}</th>

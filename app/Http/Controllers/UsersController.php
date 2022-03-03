@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Jobs\ResetAccountPasswordJob;
@@ -87,7 +88,7 @@ class UsersController extends Controller
         $saveCode = PasswordReset::saveReset($user, $random_password);
         if ($saveCode) {
             $body = 'Your account has been set in Main Data with the default password.';
-            dispatch(new ResetAccountPasswordJob($body, $email, $user->name, $random_password));
+            dispatch((new ResetAccountPasswordJob($body, $email, $user->name, $random_password))->onQueue("high"));
             Log::info("User with id " . Auth::user()->id . " created a new user.", ["user" => $user]);
             return back()->with('success', 'Email has been sent to ' . $user->name);
         }
@@ -222,7 +223,7 @@ class UsersController extends Controller
         $saveCode = PasswordReset::saveReset($user, $random_password);
         if ($saveCode) {
             $body = 'Click this link to reset your password';
-            dispatch(new ResetAccountPasswordJob($body, $user->email, $user->name, $random_password));
+            dispatch((new ResetAccountPasswordJob($body, $user->email, $user->name, $random_password))->onQueue("high"));
             Log::info("The password of user with id " . $user->id . " has been reset by user with id " . Auth::user()->id . ".");
             return back()->with('success', 'Email has been sent to' . $user->name);
         }
@@ -230,5 +231,4 @@ class UsersController extends Controller
         Log::error("Tried to reset the password of user with id " . $user->id . ", but something went wrong.");
         return back()->with('error', 'Something Went wrong');
     }
-
 }

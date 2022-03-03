@@ -296,13 +296,12 @@ class MedicalCasesController extends Controller
     }
     public function findDuplicates2()
     {
-        $today = Carbon::today();
-        $last6days = $today->subDays(6);
         $case_columns = ['id', 'local_medical_case_id', 'patient_id', 'consultation_date'];
         $medicalCases = MedicalCase::select($case_columns)
             ->where('duplicate', false)
             ->whereDate('consultation_date', '<=', Carbon::now())
-            ->whereDate('consultation_date', '>=', $last6days)
+            ->latest()
+            ->take(150)
             ->get()
             ->each(function (MedicalCase $medicalCase) {
                 $medicalCase->hf = $medicalCase->patient->facility->name ?? '';
@@ -324,7 +323,7 @@ class MedicalCasesController extends Controller
             'medicalc_id' => 'required',
         ]);
         $medicalCase = MedicalCase::find((int) $request->input('medicalc_id'));
-        dispatch(new RemoveFollowUp($medicalCase));
+        dispatch((new RemoveFollowUp($medicalCase))->onQueue("high"));
         return redirect()->action(
             'medical-cases.findDuplicates'
         )->with('status', "Follow Up for '{$medicalCase->local_medical_case_id}' is Queued for removal in redcap");

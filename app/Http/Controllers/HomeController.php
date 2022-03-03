@@ -62,7 +62,7 @@ class HomeController extends Controller
 
         if ($saveCode) {
             $body = 'Click this link to reset your password';
-            dispatch(new ResetAccountPasswordJob($body, $email, $user->name, $random_password));
+            dispatch((new ResetAccountPasswordJob($body, $email, $user->name, $random_password))->onQueue("high"));
             $message = "Email has been sent to you for password reset.";
             Log::info("A request to change the password of user " . $request->email . " has been sent by email.");
             return Redirect::back()->with(['success' => $message]);

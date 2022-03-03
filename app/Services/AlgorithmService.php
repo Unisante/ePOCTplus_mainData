@@ -37,7 +37,7 @@ class AlgorithmService
 
     public function assignVersionToHealthFacility(HealthFacility $healthFacility, $chosenAlgorithmID, $versionID)
     {
-        MakeHttpRequest::dispatch($healthFacility, $chosenAlgorithmID, $versionID);
+        MakeHttpRequest::dispatch($healthFacility, $chosenAlgorithmID, $versionID)->onQueue("high");
     }
 
     public function assignVersion(HealthFacility $healthFacility, $version)
@@ -106,8 +106,7 @@ class AlgorithmService
      */
     public function getArchivedAccesses(HealthFacility $healthFacility)
     {
-        return HealthFacilityAccess::where('health_facility_id', $healthFacility->id)->
-            where('access', false)->get();
+        return HealthFacilityAccess::where('health_facility_id', $healthFacility->id)->where('access', false)->get();
     }
 
     /**
@@ -115,8 +114,7 @@ class AlgorithmService
      */
     public function getCurrentAccess(HealthFacility $healthFacility)
     {
-        return HealthFacilityAccess::where('health_facility_id', $healthFacility->id)->
-            where('access', true)->first();
+        return HealthFacilityAccess::where('health_facility_id', $healthFacility->id)->where('access', true)->first();
     }
 
     public function updateHealthFacilityAccessJsonVersion(HealthFacilityAccess $facilityAccess, $json_version)
@@ -142,7 +140,6 @@ class AlgorithmService
         }
 
         $this->newAccess($healthFacility, $chosenAlgorithmID, $version);
-
     }
 
     private function newAccess(HealthFacility $healthFacility, $chosenAlgorithmID, $version)
@@ -197,5 +194,4 @@ class AlgorithmService
             "json_version" => $jsonVersion,
         ];
     }
-
 }

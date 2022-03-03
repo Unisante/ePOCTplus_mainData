@@ -41,7 +41,7 @@ class UpdateHealthFacilitiesAlgorithms extends Command
     public function handle()
     {
         HealthFacility::all()->each(function (HealthFacility $healFacility) {
-            dispatch(new UpdateHealthfacilityAlgo($healFacility));
+            dispatch((new UpdateHealthfacilityAlgo($healFacility))->onQueue("high"));
         });
     }
 }

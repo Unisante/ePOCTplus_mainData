@@ -47,11 +47,11 @@ class ReAuthenticate extends Command
             return;
         }
 
-        if(!$this->option('force')){
-            $this->info('A new secret will be generated for '.$user->email);
+        if (!$this->option('force')) {
+            $this->info('A new secret will be generated for ' . $user->email);
             $this->info('This action will invalidate the previous secret key.');
             $confirm = $this->confirm('Do you wish to continue?');
-            if(!$confirm){
+            if (!$confirm) {
                 return;
             }
         }
@@ -60,12 +60,12 @@ class ReAuthenticate extends Command
         $secret = $google2fa->generateSecretKey();
         $user->google2fa_secret = $secret;
 
-        if($this->option('send_email')){
-            try{
+        if ($this->option('send_email')) {
+            try {
                 $email_body = 'A new two-factor authentication code has been generated for your account.';
-                dispatch(new Generate2faJob($email_body, $user->email, $user->name, $secret));
+                dispatch((new Generate2faJob($email_body, $user->email, $user->name, $secret))->onQueue("high"));
                 $this->info('An email has been sent to ' . $user->email);
-            }catch(\Exception $e){
+            } catch (\Exception $e) {
                 $this->error('Could not send an email to ' . $user->email);
             }
         }
