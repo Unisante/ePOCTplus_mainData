@@ -44,7 +44,7 @@ class DeleteNonJsonJobs extends Command
             $this->info('Dry Run');
         }
         $i = 0;
-        DB::table('jobs')->latest('id')->chunk(50, function ($jobs) use ($i) {
+        DB::table('jobs')->latest('id')->chunk(50, function ($jobs) use (&$i) {
             foreach ($jobs as $job) {
                 $payload = json_decode($job->payload, true);
                 if (array_key_exists('displayName', $payload) && strpos($payload['displayName'], 'ProcessCaseJson') !== false) {

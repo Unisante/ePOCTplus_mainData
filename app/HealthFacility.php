@@ -113,4 +113,9 @@ class HealthFacility extends Model
     {
         return $this->hasMany(Device::class);
     }
+
+    public function patients_medical_cases()
+    {
+        return $this->hasManyThrough(MedicalCase::class, Patient::class, 'group_id', 'patient_id', 'group_id', 'id');
+    }
 }

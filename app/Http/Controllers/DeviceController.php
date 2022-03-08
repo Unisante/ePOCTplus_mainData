@@ -19,7 +19,6 @@ class DeviceController extends Controller
     {
         $this->deviceService = $deviceService;
         $this->authorizeResource(Device::class);
-
     }
 
     public function manageTokens($id)
@@ -64,9 +63,16 @@ class DeviceController extends Controller
      */
     public function index()
     {
-        $devices = DeviceResource::collection(Device::all());
-        return view('devices.index',['devices' => $devices->toJson(),]);
+        $devices = Device::all()->each(function (Device $device) {
+            if (!$device->health_facility_id) {
+                $device->oauth_client_id = 'Not assigned';
+            }
+        });
+
+        $devices_resources = DeviceResource::collection($devices);
+        return view('devices.index', ['devices' => $devices_resources->toJson(),]);
     }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -107,9 +113,9 @@ class DeviceController extends Controller
     {
 
 
-//        // Delete corresponding client
-//        $id = $this->deviceService->remove($device);
-//        DB::table('oauth_clients')->where('name', '=', $device->name)->delete();
+        //        // Delete corresponding client
+        //        $id = $this->deviceService->remove($device);
+        //        DB::table('oauth_clients')->where('name', '=', $device->name)->delete();
 
 
         return response()->json([
@@ -117,7 +123,8 @@ class DeviceController extends Controller
         ], 401);
     }
 
-    private function revokeAccessAndRefreshTokens($tokenId) {
+    private function revokeAccessAndRefreshTokens($tokenId)
+    {
         $tokenRepository = app('Laravel\Passport\TokenRepository');
         $refreshTokenRepository = app('Laravel\Passport\RefreshTokenRepository');
 
