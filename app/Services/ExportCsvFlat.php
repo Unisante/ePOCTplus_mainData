@@ -656,7 +656,7 @@ class ExportCsvFlat extends ExportCsv
                 $versions_data[$id] = [];
 
                 ini_set("allow_url_fopen", 1);
-                $json = file_get_contents('https://medalc.unisante.ch/api/v1/versions/' . $version->medal_c_id);
+                $json = file_get_contents(Config::get('medal.urls.creator_algorithm_url') . $version->medal_c_id);
                 $obj = json_decode($json);
                 $json_steps = json_decode($obj->full_order_json, true);
                 foreach ($json_steps as $json_step) {
