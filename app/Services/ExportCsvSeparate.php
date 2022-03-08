@@ -252,11 +252,9 @@ class ExportCsvSeparate extends ExportCsv
     {
         return [
             Config::get('csv.identifiers.additional_drug.dyn_adr_id') => $additional_drug->id,
-            Config::get('csv.identifiers.additional_drug.dyn_adr_drug_id') => $additional_drug->drug_id,
-            Config::get('csv.identifiers.additional_drug.dyn_adr_medical_case_id') => $additional_drug->medical_case_id,
-            Config::get('csv.identifiers.additional_drug.dyn_adr_formulationSelected') => $additional_drug->formulationSelected,
-            Config::get('csv.identifiers.additional_drug.dyn_adr_agreed') => $additional_drug->agreed,
-            Config::get('csv.identifiers.additional_drug.dyn_adr_version_id') => $additional_drug->version_id,
+            Config::get('csv.identifiers.additional_drug.dyn_adr_label') => $additional_drug->name,
+            Config::get('csv.identifiers.additional_drug.dyn_adr_drugs') => $additional_drug->duration,
+            Config::get('csv.identifiers.additional_drug.dyn_adr_medical_case_id') => $additional_drug->custom_diagnosis_id,
             Config::get('csv.identifiers.additional_drug.dyn_adr_created_at') => $additional_drug->created_at,
             Config::get('csv.identifiers.additional_drug.dyn_adr_updated_at') => $additional_drug->updated_at,
         ];
@@ -719,12 +717,6 @@ class ExportCsvSeparate extends ExportCsv
                         // get formulations
                         $this->addFormulationData($formulations_data, $formulation);
                     }
-
-                    $additional_drugs = $drug->additional_drugs;
-                    foreach ($additional_drugs as $additional_drug) {
-                        // get additional drug
-                        $this->addAdditionalDrugData($additional_drugs_data, $additional_drug);
-                    }
                 }
 
                 $management_references = $diagnosis_reference->management_references;
@@ -741,6 +733,12 @@ class ExportCsvSeparate extends ExportCsv
             foreach ($custom_diagnoses as $custom_diagnosis) {
                 // get custom diagnoses
                 $this->AddCustomDiagnosisData($custom_diagnoses_data, $custom_diagnosis);
+
+                $additional_drugs = $custom_diagnosis->custom_drugs;
+                foreach ($additional_drugs as $additional_drug) {
+                    // get additional drug
+                    $this->addAdditionalDrugData($additional_drugs_data, $additional_drug);
+                }
             }
         }
 

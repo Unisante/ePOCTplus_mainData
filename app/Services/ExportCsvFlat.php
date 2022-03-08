@@ -229,14 +229,12 @@ class ExportCsvFlat extends ExportCsv
     protected static function getAdditionalDrugData($additional_drug)
     {
         return [
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_id') => $additional_drug->id,
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_drug_id') => $additional_drug->drug_id,
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_medical_case_id') => $additional_drug->medical_case_id,
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_formulationSelected') => $additional_drug->formulationSelected,
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_agreed') => $additional_drug->agreed,
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_version_id') => $additional_drug->version_id,
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_created_at') => $additional_drug->created_at,
-            Config::get('csv.flat.identifiers.additional_drug.dyn_adr_updated_at') => $additional_drug->updated_at,
+            Config::get('csv.identifiers.additional_drug.dyn_adr_id') => $additional_drug->id,
+            Config::get('csv.identifiers.additional_drug.dyn_adr_label') => $additional_drug->name,
+            Config::get('csv.identifiers.additional_drug.dyn_adr_drugs') => $additional_drug->duration,
+            Config::get('csv.identifiers.additional_drug.dyn_adr_medical_case_id') => $additional_drug->custom_diagnosis_id,
+            Config::get('csv.identifiers.additional_drug.dyn_adr_created_at') => $additional_drug->created_at,
+            Config::get('csv.identifiers.additional_drug.dyn_adr_updated_at') => $additional_drug->updated_at,
         ];
     }
 
@@ -668,7 +666,6 @@ class ExportCsvFlat extends ExportCsv
             }
             return $versions_data;
         });
-
     }
 
     /**

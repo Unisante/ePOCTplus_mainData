@@ -44,6 +44,6 @@ class StartExport extends Command
         Log::info("Export manually started");
         ExportFlat::withChain([
             new ExportSeparated,
-        ])->onQueue("low")->dispatch();
+        ])->dispatch()->onQueue("low");
     }
 }
