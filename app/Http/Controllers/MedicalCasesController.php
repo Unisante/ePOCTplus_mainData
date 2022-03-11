@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Answer;
-use App\AnswerType;
-use App\DiagnosisReference;
-use App\Exports\MedicalCaseExport;
-use App\HealthFacility;
-use App\Jobs\RemoveFollowUp;
-use App\MedicalCase;
-use App\MedicalCaseAnswer;
-use App\Node;
-use App\Patient;
-use App\User;
-use Carbon\Carbon;
 use Excel;
+use App\Node;
+use App\User;
+use App\Answer;
+use App\Patient;
+use Carbon\Carbon;
+use App\AnswerType;
+use App\MedicalCase;
+use App\HealthFacility;
+use App\MedicalCaseAnswer;
+use App\DiagnosisReference;
+use App\Jobs\RemoveFollowUp;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Exports\MedicalCaseExport;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 
 class MedicalCasesController extends Controller
@@ -294,14 +295,22 @@ class MedicalCasesController extends Controller
     {
         return view('medicalCases.showDuplicates2');
     }
+
     public function findDuplicates2()
     {
-        $case_columns = ['id', 'local_medical_case_id', 'patient_id', 'consultation_date'];
-        $medicalCases = MedicalCase::select($case_columns)
-            ->where('duplicate', false)
+        $case_columns = ['patient_id', DB::raw('Date(consultation_date)'), DB::raw('COUNT(*) as count')];
+
+        $medicalCases = MedicalCase::where('duplicate', false)
             ->whereDate('consultation_date', '<=', Carbon::now())
-            ->latest()
-            ->take(150)
+            ->whereIn('medical_cases.patient_id', function ($query) use ($case_columns) {
+                $query->select("patient_id")
+                    ->fromSub(function ($query) use ($case_columns) {
+                        $query->select($case_columns)
+                            ->from('medical_cases')
+                            ->groupBy(DB::raw('Date(consultation_date)'), 'patient_id')
+                            ->havingRaw('COUNT(*) > 1');
+                    }, 'medical_cases');
+            })
             ->get()
             ->each(function (MedicalCase $medicalCase) {
                 $medicalCase->hf = $medicalCase->patient->facility->name ?? '';
@@ -310,8 +319,6 @@ class MedicalCasesController extends Controller
 
         $medicalCases = $medicalCases->groupBy(function ($item, $key) {
             return $item['consultation_date'] . $item['patient_id'];
-        })->filter(function ($case_group) {
-            return $case_group->count() > 1;
         });
 
         return response()->json(["mcs" => array_values($medicalCases->toArray())]);
