@@ -300,10 +300,11 @@ class MedicalCasesController extends Controller
     {
         $case_columns = ['patient_id', DB::raw('Date(consultation_date)'), DB::raw('COUNT(*) as count')];
 
-        $medicalCases = MedicalCase::where('duplicate', false)
+        $medicalCases = MedicalCase::with(['patient', 'patient.facility'])
+            ->where('duplicate', false)
             ->whereDate('consultation_date', '<=', Carbon::now())
             ->whereIn('medical_cases.patient_id', function ($query) use ($case_columns) {
-                $query->select("patient_id")
+                $query->select($case_columns[0])
                     ->fromSub(function ($query) use ($case_columns) {
                         $query->select($case_columns)
                             ->from('medical_cases')
@@ -311,13 +312,14 @@ class MedicalCasesController extends Controller
                             ->havingRaw('COUNT(*) > 1');
                     }, 'medical_cases');
             })
-            ->get()
-            ->each(function (MedicalCase $medicalCase) {
-                $medicalCase->hf = $medicalCase->patient->facility->name ?? '';
-                $medicalCase->consultation_date = Carbon::createFromFormat('Y-m-d H:i:s', $medicalCase->consultation_date)->format('Y-m-d');
-            });
+            ->get();
 
-        $medicalCases = $medicalCases->groupBy(function ($item, $key) {
+        $medicalCases->each(function (MedicalCase $medicalCase) {
+            $medicalCase->hf = $medicalCase->patient->facility->name ?? '';
+            $medicalCase->consultation_date = Carbon::createFromFormat('Y-m-d H:i:s', $medicalCase->consultation_date)->format('Y-m-d');
+        });
+
+        $medicalCases->groupBy(function ($item) {
             return $item['consultation_date'] . $item['patient_id'];
         });
 
