@@ -6,15 +6,9 @@ use DateTime;
 use SplFileInfo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
@@ -41,17 +35,15 @@ class FailedJsonController extends Controller
         }
 
         $path = storage_path('app/' . Config::get('medal.storage.json_failure_dir') . '/');
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 50;
 
         $jsons = collect(File::files($path))
-            ->sortBy(function ($file) {
+            ->sortBy(function (SplFileInfo $file) {
                 return $file->getCTime();
             });
 
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 50;
-        $jsonCollection = collect($jsons);
-
-        $currentPageItems = $jsonCollection->slice(($currentPage * $perPage) - $perPage, $perPage)
+        $currentPageItems = $jsons->slice(($currentPage * $perPage) - $perPage, $perPage)
             ->map(function (SplFileInfo $file) {
                 $json_content = json_decode(File::get($file->getRealPath()), true);
                 $file->group_id = $json_content['patient']['group_id'] ?? '';
@@ -62,11 +54,10 @@ class FailedJsonController extends Controller
                 return $file;
             });
 
-        $paginatedJsons = new LengthAwarePaginator($currentPageItems, $jsonCollection->count(), $perPage);
+        $paginatedJsons = new LengthAwarePaginator($currentPageItems, $jsons->count(), $perPage);
         $paginatedJsons->setPath($request->url());
 
         return view('failed.index', [
-            'path' => $path,
             'jsons' => $paginatedJsons,
         ]);
     }
