@@ -48,12 +48,11 @@ class FailedJsonController extends Controller
             });
 
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 20;
+        $perPage = 50;
         $jsonCollection = collect($jsons);
 
         $currentPageItems = $jsonCollection->slice(($currentPage * $perPage) - $perPage, $perPage)
             ->map(function (SplFileInfo $file) {
-                // dd($file->getRealPath());
                 $json_content = json_decode(File::get($file->getRealPath()), true);
                 $file->group_id = $json_content['patient']['group_id'] ?? '';
                 $file->name = $file->getBaseName();
