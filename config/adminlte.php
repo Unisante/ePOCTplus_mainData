@@ -355,6 +355,12 @@ return [
             'can' => 'See_Logs',
         ],
         [
+            'text' => 'Failed Folder',
+            'url' => '/failed',
+            'icon' => 'fas fa-fw fa-exclamation-triangle',
+            'can' => 'Access_Export_Panel',
+        ],
+        [
             'text' => 'Audits',
             'url' => '/audits',
             'icon' => 'fas fa-fw fa-search',

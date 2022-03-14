@@ -90,6 +90,11 @@ Route::group(['middleware' => ['auth', '2fa']], function () {
     Route::post('/logs/{log_file_name}', 'LogsController@downloadLog')->name('log-downloader');
     Route::get('/logs/{log_file_name}', 'LogsController@show');
 
+    //for failed json folder
+    Route::resource('failed', 'FailedJsonController')->only([
+        'index',
+    ]);
+
     //for audit trail
     Route::resource('audits', 'AuditsController')->only([
         'index', 'show',
