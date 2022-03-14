@@ -21,8 +21,10 @@ class HealthFacilityController extends Controller
     protected $healthFacilityService;
     protected $algorithmService;
 
-    public function __construct(HealthFacilityService $healthFacilityService,
-        AlgorithmService $algorithmService) {
+    public function __construct(
+        HealthFacilityService $healthFacilityService,
+        AlgorithmService $algorithmService
+    ) {
         $this->healthFacilityService = $healthFacilityService;
         $this->algorithmService = $algorithmService;
         $this->authorizeResource(HealthFacility::class);
@@ -54,7 +56,7 @@ class HealthFacilityController extends Controller
             'name' => 'required|string  | unique:App\HealthFacility,name',
             'country' => 'nullable|string',
             'area' => 'nullable|string',
-            'pin_code' => 'nullable|integer',
+            'pin_code' => 'required|integer',
             'hf_mode' => [Rule::in(['standalone', 'client_server'])],
             'local_data_ip' => 'nullable|string',
             'lat' => 'numeric | between:-90,90',
@@ -84,7 +86,7 @@ class HealthFacilityController extends Controller
             'name' => 'required|string  | unique:App\HealthFacility,name,' . $healthFacility->id,
             'country' => 'nullable|string',
             'area' => 'nullable|string',
-            'pin_code' => 'nullable|integer',
+            'pin_code' => 'required|integer',
             'hf_mode' => [Rule::in(['standalone', 'client_server'])],
             'local_data_ip' => 'nullable|string',
             'lat' => 'numeric | between:-90,90',
