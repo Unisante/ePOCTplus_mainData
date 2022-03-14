@@ -179,8 +179,8 @@ return [
 
         'additional_drug' => [
             'dyn_adr_id' => 'id',
-            'dyn_adr_label' => 'Name',
             'dyn_adr_medical_case_id' => 'custom_diagnosis_id',
+            'dyn_adr_label' => 'Name',
             'dyn_adr_drugs' => 'duration',
             'dyn_adr_created_at' => 'created_at',
             'dyn_adr_updated_at' => 'updated_at',

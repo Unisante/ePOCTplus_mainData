@@ -252,9 +252,9 @@ class ExportCsvSeparate extends ExportCsv
     {
         return [
             Config::get('csv.identifiers.additional_drug.dyn_adr_id') => $additional_drug->id,
+            Config::get('csv.identifiers.additional_drug.dyn_adr_medical_case_id') => $additional_drug->custom_diagnosis_id,
             Config::get('csv.identifiers.additional_drug.dyn_adr_label') => $additional_drug->name,
             Config::get('csv.identifiers.additional_drug.dyn_adr_drugs') => $additional_drug->duration,
-            Config::get('csv.identifiers.additional_drug.dyn_adr_medical_case_id') => $additional_drug->custom_diagnosis_id,
             Config::get('csv.identifiers.additional_drug.dyn_adr_created_at') => $additional_drug->created_at,
             Config::get('csv.identifiers.additional_drug.dyn_adr_updated_at') => $additional_drug->updated_at,
         ];
